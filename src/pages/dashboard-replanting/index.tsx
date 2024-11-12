@@ -1,0 +1,700 @@
+import { Layout } from '@/components/custom/layout'
+import { Button } from '@/components/custom/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Search } from '@/components/search'
+import ThemeSwitch from '@/components/theme-switch'
+import { TopNav } from '@/components/top-nav'
+import { UserNav } from '@/components/user-nav'
+import { FcDoughnutChart } from 'react-icons/fc'
+import { IconPlant } from "@tabler/icons-react";
+import axios from 'axios'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+
+// react select
+import Select from 'react-select'
+import { FcBarChart } from 'react-icons/fc'
+// custom styles for react select component with tsx
+const customStyles = {
+  theme: (theme: any) => ({
+    ...theme,
+    colors: {
+      ...theme.colors,
+      primary25: 'var(--bg-secondary)',
+      primary: 'var(--text-primary)',
+    },
+  }),
+  control: (provided: any) => ({
+    ...provided,
+    backgroundColor: 'var(--bg-primary)',
+    borderColor: 'var(--border-primary)',
+    borderRadius: '10.5rem',
+    boxShadow: 'none',
+    color: 'var(--text-primary)',
+    minHeight: '2.5rem',
+    '&:hover': {
+      borderColor: 'var(--border-primary)',
+    },
+  }),
+  menu: (provided: any) => ({
+    ...provided,
+    backgroundColor: '#fff', // Background color for the menu
+    color: 'black', // Text color for the menu
+    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.15)', // Shadow effect for the menu
+    borderRadius: '0.5rem',
+  }),
+  option: (base: any, state: any) => ({
+    ...base,
+    color: state.isSelected ? 'var(--text-primary)' : 'var(--text-secondary)',
+    backgroundColor: state.isSelected
+      ? 'var(--bg-secondary)' // Background when option is selected
+      : 'var(--bg-primary)', // Default background for options
+    '&:hover': {
+      backgroundColor: 'var(--bg-secondary)', // Hover background
+      color: 'var(--text-primary)',
+    },
+  }),
+  singleValue: (provided: any) => ({
+    ...provided,
+    color: 'var(--text-primary)',
+  }),
+  input: (provided: any) => ({
+    ...provided,
+    color: 'var(--text-primary)', // Text color in the search input
+  }),
+}
+
+import { IconPdf } from '@tabler/icons-react'
+import { StokAwal } from './components/stokAwal'
+
+export default function Dashboard() {
+  const bulanName = [
+    'Januari',
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember',
+  ]
+
+  const fetchStokAwal = async (tahun: number, bulan: number) => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/stok-awal-bibit?tahun=${tahun}&bulan=${bulan}`
+      )
+      const data = response.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  const dataCard = [
+    {
+      value: '18,681.99 Ha',
+      title: 'Total Berkontrak',
+      percentage: '+0% from last week',
+      progress: '87% of RKAP 2024',
+      bgColor: 'bg-gradient-to-l from-green-600 to-green-400',
+      color: 'text-white',
+    },
+    {
+      value: '17,646.65 Ha',
+      title: 'Total Land Clearing',
+      percentage: '+1.03% from last week',
+      progress: '82% of RKAP 2024',
+      bgColor: 'bg-gradient-to-tl from-teal-500 to-teal-300',
+      color: 'text-black',
+    },
+    {
+      value: '13,559.26 Ha',
+      title: 'Total Menanam',
+      percentage: '+3.53% from last week',
+      progress: '63% of RKAP 2024',
+      bgColor: 'bg-gradient-to-l from-green-400 to-green-200',
+      color: 'text-black',
+    },
+    {
+      value: 'Rp439 Miliar',
+      title: 'Serapan Biaya',
+      percentage: '+1.46% from last week',
+      progress: '52% of RKAP 2024',
+      bgColor: 'bg-gradient-to-l from-yellow-400 to-yellow-200',
+      color: 'text-black',
+    },
+  ]
+
+  return (
+    <Layout>
+      {/* ===== Top Heading ===== */}
+      <Layout.Header>
+        <TopNav links={topNav} />
+        <div className='ml-auto flex items-center space-x-4'>
+          <Search />
+          <ThemeSwitch />
+          <UserNav />
+        </div>
+      </Layout.Header>
+
+      {/* ===== Main ===== */}
+      <Layout.Body>
+        <div className='mb-2 flex items-center justify-between space-y-2'>
+          <div className='flex items-center space-x-2'>
+            <FcDoughnutChart size={40} />
+            <h1 className='text-2xl font-bold tracking-tight'>
+              Dashboard Replanting
+            </h1>
+          </div>
+          <h1>Hi, Welcome back RZCoding👋</h1>
+
+          <div className='flex items-center space-x-2'>
+            <Select
+              styles={customStyles}
+              options={[
+                { value: 'this_month', label: 'This Month' },
+                { value: 'last_month', label: 'Last Month' },
+                { value: 'this_year', label: 'This Year' },
+                { value: 'last_year', label: 'Last Year' },
+              ]}
+              defaultValue={{ value: 'this_month', label: 'September' }}
+            />
+            <Select
+              styles={customStyles}
+              options={[
+                { value: 'w3', label: 'W3' },
+                { value: 'last_month', label: 'Last Month' },
+                { value: 'this_year', label: 'This Year' },
+                { value: 'last_year', label: 'Last Year' },
+              ]}
+              defaultValue={{ value: 'w3', label: 'W3' }}
+            />
+            <Button className='flex items-center rounded-full'>
+              Download
+              <IconPdf size={20} className='ml-2 bg-red-500 text-white' />
+            </Button>
+          </div>
+        </div>
+        <h1 className='mt-2 flex items-center text-xl font-bold tracking-tight'>
+          <img
+            width='28'
+            height='28'
+            src='https://img.icons8.com/fluency/48/calendar--v1.png'
+            alt='calendar icon'
+            className='mr-2'
+          />
+          Weekly Report
+        </h1>
+
+        <p className='mb-3 font-semibold'>
+          Periode W3 September 2024 (23/09/2024)
+        </p>
+        <div className='grid lg:grid-cols-[70%_30%]'>
+          <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 mr-5'>
+            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+              <CardTitle className='text-sm font-medium'>
+                <h1 className='text-xl'> Overview pekerjaan Replanting</h1>
+              </CardTitle>
+              <FcBarChart size={25} />
+            </CardHeader>
+            <CardContent>
+              <div className='grid grid-cols-[34%_66%]'>
+                <div className='pt-2'>
+                  {dataCard.map((item, index) => (
+                    <div className='pt-1'>
+                      <Card
+                        key={index}
+                        className={`${item.bgColor} rounded-lg p-4 ${item.color} py-1 shadow-md`}
+                        style={{ margin: 0 }}
+                      >
+                        <div className='grid grid-cols-[40%_60%] items-center'>
+                          <div>
+                            <CardTitle className='text-lg font-semibold'>
+                              {item.value}
+                            </CardTitle>
+                          </div>
+                          <div className='text-right'>
+                            <div className='text-md font-bold'>
+                              {item.title}
+                            </div>
+                            <p className={`text-xs ${item.color}`}>
+                              {item.percentage}
+                            </p>
+                            <p className={`text-xs ${item.color}`}>
+                              {item.progress}
+                            </p>
+                          </div>
+                        </div>
+                      </Card>
+                    </div>
+                  ))}
+                </div>
+                <div className='p-4'>
+                  <Table
+                    className='rounded-lg text-xs shadow-md'
+                    style={{ borderCollapse: 'collapse' }}
+                  >
+                    <TableHeader className='shadow-sm'>
+                      <TableRow className='bg-gradient-to-l from-green-500 to-green-300 text-black font-semibold'>
+                        <TableCell rowSpan={2} className='p-1'>
+                          Regional
+                        </TableCell>
+                        <TableCell rowSpan={2} className='p-1 text-center'>
+                          RKAP (Ha)
+                        </TableCell>
+                        <TableCell colSpan={4} className='p-1 text-center'>
+                          Berkontrak
+                        </TableCell>
+                        <TableCell colSpan={2} className='p-1 text-center'>
+                          Land Clearing
+                        </TableCell>
+                        <TableCell colSpan={2} className='p-1 text-center'>
+                          Menanam
+                        </TableCell>
+                      </TableRow>
+                      <TableRow className='bg-gradient-to-l from-slate-50 to-slate-300 text-black font-semibold'>
+                        <TableCell className='p-1 text-center'></TableCell>
+                        <TableCell className='p-1 text-center'>
+                          Luas (Ha)
+                        </TableCell>
+                        <TableCell className='p-1 text-center'>%</TableCell>
+                        <TableCell className='p-1 text-center'>
+                          Luas (Ha)
+                        </TableCell>
+                        <TableCell className='p-1 text-center'>%</TableCell>
+                        <TableCell className='p-1 text-center'>
+                          Luas (Ha)
+                        </TableCell>
+                        <TableCell className='p-1 text-center'>%</TableCell>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell rowSpan={5} className='p-1 font-medium'>
+                          Palm Co
+                        </TableCell>
+                        <TableCell className='p-1'>R1</TableCell>
+                        <TableCell className='p-1'>360.13</TableCell>
+                        <TableCell className='bg-emerald-100 p-1 text-black'>
+                          360.13
+                        </TableCell>
+                        <TableCell className='bg-emerald-100 p-1 text-black'>
+                          100
+                        </TableCell>
+                        <TableCell className='p-1'>348.48</TableCell>
+                        <TableCell className='p-1'>97</TableCell>
+                        <TableCell className='p-1'>213.80</TableCell>
+                        <TableCell className='p-1'>59</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className='p-1'>R2</TableCell>
+                        <TableCell className='p-1'>7,859.00</TableCell>
+                        <TableCell className='bg-emerald-100 p-1 text-black'>
+                          7,859.00
+                        </TableCell>
+                        <TableCell className='bg-emerald-100 p-1 text-black'>
+                          100
+                        </TableCell>
+                        <TableCell className='p-1'>7,704.00</TableCell>
+                        <TableCell className='p-1'>98</TableCell>
+                        <TableCell className='p-1'>7,610.00</TableCell>
+                        <TableCell className='p-1'>97</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className='p-1'>R3</TableCell>
+                        <TableCell className='p-1'>1,144.00</TableCell>
+                        <TableCell className='bg-red-100 p-1 text-black'>
+                          -
+                        </TableCell>
+                        <TableCell className='bg-red-100 p-1 text-black'>
+                          0
+                        </TableCell>
+                        <TableCell className='p-1'>-</TableCell>
+                        <TableCell className='p-1'>0</TableCell>
+                        <TableCell className='p-1'>-</TableCell>
+                        <TableCell className='p-1'>0</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className='p-1'>R4</TableCell>
+                        <TableCell className='p-1'>1,377.76</TableCell>
+                        <TableCell className='bg-emerald-100 p-1 text-black'>
+                          1,377.76
+                        </TableCell>
+                        <TableCell className='bg-emerald-100 p-1 text-black'>
+                          100
+                        </TableCell>
+                        <TableCell className='p-1'>1,377.76</TableCell>
+                        <TableCell className='p-1'>100</TableCell>
+                        <TableCell className='p-1'>1,090.22</TableCell>
+                        <TableCell className='p-1'>79</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className='p-1'>R5</TableCell>
+                        <TableCell className='p-1'>3,811.34</TableCell>
+                        <TableCell className='bg-emerald-100 p-1 text-black'>
+                          2,337.88
+                        </TableCell>
+                        <TableCell className='bg-emerald-100 p-1 text-black'>
+                          61
+                        </TableCell>
+                        <TableCell className='p-1'>1,714.52</TableCell>
+                        <TableCell className='bg-red-100 p-1 text-black'>
+                          45
+                        </TableCell>
+                        <TableCell className='bg-red-100 p-1 text-black'>
+                          724.04
+                        </TableCell>
+                        <TableCell className='p-1'>19</TableCell>
+                      </TableRow>
+                      <TableRow className='bg-emerald-50 text-black'>
+                        <TableCell colSpan={2} className='p-1 font-medium'>
+                          Sub Total Palm Co
+                        </TableCell>
+                        <TableCell className='p-1'>14,552.23</TableCell>
+                        <TableCell className='p-1'>11,934.77</TableCell>
+                        <TableCell className='p-1'>82</TableCell>
+                        <TableCell className='p-1'>11,144.76</TableCell>
+                        <TableCell className='p-1'>77</TableCell>
+                        <TableCell className='p-1'>9,638.06</TableCell>
+                        <TableCell className='p-1'>66</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell rowSpan={4} className='p-1 font-medium'>
+                          KSO
+                        </TableCell>
+                        <TableCell className='p-1'>R6 (ex N01)</TableCell>
+                        <TableCell className='p-1'>1,155.90</TableCell>
+                        <TableCell className='bg-emerald-100 p-1 text-black'>
+                          1,155.90
+                        </TableCell>
+                        <TableCell className='bg-emerald-100 p-1 text-black'>
+                          100
+                        </TableCell>
+                        <TableCell className='p-1'>1,155.90</TableCell>
+                        <TableCell className='p-1'>100</TableCell>
+                        <TableCell className='p-1'>1,155.90</TableCell>
+                        <TableCell className='p-1'>100</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className='p-1'>R2 (ex N02)</TableCell>
+                        <TableCell className='p-1'>2,182.38</TableCell>
+                        <TableCell className='bg-emerald-100 p-1 text-black'>
+                          2,182.38
+                        </TableCell>
+                        <TableCell className='bg-emerald-100 p-1 text-black'>
+                          100
+                        </TableCell>
+                        <TableCell className='p-1'>2,182.38</TableCell>
+                        <TableCell className='p-1'>100</TableCell>
+                        <TableCell className='p-1'>2,182.38</TableCell>
+                        <TableCell className='p-1'>100</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className='p-1'>R7 (ex N07)</TableCell>
+                        <TableCell className='p-1'>2,711.00</TableCell>
+                        <TableCell className='bg-emerald-100 p-1 text-black'>
+                          3,008.94
+                        </TableCell>
+                        <TableCell className='bg-emerald-100 p-1 text-black'>
+                          111
+                        </TableCell>
+                        <TableCell className='p-1'>2,824.61</TableCell>
+                        <TableCell className='bg-red-100 p-1 text-black'>
+                          104
+                        </TableCell>
+                        <TableCell className='bg-red-100 p-1 text-black'>
+                          528.22
+                        </TableCell>
+                        <TableCell className='p-1'>19</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className='p-1'>R2 (ex N14)</TableCell>
+                        <TableCell className='p-1'>900.00</TableCell>
+                        <TableCell className='bg-yellow-100 p-1 text-black'>
+                          400.00
+                        </TableCell>
+                        <TableCell className='bg-yellow-100 p-1 text-black'>
+                          44
+                        </TableCell>
+                        <TableCell className='p-1'>400.00</TableCell>
+                        <TableCell className='p-1'>44</TableCell>
+                        <TableCell className='p-1'>300.00</TableCell>
+                        <TableCell className='p-1'>33</TableCell>
+                      </TableRow>
+                      <TableRow className='bg-emerald-50 text-black'>
+                        <TableCell colSpan={2} className='p-1 font-medium'>
+                          Sub Total KSO
+                        </TableCell>
+                        <TableCell className='p-1'>6,949.28</TableCell>
+                        <TableCell className='p-1'>6,686.22</TableCell>
+                        <TableCell className='p-1'>96</TableCell>
+                        <TableCell className='p-1'>6,563.89</TableCell>
+                        <TableCell className='p-1'>95</TableCell>
+                        <TableCell className='p-1'>6,166.50</TableCell>
+                        <TableCell className='p-1'>89</TableCell>
+                      </TableRow>
+
+                      <TableRow className='bg-green-50 text-black'>
+                        <TableCell colSpan={2} className='p-1 font-medium'>
+                          Total
+                        </TableCell>
+                        <TableCell className='p-1'>21,501.51</TableCell>
+                        <TableCell className='p-1'>18,678.21</TableCell>
+                        <TableCell className='p-1'>87</TableCell>
+                        <TableCell className='p-1'>17,708.65</TableCell>
+                        <TableCell className='p-1'>82</TableCell>
+                        <TableCell className='p-1'>15,804.56</TableCell>
+                        <TableCell className='p-1'>73</TableCell>
+                      </TableRow>
+                    </TableBody>
+                    
+                  </Table>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+            <CardHeader className='flex flex-row items-center justify-between space-y-0'>
+              <CardTitle className='text-xl font-medium'>
+                This Week’s Highlights
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className='text-md text-muted-foreground'>
+                • R3: Pekerjaan TK 943 Ha belum dapat dilakukan menunggu
+                penjualan kayu karet
+                <br />• R5: Proses pengadaan paket pekerjaan di HO seluas 1.020
+                Ha atas paket yang gagal tender di R5
+                <br />• R2 KSO N14: Proses tender ulang di PTPN I (Dana IP PEN)
+                atas pemutusan kontrak
+              </p>
+            </CardContent>
+            <CardHeader className='flex flex-row items-center justify-between space-y-0 '>
+              <CardTitle
+                className='text-xl font-medium'
+                style={{ paddingTop: 0, marginTop: '-20px' }}
+              >
+                Proyeksi 2024 Highlights
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className='text-md text-muted-foreground'>
+                • Proyeksi serapan biaya replanting 95% dari RKAP 2024 <br />•
+                Selesai tanam diproyeksikan seluas 18.678,21 Ha atau 87% dari
+                RKAP 2024 dan Persiapan lahan diproyeksikan seluas 2.581,24 Ha
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+        <div className='grid lg:grid-cols-3 mt-5'>
+          <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 mr-5'>
+            <CardHeader className='flex flex-row items-center justify-between space-y-0'>
+              <CardTitle className='text-xl font-medium'>
+              Tasks Completed This Week
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className='text-md text-muted-foreground'>
+                • R3: Pekerjaan TK 943 Ha belum dapat dilakukan menunggu
+                penjualan kayu karet
+                <br />• R5: Proses pengadaan paket pekerjaan di HO seluas 1.020
+                Ha atas paket yang gagal tender di R5
+                <br />• R2 KSO N14: Proses tender ulang di PTPN I (Dana IP PEN)
+                atas pemutusan kontrak
+              </p>
+            </CardContent>
+          </Card>
+          <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 mr-5'>
+          <CardHeader className='flex flex-row items-center justify-between space-y-0'>
+              <CardTitle className='text-xl font-medium'>
+              Pending Matters
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className='text-md text-muted-foreground'>
+                • R3: Pekerjaan TK 943 Ha belum dapat dilakukan menunggu
+                penjualan kayu karet
+                <br />• R5: Proses pengadaan paket pekerjaan di HO seluas 1.020
+                Ha atas paket yang gagal tender di R5
+                <br />• R2 KSO N14: Proses tender ulang di PTPN I (Dana IP PEN)
+                atas pemutusan kontrak
+              </p>
+            </CardContent>
+          </Card>
+          <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+            <CardHeader className='flex flex-row items-center justify-between space-y-0'>
+              <CardTitle className='text-xl font-medium'>
+              Next Week’s Tasks
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className='text-md text-muted-foreground'>
+                • R3: Pekerjaan TK 943 Ha belum dapat dilakukan menunggu
+                penjualan kayu karet
+                <br />• R5: Proses pengadaan paket pekerjaan di HO seluas 1.020
+                Ha atas paket yang gagal tender di R5
+                <br />• R2 KSO N14: Proses tender ulang di PTPN I (Dana IP PEN)
+                atas pemutusan kontrak
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+        <div className='grid lg:grid-cols-1'>
+
+          <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 mt-5'>
+          <div className="grid gap-6 md:grid-cols-2 p-4">
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 text-lg font-medium">
+        <IconPlant className="h-5 w-5 text-green-600" />
+
+          <h2>Proyeksi Replanting Tahun 2024 (Ha)</h2>
+        </div>
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-muted/50">
+              <TableCell>-</TableCell>
+              <TableCell>RKAP</TableCell>
+              <TableCell>Selesai Tanam</TableCell>
+              <TableCell>Persiapan Lahan</TableCell>
+              <TableCell>%Tanam</TableCell>
+              <TableCell>%P.Lahan</TableCell>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow className="bg-muted/30">
+              <TableCell>Palm Co</TableCell>
+              <TableCell>14.552,23</TableCell>
+              <TableCell>11.991,99</TableCell>
+              <TableCell>2.581,24</TableCell>
+              <TableCell>82</TableCell>
+              <TableCell>18</TableCell>
+            </TableRow>
+            <TableRow className="bg-muted/30">
+              <TableCell>KSO</TableCell>
+              <TableCell>6.949,28</TableCell>
+              <TableCell>6.686,22</TableCell>
+              <TableCell>-</TableCell>
+              <TableCell>96</TableCell>
+              <TableCell>-</TableCell>
+            </TableRow>
+            <TableRow className="bg-green-50 text-black">
+              <TableCell>Total</TableCell>
+              <TableCell>21.501,51</TableCell>
+              <TableCell>18.678,21</TableCell>
+              <TableCell>2.581,24</TableCell>
+              <TableCell>87</TableCell>
+              <TableCell>12</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
+
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 text-lg font-medium">
+          <svg
+            className="h-5 w-5 text-yellow-500"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M17 18.5a9 9 0 1 0-11.7-5.6" />
+            <path d="M9 19.5v3" />
+            <path d="M9 22.5h8" />
+            <path d="M13 16.5v6" />
+            <path d="M19 19.5v3" />
+            <path d="M17 21.5v2" />
+            <path d="M15 19.5v3" />
+          </svg>
+          <h2>Proyeksi Serapan Biaya Tahun 2024 (Rp.Miliar)</h2>
+        </div>
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-muted/50">
+              <TableCell>-</TableCell>
+              <TableCell>RKAP</TableCell>
+              <TableCell>Proyeksi</TableCell>
+              <TableCell>% of RKAP</TableCell>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow className="bg-muted/30">
+              <TableCell>Palm Co</TableCell>
+              <TableCell>563</TableCell>
+              <TableCell>548</TableCell>
+              <TableCell>97,39</TableCell>
+            </TableRow>
+            <TableRow className="bg-muted/30">
+              <TableCell>KSO</TableCell>
+              <TableCell>276</TableCell>
+              <TableCell>250</TableCell>
+              <TableCell>90,50</TableCell>
+            </TableRow>
+            <TableRow className="bg-yellow-50 text-black">
+              <TableCell>Total</TableCell>
+              <TableCell>840</TableCell>
+              <TableCell>799</TableCell>
+              <TableCell>95,12</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+          </Card>
+        </div>
+
+        
+
+        <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight'>
+          <img
+            className='mr-2'
+            width='28'
+            height='28'
+            src='https://img.icons8.com/fluency/48/positive-dynamic.png'
+            alt='positive-dynamic'
+          />
+          Realisasi Tanam Perkebun
+        </h1>
+        <div className='grid lg:grid-cols-[70%_30%]'>
+          
+        </div>
+      </Layout.Body>
+    </Layout>
+  )
+}
+
+const topNav = [
+  {
+    title: 'Nursery',
+    href: '/dashboard-nursery',
+    isActive: false,
+  },
+  {
+    title: 'Replanting (TU/TK/TB)',
+    href: '/dashboard-replanting',
+    isActive: true,
+  },
+  {
+    title: 'Immature',
+    href: '/dashboard-immature',
+    isActive: false,
+  },
+  {
+    title: 'Monica',
+    href: '/monica',
+    isActive: false,
+  },
+]
