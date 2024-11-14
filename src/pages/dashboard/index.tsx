@@ -71,20 +71,26 @@ import { IconPdf } from '@tabler/icons-react'
 import { StokAwal } from './components/stokAwal'
 
 export default function Dashboard() {
-  const bulanName = [
-    'Januari',
-    'Februari',
-    'Maret',
-    'April',
-    'Mei',
-    'Juni',
-    'Juli',
-    'Agustus',
-    'September',
-    'Oktober',
-    'November',
-    'Desember',
-  ]
+  const [stokAwal, setStokAwal] = useState([])
+  const currentYear = new Date().getFullYear()
+  const currentMonth = new Date().getMonth() + 1
+
+  const bulan = [
+    { value: '1', label: 'Januari' },
+    { value: '2', label: 'Februari' },
+    { value: '3', label: 'Maret' },
+    { value: '4', label: 'April' },
+    { value: '5', label: 'Mei' },
+    { value: '6', label: 'Juni' },
+    { value: '7', label: 'Juli' },
+    { value: '8', label: 'Agustus' },
+    { value: '9', label: 'September' },
+    { value: '10', label: 'Oktober' },
+    { value: '11', label: 'November' },
+    { value: '12', label: 'Desember' },
+  ] 
+
+  const defaultValue = bulan.find((item) => item.value === currentMonth.toString());
 
   const fetchStokAwal = async (tahun: number, bulan: number) => {
     try {
@@ -123,13 +129,8 @@ export default function Dashboard() {
           <div className='flex items-center space-x-2'>
             <Select
               styles={customStyles}
-              options={[
-                { value: 'this_month', label: 'This Month' },
-                { value: 'last_month', label: 'Last Month' },
-                { value: 'this_year', label: 'This Year' },
-                { value: 'last_year', label: 'Last Year' },
-              ]}
-              defaultValue={{ value: 'this_month', label: 'This Month' }}
+              options={bulan}
+              defaultValue={defaultValue}
             />
             <Button className='flex items-center rounded-full'>
               Download

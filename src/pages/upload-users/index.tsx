@@ -1,76 +1,198 @@
+'use client'
 import { Layout } from '@/components/custom/layout'
 import { Search } from '@/components/search'
 import ThemeSwitch from '@/components/theme-switch'
 import { UserNav } from '@/components/user-nav'
+import React, { useState, useEffect, useRef, useId } from 'react'
+import cookie from 'js-cookie'
+import Papa from 'papaparse'
+import { BsFillCheckCircleFill, BsTrash } from 'react-icons/bs'
+import readXlsxFile from 'read-excel-file'
+import { FaFileExcel } from 'react-icons/fa'
+import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Box, CircularProgress, Typography } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
-'use client';
+export default function UploadUser() {
+  const [isLoadingUpload, setIsLoadingUpload] = useState(false)
+  const [isUploadingDone, setIsUploadingDone] = useState(false)
+  const [progressValue, setProgressValue] = useState(0)
+  // Fullname	Regional	Username	Password	Kebun	PKS	Afd	Account Type	App Type
 
-import { FileUploader } from '@/components/ui/file-uploader';
-import { Button } from '@/components/custom/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+  interface UserData {
+    fullname: string
+    username: string
+    password: string
+    rpc: string
+    kebun: string
+    pks: string
+    afd: string
+    account_type: string
+    app_type: string
+  }
 
-const MAX_FILE_SIZE = 5000000;
-const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/webp'
-];
+  const [mappedData, setMappedData] = useState<UserData[]>([])
+  const [values, setValues] = useState<any[]>([])
+  const [fileName, setFileName] = useState(null)
+  const [loading, setLoading] = useState(false)
 
-const formSchema = z.object({
-  image: z
-    .any()
-    .refine((files) => files?.length == 1, 'Image is required.')
-    .refine(
-      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
-      `Max file size is 5MB.`
-    )
-    .refine(
-      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-      '.jpg, .jpeg, .png and .webp files are accepted.'
-    ),
-  name: z.string().min(2, {
-    message: 'Product name must be at least 2 characters.'
-  }),
-  category: z.string(),
-  price: z.number(),
-  description: z.string().min(10, {
-    message: 'Description must be at least 10 characters.'
-  })
-});
+  const instanceId = useId()
 
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm()
 
-    // Initialize the form with react-hook-form
-    const form = useForm({
-        resolver: zodResolver(formSchema),
-      });
-      
+  const handleDrop = async (event: any) => {
+    event.preventDefault()
+    const file = event.dataTransfer.files?.[0]
+    if (file) {
+      await parseFile(file)
+    }
+  }
 
-export default function Tasks() {
+  const handleFileChange = async (event: any) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      await parseFile(file)
+    }
+  }
 
-    const onSubmit = (data:any) => {
-        console.log(data);
+  const handleDragOver = (event: any) => {
+    event.preventDefault()
+  }
+
+  const parseFile = async (file: any) => {
+    setLoading(true)
+    const fileExtension = file.name.split('.').pop()?.toLowerCase()
+
+    try {
+      if (fileExtension === 'csv') {
+        Papa.parse(file, {
+          skipEmptyLines: true,
+          complete: (results) => {
+            const rowsArray = []
+            const valuesArray: any[] = []
+
+            results.data.forEach((d: any) => {
+              rowsArray.push(Object.keys(d))
+              valuesArray.push(Object.values(d))
+            })
+
+            setValues(valuesArray.slice(1))
+            setFileName(file.name)
+          },
+        })
+      } else if (fileExtension === 'xlsx') {
+        const results = await readXlsxFile(file)
+        const rowsArray = []
+        const valuesArray: any[] = []
+
+        results.forEach((row) => {
+          const rowValues = row.map((cell) =>
+            cell !== null ? cell.toString() : ''
+          )
+          rowsArray.push(rowValues)
+          valuesArray.push(rowValues)
+        })
+
+        setValues(valuesArray.slice(1))
+        setFileName(file.name)
       }
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleRemoveFile = () => {
+    setValues([])
+    setFileName(null)
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    if (values.length > 0) {
+      const uploadData = async () => {
+        const mappedDataPromises = values.map(async (value) => {
+          return {
+            fullname: value[0],
+            username: value[1],
+            password: value[2],
+            rpc: value[3],
+            kebun: value[4],
+            pks: value[5],
+            afd: value[6],
+            account_type: value[7],
+            app_type: value[8]
+          }
+        })
+
+        const resolvedMappedData = await Promise.all(mappedDataPromises)
+        setMappedData(resolvedMappedData)
+      }
+
+      uploadData()
+    }
+  }, [values])
+
+  const router = useNavigate()
+
+  const handleUploadUsers = async () => {
+    setIsLoadingUpload(true)
+
+    const apiUrl = import.meta.env.VITE_API_MASTER as string
+    const loginData = cookie.get('token')
+    const tokenData = JSON.parse(loginData || '{}')
+
+    const chunkSize = Math.ceil(mappedData.length / 10)
+    const uploadPromises = []
+
+    for (let i = 0; i < 10; i++) {
+      const chunk = mappedData.slice(i * chunkSize, (i + 1) * chunkSize)
+      uploadPromises.push(
+        fetch(`${apiUrl}/users/upload`, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            mappedData: chunk,
+          }),
+        }).then((res) => res.json())
+      )
+    }
+
+    const results = await Promise.all(uploadPromises)
+    const allSuccessful = results.every((result) => result.status_code === 200)
+
+    const totalBatches = 10
+    for (let i = 0; i < totalBatches; i++) {
+      const progressPercent = ((i + 1) * 100) / totalBatches
+      setProgressValue(progressPercent)
+      await new Promise((resolve) => setTimeout(resolve, 100))
+    }
+
+    if (allSuccessful) {
+      setIsUploadingDone(true)
+    } else {
+      toast.error('Some chunks failed to upload!')
+    }
+
+    setIsLoadingUpload(false)
+    setTimeout(() => {
+      setIsUploadingDone(false)
+      setProgressValue(0)
+    }, 3000)
+  }
 
   return (
     <Layout>
@@ -84,128 +206,114 @@ export default function Tasks() {
       </Layout.Header>
 
       <Layout.Body>
-        <div className='mb-2 flex items-center justify-between space-y-2'>
-          <div>
-
-          </div>
-        </div>
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-    <Card className="mx-auto w-full">
-      <CardHeader>
-        <CardTitle className="text-left text-2xl font-bold">
-        <h2 className='text-2xl font-bold tracking-tight'>Upload Users</h2>
-
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="image"
-              render={({ field }) => (
-                <div className="space-y-6">
-                  <FormItem className="w-full">
-                    <FormLabel>Images</FormLabel>
-                    <FormControl>
-                      <FileUploader
-                        value={field.value}
-                        onValueChange={field.onChange}
-                        maxFiles={4}
-                        maxSize={4 * 1024 * 1024}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                </div>
-              )}
-            />
-
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Product Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter product name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="category"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    <Select
-                      onValueChange={(value) => field.onChange(value)}
-                      value={field.value[field.value.length - 1]}
+        <Card>
+          <CardHeader>
+            <CardTitle>Upload Users</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <button
+              className='flex cursor-pointer rounded-full bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300'
+              onClick={() => router('/download-template')}
+            >
+              <FaFileExcel className='mr-2 h-5 w-5' /> Download Template
+            </button>
+            <div className='mt-5 grid'>
+              <div
+                className='flex w-full cursor-pointer items-center justify-center rounded-lg border border-dashed border-black py-5'
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+              >
+                <label
+                  className='flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-dashed'
+                  htmlFor='fileInput'
+                >
+                  <div className='flex flex-col items-center justify-center pb-6 pt-5'>
+                    <svg
+                      aria-hidden='true'
+                      className='mb-3 h-10 w-10 text-gray-400'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                      xmlns='http://www.w3.org/2000/svg'
                     >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select categories" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="beauty">Beauty Products</SelectItem>
-                        <SelectItem value="electronics">Electronics</SelectItem>
-                        <SelectItem value="clothing">Clothing</SelectItem>
-                        <SelectItem value="home">Home & Garden</SelectItem>
-                        <SelectItem value="sports">
-                          Sports & Outdoors
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Price</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        placeholder="Enter price"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth='2'
+                        d='M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12'
+                      ></path>
+                    </svg>
+                    {fileName ? (
+                      <div className='mb-2 flex items-center'>
+                        <p className='text-sm text-gray-500 '>{fileName}</p>
+                        <BsTrash
+                          className='ml-2 cursor-pointer text-red-500'
+                          onClick={handleRemoveFile}
+                        />
+                      </div>
+                    ) : !fileName && loading ? (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          height: '100vh', // Full height of the viewport
+                          flexDirection: 'column', // Stack items vertically
+                        }}
+                      >
+                        <CircularProgress />
+                        <Typography variant='h6' sx={{ marginTop: 2 }}>
+                          Loading...
+                        </Typography>
+                      </Box>
+                    ) : (
+                      <p className='mb-2 text-sm text-gray-500'>
+                        <span className='font-semibold'>
+                          Klik untuk upload file .csv atau .xlsx
+                        </span>{' '}
+                        atau drag and drop
+                      </p>
+                    )}
+                  </div>
+
+                  <input
+                    type='file'
+                    id='fileInput'
+                    name='file'
+                    onChange={handleFileChange}
+                    accept='.csv, .xlsx'
+                    className='hidden'
+                    disabled={isLoadingUpload}
+                  />
+                </label>
+              </div>
+              <div className='mt-5 flex items-center justify-end gap-3'>
+                {isLoadingUpload ? (
+                  <div className='h-2.5 w-1/6 rounded-full bg-gray-200 '>
+                    <div
+                      className='animate-blink h-2.5 rounded-full bg-green-600 transition ease-in-out'
+                      style={{ width: `${progressValue}%` }}
+                    ></div>
+                  </div>
+                ) : null}
+
+                {isUploadingDone ? (
+                  <BsFillCheckCircleFill className='h-7 w-7 text-green-600' />
+                ) : null}
+
+                {!isLoadingUpload ? (
+                  <button
+                    onClick={() => handleUploadUsers()}
+                    disabled={!fileName || isLoadingUpload}
+                    className='cursor-pointer rounded-full bg-green-600 px-5 py-[.675rem] text-center text-sm font-semibold text-white transition duration-300 ease-in-out hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 disabled:cursor-not-allowed'
+                  >
+                    Upload File
+                  </button>
+                ) : null}
+              </div>
             </div>
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Enter product description"
-                      className="resize-none"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Add Product</Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
-        </div>
+          </CardContent>
+        </Card>
       </Layout.Body>
     </Layout>
   )

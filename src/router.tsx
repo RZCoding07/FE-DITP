@@ -84,6 +84,12 @@ const router = createBrowserRouter([
         }),
       },
       {
+        path: 'dashboard-monica',
+        lazy: async () => ({
+          Component: (await import('./pages/dashboard-monica')).default,
+        }),
+      },
+      {
         path: 'nursery',
         lazy: async () => ({
           Component: (await import('./pages/nursery')).default,
