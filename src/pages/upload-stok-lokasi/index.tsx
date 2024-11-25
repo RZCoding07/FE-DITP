@@ -14,31 +14,104 @@ import toast from 'react-hot-toast'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Box, CircularProgress, Typography } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
+import Select from 'react-select'
 
 export default function UploadUser() {
   const [isLoadingUpload, setIsLoadingUpload] = useState(false)
   const [isUploadingDone, setIsUploadingDone] = useState(false)
   const [progressValue, setProgressValue] = useState(0)
-  // Fullname	Regional	Username	Password	Kebun	PKS	Afd	Account Type	App Type
 
-  interface UserData {
-    fullname: string
-    username: string
-    password: string
-    rpc: string
+
+  const user = JSON.parse(cookie.get('user') || '{}')
+
+  interface UploadData {
+    user_id: string
+    regional: string
     kebun: string
-    pks: string
-    afd: string
-    account_type: string
-    app_type: string
+    varietas: string
+    lokasi: string
+    nursery_month_1: number
+    nursery_month_2: number
+    nursery_month_3: number
+    nursery_month_4: number
+    nursery_month_5: number
+    nursery_month_6: number
+    nursery_month_7: number
+    nursery_month_8: number
+    nursery_month_9: number
+    nursery_month_10: number
+    nursery_month_11: number
+    nursery_month_12: number
+    nursery_month_13: number
+    nursery_month_14: number
+    nursery_month_15: number
+    nursery_month_16: number
+    nursery_month_17: number
+    nursery_month_18: number
+    nursery_month_19: number
+    nursery_month_20: number
+    nursery_month_21: number
+    nursery_month_22: number
+    nursery_month_23: number
+    nursery_month_24: number
+    nursery_month_25: number
+    nursery_month_26: number
+    nursery_month_27: number
+    nursery_month_28: number
+    nursery_month_29: number
+    nursery_month_30_plus: number
+    jumlah: number
+    jumlah_siap_salur: number
+    bulan: number
+    tahun: number
   }
 
-  const [mappedData, setMappedData] = useState<UserData[]>([])
+  const [mappedData, setMappedData] = useState<UploadData[]>([])
   const [values, setValues] = useState<any[]>([])
   const [fileName, setFileName] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [bulan, setBulan] = useState()
+  const [tahun, setTahun] = useState()
 
-  const instanceId = useId()
+  const bulanName = [
+    { value: 1, label: 'Januari' },
+    { value: 2, label: 'Februari' },
+    { value: 3, label: 'Maret' },
+    { value: 4, label: 'April' },
+    { value: 5, label: 'Mei' },
+    { value: 6, label: 'Juni' },
+    { value: 7, label: 'Juli' },
+    { value: 8, label: 'Agustus' },
+    { value: 9, label: 'September' },
+    { value: 10, label: 'Oktober' },
+    { value: 11, label: 'November' },
+    { value: 12, label: 'Desember' },
+  ]
+  const tahunName = [
+    { value: 2021, label: '2021' },
+    { value: 2022, label: '2022' },
+    { value: 2023, label: '2023' },
+    { value: 2024, label: '2024' },
+    { value: 2025, label: '2025' },
+    { value: 2026, label: '2026' },
+    { value: 2027, label: '2027' },
+    { value: 2028, label: '2028' },
+    { value: 2029, label: '2029' },
+    { value: 2030, label: '2030' },
+    { value: 2031, label: '2031' },
+    { value: 2032, label: '2032' },
+    { value: 2033, label: '2033' },
+    { value: 2034, label: '2034' },
+  ]
+  const getCurrentMonth = () => {
+    const date = new Date()
+    return date.getMonth()
+  }
+
+  const getCurrentYear = () => {
+    const date = new Date().getFullYear()
+    return date
+  }
 
   const {
     register,
@@ -123,15 +196,45 @@ export default function UploadUser() {
       const uploadData = async () => {
         const mappedDataPromises = values.map(async (value) => {
           return {
-            fullname: value[0],
-            username: value[1],
-            password: value[2],
-            rpc: value[3],
-            kebun: value[4],
-            pks: value[5],
-            afd: value[6],
-            account_type: value[7],
-            app_type: value[8]
+            user_id : user.id,
+            regional: value[1],
+            kebun: value[2],
+            varietas: value[3],
+            lokasi: value[4],
+            nursery_month_1: value[5],
+            nursery_month_2: value[6],
+            nursery_month_3: value[7],
+            nursery_month_4: value[8],
+            nursery_month_5: value[9],
+            nursery_month_6: value[10],
+            nursery_month_7: value[11],
+            nursery_month_8: value[12],
+            nursery_month_9: value[13],
+            nursery_month_10: value[14],
+            nursery_month_11: value[15],
+            nursery_month_12: value[16],
+            nursery_month_13: value[17],
+            nursery_month_14: value[18],
+            nursery_month_15: value[19],
+            nursery_month_16: value[20],
+            nursery_month_17: value[21],
+            nursery_month_18: value[22],
+            nursery_month_19: value[23],
+            nursery_month_20: value[24],
+            nursery_month_21: value[25],
+            nursery_month_22: value[26],
+            nursery_month_23: value[27],
+            nursery_month_24: value[28],
+            nursery_month_25: value[29],
+            nursery_month_26: value[30],
+            nursery_month_27: value[31],
+            nursery_month_28: value[32],
+            nursery_month_29: value[33],
+            nursery_month_30_plus: value[34],
+            jumlah: value[35],
+            jumlah_siap_salur: value[36],
+            bulan: bulan || getCurrentMonth() + 1,
+            tahun: tahun || getCurrentYear(),
           }
         })
 
@@ -148,9 +251,7 @@ export default function UploadUser() {
   const handleUploadUsers = async () => {
     setIsLoadingUpload(true)
 
-    const apiUrl = import.meta.env.VITE_API_MASTER as string
-    const loginData = cookie.get('token')
-    const tokenData = JSON.parse(loginData || '{}')
+    const apiUrl = import.meta.env.VITE_API_NURSERY as string
 
     const chunkSize = Math.ceil(mappedData.length / 10)
     const uploadPromises = []
@@ -158,7 +259,7 @@ export default function UploadUser() {
     for (let i = 0; i < 10; i++) {
       const chunk = mappedData.slice(i * chunkSize, (i + 1) * chunkSize)
       uploadPromises.push(
-        fetch(`${apiUrl}/users/upload`, {
+        fetch(`${apiUrl}/nursery-stok-bibit/upload`, {
           method: 'POST',
           headers: {
             Accept: 'application/json',
@@ -171,7 +272,7 @@ export default function UploadUser() {
       )
     }
 
-    const results = await Promise.all(uploadPromises)
+    const results = await Promise.all(uploadPromises) 
     const allSuccessful = results.every((result) => result.status_code === 200)
 
     const totalBatches = 10
@@ -183,6 +284,7 @@ export default function UploadUser() {
 
     if (allSuccessful) {
       setIsUploadingDone(true)
+      toast.success('All chunks uploaded successfully!')
     } else {
       toast.error('Some chunks failed to upload!')
     }
@@ -208,15 +310,38 @@ export default function UploadUser() {
       <Layout.Body>
         <Card>
           <CardHeader>
-            <CardTitle>Upload Users</CardTitle>
+            <CardTitle>Upload Stok Lokasi Bibitan</CardTitle>
+            <div className='flex items-center justify-between'>
+              <p className='text-muted-foreground'>
+                Upload file .csv atau .xlsx untuk menambahkan data stok lokasi
+                bibitan
+              </p>
+            </div>
+            <div className='flex items-center'>
+              <Select
+                options={bulanName}
+                className='mr-5 w-1/4'
+                defaultValue={bulanName[getCurrentMonth()]}
+                onChange={(e:any) => setBulan(e.value)}
+              />
+              <Select
+                options={tahunName}
+                className='mr-5 w-1/4'
+                defaultValue={tahunName.find(
+                  (item) => item.value === getCurrentYear()
+                )}
+                onChange={(e:any) => setTahun(e.value)}
+              />
+
+              <button
+                className='flex cursor-pointer rounded-full bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300'
+                onClick={() => router('/download-template')}
+              >
+                <FaFileExcel className='mr-2 h-5 w-5' /> Download Template
+              </button>
+            </div>
           </CardHeader>
           <CardContent>
-            <button
-              className='flex cursor-pointer rounded-full bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300'
-              onClick={() => router('/download-template')}
-            >
-              <FaFileExcel className='mr-2 h-5 w-5' /> Download Template
-            </button>
             <div className='mt-5 grid'>
               <div
                 className='flex w-full cursor-pointer items-center justify-center rounded-lg border border-dashed border-black py-5'
@@ -310,11 +435,9 @@ export default function UploadUser() {
                     Upload File
                   </button>
                 ) : null}
-                                 <button
-                    className='cursor-pointer rounded-full bg-slate-600 px-5 py-[.675rem] text-center text-sm font-semibold text-white transition duration-300 ease-in-out hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300 disabled:cursor-not-allowed'
-                  >
-                    <Link to='/users'>Kembali</Link>
-                  </button>
+                <button className='cursor-pointer rounded-full bg-slate-600 px-5 py-[.675rem] text-center text-sm font-semibold text-white transition duration-300 ease-in-out hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300 disabled:cursor-not-allowed'>
+                  <Link to='/nursery'>Kembali</Link>
+                </button>
               </div>
             </div>
           </CardContent>

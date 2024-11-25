@@ -3,42 +3,41 @@ import GeneralError from './pages/errors/general-error'
 import NotFoundError from './pages/errors/not-found-error'
 import MaintenanceError from './pages/errors/maintenance-error'
 import UnauthorisedError from './pages/errors/unauthorised-error.tsx'
+import { redirect } from 'react-router-dom'
+import toast from 'react-hot-toast'
+
+// Helper untuk mendapatkan cookie
+const getCookie = (name: string) => {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))
+  return match ? match[2] : null
+}
+
+// Loader untuk autentikasi
+const requireAuth = async () => {
+  const userCookie = getCookie('user')
+  if (!userCookie) {
+    throw redirect('/sign-in') // Redirect ke halaman sign-in jika tidak ada cookie
+  }
+  return null
+}
+
+const removeAllCookies = () => {
+  document.cookie.split(';').forEach(function (c) {
+    document.cookie = c
+      .replace(/^ +/, '')
+      .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/')
+  })
+
+  toast.success('Logout berhasil')
+}
 
 const router = createBrowserRouter([
-  // Auth routes
   {
     path: '/sign-in',
     lazy: async () => ({
       Component: (await import('./pages/auth/sign-in')).default,
     }),
   },
-  // {
-  //   path: '/sign-in-2',
-  //   lazy: async () => ({
-  //     Component: (await import('./pages/auth/sign-in-2')).default,
-  //   }),
-  // },
-  {
-    path: '/sign-up',
-    lazy: async () => ({
-      Component: (await import('./pages/auth/sign-up')).default,
-    }),
-  },
-  {
-    path: '/forgot-password',
-    lazy: async () => ({
-      Component: (await import('./pages/auth/forgot-password')).default,
-    }),
-  },
-  {
-    path: '/otp',
-    lazy: async () => ({
-      Component: (await import('./pages/auth/otp')).default,
-    }),
-  },
-
-
-  // Main routes
   {
     path: '/',
     lazy: async () => {
@@ -68,13 +67,31 @@ const router = createBrowserRouter([
       {
         path: 'create-users',
         lazy: async () => ({
-          Component: (await import('@/pages/create-users/index.tsx')).default,
+          Component: (await import('@/pages/create-users')).default,
         }),
       },
       {
         path: 'upload-users',
         lazy: async () => ({
-          Component: (await import('@/pages/upload-users/index.tsx')).default,
+          Component: (await import('@/pages/upload-users')).default,
+        }),
+      },
+      {
+        path: 'upload-stok-lokasi-bibitan',
+        lazy: async () => ({
+          Component: (await import('@/pages/upload-stok-lokasi')).default,
+        }),
+      },
+      {
+        path: 'upload-hasil-seleksi-bibitan',
+        lazy: async () => ({
+          Component: (await import('@/pages/upload-hasil-seleksi')).default,
+        }),
+      },
+      {
+        path: 'upload-tbm',
+        lazy: async () => ({
+          Component: (await import('@/pages/upload-stok-lokasi')).default,
         }),
       },
       {
@@ -186,6 +203,16 @@ const router = createBrowserRouter([
     lazy: async () => ({
       Component: (await import('./pages/auth/sign-in')).default,
     }),
+  },
+  {
+    path: '/logout',
+    lazy: async () => ({
+      Component: (await import('./pages/auth/sign-in')).default,
+    }),
+    loader: async () => {
+      removeAllCookies()
+      return redirect('/sign-in')
+    },
   },
   {
     path: '/sign-in-2',

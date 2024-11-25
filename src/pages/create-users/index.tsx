@@ -51,7 +51,7 @@ export default function CreateUser() {
   const [role, setRole] = useState('admin')
 
   const onSubmit = async (data: any) => {
-    const apiUrl = import.meta.env.VITE_API_MASTER;
+    const apiUrl = import.meta.env.VITE_API_MASTER
     try {
       const response = await fetch(`${apiUrl}/users`, {
         method: 'POST',
@@ -183,24 +183,21 @@ export default function CreateUser() {
                   )}
                 />
 
-                {
-                  role !== 'admin' &&
-                  role !== 'viewer' &&
-               (
-                    <FormField
-                      control={form.control}
-                      name='rpc'
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>RPC</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )}
+                {role !== 'admin' && role !== 'viewer' && (
+                  <FormField
+                    control={form.control}
+                    name='rpc'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>RPC</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
 
                 {role !== 'rpc' && role !== 'admin' && role !== 'viewer' && (
                   <FormField
@@ -235,33 +232,33 @@ export default function CreateUser() {
                       )}
                     />
                   )}
-<FormField
-  control={form.control}
-  name='account_type'
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Account Type</FormLabel>
-      <Select
-        onValueChange={field.onChange}
-        defaultValue={'nursery'} 
-      >
-        <FormControl>
-          <SelectTrigger>
-            <SelectValue placeholder='Select account type' />
-          </SelectTrigger>
-        </FormControl>
-        <SelectContent>
-          <SelectItem value='nursery'>Nursery</SelectItem>
-          <SelectItem value='replanting'>Replanting</SelectItem>
-          <SelectItem value='immature'>Immature</SelectItem>
-          <SelectItem value='monica'>Monica</SelectItem>
-        </SelectContent>
-      </Select>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
-
+                <FormField
+                  control={form.control}
+                  name='account_type'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Account Type</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={'nursery'}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder='Select account type' />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value=''>All</SelectItem>
+                          <SelectItem value='nursery'>Nursery</SelectItem>
+                          <SelectItem value='replanting'>Replanting</SelectItem>
+                          <SelectItem value='immature'>Immature</SelectItem>
+                          <SelectItem value='monica'>Monica</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <div className='flex items-center justify-between'>
                   <Button type='submit' className='bg-slate-600'>

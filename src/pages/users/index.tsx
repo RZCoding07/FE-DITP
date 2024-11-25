@@ -13,8 +13,8 @@ import { Loading } from '@/components/ui/loading'
 export default function Tasks() {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null);
-  const apiUrl = import.meta.env.VITE_API_MASTER;
+  const [error, setError] = useState(null)
+  const apiUrl = import.meta.env.VITE_API_MASTER
   const fetchUsers = async () => {
     setLoading(true)
     try {
@@ -46,24 +46,24 @@ export default function Tasks() {
       </Layout.Header>
 
       <Layout.Body>
-      <div className='mb-2 flex items-center justify-between'>
-  <div className='space-y-0.5'>
-    <h2 className='text-2xl font-semibold tracking-tight'>
-      Data Users
-    </h2>
-    <p className='text-muted-foreground'>
-      Here&apos;s a list of users in the system!
-    </p>
-  </div>
-  <div className='ml-auto flex space-x-2'>
-    <Link to='/upload-users'>
-      <Button>Upload User</Button>
-    </Link>
-    <Link to='/create-users'>
-      <Button>Create User</Button>
-    </Link>
-  </div>
-</div>
+        <div className='mb-2 flex items-center justify-between'>
+          <div className='space-y-0.5'>
+            <h2 className='text-2xl font-semibold tracking-tight'>
+              Data Users
+            </h2>
+            <p className='text-muted-foreground'>
+              Here&apos;s a list of users in the system!
+            </p>
+          </div>
+          <div className='ml-auto flex space-x-2'>
+            <Link to='/upload-users'>
+              <Button>Upload User</Button>
+            </Link>
+            <Link to='/create-users'>
+              <Button>Create User</Button>
+            </Link>
+          </div>
+        </div>
 
         <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
           {loading ? (

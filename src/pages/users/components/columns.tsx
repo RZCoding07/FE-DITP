@@ -11,7 +11,6 @@ interface User {
   avatar?: string;
   username: string;
   password: string;
-  role: string;
   rpc?: string;
   kebun?: string;
   afdeling?: string;
@@ -54,14 +53,14 @@ export const columns: ColumnDef<User>[] = [
   },
 
   {
-    accessorKey: 'role',
-    header: ({ column }) => <DataTableColumnHeader column={column} title='Role' />,
-    cell: ({ row }) => <Badge variant='outline'>{row.getValue('role')}</Badge>,
-  },
-  {
     accessorKey: 'rpc',
     header: ({ column }) => <DataTableColumnHeader column={column} title='RPC' />,
     cell: ({ row }) => <span>{row.getValue('rpc')}</span>,
+  },
+  {
+    accessorKey: 'pks',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='PKS' />,
+    cell: ({ row }) => <span>{row.getValue('pks')}</span>,
   },
   {
     accessorKey: 'kebun',
@@ -86,14 +85,9 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => <span>{row.getValue('account_type')}</span>,
   },
   {
-    accessorKey: 'createdAt',
-    header: ({ column }) => <DataTableColumnHeader column={column} title='Created At' />,
-    cell: ({ row }) => <span>{new Date(row.getValue('createdAt')).toLocaleDateString()}</span>,
-  },
-  {
-    accessorKey: 'updatedAt',
-    header: ({ column }) => <DataTableColumnHeader column={column} title='Updated At' />,
-    cell: ({ row }) => <span>{new Date(row.getValue('updatedAt')).toLocaleDateString()}</span>,
+    accessorKey: 'app_type',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='App Type' />,
+    cell: ({ row }) => <span>{row.getValue('app_type')}</span>,
   },
   {
     id: 'actions',

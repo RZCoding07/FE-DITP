@@ -11,6 +11,7 @@ import { FcDoughnutChart } from 'react-icons/fc'
 import axios from 'axios'
 import { useForm, Controller } from 'react-hook-form'
 import { Overview } from './components/overview'
+import cookie from 'js-cookie'
 
 // react select
 import Select from 'react-select'
@@ -71,6 +72,11 @@ import { IconPdf } from '@tabler/icons-react'
 import { StokAwal } from './components/stokAwal'
 
 export default function Dashboard() {
+  const user = cookie.get('user')
+  const fullname = user ? JSON.parse(user).fullname : 'user'
+  const account_type = user ? JSON.parse(user).account_type : 'user'
+  console.log(user)
+
   const [stokAwal, setStokAwal] = useState([])
   const currentYear = new Date().getFullYear()
   const currentMonth = new Date().getMonth() + 1
@@ -124,7 +130,7 @@ export default function Dashboard() {
               Dashboard Nursery
             </h1>
           </div>
-          <h1>Hi, Welcome back 👋</h1>
+          <h1>Hai, {account_type} {fullname}, Selamat Datang di EV4PALMS ! 👋</h1>
 
           <div className='flex items-center space-x-2'>
             <Select

@@ -158,7 +158,7 @@ export default function UploadUser() {
     for (let i = 0; i < 10; i++) {
       const chunk = mappedData.slice(i * chunkSize, (i + 1) * chunkSize)
       uploadPromises.push(
-        fetch(`${apiUrl}/users/upload`, {
+        fetch(`${apiUrl}/replanting/upload`, {
           method: 'POST',
           headers: {
             Accept: 'application/json',
@@ -208,7 +208,7 @@ export default function UploadUser() {
       <Layout.Body>
         <Card>
           <CardHeader>
-            <CardTitle>Upload Users</CardTitle>
+            <CardTitle>Upload Master Data Replanting</CardTitle>
           </CardHeader>
           <CardContent>
             <button
@@ -313,7 +313,7 @@ export default function UploadUser() {
                                  <button
                     className='cursor-pointer rounded-full bg-slate-600 px-5 py-[.675rem] text-center text-sm font-semibold text-white transition duration-300 ease-in-out hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300 disabled:cursor-not-allowed'
                   >
-                    <Link to='/users'>Kembali</Link>
+                    <Link to='/replanting'>Kembali</Link>
                   </button>
               </div>
             </div>
