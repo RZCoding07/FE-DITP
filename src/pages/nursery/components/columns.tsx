@@ -8,22 +8,22 @@ import { DataTableRowActions } from './data-table-row-actions'
 import { SeleksiHasiliBibitan } from '../data/schema-nursery-selection'
 
 export const columns: ColumnDef<SeleksiHasiliBibitan>[] = [
-  {
-    accessorKey: 'id',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='ID' />
-    ),
-    cell: ({ row }) => <div className='w-[80px]'>{row.getValue('id')}</div>,
-    enableSorting: true,
-    enableHiding: false,
-  },
-  {
-    accessorKey: 'user_id',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='User ID' />
-    ),
-    cell: ({ row }) => <div className='truncate'>{row.getValue('user_id')}</div>,
-  },
+  // {
+  //   accessorKey: 'id',
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title='ID' />
+  //   ),
+  //   cell: ({ row }) => <div className='w-[80px]'>{row.getValue('id')}</div>,
+  //   enableSorting: true,
+  //   enableHiding: false,
+  // },
+  // {
+  //   accessorKey: 'user_id',
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title='User ID' />
+  //   ),
+  //   cell: ({ row }) => <div className='truncate'>{row.getValue('user_id')}</div>,
+  // },
   {
     accessorKey: 'reg',
     header: ({ column }) => (

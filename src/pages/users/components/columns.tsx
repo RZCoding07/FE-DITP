@@ -22,13 +22,13 @@ interface User {
 }
 
 export const columns: ColumnDef<User>[] = [
-  {
-    accessorKey: 'id',
-    header: ({ column }) => <DataTableColumnHeader column={column} title='ID' />,
-    cell: ({ row }) => <div className='w-[80px]'>{row.getValue('id')}</div>,
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   accessorKey: 'id',
+  //   header: ({ column }) => <DataTableColumnHeader column={column} title='ID' />,
+  //   cell: ({ row }) => <div className='w-[80px]'>{row.getValue('id')}</div>,
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: 'username',
     header: ({ column }) => <DataTableColumnHeader column={column} title='Username' />,

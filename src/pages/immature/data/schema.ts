@@ -1,13 +1,16 @@
 import { z } from 'zod'
 
-// We're keeping a simple non-relational schema here.
-// IRL, you will have a schema for your data models.
-export const taskSchema = z.object({
+// Adjusted schema based on the `master_norma` table fields
+export const normaSchema = z.object({
   id: z.string(),
-  title: z.string(),
-  status: z.string(),
-  label: z.string(),
-  priority: z.string(),
+  bidang_tanaman: z.string(),
+  jenis_pekerjaan: z.string(),
+  satuan: z.string(),
+  norma_tp: z.number().nullable(),
+  norma_ts: z.number().nullable(),
+  pedoman: z.string().nullable(),
+  createdAt: z.string(),  // ISO 8601 date string
+  updatedAt: z.string(),  // ISO 8601 date string
 })
 
-export type Task = z.infer<typeof taskSchema>
+export type Norma = z.infer<typeof normaSchema>

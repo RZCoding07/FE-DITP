@@ -77,6 +77,30 @@ const router = createBrowserRouter([
         }),
       },
       {
+        path: 'create-uraian-pekerjaan-replanting',
+        lazy: async () => ({
+          Component: (await import('@/pages/create-uraian-pekerjaan-replanting')).default,
+        }),
+      },
+      {
+        path: 'upload-uraian-pekerjaan-replanting',
+        lazy: async () => ({
+          Component: (await import('@/pages/upload-uraian-pekerjaan-replanting')).default,
+        }),
+      },
+      {
+        path: 'create-uraian-pekerjaan-immature',
+        lazy: async () => ({
+          Component: (await import('@/pages/create-uraian-pekerjaan-immature')).default,
+        }),
+      },
+      {
+        path: 'upload-uraian-pekerjaan-immature',
+        lazy: async () => ({
+          Component: (await import('@/pages/upload-uraian-pekerjaan-immature')).default,
+        }),
+      },
+      {
         path: 'upload-stok-lokasi-bibitan',
         lazy: async () => ({
           Component: (await import('@/pages/upload-stok-lokasi')).default,
@@ -104,6 +128,18 @@ const router = createBrowserRouter([
         path: 'dashboard-monica',
         lazy: async () => ({
           Component: (await import('./pages/dashboard-monica')).default,
+        }),
+      },
+      {
+        path: 'upload-norma-mn-bibitan',
+        lazy: async () => ({
+          Component: (await import('./pages/upload-uraian-pekerjaan-mn-bibitan')).default,
+        }),
+      },
+      {
+        path: 'upload-norma-pn-bibitan',
+        lazy: async () => ({
+          Component: (await import('./pages/upload-uraian-pekerjaan-pn-bibitan')).default,
         }),
       },
       {

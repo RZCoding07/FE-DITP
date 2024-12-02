@@ -73,15 +73,15 @@ export default function Tasks() {
               Data Master Uraian Pekerjaan
             </h2>
             <p className='text-muted-foreground'>
-              Here&apos;s a list of Lokasi Bibitan in the system!
+              Here&apos;s a list of all the tasks that need to be done.
             </p>
           </div>
           <div className='ml-auto flex space-x-2'>
-            <Link to='/upload-stok-lokasi-bibitan'>
-              <Button>Tambah Data Uraian Pekerjaan</Button>
+            <Link to='/create-uraian-pekerjaan-replanting'>
+              <Button>Tambah Data Uraian Pekerjaan Replanting</Button>
             </Link>
-            <Link to='/upload-stok-lokasi-bibitan'>
-              <Button>Upload Uraian Pekerjaan</Button>
+            <Link to='/upload-uraian-pekerjaan-replanting'>
+              <Button>Upload Uraian Pekerjaan Replanting</Button>
             </Link>
           </div>
         </div>

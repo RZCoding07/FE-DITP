@@ -15,7 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Box, CircularProgress, Typography } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
 
-export default function UploadUraianPekerjaanReplanting() {
+export default function UploadUser() {
   const [isLoadingUpload, setIsLoadingUpload] = useState(false)
   const [isUploadingDone, setIsUploadingDone] = useState(false)
   const [progressValue, setProgressValue] = useState(0)
@@ -34,11 +34,6 @@ export default function UploadUraianPekerjaanReplanting() {
   const instanceId = useId()
 
   const {
-    register,
-    handleSubmit,
-    control,
-    setValue,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm()
 
@@ -115,9 +110,17 @@ export default function UploadUraianPekerjaanReplanting() {
     if (values.length > 0) {
       const uploadData = async () => {
         const mappedDataPromises = values.map(async (value) => {
+          // bidang tanaman	jenis pekerjaan	uraian pekerjaan	satuan	norma tp	norma ts	pedoman	Jenis TBM
+
           return {
-            uraian_pekerjaan: value[0],
-            jenis_pekerjaan: value[1]
+            bidang_tanaman: value[0],
+            jenis_pekerjaan: value[1],
+            uraian_pekerjaan: value[2],
+            satuan: value[3],
+            norma_tp: value[4],
+            norma_ts: value[5],
+            pedoman: value[6],
+            jenis_tbm: value[7]
           }
         })
 
@@ -134,7 +137,7 @@ export default function UploadUraianPekerjaanReplanting() {
   const handleUploadUsers = async () => {
     setIsLoadingUpload(true)
 
-    const apiUrl = import.meta.env.VITE_API_REPLANTING as string
+    const apiUrl = import.meta.env.VITE_API_IMMATURE as string
     const loginData = cookie.get('token')
     const tokenData = JSON.parse(loginData || '{}')
 
@@ -144,7 +147,7 @@ export default function UploadUraianPekerjaanReplanting() {
     for (let i = 0; i < 10; i++) {
       const chunk = mappedData.slice(i * chunkSize, (i + 1) * chunkSize)
       uploadPromises.push(
-        fetch(`${apiUrl}/uraian-pekerjaan/upload`, {
+        fetch(`${apiUrl}/upload-up-immature`, {
           method: 'POST',
           headers: {
             Accept: 'application/json',
@@ -194,7 +197,7 @@ export default function UploadUraianPekerjaanReplanting() {
       <Layout.Body>
         <Card>
           <CardHeader>
-            <CardTitle>Upload Master Data Replanting</CardTitle>
+            <CardTitle>Upload Master Data Uraian Pekerjaan TBM</CardTitle>
           </CardHeader>
           <CardContent>
             <button

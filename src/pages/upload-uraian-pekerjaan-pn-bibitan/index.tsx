@@ -15,7 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Box, CircularProgress, Typography } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
 
-export default function UploadUraianPekerjaanReplanting() {
+export default function UploadUraianPekerjaanPNBibitan() {
   const [isLoadingUpload, setIsLoadingUpload] = useState(false)
   const [isUploadingDone, setIsUploadingDone] = useState(false)
   const [progressValue, setProgressValue] = useState(0)
@@ -131,7 +131,7 @@ export default function UploadUraianPekerjaanReplanting() {
 
   const router = useNavigate()
 
-  const handleUploadUsers = async () => {
+  const handleUploadUraianPekerjaanPNBibitans = async () => {
     setIsLoadingUpload(true)
 
     const apiUrl = import.meta.env.VITE_API_REPLANTING as string
@@ -194,7 +194,7 @@ export default function UploadUraianPekerjaanReplanting() {
       <Layout.Body>
         <Card>
           <CardHeader>
-            <CardTitle>Upload Master Data Replanting</CardTitle>
+            <CardTitle>Upload Master Data Norma PN Bibitan</CardTitle>
           </CardHeader>
           <CardContent>
             <button
@@ -289,7 +289,7 @@ export default function UploadUraianPekerjaanReplanting() {
 
                 {!isLoadingUpload ? (
                   <button
-                    onClick={() => handleUploadUsers()}
+                    onClick={() => handleUploadUraianPekerjaanPNBibitans()}
                     disabled={!fileName || isLoadingUpload}
                     className='cursor-pointer rounded-full bg-green-600 px-5 py-[.675rem] text-center text-sm font-semibold text-white transition duration-300 ease-in-out hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 disabled:cursor-not-allowed'
                   >
@@ -299,7 +299,7 @@ export default function UploadUraianPekerjaanReplanting() {
                                  <button
                     className='cursor-pointer rounded-full bg-slate-600 px-5 py-[.675rem] text-center text-sm font-semibold text-white transition duration-300 ease-in-out hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300 disabled:cursor-not-allowed'
                   >
-                    <Link to='/replanting'>Kembali</Link>
+                    <Link to='/nursery'>Kembali</Link>
                   </button>
               </div>
             </div>
