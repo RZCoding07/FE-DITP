@@ -63,6 +63,12 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+
+    initialState: {
+      pagination: {
+        pageSize: 12
+      }
+    }
   })
 
   return (

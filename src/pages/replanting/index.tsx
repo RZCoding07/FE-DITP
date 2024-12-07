@@ -11,48 +11,24 @@ import axios from 'axios'
 import { Loading } from '@/components/ui/loading'
 
 export default function Tasks() {
-  const [LokasiBibitan, setLokasiBibitan] = useState([])
-  const [SeleksiBibitan, setSeleksiBibitan] = useState([])
+  const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const apiUrl = import.meta.env.VITE_API_NURSERY
+  const apiUrl = import.meta.env.VITE_API_REPLANTING
 
-
-  const fetchLokasiBibitan = async () => {
-    setLoading(true)
+  const fetchData = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/stok-bibit`)
-      setLokasiBibitan(response.data.payload)
-      console.log(response.data.payload)
-    } catch (error: any) {
-      console.error('Error fetching LokasiBibitan:', error)
+      const response = await axios.get(`${apiUrl}/uraian-pekerjaan`)
+      setData(response.data.payload)
+      setLoading(false)
+    } catch (error:any) {
       setError(error)
-    } finally {
-      setTimeout(() => {
-        setLoading(false)
-      }, 2200)
     }
   }
 
-
-  const fetchSeleksiBibitan = async () => {
-    setLoading(true)
-    try {
-      const response = await axios.get(`${apiUrl}/hasil-seleksi`)
-      setSeleksiBibitan(response.data.payload)
-    } catch (error: any) {
-      console.error('Error fetching SeleksiBibitan:', error)
-      setError(error)
-    } finally {
-      setTimeout(() => {
-        setLoading(false)
-      }, 2200)
-    }
-  }
 
   useEffect(() => {
-    fetchLokasiBibitan()
-    fetchSeleksiBibitan()
+    fetchData()
   }, [])
 
   return (
@@ -85,7 +61,9 @@ export default function Tasks() {
             </Link>
           </div>
         </div>
-
+        <div className='rounded-md border'>
+          <DataTable columns={columns} data={LokasiBibitan} />
+        </div>
 
       </Layout.Body>
     </Layout>

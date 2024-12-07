@@ -143,6 +143,12 @@ const router = createBrowserRouter([
         }),
       },
       {
+        path: 'upload-weekly-bibitan',
+        lazy: async () => ({
+          Component: (await import('./pages/upload-weekly-bibitan')).default,
+        }),
+      },
+      {
         path: 'nursery',
         lazy: async () => ({
           Component: (await import('./pages/nursery')).default,

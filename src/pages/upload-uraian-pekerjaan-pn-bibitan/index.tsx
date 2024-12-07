@@ -16,14 +16,24 @@ import { Box, CircularProgress, Typography } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
 
 export default function UploadUraianPekerjaanPNBibitan() {
+  const user  = cookie.get('user')
+  const fullname = JSON.parse(user || '{}').fullname
+  const userId = JSON.parse(user || '{}').id
+
   const [isLoadingUpload, setIsLoadingUpload] = useState(false)
   const [isUploadingDone, setIsUploadingDone] = useState(false)
   const [progressValue, setProgressValue] = useState(0)
-  // Fullname	Regional	Username	Password	Kebun	PKS	Afd	Account Type	App Type
-
+  
   interface UserData {
-    jenis_pekerjaan: string,
+    user_id: string
+    no_rekg: string
     uraian_pekerjaan: string
+    satuan: string
+    norma_standart: string
+    is_main: number
+    is_category: number
+    is_subcategory: number
+    is_checked: number
   }
 
   const [mappedData, setMappedData] = useState<UserData[]>([])
@@ -116,8 +126,15 @@ export default function UploadUraianPekerjaanPNBibitan() {
       const uploadData = async () => {
         const mappedDataPromises = values.map(async (value) => {
           return {
-            uraian_pekerjaan: value[0],
-            jenis_pekerjaan: value[1]
+            user_id: userId,
+            no_rekg: value[0],
+            uraian_pekerjaan: value[1],
+            satuan: value[2],
+            norma_standart: value[3],
+            is_main: value[4],
+            is_category: value[5],
+            is_subcategory: value[6],
+            is_checked: 0,  
           }
         })
 
@@ -134,7 +151,7 @@ export default function UploadUraianPekerjaanPNBibitan() {
   const handleUploadUraianPekerjaanPNBibitans = async () => {
     setIsLoadingUpload(true)
 
-    const apiUrl = import.meta.env.VITE_API_REPLANTING as string
+    const apiUrl = import.meta.env.VITE_API_NURSERY as string
     const loginData = cookie.get('token')
     const tokenData = JSON.parse(loginData || '{}')
 
@@ -144,7 +161,7 @@ export default function UploadUraianPekerjaanPNBibitan() {
     for (let i = 0; i < 10; i++) {
       const chunk = mappedData.slice(i * chunkSize, (i + 1) * chunkSize)
       uploadPromises.push(
-        fetch(`${apiUrl}/uraian-pekerjaan/upload`, {
+        fetch(`${apiUrl}/norma-pn/upload`, {
           method: 'POST',
           headers: {
             Accept: 'application/json',

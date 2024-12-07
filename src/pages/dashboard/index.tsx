@@ -96,7 +96,26 @@ export default function Dashboard() {
     { value: '12', label: 'Desember' },
   ] 
 
+  const tahun = [
+    { value: '2021', label: '2021' },
+    { value: '2022', label: '2022' },
+    { value: '2023', label: '2023' },
+    { value: '2024', label: '2024' },
+    { value: '2025', label: '2025' },
+    { value: '2026', label: '2026' },
+    { value: '2027', label: '2027' },
+    { value: '2028', label: '2028' },
+    { value: '2029', label: '2029' },
+    { value: '2030', label: '2030' },
+    { value: '2031', label: '2031' },
+    { value: '2032', label: '2032' },
+    { value: '2033', label: '2033' },
+    { value: '2034', label: '2034' },
+    { value: '2035', label: '2035' }
+  ]
   const defaultValue = bulan.find((item) => item.value === currentMonth.toString());
+
+  const defaultValueTahun = tahun.find((item) => item.value === currentYear.toString());
 
   const fetchStokAwal = async (tahun: number, bulan: number) => {
     try {
@@ -130,14 +149,21 @@ export default function Dashboard() {
               Dashboard Nursery
             </h1>
           </div>
-          <h1>Hai, {account_type} {fullname}, Selamat Datang di EV4PALMS ! 👋</h1>
+          <h1>Hai, {fullname}, <br/> Selamat Datang di EV4PALMS ! 👋</h1>
 
           <div className='flex items-center space-x-2'>
+          <Select
+              styles={customStyles}
+              options={tahun}
+              defaultValue={defaultValueTahun}
+            />
+            
             <Select
               styles={customStyles}
               options={bulan}
               defaultValue={defaultValue}
             />
+
             <Button className='flex items-center rounded-full'>
               Download
               <IconPdf size={20} className='ml-2 bg-red-500 text-white' />
