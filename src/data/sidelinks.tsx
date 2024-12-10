@@ -55,6 +55,16 @@ export const sidelinks: SideLink[] = [
     href: '/foresight-ai',
     icon: <img width="20" height="20" src="https://img.icons8.com/3d-fluency/94/goprod.png" alt="goprod"/>
   },
+  {
+    title: 'Investasi Awal',
+    href: '/investasi-awal',
+    icon: <img width="20" height="20" src="https://img.icons8.com/fluency/20/money-circulation.png" alt="money-circulation"/>
+  },
+  {
+    title: 'Sumber IPS',
+    href: '/sumber-ips',
+    icon: <img width="20" height="20" src="https://img.icons8.com/color/20/growing-money--v2.png" alt="growing-money--v2"/>
+  },
 
   {
     title: 'Settings',

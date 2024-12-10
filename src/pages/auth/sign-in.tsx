@@ -78,7 +78,7 @@ export default function SignIn() {
                   className={`visible flex w-auto flex-col justify-end truncate`}
                 >
                   <span className='ml-2 text-xl font-semibold'>EV4PALMS</span>
-                  <span className='text-md ml-2'>Investasi Tanaman</span>
+                  <span className='text-md ml-2'>Operasional PalmCo</span>
                 </div>
               </div>
               <div className='flex flex-col space-y-2 text-left'>
@@ -89,7 +89,7 @@ export default function SignIn() {
               </div>
               <UserAuthForm />
               <p className='px-8 text-center text-sm text-muted-foreground'>
-                &copy; 2024 Investasi Tanaman. All rights reserved. .
+                &copy; 2024 Palm CO. All rights reserved. .
               </p>
             </div>
           </div>

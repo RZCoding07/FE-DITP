@@ -52,7 +52,7 @@ export default function Sidebar({
               className={`flex flex-col justify-end truncate ${isCollapsed ? 'invisible w-0' : 'visible w-auto'}`}
             >
               <span className='ml-2 font-medium'>EV4PALMS</span>
-              <span className='ml-2 text-xs'>Investasi Tanaman</span>
+              <span className='ml-2 text-xs'>Operasional PalmCo</span>
             </div>
           </div>
 

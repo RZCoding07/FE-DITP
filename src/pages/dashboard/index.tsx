@@ -147,9 +147,10 @@ export default function Dashboard() {
             <FcDoughnutChart size={40} />
             <h1 className='text-2xl font-bold tracking-tight'>
               Dashboard Nursery
+
             </h1>
           </div>
-          <h1>Hai, {fullname}, <br/> Selamat Datang di EV4PALMS ! 👋</h1>
+          {/* <h1>Hai, {fullname}, <br/> Selamat Datang di EV4PALMS ! 👋</h1> */}
 
           <div className='flex items-center space-x-2'>
           <Select
@@ -325,7 +326,7 @@ const topNav = [
   },
   {
     title: 'Monica',
-    href: '/monica3',
+    href: '/dashboard-monica',
     isActive: false,
   },
 ]
