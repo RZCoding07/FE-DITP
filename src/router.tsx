@@ -137,12 +137,6 @@ const router = createBrowserRouter([
         }),
       },
       {
-        path: 'upload-sumber-ips',
-        lazy: async () => ({
-          Component: (await import('@/pages/upload-sumber-ips')).default,
-        }),
-      },
-      {
         path: 'upload-sppbj-monica',
         lazy: async () => ({
           Component: (await import('@/pages/upload-m-sppbj-monica')).default,
