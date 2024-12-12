@@ -27,9 +27,13 @@ const removeAllCookies = () => {
       .replace(/^ +/, '')
       .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/')
   })
-
-  toast.success('Logout berhasil')
 }
+
+requireAuth().catch((error) => {
+  if (error instanceof Error) {
+    toast.error(error.message)
+  }
+})
 
 const router = createBrowserRouter([
   {
@@ -44,6 +48,7 @@ const router = createBrowserRouter([
       const AppShell = await import('./components/app-shell')
       return { Component: AppShell.default }
     },
+    loader: requireAuth,
     errorElement: <GeneralError />,
     children: [
       {

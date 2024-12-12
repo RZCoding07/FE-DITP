@@ -62,7 +62,7 @@ export default function Tasks() {
           </div>
         </div>
         <div className='rounded-md border'>
-          <DataTable columns={columns} data={LokasiBibitan} />
+          {/* <DataTable columns={columns} data={LokasiBibitan} /> */}
         </div>
 
       </Layout.Body>
