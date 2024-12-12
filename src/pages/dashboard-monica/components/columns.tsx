@@ -1,121 +1,98 @@
 import { ColumnDef } from '@tanstack/react-table'
-
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 
-import { labels, priorities, statuses } from '../data/data'
-import { Task } from '../data/schema'
+interface User {
+  id: string;
+  email?: string;
+  fullname?: string;
+  avatar?: string;
+  username: string;
+  password: string;
+  rpc?: string;
+  kebun?: string;
+  afdeling?: string;
+  refreshToken?: string;
+  lastLogin?: string;
+  account_type?: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
-export const columns: ColumnDef<Task>[] = [
+export const columns: ColumnDef<User>[] = [
+  // {
+  //   accessorKey: 'id',
+  //   header: ({ column }) => <DataTableColumnHeader column={column} title='ID' />,
+  //   cell: ({ row }) => <div className='w-[80px]'>{row.getValue('id')}</div>,
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label='Select all'
-        className='translate-y-[2px]'
-      />
-    ),
+    accessorKey: 'username',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Username' />,
+    cell: ({ row }) => <span>{row.getValue('username')}</span>,
+  },
+  {
+    accessorKey: 'email',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Email' />,
+    cell: ({ row }) => <span>{row.getValue('email')}</span>,
+  },
+  {
+    accessorKey: 'fullname',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Full Name' />,
+    cell: ({ row }) => <span>{row.getValue('fullname')}</span>,
+  },
+  {
+    accessorKey: 'avatar',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Avatar' />,
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label='Select row'
-        className='translate-y-[2px]'
-      />
+      <img src={ '/' +  row.getValue('avatar') || 'default.png'} alt='Avatar' className='w-10 h-10 rounded-full' />
     ),
-    enableSorting: false,
-    enableHiding: false,
+  },
+
+  {
+    accessorKey: 'rpc',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='RPC' />,
+    cell: ({ row }) => <span>{row.getValue('rpc')}</span>,
   },
   {
-    accessorKey: 'id',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Task' />
-    ),
-    cell: ({ row }) => <div className='w-[80px]'>{row.getValue('id')}</div>,
-    enableSorting: false,
-    enableHiding: false,
+    accessorKey: 'pks',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='PKS' />,
+    cell: ({ row }) => <span>{row.getValue('pks')}</span>,
   },
   {
-    accessorKey: 'title',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Title' />
-    ),
-    cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label)
-
-      return (
-        <div className='flex space-x-2'>
-          {label && <Badge variant='outline'>{label.label}</Badge>}
-          <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {row.getValue('title')}
-          </span>
-        </div>
-      )
-    },
+    accessorKey: 'kebun',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Kebun' />,
+    cell: ({ row }) => <span>{row.getValue('kebun')}</span>,
   },
   {
-    accessorKey: 'status',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Status' />
-    ),
-    cell: ({ row }) => {
-      const status = statuses.find(
-        (status) => status.value === row.getValue('status')
-      )
-
-      if (!status) {
-        return null
-      }
-
-      return (
-        <div className='flex w-[100px] items-center'>
-          {status.icon && (
-            <status.icon className='mr-2 h-4 w-4 text-muted-foreground' />
-          )}
-          <span>{status.label}</span>
-        </div>
-      )
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
-    },
+    accessorKey: 'afdeling',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Afdeling' />,
+    cell: ({ row }) => <span>{row.getValue('afdeling')}</span>,
   },
   {
-    accessorKey: 'priority',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Priority' />
+    accessorKey: 'lastLogin',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Last Login' />,
+    cell: ({ row }) => (
+      <span>{row.getValue('lastLogin') ? new Date(row.getValue('lastLogin')).toLocaleString() : '-'}</span>
     ),
-    cell: ({ row }) => {
-      const priority = priorities.find(
-        (priority) => priority.value === row.getValue('priority')
-      )
-
-      if (!priority) {
-        return null
-      }
-
-      return (
-        <div className='flex items-center'>
-          {priority.icon && (
-            <priority.icon className='mr-2 h-4 w-4 text-muted-foreground' />
-          )}
-          <span>{priority.label}</span>
-        </div>
-      )
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
-    },
+  },
+  {
+    accessorKey: 'account_type',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Account Type' />,
+    cell: ({ row }) => <span>{row.getValue('account_type')}</span>,
+  },
+  {
+    accessorKey: 'app_type',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='App Type' />,
+    cell: ({ row }) => <span>{row.getValue('app_type')}</span>,
   },
   {
     id: 'actions',
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row }) => (
+      <DataTableRowActions row={row} />
+    ),
   },
-]
+];

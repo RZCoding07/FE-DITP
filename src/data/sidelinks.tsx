@@ -65,6 +65,11 @@ export const sidelinks: SideLink[] = [
     href: '/sumber-ips',
     icon: <img width="20" height="20" src="https://img.icons8.com/color/20/growing-money--v2.png" alt="growing-money--v2"/>
   },
+  {
+    title: 'Monitoring SPPBJ',
+    href: '/monitoring-sppbj',
+    icon: <img width="20" height="20" src="https://img.icons8.com/arcade/20/system-task.png" alt="system-task"/>
+  },
 
   {
     title: 'Settings',

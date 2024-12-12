@@ -19,6 +19,7 @@ import {
 // react select
 import Select from 'react-select'
 import { FcBarChart } from 'react-icons/fc'
+import cookie from 'js-cookie'
 // custom styles for react select component with tsx
 const customStyles = {
   theme: (theme: any) => ({
@@ -73,6 +74,10 @@ import { IconPdf } from '@tabler/icons-react'
 import { StokAwal } from './components/stokAwal'
 
 export default function Dashboard() {
+  const user = cookie.get('user')
+  const fullname = user ? JSON.parse(user).fullname : 'user'
+  const account_type = user ? JSON.parse(user).account_type : 'user'
+  
   const bulanName = [
     'Januari',
     'Februari',
@@ -154,7 +159,7 @@ export default function Dashboard() {
               Dashboard Replanting
             </h1>
           </div>
-          <h1>Hi, Welcome back RZCoding👋</h1>
+          <h1>Hi, Welcome back {fullname}👋</h1>
 
           <div className='flex items-center space-x-2'>
             <Select
@@ -692,10 +697,9 @@ const topNav = [
     href: '/dashboard-immature',
     isActive: false,
   },
+  {
+    title: 'Monica',
+    href: '/dashboard-monica',
+    isActive: false,
+  },
 ]
-//   {
-//     title: 'Monica',
-//     href: '/monica',
-//     isActive: false,
-//   },
-// ]

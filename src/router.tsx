@@ -71,6 +71,18 @@ const router = createBrowserRouter([
         }),
       },
       {
+        path: 'investasi-awal',
+        lazy: async () => ({
+          Component: (await import('@/pages/invsestasi-awal-monica')).default,
+        }),
+      },
+      {
+        path: 'sumber-ips',
+        lazy: async () => ({
+          Component: (await import('@/pages/sumber-ips-monica')).default,
+        }),
+      },
+      {
         path: 'create-users',
         lazy: async () => ({
           Component: (await import('@/pages/create-users')).default,
@@ -80,6 +92,12 @@ const router = createBrowserRouter([
         path: 'upload-users',
         lazy: async () => ({
           Component: (await import('@/pages/upload-users')).default,
+        }),
+      },
+      {
+        path: 'upload-awal',
+        lazy: async () => ({
+          Component: (await import('@/pages/upload-awal-monica')).default,
         }),
       },
       {
@@ -110,6 +128,24 @@ const router = createBrowserRouter([
         path: 'upload-stok-lokasi-bibitan',
         lazy: async () => ({
           Component: (await import('@/pages/upload-stok-lokasi')).default,
+        }),
+      },
+      {
+        path: 'monitoring-sppbj',
+        lazy: async () => ({
+          Component: (await import('@/pages/m-sppbj-monica')).default,
+        }),
+      },
+      {
+        path: 'upload-sumber-ips',
+        lazy: async () => ({
+          Component: (await import('@/pages/upload-sumber-ips')).default,
+        }),
+      },
+      {
+        path: 'upload-sppbj-monica',
+        lazy: async () => ({
+          Component: (await import('@/pages/upload-m-sppbj-monica')).default,
         }),
       },
       {
