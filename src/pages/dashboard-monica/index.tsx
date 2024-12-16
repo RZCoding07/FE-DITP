@@ -6,6 +6,7 @@ import { UserNav } from '@/components/user-nav'
 import { FcDoughnutChart } from 'react-icons/fc'
 import { TopNav } from '@/components/top-nav'
 import { columns } from './components/columns.tsx'
+import { columns as colRekap } from './components/col-rekap.tsx'
 import { Loading } from '@/components/ui/loading.tsx'
 import {
   Table,
@@ -31,6 +32,7 @@ export default function Tasks() {
   const [countNinety, setCountNinety] = useState(0)
   const [countHundred, setCountHundred] = useState(0)
   const [data, setData] = useState([])
+  const [dataRekap, setDataRekap] = useState([])
   const [progressmasters, setProgressmasters] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -101,8 +103,38 @@ export default function Tasks() {
     }
   }
 
+
+  const fetchAllRekap = async () => {
+    setLoading(true)
+    try {
+      const response = await fetch(`${apiUrl}/monica/getAllRekap`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'GET'
+      })
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`)
+        setLoading(false)
+      }
+
+      const data = await response.json()
+
+      if (data) {
+        setDataRekap(data)
+        setTimeout(() => {
+          setLoading(false)
+        }, 1300)
+      }
+    } catch (error: any) {
+      console.error('Failed to fetch progress:', error.message)
+    }
+  }
+
   useEffect(() => {
     fetchCountProgreses()
+    fetchAllRekap()
     if (progressmasters !== '') {
       fetchAllProgress()
     }
@@ -426,21 +458,45 @@ export default function Tasks() {
         </div>
       </Layout.Body>
       <Layout.Body>
-      <div className="-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0">
-  {progressmasters !== '' ? (
-    loading ? (
-      // Membuat elemen di tengah secara vertikal dan horizontal
-      <div className="flex h-full items-center justify-center">
-        <Loading />
-      </div>
-    ) : error ? (
-      <p>Error fetching lokasi bibitan</p>
-    ) : (
-      <DataTable data={data} columns={columns} />
-    )
-  ) : null}
-</div>
+          <h2 className='font-semibold text-2xl'>Rekapitulasi Progress Pekerjaan Investasi</h2>
+          <div className='flexh-full items-center justify-center w-full mt-5'>
 
+         { loading ? 
+            <div className='flex h-full items-center justify-center'>
+              <Loading />
+            </div>
+
+            : error ?
+            <p>Error fetching data</p>
+            : ( 
+              <DataTable data={dataRekap} columns={colRekap} />
+            ) 
+          } 
+          </div>
+      </Layout.Body>
+      <Layout.Body>
+
+
+          {progressmasters !== '' ? (
+            
+            loading ? (
+              
+              // Membuat elemen di tengah secara vertikal dan horizontal
+              <div className='flex h-full items-center justify-center mt-5'>
+                <Loading />
+              </div>
+            ) : error ? (
+              <p>Error fetching data</p>
+            ) : (
+              <>
+                            <h2 className='font-semibold text-2xl'>Progress Pekerjaan Di <span className='capitalize'> {progressmasters}</span>
+        </h2>
+              <DataTable data={data} columns={columns} />
+              </>
+
+
+            )
+          ) : null}
       </Layout.Body>
     </Layout>
   )
