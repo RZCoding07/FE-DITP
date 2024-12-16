@@ -25,15 +25,23 @@ export default function UploadUser() {
   const user = JSON.parse(cookie.get('user') || '{}')
 
   interface UploadData {
-    no_ref: string
     no_pk: string
-    no_sppbj: string
-    title: string
-    vendor: string
-    value: string
-    tgl_approval_sppbj: string
+    judul_pk: string
+    dibuat_oleh: string
+    fungsi_teknis: string
+    total_nilai: string
+    tgl_create_pk: string
+    tgl_submit_pk_ke_hps: string
+    nilai_hps: string
+    nama_panitia_hps: string
+    tgl_submit_ke_pengadaan: string
+    panitia_pelaksana_pengadaan: string
     status: string
-    panitia_pengadaan: string
+    pengadaan_bersama: string
+    sumber_dana: string
+    sub_investasi: string
+    peruntukan: string
+    tahun_anggaran: string
     user_id: string
   }
 
@@ -138,15 +146,23 @@ export default function UploadUser() {
   useEffect(() => {
     if (values.length > 0) {
       const mapped = values.map((value) => ({
-        no_ref: value[0],
-        no_pk: value[1],
-        no_sppbj: value[2],
-        title: value[3],
-        vendor: value[4],
-        value: value[5],
-        tgl_approval_sppbj: value[6],
-        status: value[7],
-        panitia_pengadaan: value[8],
+        no_pk: value[0],
+        judul_pk: value[1],
+        dibuat_oleh: value[2],
+        fungsi_teknis: value[3],
+        total_nilai: value[4],
+        tgl_create_pk: value[5],
+        tgl_submit_pk_ke_hps: value[6],
+        nilai_hps: value[7],
+        nama_panitia_hps: value[8],
+        tgl_submit_ke_pengadaan: value[9],
+        panitia_pelaksana_pengadaan: value[10],
+        status: value[11],
+        pengadaan_bersama: value[12],
+        sumber_dana: value[13],
+        sub_investasi: value[14],
+        peruntukan: value[15],
+        tahun_anggaran: value[16],
         user_id: user.id,
       }))
 
@@ -170,7 +186,7 @@ export default function UploadUser() {
     for (let i = 0; i < 10; i++) {
       const chunk = mappedData.slice(i * chunkSize, (i + 1) * chunkSize)
       uploadPromises.push(
-        fetch(`${apiUrl}/monica/uploadMSPPBJ`, {
+        fetch(`${apiUrl}/monica/uploadPaketPekerjaan`, {
           method: 'POST',
           headers: {
             Accept: 'application/json',
@@ -222,11 +238,11 @@ export default function UploadUser() {
       <Layout.Body>
         <Card>
           <CardHeader>
-            <CardTitle>Upload Monitoring SPPBJ</CardTitle>
+            <CardTitle>Upload Paket Pekerjaan</CardTitle>
             <div className='flex items-center justify-between'>
               <p className='text-muted-foreground'>
-                Upload file .csv atau .xlsx untuk menambahkan data Monitoring
-                SPPBJ
+                Upload file .csv atau .xlsx untuk menambahkan data Paket
+                Pekerjaan
               </p>
             </div>
             <div className='flex items-center justify-between'>

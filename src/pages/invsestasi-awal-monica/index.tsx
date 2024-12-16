@@ -9,18 +9,23 @@ import { Button } from '@/components/custom/button'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { Loading } from '@/components/ui/loading'
+import cookies from 'js-cookie'
 
 export default function Awal() {
   const [Awal, setAwal] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const apiUrl = import.meta.env.VITE_API_MONICA
+
+  const user = cookies.get('user')
+
   const fetchInvesAwal = async () => {
     setLoading(true)
     const tahun = new Date().getFullYear()
     try {
       const response = await axios.post(`${apiUrl}/monica/getAllRecordsAwal`, {
-        tahun: 2025
+        tahun: 2025,
+        user: user 
       })
       setAwal(response.data)
     } catch (error: any) {
@@ -61,9 +66,6 @@ export default function Awal() {
           <div className='ml-auto flex space-x-2'>
             <Link to='/upload-awal'>
               <Button>Upload Data</Button>
-            </Link>
-            <Link to='/create-awal'>
-              <Button>Create Data</Button>
             </Link>
           </div>
         </div>

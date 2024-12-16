@@ -4,7 +4,7 @@ import { Layout } from './custom/layout'
 import { Button } from './custom/button'
 import Nav from './nav'
 import { cn } from '@/lib/utils'
-import { sidelinks } from '@/data/sidelinks'
+import { getSideLinks } from '@/data/sidelinks'
 import cookie from 'js-cookie'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLElement> {
@@ -22,7 +22,7 @@ export default function Sidebar({
   const user = cookie.get('user')
   const fullname = user ? JSON.parse(user).fullname : 'user'
   const account_type = user ? JSON.parse(user).account_type : 'user'
-  console.log(user)
+  const app_type = user ? JSON.parse(user).app_type : ''
 
 
   /* Make body not scrollable when navBar is opened */
@@ -83,7 +83,7 @@ export default function Sidebar({
           className={`z-40 h-full flex-1 overflow-auto ${navOpened ? 'max-h-screen' : 'max-h-0 py-0 md:max-h-screen md:py-2'}`}
           closeNav={() => setNavOpened(false)}
           isCollapsed={isCollapsed}
-          links={sidelinks}
+          links={getSideLinks(app_type)}  
         />
 
         {/* Scrollbar width toggle button */}

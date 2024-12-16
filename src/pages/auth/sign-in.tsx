@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AuthProvider } from '../../context/AuthContext' // Adjust the path as needed
 import { UserAuthForm } from './components/user-auth-form'
+import { Link } from 'react-router-dom'
 
 export default function SignIn() {
   const [formattedDate, setFormattedDate] = useState('')
@@ -88,6 +89,9 @@ export default function SignIn() {
                 </p>
               </div>
               <UserAuthForm />
+              <p className='px-8 text-center text-sm text-muted-foreground'>
+                Ingin mengembangkan aplikasi ini?{' '} <Link to='/sign-in-dev' className='text-green-700 font-semibold py-3' >Login Developer Mode </Link>
+              </p>
               <p className='px-8 text-center text-sm text-muted-foreground'>
                 &copy; 2024 Palm CO. All rights reserved. .
               </p>

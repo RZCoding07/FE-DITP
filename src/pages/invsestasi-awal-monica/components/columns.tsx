@@ -291,4 +291,110 @@ export const columns: ColumnDef<InvesAwal>[] = [
     cell: ({ row }) => <span>{row.getValue('tujuanPengajuanInvestasi')}</span>,
   },
 
+  {
+    accessorKey: 'kodeWbsSap',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Kode WBS SAP' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('kodeWbsSap')}</span>,
+  },
+  {
+    accessorKey: 'costCenterSap',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Cost Center SAP' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('costCenterSap')}</span>,
+  },
+  {
+    accessorKey: 'luasArealTanam',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Luas Areal Tanam' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('luasArealTanam')}</span>,
+  },
+  {
+    accessorKey: 'jarakTanam',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Jarak Tanam' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('jarakTanam')}</span>,
+  },
+  {
+    accessorKey: 'tanamanKonversiEks',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Tanaman Konversi Eks' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('tanamanKonversiEks')}</span>,
+  },
+  {
+    accessorKey: 'namaKlonVarietas',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Nama Klon Varietas' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('namaKlonVarietas')}</span>,
+  },
+  {
+    accessorKey: 'tahunTanam',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Tahun Tanam' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('tahunTanam')}</span>,
+  },
+  {
+    accessorKey: 'usiaTanaman',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Usia Tanaman' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('usiaTanaman')}</span>,
+  },
+  {
+    accessorKey: 'populasiTanamanPelindung',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Populasi Tanaman Pelindung' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('populasiTanamanPelindung')}</span>,
+  },
+  {
+    accessorKey: 'stasiunPabrik',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Stasiun Pabrik' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('stasiunPabrik')}</span>,
+  },
+  {
+    accessorKey: 'statusUsulan',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Status Usulan' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('statusUsulan')}</span>,
+  },
+  {
+    accessorKey: 'regional',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Regional' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('regional')}</span>,
+  },
+  {
+    accessorKey: 'divisiTeknisSubHolding',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Divisi Teknis Sub Holding' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('divisiTeknisSubHolding')}</span>,
+  },
+  {
+    accessorKey: 'divisiTeknisHolding',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Divisi Teknis Holding' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('divisiTeknisHolding')}</span>,
+  },
+  {
+    accessorKey: 'user_id',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='User ID' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('user_id')}</span>,
+  }
+
 ]

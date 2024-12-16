@@ -84,7 +84,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       toast.success("Login Successful!");
       cookie.set("user", JSON.stringify(data));
       setTimeout(() => {
-        navigate("/dashboard-nursery");
+        window.location.href = "/";
       }, 1000);
       console.log(data);
     } catch (error) {
