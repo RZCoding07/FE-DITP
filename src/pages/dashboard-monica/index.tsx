@@ -92,7 +92,9 @@ export default function Tasks() {
 
       if (data) {
         setData(data)
+        setTimeout(() => {
           setLoading(false)
+        }, 1300)
       }
     } catch (error: any) {
       console.error('Failed to fetch progress:', error.message)
@@ -103,7 +105,6 @@ export default function Tasks() {
     fetchCountProgreses()
     if (progressmasters !== '') {
       fetchAllProgress()
-      setLoading(false)
     }
   }, [progressmasters])
 
