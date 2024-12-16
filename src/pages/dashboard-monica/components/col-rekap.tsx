@@ -13,6 +13,13 @@ interface Peogress {
   terbit_sppbj: string
 }
 
+const formatRupiah = (value: number) => {
+    if (!value) return 'Rp. 0' // Jika nilai kosong atau null
+    const numericValue = typeof value === 'number' ? value : parseFloat(value)
+    if (isNaN(numericValue)) return 'Rp. 0' // Jika nilai bukan angka
+    return `Rp. ${numericValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`
+  }
+
 export const columns: ColumnDef<Peogress>[] = [
   {
     id: 'number',
@@ -55,6 +62,13 @@ export const columns: ColumnDef<Peogress>[] = [
       <DataTableColumnHeader column={column} title='Terbit SPPBJ' />
     ),
     cell: ({ row }) => <div>{row.getValue('terbit_sppbj')} PAKET</div>,
+  },
+  {
+    accessorKey: 'value_sppbj',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Terbit SPPBJ' />
+    ),
+    cell: ({ row }) => <div>{formatRupiah(parseFloat(row.getValue('value_sppbj')))}</div>,
   },
   {
     id: 'actions',
