@@ -5,7 +5,8 @@ import ThemeSwitch from '@/components/theme-switch'
 import { UserNav } from '@/components/user-nav'
 import { FcDoughnutChart } from 'react-icons/fc'
 import { TopNav } from '@/components/top-nav'
-
+import { columns } from './components/columns.tsx'
+import { Loading } from '@/components/ui/loading.tsx'
 import {
   Table,
   TableBody,
@@ -17,6 +18,7 @@ import {
 } from '@/components/ui/table'
 
 import cookie from 'js-cookie'
+import { DataTable } from './components/data-table.tsx'
 
 const user = cookie.get('user')
 const account_type = user ? JSON.parse(user).account_type : ''
@@ -30,6 +32,8 @@ export default function Tasks() {
   const [countHundred, setCountHundred] = useState(0)
   const [data, setData] = useState([])
   const [progressmasters, setProgressmasters] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   const [p_pks, setP_pks] = useState(0)
   const [p_tekpol, setP_tekpol] = useState(0)
@@ -66,9 +70,43 @@ export default function Tasks() {
     }
   }
 
+  const fetchAllProgress = async () => {
+    setLoading(true)
+    try {
+      const response = await fetch(`${apiUrl}/monica/getAllRecordsProgress`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          type: progressmasters,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`)
+        setLoading(false)
+      }
+
+      const data = await response.json()
+
+      if (data) {
+        setData(data)
+        setTimeout(() => {
+          setLoading(false)
+        }, 1300)
+      }
+    } catch (error: any) {
+      console.error('Failed to fetch progress:', error.message)
+    }
+  }
+
   useEffect(() => {
     fetchCountProgreses()
-  }, [])
+    if (progressmasters !== '') {
+      fetchAllProgress()
+    }
+  }, [progressmasters])
 
   return (
     <Layout>
@@ -254,81 +292,155 @@ export default function Tasks() {
               setProgressmasters('pks')
             }}
           >
-            <div className='flex items-center justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
-              <div>
-                <h4 className='mb-2 text-lg font-semibold'>
-                  PROGRESS <br />
-                  0%
-                </h4>
-                <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
-                  {countZero}{' '}
-                  <span className='text-lg text-green-500'>PAKET</span>
-                </h2>
+            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
+              <div className='flex items-center justify-between'>
+                <div>
+                  <h4 className='mb-2 text-start text-lg font-semibold'>
+                    PROGRESS <br />
+                    0%
+                  </h4>
+                  <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
+                    {countZero}{' '}
+                    <span className='text-lg text-green-500'>PAKET</span>
+                  </h2>
+                </div>
+                <img src='/progress.png' alt='PKS' className='w-16' />
               </div>
-              <img src='/progress.png' alt='PKS' className='w-16' />
+              <div className='text-end'>
+                <span className='cursor-pointer text-sm font-semibold text-green-500'>
+                  LIHAT DETAIL →
+                </span>
+              </div>
             </div>
           </button>
-          <button>
-            <div className='flex items-center justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
-              <div>
-                <h4 className='mb-2 text-lg font-semibold'>
-                  PROGRESS <br />
-                  1% - 40%
-                </h4>
-                <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
-                  {countFourty}{' '}
-                  <span className='text-lg text-green-500'>PAKET</span>
-                </h2>
+          <button
+            className='text-end'
+            onClick={() => {
+              setProgressmasters('p_0')
+            }}
+          >
+            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
+              <div className='flex items-center justify-between'>
+                <div>
+                  <h4 className='mb-2 text-start text-lg font-semibold'>
+                    PROGRESS <br />
+                    1% - 40%
+                  </h4>
+                  <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
+                    {countFourty}{' '}
+                    <span className='text-lg text-green-500'>PAKET</span>
+                  </h2>
+                </div>
+                <img src='/progress.png' alt='PKS' className='w-16' />
               </div>
-              <img src='/progress.png' alt='PKS' className='w-16' />
+              <div className='text-end'>
+                <span className='cursor-pointer text-sm font-semibold text-green-500'>
+                  LIHAT DETAIL →
+                </span>
+              </div>
             </div>
           </button>
-          <button>
-            <div className='flex items-center justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
-              <div>
-                <h4 className='mb-2 text-lg font-semibold'>
-                  PROGRESS <br />
-                  41% - 60%
-                </h4>
-                <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
-                  {countSixty}{' '}
-                  <span className='text-lg text-green-500'>PAKET</span>
-                </h2>
+
+          <button
+            className='text-start'
+            onClick={() => {
+              setProgressmasters('hps')
+            }}
+          >
+            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
+              <div className='flex items-center justify-between'>
+                <div>
+                  <h4 className='mb-2 text-start text-lg font-semibold'>
+                    PROGRESS <br />
+                    41% - 60%
+                  </h4>
+                  <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
+                    {countSixty}{' '}
+                    <span className='text-lg text-green-500'>PAKET</span>
+                  </h2>
+                </div>
+                <img src='/progress.png' alt='PKS' className='w-16' />
               </div>
-              <img src='/progress.png' alt='PKS' className='w-16' />
+              <div className='text-end'>
+                <span className='cursor-pointer text-sm font-semibold text-green-500'>
+                  LIHAT DETAIL →
+                </span>
+              </div>
             </div>
           </button>
-          <button>
-            <div className='flex items-center justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
-              <div>
-                <h4 className='mb-2 text-lg font-semibold'>
-                  PROGRESS <br />
-                  61% - 99%
-                </h4>
-                <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
-                  {countNinety}{' '}
-                  <span className='text-lg text-green-500'>PAKET</span>
-                </h2>
+          <button
+            className='text-start'
+            onClick={() => {
+              setProgressmasters('pengadaan')
+            }}
+          >
+            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
+              <div className='flex items-center justify-between'>
+                <div>
+                  <h4 className='mb-2 text-start text-lg font-semibold'>
+                    PROGRESS <br />
+                    61% - 99%
+                  </h4>
+                  <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
+                    {countNinety}{' '}
+                    <span className='text-lg text-green-500'>PAKET</span>
+                  </h2>
+                </div>
+                <img src='/progress.png' alt='PKS' className='w-16' />
               </div>
-              <img src='/progress.png' alt='PKS' className='w-16' />
+              <div className='text-end'>
+                <span className='cursor-pointer text-sm font-semibold text-green-500'>
+                  LIHAT DETAIL →
+                </span>
+              </div>
             </div>
           </button>
-          <button>
-            <div className='flex items-center justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
-              <div>
-                <h4 className='mb-2 text-lg font-semibold'>
-                  PEKERJAAN SELESAI <br />
-                  100%
-                </h4>
-                <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
-                  {countHundred}{' '}
-                  <span className='text-lg text-green-500'>PAKET</span>
-                </h2>
+
+          <button
+            className='text-start'
+            onClick={() => {
+              setProgressmasters('sppbj')
+            }}
+          >
+            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
+              <div className='flex items-center justify-between'>
+                <div>
+                  <h4 className='mb-2 text-start text-lg font-semibold'>
+                    PROGRESS <br />
+                    100%
+                  </h4>
+                  <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
+                    {countHundred}{' '}
+                    <span className='text-lg text-green-500'>PAKET</span>
+                  </h2>
+                </div>
+                <img src='/progress.png' alt='PKS' className='w-16' />
               </div>
-              <img src='/progress.png' alt='PKS' className='w-16' />
+              <div className='text-end'>
+                <span className='cursor-pointer text-sm font-semibold text-green-500'>
+                  LIHAT DETAIL →
+                </span>
+              </div>
             </div>
           </button>
         </div>
+      </Layout.Body>
+      <Layout.Body>
+      <div className="-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0">
+  {progressmasters !== '' ? (
+    loading ? (
+      // Membuat elemen di tengah secara vertikal dan horizontal
+      <div className="flex h-full items-center justify-center">
+        <Loading />
+      </div>
+    ) : error ? (
+      <p>Error fetching lokasi bibitan</p>
+    ) : (
+      <DataTable data={data} columns={columns} />
+    )
+  ) : null}
+</div>
+
       </Layout.Body>
     </Layout>
   )

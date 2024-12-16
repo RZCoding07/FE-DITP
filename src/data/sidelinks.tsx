@@ -104,7 +104,67 @@ export const sidelinks: SideLink[] = [
       />
     ),
   },
-
+  {
+    title: 'Investasi Awal (SINUSA)',
+    href: '/investasi-awal',
+    icon: (
+      <img
+        width='20'
+        height='20'
+        src='https://img.icons8.com/fluency/20/money-circulation.png'
+        alt='money-circulation'
+      />
+    ),
+  },
+  {
+    title: 'Paket Pekerjaan',
+    href: '/paket-pekerjaan-monica',
+    icon: (
+      <img
+        width='20'
+        height='20'
+        src='https://img.icons8.com/arcade/20/database.png'
+        alt='database'
+      />
+    ),
+  },
+  {
+    title: 'Input Pekerjaan',
+    href: '/input-pekerjaan-monica',
+    icon: (
+      <img
+        width='20'
+        height='20'
+        src='https://img.icons8.com/stickers/20/office.png'
+        alt='office'
+      />
+    ),
+  },
+  {
+    title: 'Pengadaan Langsung',
+    href: '/pengadaan-langsung',
+    icon: (
+      <img
+        width='20'
+        height='20'
+        src='https://img.icons8.com/pulsar-color/20/rfid-signal.png'
+        alt='rfid-signal'
+      />
+    ),
+  },
+  {
+    title: 'Settings',
+    label: '',
+    href: '/settings',
+    icon: (
+      <img
+        width='20'
+        height='20'
+        src='https://img.icons8.com/3d-fluency/94/gear--v2.png'
+        alt='gear--v2'
+      />
+    ),
+  },
   {
     title: 'Developer Mode',
     href: '/developer-mode',

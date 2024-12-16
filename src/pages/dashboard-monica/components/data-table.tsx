@@ -29,7 +29,6 @@ import { DataTableToolbar } from '../components/data-table-toolbar'
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  onRefresh: () => void; // Add this line for data refresh
 }
 
 

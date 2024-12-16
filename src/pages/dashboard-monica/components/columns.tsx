@@ -4,92 +4,123 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 
-interface User {
+interface Peogress {
   id: string;
-  email?: string;
-  fullname?: string;
-  avatar?: string;
-  username: string;
-  password: string;
-  rpc?: string;
-  kebun?: string;
-  afdeling?: string;
-  refreshToken?: string;
-  lastLogin?: string;
-  account_type?: string;
-  createdAt: string;
-  updatedAt: string;
+  no_pk: string;
+  judul_pk: string;
+  dibuat_oleh: string;
+  fungsi_teknis: string;
+  total_nilai: string;
+  tgl_create_pk: string;
+  tgl_submit_pk_ke_hps: string;
+  nilai_hps: string;
+  nama_panitia_hps: string;
+  tgl_submit_ke_pengadaan: string;
+  panitia_pelaksana_pengadaan: string;
+  status_pk: string;
+  pengadaan_bersama: string;
+  sumber_dana: string;
+  sub_investasi: string;
+  peruntukan: string;
+  tahun_anggaran: string;
 }
 
-export const columns: ColumnDef<User>[] = [
-  // {
-  //   accessorKey: 'id',
-  //   header: ({ column }) => <DataTableColumnHeader column={column} title='ID' />,
-  //   cell: ({ row }) => <div className='w-[80px]'>{row.getValue('id')}</div>,
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
+export const columns: ColumnDef<Peogress>[] = [
   {
-    accessorKey: 'username',
-    header: ({ column }) => <DataTableColumnHeader column={column} title='Username' />,
-    cell: ({ row }) => <span>{row.getValue('username')}</span>,
+    id: 'number',
+    header: 'No.',
+    cell: ({ row }) => <span>{row.index + 1}</span>,
+    enableSorting: false,
+    enableHiding: false,
   },
   {
-    accessorKey: 'email',
-    header: ({ column }) => <DataTableColumnHeader column={column} title='Email' />,
-    cell: ({ row }) => <span>{row.getValue('email')}</span>,
+    accessorKey: 'no_pk',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='No. PK' />,
+    cell: ({ row }) => <div>{row.getValue('no_pk')}</div>,
   },
   {
-    accessorKey: 'fullname',
-    header: ({ column }) => <DataTableColumnHeader column={column} title='Full Name' />,
-    cell: ({ row }) => <span>{row.getValue('fullname')}</span>,
+    accessorKey: 'judul_pk',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Judul PK' />,
+    cell: ({ row }) => <div>{row.getValue('judul_pk')}</div>,
   },
   {
-    accessorKey: 'avatar',
-    header: ({ column }) => <DataTableColumnHeader column={column} title='Avatar' />,
-    cell: ({ row }) => (
-      <img src={ '/' +  row.getValue('avatar') || 'default.png'} alt='Avatar' className='w-10 h-10 rounded-full' />
-    ),
+    accessorKey: 'dibuat_oleh',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Dibuat Oleh' />,
+    cell: ({ row }) => <div>{row.getValue('dibuat_oleh')}</div>,
+  },
+  {
+    accessorKey: 'fungsi_teknis',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Fungsi Teknis' />,
+    cell: ({ row }) => <div>{row.getValue('fungsi_teknis')}</div>,
+  },
+  {
+    accessorKey: 'total_nilai',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Total Nilai' />,
+    cell: ({ row }) => <div>{row.getValue('total_nilai')}</div>,
+  },
+  {
+    accessorKey: 'tgl_create_pk',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Tgl Create PK' />,
+    cell: ({ row }) => <div>{row.getValue('tgl_create_pk')}</div>,
+  },
+  {
+    accessorKey: 'tgl_submit_pk_ke_hps',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Tgl Submit PK ke HPS' />,
+    cell: ({ row }) => <div>{row.getValue('tgl_submit_pk_ke_hps')}</div>,
+  },
+  {
+    accessorKey: 'nilai_hps',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Nilai HPS' />,
+    cell: ({ row }) => <div>{row.getValue('nilai_hps')}</div>
+  },
+  {
+    accessorKey: 'nama_panitia_hps',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Nama Panitia HPS' />,
+    cell: ({ row }) => <div>{row.getValue('nama_panitia_hps')}</div>,
+  },
+  {
+    accessorKey: 'tgl_submit_ke_pengadaan',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Tgl Submit ke Pengadaan' />,
+    cell: ({ row }) => <div>{row.getValue('tgl_submit_ke_pengadaan')}</div>,
+  },
+  {
+    accessorKey: 'panitia_pelaksana_pengadaan',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Panitia Pelaksana Pengadaan' />,
+    cell: ({ row }) => <div>{row.getValue('panitia_pelaksana_pengadaan')}</div>,
+  },
+  {
+    accessorKey: 'status_pk',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Status PK' />,
+    cell: ({ row }) => <div>{row.getValue('status_pk')}</div>,
+  },
+  {
+    accessorKey: 'pengadaan_bersama',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Pengadaan Bersama' />,
+    cell: ({ row }) => <div>{row.getValue('pengadaan_bersama')}</div>,
+  },
+  {
+    accessorKey: 'sumber_dana',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Sumber Dana' />,
+    cell: ({ row }) => <div>{row.getValue('sumber_dana')}</div>,
+  },
+  {
+    accessorKey: 'sub_investasi',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Sub Investasi' />,
+    cell: ({ row }) => <div>{row.getValue('sub_investasi')}</div>,
+  },
+  {
+    accessorKey: 'peruntukan',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Peruntukan' />,
+    cell: ({ row }) => <div>{row.getValue('peruntukan')}</div>,
+  },
+  {
+    accessorKey: 'tahun_anggaran',
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Tahun Anggaran' />,
+    cell: ({ row }) => <div>{row.getValue('tahun_anggaran')}</div>,
   },
 
-  {
-    accessorKey: 'rpc',
-    header: ({ column }) => <DataTableColumnHeader column={column} title='RPC' />,
-    cell: ({ row }) => <span>{row.getValue('rpc')}</span>,
-  },
-  {
-    accessorKey: 'pks',
-    header: ({ column }) => <DataTableColumnHeader column={column} title='PKS' />,
-    cell: ({ row }) => <span>{row.getValue('pks')}</span>,
-  },
-  {
-    accessorKey: 'kebun',
-    header: ({ column }) => <DataTableColumnHeader column={column} title='Kebun' />,
-    cell: ({ row }) => <span>{row.getValue('kebun')}</span>,
-  },
-  {
-    accessorKey: 'afdeling',
-    header: ({ column }) => <DataTableColumnHeader column={column} title='Afdeling' />,
-    cell: ({ row }) => <span>{row.getValue('afdeling')}</span>,
-  },
-  {
-    accessorKey: 'lastLogin',
-    header: ({ column }) => <DataTableColumnHeader column={column} title='Last Login' />,
-    cell: ({ row }) => (
-      <span>{row.getValue('lastLogin') ? new Date(row.getValue('lastLogin')).toLocaleString() : '-'}</span>
-    ),
-  },
-  {
-    accessorKey: 'account_type',
-    header: ({ column }) => <DataTableColumnHeader column={column} title='Account Type' />,
-    cell: ({ row }) => <span>{row.getValue('account_type')}</span>,
-  },
-  {
-    accessorKey: 'app_type',
-    header: ({ column }) => <DataTableColumnHeader column={column} title='App Type' />,
-    cell: ({ row }) => <span>{row.getValue('app_type')}</span>,
-  },
-  {
+      {
+
     id: 'actions',
     cell: ({ row }) => (
       <DataTableRowActions row={row} />
