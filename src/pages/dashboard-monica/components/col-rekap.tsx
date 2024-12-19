@@ -47,7 +47,7 @@ export const columns: ColumnDef<Peogress>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='TekPol' />
     ),
-    cell: ({ row }) => <div>{row.getValue('tekpol')} PAKET</div>,
+    cell: ({ row }) => <div>{row.getValue('total_tekpol')} PAKET</div>,
   },
   {
     accessorKey: 'pengadaan',
@@ -66,12 +66,8 @@ export const columns: ColumnDef<Peogress>[] = [
   {
     accessorKey: 'value_sppbj',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Terbit SPPBJ' />
+      <DataTableColumnHeader column={column} title='Nilai SPPBJ' />
     ),
     cell: ({ row }) => <div>{formatRupiah(parseFloat(row.getValue('value_sppbj')))}</div>,
-  },
-  {
-    id: 'actions',
-    cell: ({ row }) => <DataTableRowActions row={row} />,
-  },
+  }
 ]

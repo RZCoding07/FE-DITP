@@ -133,8 +133,12 @@ export default function Tasks() {
   }
 
   useEffect(() => {
-    fetchCountProgreses()
     fetchAllRekap()
+  }
+  , [])
+
+  useEffect(() => {
+    fetchCountProgreses()
     if (progressmasters !== '') {
       fetchAllProgress()
     }
