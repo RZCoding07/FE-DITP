@@ -8,6 +8,7 @@ import { TopNav } from '@/components/top-nav'
 import { columns } from './components/columns.tsx'
 import { columns as colRekap } from './components/col-rekap.tsx'
 import { Loading } from '@/components/ui/loading.tsx'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Table,
   TableBody,
@@ -103,7 +104,6 @@ export default function Tasks() {
     }
   }
 
-
   const fetchAllRekap = async () => {
     setLoading(true)
     try {
@@ -111,7 +111,7 @@ export default function Tasks() {
         headers: {
           'Content-Type': 'application/json',
         },
-        method: 'GET'
+        method: 'GET',
       })
 
       if (!response.ok) {
@@ -134,8 +134,7 @@ export default function Tasks() {
 
   useEffect(() => {
     fetchAllRekap()
-  }
-  , [])
+  }, [])
 
   useEffect(() => {
     fetchCountProgreses()
@@ -151,8 +150,10 @@ export default function Tasks() {
         <TopNav links={topNav} />
 
         <div className='ml-auto flex items-center space-x-4'>
+                    <Search />
           <ThemeSwitch />
           <UserNav />
+          
         </div>
       </Layout.Header>
 
@@ -193,7 +194,7 @@ export default function Tasks() {
               setProgressmasters('pks')
             }}
           >
-            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
+            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-lg font-semibold'>
@@ -201,13 +202,13 @@ export default function Tasks() {
                   </h4>
                   <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
                     {p_pks}{' '}
-                    <span className='text-lg text-green-500'>PAKET</span>
+                    <span className='text-lg text-green-300'>PAKET</span>
                   </h2>
                 </div>
                 <img src='/pks.png' alt='PKS' className='w-16' />
               </div>
               <div className='text-end'>
-                <span className='cursor-pointer text-sm font-semibold text-green-500'>
+                <span className='text-green-3 00 cursor-pointer text-sm font-semibold'>
                   LIHAT DETAIL →
                 </span>
               </div>
@@ -219,7 +220,7 @@ export default function Tasks() {
               setProgressmasters('tekpol')
             }}
           >
-            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
+            <div className='dark:to-slate-93 0 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-lg font-semibold'>
@@ -227,13 +228,13 @@ export default function Tasks() {
                   </h4>
                   <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
                     {p_tekpol}{' '}
-                    <span className='text-lg text-green-500'>PAKET</span>
+                    <span className='text-lg text-green-300'>PAKET</span>
                   </h2>
                 </div>
                 <img src='/tekpol.png' alt='PKS' className='w-16' />
               </div>
               <div className='text-end'>
-                <span className='cursor-pointer text-sm font-semibold text-green-500'>
+                <span className='text-green-3 00 cursor-pointer text-sm font-semibold'>
                   LIHAT DETAIL →
                 </span>
               </div>
@@ -245,7 +246,7 @@ export default function Tasks() {
               setProgressmasters('hps')
             }}
           >
-            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
+            <div className='dark:to-slate-93 0 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-lg font-semibold'>
@@ -253,13 +254,13 @@ export default function Tasks() {
                   </h4>
                   <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
                     {p_hps}{' '}
-                    <span className='text-lg text-green-500'>PAKET</span>
+                    <span className='text-lg text-green-300'>PAKET</span>
                   </h2>
                 </div>
                 <img src='/hps.png' alt='PKS' className='w-16' />
               </div>
               <div className='text-end'>
-                <span className='cursor-pointer text-sm font-semibold text-green-500'>
+                <span className='text-green-3 00 cursor-pointer text-sm font-semibold'>
                   LIHAT DETAIL →
                 </span>
               </div>
@@ -271,7 +272,7 @@ export default function Tasks() {
               setProgressmasters('pengadaan')
             }}
           >
-            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
+            <div className='dark:to-slate-93 0 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-lg font-semibold'>
@@ -279,13 +280,13 @@ export default function Tasks() {
                   </h4>
                   <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
                     {p_pengadaan}{' '}
-                    <span className='text-lg text-green-500'>PAKET</span>
+                    <span className='text-lg text-green-300'>PAKET</span>
                   </h2>
                 </div>
                 <img src='/pengadaan.png' alt='PKS' className='w-16' />
               </div>
               <div className='text-end'>
-                <span className='cursor-pointer text-sm font-semibold text-green-500'>
+                <span className='text-green-3 00 cursor-pointer text-sm font-semibold'>
                   LIHAT DETAIL →
                 </span>
               </div>
@@ -297,7 +298,7 @@ export default function Tasks() {
               setProgressmasters('sppbj')
             }}
           >
-            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
+            <div className='dark:to-slate-93 0 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-lg font-semibold'>
@@ -306,13 +307,13 @@ export default function Tasks() {
                   </h4>
                   <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
                     {p_sppbj}{' '}
-                    <span className='text-lg text-green-500'>PAKET</span>
+                    <span className='text-lg text-green-300'>PAKET</span>
                   </h2>
                 </div>
                 <img src='/sppbj.png' alt='PKS' className='w-16' />
               </div>
               <div className='text-end'>
-                <span className='cursor-pointer text-sm font-semibold text-green-500'>
+                <span className='text-green-3 00 cursor-pointer text-sm font-semibold'>
                   LIHAT DETAIL →
                 </span>
               </div>
@@ -328,7 +329,7 @@ export default function Tasks() {
               setProgressmasters('pks')
             }}
           >
-            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
+            <div className='dark:to-slate-93 0 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-start text-lg font-semibold'>
@@ -337,13 +338,13 @@ export default function Tasks() {
                   </h4>
                   <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
                     {countZero}{' '}
-                    <span className='text-lg text-green-500'>PAKET</span>
+                    <span className='text-lg text-green-300'>PAKET</span>
                   </h2>
                 </div>
                 <img src='/progress.png' alt='PKS' className='w-16' />
               </div>
               <div className='text-end'>
-                <span className='cursor-pointer text-sm font-semibold text-green-500'>
+                <span className='text-green-3 00 cursor-pointer text-sm font-semibold'>
                   LIHAT DETAIL →
                 </span>
               </div>
@@ -355,7 +356,7 @@ export default function Tasks() {
               setProgressmasters('p_0')
             }}
           >
-            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
+            <div className='dark:to-slate-93 0 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-start text-lg font-semibold'>
@@ -364,13 +365,13 @@ export default function Tasks() {
                   </h4>
                   <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
                     {countFourty}{' '}
-                    <span className='text-lg text-green-500'>PAKET</span>
+                    <span className='text-lg text-green-300'>PAKET</span>
                   </h2>
                 </div>
                 <img src='/progress.png' alt='PKS' className='w-16' />
               </div>
               <div className='text-end'>
-                <span className='cursor-pointer text-sm font-semibold text-green-500'>
+                <span className='text-green-3 00 cursor-pointer text-sm font-semibold'>
                   LIHAT DETAIL →
                 </span>
               </div>
@@ -383,7 +384,7 @@ export default function Tasks() {
               setProgressmasters('hps')
             }}
           >
-            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
+            <div className='dark:to-slate-93 0 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-start text-lg font-semibold'>
@@ -392,13 +393,13 @@ export default function Tasks() {
                   </h4>
                   <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
                     {countSixty}{' '}
-                    <span className='text-lg text-green-500'>PAKET</span>
+                    <span className='text-lg text-green-300'>PAKET</span>
                   </h2>
                 </div>
                 <img src='/progress.png' alt='PKS' className='w-16' />
               </div>
               <div className='text-end'>
-                <span className='cursor-pointer text-sm font-semibold text-green-500'>
+                <span className='text-green-3 00 cursor-pointer text-sm font-semibold'>
                   LIHAT DETAIL →
                 </span>
               </div>
@@ -410,7 +411,7 @@ export default function Tasks() {
               setProgressmasters('pengadaan')
             }}
           >
-            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
+            <div className='dark:to-slate-93 0 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-start text-lg font-semibold'>
@@ -419,13 +420,13 @@ export default function Tasks() {
                   </h4>
                   <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
                     {countNinety}{' '}
-                    <span className='text-lg text-green-500'>PAKET</span>
+                    <span className='text-lg text-green-300'>PAKET</span>
                   </h2>
                 </div>
                 <img src='/progress.png' alt='PKS' className='w-16' />
               </div>
               <div className='text-end'>
-                <span className='cursor-pointer text-sm font-semibold text-green-500'>
+                <span className='text-green-3 00 cursor-pointer text-sm font-semibold'>
                   LIHAT DETAIL →
                 </span>
               </div>
@@ -438,7 +439,7 @@ export default function Tasks() {
               setProgressmasters('sppbj')
             }}
           >
-            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/50 dark:from-slate-900 dark:to-slate-950'>
+            <div className='dark:to-slate-93 0 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-start text-lg font-semibold'>
@@ -447,60 +448,92 @@ export default function Tasks() {
                   </h4>
                   <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>
                     {countHundred}{' '}
-                    <span className='text-lg text-green-500'>PAKET</span>
+                    <span className='text-lg text-green-300'>PAKET</span>
                   </h2>
                 </div>
                 <img src='/progress.png' alt='PKS' className='w-16' />
               </div>
               <div className='text-end'>
-                <span className='cursor-pointer text-sm font-semibold text-green-500'>
+                <span className='text-green-3 00 cursor-pointer text-sm font-semibold'>
                   LIHAT DETAIL →
                 </span>
               </div>
             </div>
           </button>
         </div>
-      </Layout.Body>
-      <Layout.Body>
-          <h2 className='font-semibold text-2xl'>Rekapitulasi Progress Pekerjaan Investasi</h2>
-          <div className='flexh-full items-center justify-center w-full mt-5'>
-
-         { loading ? 
-            <div className='flex h-full items-center justify-center'>
-              <Loading />
-            </div>
-
-            : error ?
-            <p>Error fetching data</p>
-            : ( 
-              <DataTable data={dataRekap} columns={colRekap} />
-            ) 
-          } 
+        <Tabs
+          orientation='vertical'
+          defaultValue='keseluruhan'
+          className='space-y-4'
+        >
+          <div className='w-full overflow-x-auto pt-5'>
+            <TabsList>
+              <TabsTrigger value='keseluruhan'>Keseluruhan</TabsTrigger>
+              <TabsTrigger value='paketPekerjaan'>Paket Pekerjaan</TabsTrigger>
+              <TabsTrigger value='regional'>Regional</TabsTrigger>
+            </TabsList>
           </div>
-      </Layout.Body>
-      <Layout.Body>
-
-
-          {progressmasters !== '' ? (
-            
-            loading ? (
-              
-              // Membuat elemen di tengah secara vertikal dan horizontal
-              <div className='flex h-full items-center justify-center mt-5'>
-                <Loading />
+          <div className='mt-5 flex h-full w-full items-center justify-center'>
+            <div className='dark:from-slate-900  0 w-full rounded-lg border-2 bg-gradient-to-bl p-4 shadow-md transition-shadow hover:shadow-lg dark:to-slate-950 '>
+              <div className='flex'>
+                <h2 className='text-2xl font-semibold capitalize'>
+                  <img
+                    width='30'
+                    height='30'
+                    className='float-left mb-5 ml-auto mr-3'
+                    src='https://img.icons8.com/flat-round/3 0/bar-chart--v1.png'
+                    alt='bar-chart--v1'
+                  />
+                  Rekapitulasi Progress Pekerjaan Investasi
+                </h2>
+                <br />
               </div>
-            ) : error ? (
-              <p>Error fetching data</p>
-            ) : (
-              <>
-                            <h2 className='font-semibold text-2xl'>Progress Pekerjaan Di <span className='capitalize'> {progressmasters}</span>
-        </h2>
-              <DataTable data={data} columns={columns} />
-              </>
+              {loading ? (
+                <div className='flex h-full items-center justify-center'>
+                  <Loading />
+                </div>
+              ) : error ? (
+                <p>Error fetching data</p>
+              ) : (
+                <DataTable data={dataRekap} columns={colRekap} />
+              )}
+            </div>
+          </div>
+          {progressmasters !== '' ? (
+            <div className='mt-5 flex h-full w-full items-center justify-center'>
+              <div className='dark:from-slate-93  0 w-full rounded-lg border-2 bg-gradient-to-bl p-4 shadow-md transition-shadow hover:shadow-lg dark:to-slate-900'>
+                <div className='flex'>
+                  <h2 className='text-2xl font-semibold'>
+                    <img
+                      width='30'
+                      height='30'
+                      className='float-left mb-5 ml-auto mr-3'
+                      src='https://img.icons8.com/flat-round/3 0/bar-chart--v1.png'
+                      alt='bar-chart--v1'
+                    />
+                    Progress Pekerjaan Di{' '}
+                    <span className='uppercase'> {progressmasters}</span>
+                  </h2>
+                </div>
 
-
-            )
+                {progressmasters !== '' ? (
+                  loading ? (
+                    // Membuat elemen di tengah secara vertikal dan horizontal
+                    <div className='mt-5 flex h-full items-center justify-center'>
+                      <Loading />
+                    </div>
+                  ) : error ? (
+                    <p>Error fetching data</p>
+                  ) : (
+                    <>
+                      <DataTable data={data} columns={columns} />
+                    </>
+                  )
+                ) : null}
+              </div>
+            </div>
           ) : null}
+        </Tabs>
       </Layout.Body>
     </Layout>
   )

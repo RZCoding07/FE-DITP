@@ -8,9 +8,9 @@ interface Peogress {
   id: string
   sub_investasi: string
   hps: string
-  tekpol: string
+  total_tekpol: string
   pengadaan: string
-  terbit_sppbj: string
+  sppbj: string
 }
 
 const formatRupiah = (value: number) => {
@@ -19,55 +19,67 @@ const formatRupiah = (value: number) => {
     if (isNaN(numericValue)) return 'Rp. 0' // Jika nilai bukan angka
     return `Rp. ${numericValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`
   }
-
-export const columns: ColumnDef<Peogress>[] = [
-  {
-    id: 'number',
-    header: 'No.',
-    cell: ({ row }) => <span>{row.index + 1}</span>,
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: 'sub_investasi',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Sub Investasi' />
-    ),
-    cell: ({ row }) => <div>{row.getValue('sub_investasi')}</div>,
-  },
-  {
-    accessorKey: 'hps',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='HPS' />
-    ),
-    cell: ({ row }) => <div>{row.getValue('hps')} PAKET</div>,
-  },
-  {
-    accessorKey: 'tekpol',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='TekPol' />
-    ),
-    cell: ({ row }) => <div>{row.getValue('total_tekpol')} PAKET</div>,
-  },
-  {
-    accessorKey: 'pengadaan',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Pengadaan' />
-    ),
-    cell: ({ row }) => <div>{row.getValue('pengadaan')} PAKET</div>,
-  },
-  {
-    accessorKey: 'terbit_sppbj',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Terbit SPPBJ' />
-    ),
-    cell: ({ row }) => <div>{row.getValue('terbit_sppbj')} PAKET</div>,
-  },
-  {
-    accessorKey: 'value_sppbj',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Nilai SPPBJ' />
-    ),
-    cell: ({ row }) => <div>{formatRupiah(parseFloat(row.getValue('value_sppbj')))}</div>,
-  }
-]
+  export const columns: ColumnDef<Peogress>[] = [
+    {
+      id: 'number',
+      header: 'No.',
+      cell: ({ row }) => <span>{row.index + 1}</span>,
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: 'sub_investasi',
+      header: ({ column }) => (
+        <div className=" text-white px-2 py-1 rounded">
+          <DataTableColumnHeader column={column} title='Sub Investasi' />
+        </div>
+      ),
+      cell: ({ row }) => <div>{row.getValue('sub_investasi')}</div>,
+    },
+    {
+      accessorKey: 'hps',
+      header: ({ column }) => (
+        <div className=" text-white px-2 py-1 rounded">
+          <DataTableColumnHeader column={column} title='HPS' />
+        </div>
+      ),
+      cell: ({ row }) => <div>{row.getValue('hps')} PAKET</div>,
+    },
+    {
+      accessorKey: 'total_tekpol',
+      header: ({ column }) => (
+        <div className=" text-white px-2 py-1 rounded">
+          <DataTableColumnHeader column={column} title='TekPol' />
+        </div>
+      ),
+      cell: ({ row }) => <div>{row.getValue('total_tekpol')} PAKET</div>,
+    },
+    {
+      accessorKey: 'pengadaan',
+      header: ({ column }) => (
+        <div className=" text-white px-2 py-1 rounded">
+          <DataTableColumnHeader column={column} title='Pengadaan' />
+        </div>
+      ),
+      cell: ({ row }) => <div>{row.getValue('pengadaan')} PAKET</div>,
+    },
+    {
+      accessorKey: 'sppbj',
+      header: ({ column }) => (
+        <div className=" text-white px-2 py-1 rounded">
+          <DataTableColumnHeader column={column} title='Terbit SPPBJ' />
+        </div>
+      ),
+      cell: ({ row }) => <div>{row.getValue('sppbj')} PAKET</div>,
+    },
+    {
+      accessorKey: 'value_sppbj',
+      header: ({ column }) => (
+        <div className=" text-white px-2 py-1 rounded">
+          <DataTableColumnHeader column={column} title='Nilai SPPBJ' />
+        </div>
+      ),
+      cell: ({ row }) => <div>{formatRupiah(parseFloat(row.getValue('value_sppbj')))}</div>,
+    }
+  ]
+  
