@@ -46,33 +46,107 @@ export default function Tasks() {
 
   const apiUrl = import.meta.env.VITE_API_MONICA
 
-  const fetchCountProgreses = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/monica/countAllResults`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-      })
+  const handleClickProgrees = (progress: string) => {
+    const data = dataRekap
+    if (progress === 'keseluruhan') {
+      
+      const totalHPS = data.reduce((sum: any, item: any) => sum + item.hps, 0)
+      const totalTekpol = data.reduce(
+        (sum: any, item: any) => sum + item.total_tekpol,
+        0
+      )
+      const totalPengadaan = data.reduce(
+        (sum: any, item: any) => sum + item.pengadaan,
+        0
+      )
+      const totalSPPBJ = data.reduce(
+        (sum: any, item: any) => sum + item.sppbj,
+        0
+      )
+      // Set state values
+      setP_hps(totalHPS)
+      setP_tekpol(totalTekpol)
+      setP_pengadaan(totalPengadaan)
+      setP_sppbj(totalSPPBJ)
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`)
-      }
+    }
+    else if (progress === 'ditn') {
+      const targetSubInvestasi = [
+        'Alat Pengangkutan (Transportasi)',
+        'Investasi Kecil (Alat Pertanian & Perlengkapan Kantor)',
+        'Mesin & Instalasi',
+      ]
 
-      const data = await response.json()
+      // Filter data berdasarkan target sub investasi
+      const filteredData = data.filter((item: any) =>
+        targetSubInvestasi.includes(item.sub_investasi)
+      )
 
-      if (data) {
-        setP_pks(data.countPks)
-        setP_tekpol(data.countTekpol)
-        setP_hps(data.countHPS)
-        setP_pengadaan(data.countPengadaan)
-        setP_sppbj(data.countSPPBJ)
-      }
-    } catch (error: any) {
-      console.error('Failed to fetch count:', error.message)
+      // Sum nilai value_sppbj dari data yang difilter
+      const hps = filteredData.reduce(
+        (sum: any, item: any) => sum + item.hps,
+        0
+      )
+      const totalTekpol = filteredData.reduce(
+        (sum: any, item: any) => sum + item.total_tekpol,
+        0
+      )
+
+      const totalPengadaan = filteredData.reduce(
+        (sum: any, item: any) => sum + item.pengadaan,
+        0
+      )
+
+      const totalSPPBJ = filteredData.reduce(
+        (sum: any, item: any) => sum + item.sppbj,
+        0
+      )
+
+      // Set state values
+      setP_hps(hps)
+      setP_tekpol(totalTekpol)
+      setP_pengadaan(totalPengadaan)
+      setP_sppbj(totalSPPBJ)
+    } else if (progress == 'dtis')  {
+      const targetSubInvestasi = [
+        'Jalan, Jembatan & Saluran Air',
+        'Bangunan Perumahan',
+        'Bangunan Perusahaan',
+      ]
+
+      // Filter data berdasarkan target sub investasi
+      const filteredData = data.filter((item: any) =>
+        targetSubInvestasi.includes(item.sub_investasi)
+      )
+
+      // Sum nilai value_sppbj dari data yang difilter
+      const hps = filteredData.reduce(
+        (sum: any, item: any) => sum + item.hps,
+        0
+      )
+      const totalTekpol = filteredData.reduce(
+        (sum: any, item: any) => sum + item.total_tekpol,
+        0
+      )
+      
+      const totalPengadaan = filteredData.reduce(
+        (sum: any, item: any) => sum + item.pengadaan,
+        0
+      )
+
+
+      const totalSPPBJ = filteredData.reduce(
+        (sum: any, item: any) => sum + item.sppbj,
+        0
+      )
+
+      // Set state values
+      setP_hps(hps)
+      setP_tekpol(totalTekpol)
+      setP_pengadaan(totalPengadaan)
+      setP_sppbj(totalSPPBJ)
     }
   }
-
   const fetchAllProgress = async () => {
     setLoading(true)
     try {
@@ -123,6 +197,26 @@ export default function Tasks() {
 
       if (data) {
         setDataRekap(data)
+
+        const totalHPS = data.reduce((sum: any, item: any) => sum + item.hps, 0)
+        const totalTekpol = data.reduce(
+          (sum: any, item: any) => sum + item.total_tekpol,
+          0
+        )
+        const totalPengadaan = data.reduce(
+          (sum: any, item: any) => sum + item.pengadaan,
+          0
+        )
+        const totalSPPBJ = data.reduce(
+          (sum: any, item: any) => sum + item.sppbj,
+          0
+        )
+        // Set state values
+        setP_hps(totalHPS)
+        setP_tekpol(totalTekpol)
+        setP_pengadaan(totalPengadaan)
+        setP_sppbj(totalSPPBJ)
+
         setTimeout(() => {
           setLoading(false)
         }, 1300)
@@ -137,7 +231,6 @@ export default function Tasks() {
   }, [])
 
   useEffect(() => {
-    fetchCountProgreses()
     if (progressmasters !== '') {
       fetchAllProgress()
     }
@@ -150,17 +243,19 @@ export default function Tasks() {
         <TopNav links={topNav} />
 
         <div className='ml-auto flex items-center space-x-4'>
-                    <Search />
+          <Search />
           <ThemeSwitch />
           <UserNav />
-          
         </div>
       </Layout.Header>
 
       <Layout.Body>
         <div className='mb-2 flex items-center justify-between'>
           <div className='flex items-center space-x-2'>
-            <FcDoughnutChart size={40}  style={{ animation: "spin 6s linear infinite" }} />
+            <FcDoughnutChart
+              size={40}
+              style={{ animation: 'spin 6s linear infinite' }}
+            />
             <h1 className='text-2xl font-bold tracking-tight'>
               Dashboard Monica
             </h1>
@@ -186,6 +281,26 @@ export default function Tasks() {
           </div>
         </div>
 
+        <Tabs
+          orientation='vertical'
+          defaultValue='keseluruhan'
+          className='space-y-4'
+        >
+          <div className='w-full overflow-x-auto pt-5'>
+            <TabsList>
+              <TabsTrigger value='keseluruhan' onClick={() => handleClickProgrees('keseluruhan')}>
+                Keseluruhan
+              </TabsTrigger>
+              <TabsTrigger value='paketPekerjaan'onClick={() => handleClickProgrees('ditn')}>
+                Investasi Tanaman (DITN) 
+              </TabsTrigger>
+              <TabsTrigger value='regional' onClick={() => handleClickProgrees('dtis')}>
+                Infrastruktur (DTIS)
+                </TabsTrigger>
+            </TabsList>
+          </div>
+        </Tabs>
+
         <div className='mt-5 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-5'>
           {/* Progress Di <br/> PKS */}
           <button
@@ -194,7 +309,7 @@ export default function Tasks() {
               setProgressmasters('pks')
             }}
           >
-            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950  bg-slate-50'>
+            <div className='flex flex-col justify-between rounded-lg border-2 bg-slate-50 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900  dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-lg font-semibold'>
@@ -220,7 +335,7 @@ export default function Tasks() {
               setProgressmasters('tekpol')
             }}
           >
-            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
+            <div className=' flex flex-col justify-between rounded-lg border-2 bg-slate-50 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-lg font-semibold'>
@@ -231,7 +346,12 @@ export default function Tasks() {
                     <span className='text-lg text-green-300'>PAKET</span>
                   </h2>
                 </div>
-                <img src='/tekpol.png' alt='PKS' className='w-16'  style={{ animation: "spin 6s linear infinite" }} />
+                <img
+                  src='/tekpol.png'
+                  alt='PKS'
+                  className='w-16'
+                  style={{ animation: 'spin 6s linear infinite' }}
+                />
               </div>
               <div className='text-end'>
                 <span className='text-green-3 00 cursor-pointer text-sm font-semibold'>
@@ -246,7 +366,7 @@ export default function Tasks() {
               setProgressmasters('hps')
             }}
           >
-            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
+            <div className=' flex flex-col justify-between rounded-lg border-2 bg-slate-50 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-lg font-semibold'>
@@ -272,7 +392,7 @@ export default function Tasks() {
               setProgressmasters('pengadaan')
             }}
           >
-            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
+            <div className=' flex flex-col justify-between rounded-lg border-2 bg-slate-50 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-lg font-semibold'>
@@ -298,7 +418,7 @@ export default function Tasks() {
               setProgressmasters('sppbj')
             }}
           >
-            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
+            <div className=' flex flex-col justify-between rounded-lg border-2 bg-slate-50 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-lg font-semibold'>
@@ -329,7 +449,7 @@ export default function Tasks() {
               setProgressmasters('pks')
             }}
           >
-            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
+            <div className=' flex flex-col justify-between rounded-lg border-2 bg-slate-50 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-start text-lg font-semibold'>
@@ -356,7 +476,7 @@ export default function Tasks() {
               setProgressmasters('p_0')
             }}
           >
-            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
+            <div className=' flex flex-col justify-between rounded-lg border-2 bg-slate-50 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-start text-lg font-semibold'>
@@ -384,7 +504,7 @@ export default function Tasks() {
               setProgressmasters('hps')
             }}
           >
-            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
+            <div className=' flex flex-col justify-between rounded-lg border-2 bg-slate-50 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-start text-lg font-semibold'>
@@ -411,7 +531,7 @@ export default function Tasks() {
               setProgressmasters('pengadaan')
             }}
           >
-            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
+            <div className=' flex flex-col justify-between rounded-lg border-2 bg-slate-50 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-start text-lg font-semibold'>
@@ -439,7 +559,7 @@ export default function Tasks() {
               setProgressmasters('sppbj')
             }}
           >
-            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
+            <div className=' flex flex-col justify-between rounded-lg border-2 bg-slate-50 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-start text-lg font-semibold'>
@@ -474,39 +594,11 @@ export default function Tasks() {
             </TabsList>
           </div>
 
-                    <TabsContent value='keseluruhan' className='space-y-4'>
-
-          <div className='mt-5 flex h-full w-full items-center justify-center'>
-            <div className='dark:from-slate-900 dark:to-slate-950  0 w-full rounded-lg border-2 bg-gradient-to-bl p-4 shadow-md transition-shadow hover:shadow-lg  bg-slate-50 '>
-              <div className='flex'>
-                <h2 className='text-2xl font-semibold capitalize'>
-                  <img
-                    width='30'
-                    height='30'
-                    className='float-left mb-5 ml-auto mr-3'
-                    src='https://img.icons8.com/flat-round/3 0/bar-chart--v1.png'
-                    alt='bar-chart--v1'
-                  />
-                  Rekapitulasi Progress Pekerjaan Investasi
-                </h2>
-                <br />
-              </div>
-              {loading ? (
-                <div className='flex h-full items-center justify-center'>
-                  <Loading />
-                </div>
-              ) : error ? (
-                <p>Error fetching data</p>
-              ) : (
-                <DataTable data={dataRekap} columns={colRekap} />
-              )}
-            </div>
-          </div>
-          {progressmasters !== '' ? (
+          <TabsContent value='keseluruhan' className='space-y-4'>
             <div className='mt-5 flex h-full w-full items-center justify-center'>
-              <div className='dark:from-slate-950 w-full rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg dark:to-slate-900'>
+              <div className='0 w-full  rounded-lg border-2 bg-slate-50 bg-gradient-to-bl p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-900  dark:to-slate-950 '>
                 <div className='flex'>
-                  <h2 className='text-2xl font-semibold'>
+                  <h2 className='text-2xl font-semibold capitalize'>
                     <img
                       width='30'
                       height='30'
@@ -514,30 +606,56 @@ export default function Tasks() {
                       src='https://img.icons8.com/flat-round/3 0/bar-chart--v1.png'
                       alt='bar-chart--v1'
                     />
-                    Progress Pekerjaan Di{' '}
-                    <span className='uppercase'> {progressmasters}</span>
+                    Rekapitulasi Progress Pekerjaan Investasi
                   </h2>
+                  <br />
                 </div>
-
-                {progressmasters !== '' ? (
-                  loading ? (
-                    // Membuat elemen di tengah secara vertikal dan horizontal
-                    <div className='mt-5 flex h-full items-center justify-center'>
-                      <Loading />
-                    </div>
-                  ) : error ? (
-                    <p>Error fetching data</p>
-                  ) : (
-                    <>
-                      <DataTable data={data} columns={columns} />
-                    </>
-                  )
-                ) : null}
+                {loading ? (
+                  <div className='flex h-full items-center justify-center'>
+                    <Loading />
+                  </div>
+                ) : error ? (
+                  <p>Error fetching data</p>
+                ) : (
+                  <DataTable data={dataRekap} columns={colRekap} />
+                )}
               </div>
             </div>
-          ) : null}
-                    </TabsContent>
+            {progressmasters !== '' ? (
+              <div className='mt-5 flex h-full w-full items-center justify-center'>
+                <div className='w-full rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900'>
+                  <div className='flex'>
+                    <h2 className='text-2xl font-semibold'>
+                      <img
+                        width='30'
+                        height='30'
+                        className='float-left mb-5 ml-auto mr-3'
+                        src='https://img.icons8.com/flat-round/3 0/bar-chart--v1.png'
+                        alt='bar-chart--v1'
+                      />
+                      Progress Pekerjaan Di{' '}
+                      <span className='uppercase'> {progressmasters}</span>
+                    </h2>
+                  </div>
 
+                  {progressmasters !== '' ? (
+                    loading ? (
+                      // Membuat elemen di tengah secara vertikal dan horizontal
+                      <div className='mt-5 flex h-full items-center justify-center'>
+                        <Loading />
+                      </div>
+                    ) : error ? (
+                      <p>Error fetching data</p>
+                    ) : (
+                      <>
+                        <DataTable data={data} columns={columns} />
+                      </>
+                    )
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+          </TabsContent>
         </Tabs>
       </Layout.Body>
     </Layout>
