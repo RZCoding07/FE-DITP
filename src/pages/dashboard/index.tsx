@@ -185,7 +185,7 @@ export default function Dashboard() {
           </div>
           <TabsContent value='overview' className='space-y-4'>
             <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
-              <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+              <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 bg-white'>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
                     Total Pre Nursery
@@ -199,7 +199,7 @@ export default function Dashboard() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+              <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 bg-white'>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
                     Total Main Nursery
@@ -213,7 +213,7 @@ export default function Dashboard() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+              <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 bg-white'>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
                     Total Seleksi
@@ -227,7 +227,7 @@ export default function Dashboard() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+              <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 bg-white'>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
                     Total Siap Salur
@@ -255,7 +255,7 @@ export default function Dashboard() {
               </div>
               <TabsContent value='grafik'>
                 <div className='grid grid-cols-1 gap-4 lg:grid-cols-3'>
-                  <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                  <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 bg-white'>
                     <CardHeader>
                       <CardTitle>Stok Awal Bibit</CardTitle>
                     </CardHeader>
@@ -263,7 +263,7 @@ export default function Dashboard() {
                       <StokAwal bulan='9' tahun='2024' />
                     </CardContent>
                   </Card>
-                  <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                  <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 bg-white'>
                     <CardHeader>
                       <CardTitle>Hasil Seleksi Bibit</CardTitle>
                     </CardHeader>
@@ -271,7 +271,7 @@ export default function Dashboard() {
                       <Overview />
                     </CardContent>
                   </Card>
-                  <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                  <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 bg-white'>
                     <CardHeader>
                       <CardTitle>Bibit Siap Salur</CardTitle>
                     </CardHeader>
@@ -282,7 +282,7 @@ export default function Dashboard() {
                 </div>
 
                 <div className='mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2'>
-                  <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                  <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 bg-white'>
                     <CardHeader>
                       <CardTitle>Varietas</CardTitle>
                     </CardHeader>
@@ -290,7 +290,7 @@ export default function Dashboard() {
                       <Overview />
                     </CardContent>
                   </Card>
-                  <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                  <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 bg-white'>
                     <CardHeader>
                       <CardTitle>Bibit Siap Salur vs Kebutuhan Bibit</CardTitle>
                     </CardHeader>

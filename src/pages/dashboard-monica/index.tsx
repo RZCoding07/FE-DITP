@@ -194,7 +194,7 @@ export default function Tasks() {
               setProgressmasters('pks')
             }}
           >
-            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
+            <div className='flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950  bg-slate-50'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-lg font-semibold'>
@@ -220,7 +220,7 @@ export default function Tasks() {
               setProgressmasters('tekpol')
             }}
           >
-            <div className='dark:to-slate-950 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
+            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-lg font-semibold'>
@@ -246,7 +246,7 @@ export default function Tasks() {
               setProgressmasters('hps')
             }}
           >
-            <div className='dark:to-slate-950 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
+            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-lg font-semibold'>
@@ -272,7 +272,7 @@ export default function Tasks() {
               setProgressmasters('pengadaan')
             }}
           >
-            <div className='dark:to-slate-950 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
+            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-lg font-semibold'>
@@ -298,7 +298,7 @@ export default function Tasks() {
               setProgressmasters('sppbj')
             }}
           >
-            <div className='dark:to-slate-950 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
+            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-lg font-semibold'>
@@ -329,7 +329,7 @@ export default function Tasks() {
               setProgressmasters('pks')
             }}
           >
-            <div className='dark:to-slate-950 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
+            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-start text-lg font-semibold'>
@@ -356,7 +356,7 @@ export default function Tasks() {
               setProgressmasters('p_0')
             }}
           >
-            <div className='dark:to-slate-950 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
+            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-start text-lg font-semibold'>
@@ -384,7 +384,7 @@ export default function Tasks() {
               setProgressmasters('hps')
             }}
           >
-            <div className='dark:to-slate-950 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
+            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-start text-lg font-semibold'>
@@ -411,7 +411,7 @@ export default function Tasks() {
               setProgressmasters('pengadaan')
             }}
           >
-            <div className='dark:to-slate-950 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
+            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-start text-lg font-semibold'>
@@ -439,7 +439,7 @@ export default function Tasks() {
               setProgressmasters('sppbj')
             }}
           >
-            <div className='dark:to-slate-950 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900'>
+            <div className=' bg-slate-50 flex flex-col justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg hover:shadow-green-300/30 dark:from-slate-900 dark:to-slate-950'>
               <div className='flex items-center justify-between'>
                 <div>
                   <h4 className='mb-2 text-start text-lg font-semibold'>
@@ -477,7 +477,7 @@ export default function Tasks() {
                     <TabsContent value='keseluruhan' className='space-y-4'>
 
           <div className='mt-5 flex h-full w-full items-center justify-center'>
-            <div className='dark:from-slate-900  0 w-full rounded-lg border-2 bg-gradient-to-bl p-4 shadow-md transition-shadow hover:shadow-lg dark:to-slate-950 '>
+            <div className='dark:from-slate-900 dark:to-slate-950  0 w-full rounded-lg border-2 bg-gradient-to-bl p-4 shadow-md transition-shadow hover:shadow-lg  bg-slate-50 '>
               <div className='flex'>
                 <h2 className='text-2xl font-semibold capitalize'>
                   <img
