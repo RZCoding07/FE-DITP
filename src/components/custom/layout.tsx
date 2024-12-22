@@ -86,16 +86,30 @@ const Body = React.forwardRef<
   }
 
   return (
-    <div
-      ref={ref}
-      data-layout='body'
-      className={cn(
-        'px-4 py-6 md:overflow-hidden md:px-8',
-        contextVal && contextVal.fixed && 'flex-1',
-        className
-      )}
-      {...props}
-    />
+    <div className="relative min-h-screen">
+      {/* Blurred background */}
+      <div
+        className={cn(
+          'absolute opacity-50 inset-0 bg-gray-50 bg-[url("/bginvestasi.jpeg")] bg-cover bg-center  dark:bg-gradient dark:from-slate-950 dark:to-slate-900',
+          contextVal && contextVal.fixed && 'fixed'
+        )}
+        style={{
+          filter: 'blur(5px)',
+        }}
+      />
+      
+      {/* Content */}
+      <div
+        ref={ref}
+        data-layout='body'
+        className={cn(
+          'relative z-10 min-h-screen p-6 px-4 py-6 md:overflow-hidden md:px-8',
+          contextVal && contextVal.fixed && 'flex-1',
+          className
+        )}
+        {...props}
+      />
+    </div>
   )
 })
 Body.displayName = 'Body'
@@ -104,3 +118,5 @@ Layout.Header = Header
 Layout.Body = Body
 
 export { Layout }
+
+
