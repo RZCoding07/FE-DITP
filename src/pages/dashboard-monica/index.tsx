@@ -628,7 +628,7 @@ export default function Tasks() {
             </div>
             {progressmasters !== '' ? (
               <div className='mt-5 flex h-full w-full items-center justify-center'>
-                <div className='w-full rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900'>
+                <div className='w-full bg-slate-50 rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900'>
                   <div className='flex'>
                     <h2 className='text-2xl font-semibold'>
                       <img
