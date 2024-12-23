@@ -6,7 +6,7 @@ import ThemeSwitch from '@/components/theme-switch'
 import { TopNav } from '@/components/top-nav'
 import { UserNav } from '@/components/user-nav'
 import { FcDoughnutChart } from 'react-icons/fc'
-import { IconPlant } from "@tabler/icons-react";
+import { IconPlant } from '@tabler/icons-react'
 import axios from 'axios'
 import {
   Table,
@@ -77,7 +77,7 @@ export default function Dashboard() {
   const user = cookie.get('user')
   const fullname = user ? JSON.parse(user).fullname : 'user'
   const account_type = user ? JSON.parse(user).account_type : 'user'
-  
+
   const bulanName = [
     'Januari',
     'Februari',
@@ -203,7 +203,7 @@ export default function Dashboard() {
           Periode W3 September 2024 (23/09/2024)
         </p>
         <div className='grid lg:grid-cols-[70%_30%]'>
-          <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 mr-5'>
+          <Card className='mr-5 bg-slate-50 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
               <CardTitle className='text-sm font-medium'>
                 <h1 className='text-xl'> Overview pekerjaan Replanting</h1>
@@ -248,7 +248,7 @@ export default function Dashboard() {
                     style={{ borderCollapse: 'collapse' }}
                   >
                     <TableHeader className='shadow-sm'>
-                      <TableRow className='bg-gradient-to-l from-green-500 to-green-300 text-black font-semibold'>
+                      <TableRow className='bg-gradient-to-l from-green-500 to-green-300 font-semibold text-black'>
                         <TableCell rowSpan={2} className='p-1'>
                           Regional
                         </TableCell>
@@ -265,7 +265,7 @@ export default function Dashboard() {
                           Menanam
                         </TableCell>
                       </TableRow>
-                      <TableRow className='bg-gradient-to-l from-slate-50 to-slate-300 text-black font-semibold'>
+                      <TableRow className='bg-gradient-to-l from-slate-50 to-slate-300 font-semibold text-black'>
                         <TableCell className='p-1 text-center'></TableCell>
                         <TableCell className='p-1 text-center'>
                           Luas (Ha)
@@ -460,7 +460,6 @@ export default function Dashboard() {
                         <TableCell className='p-1'>73</TableCell>
                       </TableRow>
                     </TableBody>
-                    
                   </Table>
                 </div>
               </div>
@@ -499,11 +498,11 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
-        <div className='grid lg:grid-cols-3 mt-5'>
-          <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 mr-5'>
+        <div className='mt-5 grid lg:grid-cols-3'>
+          <Card className='mr-5 bg-slate-50 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
             <CardHeader className='flex flex-row items-center justify-between space-y-0'>
               <CardTitle className='text-xl font-medium'>
-              Tasks Completed This Week
+                Tasks Completed This Week
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -517,10 +516,10 @@ export default function Dashboard() {
               </p>
             </CardContent>
           </Card>
-          <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 mr-5'>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0'>
+          <Card className='mr-5 bg-slate-50 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+            <CardHeader className='flex flex-row items-center justify-between space-y-0'>
               <CardTitle className='text-xl font-medium'>
-              Pending Matters
+                Pending Matters
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -537,7 +536,7 @@ export default function Dashboard() {
           <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
             <CardHeader className='flex flex-row items-center justify-between space-y-0'>
               <CardTitle className='text-xl font-medium'>
-              Next Week’s Tasks
+                Next Week’s Tasks
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -553,115 +552,112 @@ export default function Dashboard() {
           </Card>
         </div>
         <div className='grid lg:grid-cols-1'>
+          <Card className='mt-5 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+            <div className='grid gap-6 p-4 md:grid-cols-2'>
+              <div className='space-y-4'>
+                <div className='flex items-center gap-2 text-lg font-medium'>
+                  <IconPlant className='h-5 w-5 text-green-600' />
 
-          <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 mt-5'>
-          <div className="grid gap-6 md:grid-cols-2 p-4">
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 text-lg font-medium">
-        <IconPlant className="h-5 w-5 text-green-600" />
+                  <h2>Proyeksi Replanting Tahun 2024 (Ha)</h2>
+                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow className='bg-muted/50'>
+                      <TableCell>-</TableCell>
+                      <TableCell>RKAP</TableCell>
+                      <TableCell>Selesai Tanam</TableCell>
+                      <TableCell>Persiapan Lahan</TableCell>
+                      <TableCell>%Tanam</TableCell>
+                      <TableCell>%P.Lahan</TableCell>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow className='bg-muted/30'>
+                      <TableCell>Palm Co</TableCell>
+                      <TableCell>14.552,23</TableCell>
+                      <TableCell>11.991,99</TableCell>
+                      <TableCell>2.581,24</TableCell>
+                      <TableCell>82</TableCell>
+                      <TableCell>18</TableCell>
+                    </TableRow>
+                    <TableRow className='bg-muted/30'>
+                      <TableCell>KSO</TableCell>
+                      <TableCell>6.949,28</TableCell>
+                      <TableCell>6.686,22</TableCell>
+                      <TableCell>-</TableCell>
+                      <TableCell>96</TableCell>
+                      <TableCell>-</TableCell>
+                    </TableRow>
+                    <TableRow className='bg-green-50 text-black'>
+                      <TableCell>Total</TableCell>
+                      <TableCell>21.501,51</TableCell>
+                      <TableCell>18.678,21</TableCell>
+                      <TableCell>2.581,24</TableCell>
+                      <TableCell>87</TableCell>
+                      <TableCell>12</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
 
-          <h2>Proyeksi Replanting Tahun 2024 (Ha)</h2>
-        </div>
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-muted/50">
-              <TableCell>-</TableCell>
-              <TableCell>RKAP</TableCell>
-              <TableCell>Selesai Tanam</TableCell>
-              <TableCell>Persiapan Lahan</TableCell>
-              <TableCell>%Tanam</TableCell>
-              <TableCell>%P.Lahan</TableCell>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow className="bg-muted/30">
-              <TableCell>Palm Co</TableCell>
-              <TableCell>14.552,23</TableCell>
-              <TableCell>11.991,99</TableCell>
-              <TableCell>2.581,24</TableCell>
-              <TableCell>82</TableCell>
-              <TableCell>18</TableCell>
-            </TableRow>
-            <TableRow className="bg-muted/30">
-              <TableCell>KSO</TableCell>
-              <TableCell>6.949,28</TableCell>
-              <TableCell>6.686,22</TableCell>
-              <TableCell>-</TableCell>
-              <TableCell>96</TableCell>
-              <TableCell>-</TableCell>
-            </TableRow>
-            <TableRow className="bg-green-50 text-black">
-              <TableCell>Total</TableCell>
-              <TableCell>21.501,51</TableCell>
-              <TableCell>18.678,21</TableCell>
-              <TableCell>2.581,24</TableCell>
-              <TableCell>87</TableCell>
-              <TableCell>12</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </div>
-
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 text-lg font-medium">
-          <svg
-            className="h-5 w-5 text-yellow-500"
-            fill="none"
-            height="24"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M17 18.5a9 9 0 1 0-11.7-5.6" />
-            <path d="M9 19.5v3" />
-            <path d="M9 22.5h8" />
-            <path d="M13 16.5v6" />
-            <path d="M19 19.5v3" />
-            <path d="M17 21.5v2" />
-            <path d="M15 19.5v3" />
-          </svg>
-          <h2>Proyeksi Serapan Biaya Tahun 2024 (Rp.Miliar)</h2>
-        </div>
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-muted/50">
-              <TableCell>-</TableCell>
-              <TableCell>RKAP</TableCell>
-              <TableCell>Proyeksi</TableCell>
-              <TableCell>% of RKAP</TableCell>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow className="bg-muted/30">
-              <TableCell>Palm Co</TableCell>
-              <TableCell>563</TableCell>
-              <TableCell>548</TableCell>
-              <TableCell>97,39</TableCell>
-            </TableRow>
-            <TableRow className="bg-muted/30">
-              <TableCell>KSO</TableCell>
-              <TableCell>276</TableCell>
-              <TableCell>250</TableCell>
-              <TableCell>90,50</TableCell>
-            </TableRow>
-            <TableRow className="bg-yellow-50 text-black">
-              <TableCell>Total</TableCell>
-              <TableCell>840</TableCell>
-              <TableCell>799</TableCell>
-              <TableCell>95,12</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </div>
-    </div>
+              <div className='space-y-4'>
+                <div className='flex items-center gap-2 text-lg font-medium'>
+                  <svg
+                    className='h-5 w-5 text-yellow-500'
+                    fill='none'
+                    height='24'
+                    stroke='currentColor'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth='2'
+                    viewBox='0 0 24 24'
+                    width='24'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <path d='M17 18.5a9 9 0 1 0-11.7-5.6' />
+                    <path d='M9 19.5v3' />
+                    <path d='M9 22.5h8' />
+                    <path d='M13 16.5v6' />
+                    <path d='M19 19.5v3' />
+                    <path d='M17 21.5v2' />
+                    <path d='M15 19.5v3' />
+                  </svg>
+                  <h2>Proyeksi Serapan Biaya Tahun 2024 (Rp.Miliar)</h2>
+                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow className='bg-muted/50'>
+                      <TableCell>-</TableCell>
+                      <TableCell>RKAP</TableCell>
+                      <TableCell>Proyeksi</TableCell>
+                      <TableCell>% of RKAP</TableCell>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow className='bg-muted/30'>
+                      <TableCell>Palm Co</TableCell>
+                      <TableCell>563</TableCell>
+                      <TableCell>548</TableCell>
+                      <TableCell>97,39</TableCell>
+                    </TableRow>
+                    <TableRow className='bg-muted/30'>
+                      <TableCell>KSO</TableCell>
+                      <TableCell>276</TableCell>
+                      <TableCell>250</TableCell>
+                      <TableCell>90,50</TableCell>
+                    </TableRow>
+                    <TableRow className='bg-yellow-50 text-black'>
+                      <TableCell>Total</TableCell>
+                      <TableCell>840</TableCell>
+                      <TableCell>799</TableCell>
+                      <TableCell>95,12</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
           </Card>
         </div>
-
-        
 
         <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight'>
           <img
@@ -673,9 +669,7 @@ export default function Dashboard() {
           />
           Realisasi Tanam Perkebun
         </h1>
-        <div className='grid lg:grid-cols-[70%_30%]'>
-          
-        </div>
+        <div className='grid lg:grid-cols-[70%_30%]'></div>
       </Layout.Body>
     </Layout>
   )
