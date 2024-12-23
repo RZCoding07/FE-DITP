@@ -49,7 +49,6 @@ export default function Tasks() {
   const handleClickProgrees = (progress: string) => {
     const data = dataRekap
     if (progress === 'keseluruhan') {
-      
       const totalHPS = data.reduce((sum: any, item: any) => sum + item.hps, 0)
       const totalTekpol = data.reduce(
         (sum: any, item: any) => sum + item.total_tekpol,
@@ -68,9 +67,7 @@ export default function Tasks() {
       setP_tekpol(totalTekpol)
       setP_pengadaan(totalPengadaan)
       setP_sppbj(totalSPPBJ)
-
-    }
-    else if (progress === 'ditn') {
+    } else if (progress === 'ditn') {
       const targetSubInvestasi = [
         'Alat Pengangkutan (Transportasi)',
         'Investasi Kecil (Alat Pertanian & Perlengkapan Kantor)',
@@ -107,7 +104,7 @@ export default function Tasks() {
       setP_tekpol(totalTekpol)
       setP_pengadaan(totalPengadaan)
       setP_sppbj(totalSPPBJ)
-    } else if (progress == 'dtis')  {
+    } else if (progress == 'dtis') {
       const targetSubInvestasi = [
         'Jalan, Jembatan & Saluran Air',
         'Bangunan Perumahan',
@@ -128,12 +125,11 @@ export default function Tasks() {
         (sum: any, item: any) => sum + item.total_tekpol,
         0
       )
-      
+
       const totalPengadaan = filteredData.reduce(
         (sum: any, item: any) => sum + item.pengadaan,
         0
       )
-
 
       const totalSPPBJ = filteredData.reduce(
         (sum: any, item: any) => sum + item.sppbj,
@@ -250,7 +246,7 @@ export default function Tasks() {
       </Layout.Header>
 
       <Layout.Body>
-        <div className='mb-2 flex items-center justify-between'>
+        <div className='mb-2 flex w-full items-center justify-between rounded-lg bg-gradient-to-br p-4 shadow-2xl transition-shadow'>
           <div className='flex items-center space-x-2'>
             <FcDoughnutChart
               size={40}
@@ -288,15 +284,24 @@ export default function Tasks() {
         >
           <div className='w-full overflow-x-auto pt-5'>
             <TabsList>
-              <TabsTrigger value='keseluruhan' onClick={() => handleClickProgrees('keseluruhan')}>
+              <TabsTrigger
+                value='keseluruhan'
+                onClick={() => handleClickProgrees('keseluruhan')}
+              >
                 Keseluruhan
               </TabsTrigger>
-              <TabsTrigger value='paketPekerjaan'onClick={() => handleClickProgrees('ditn')}>
-                Investasi Tanaman (DITN) 
+              <TabsTrigger
+                value='paketPekerjaan'
+                onClick={() => handleClickProgrees('ditn')}
+              >
+                Investasi Tanaman (DITN)
               </TabsTrigger>
-              <TabsTrigger value='regional' onClick={() => handleClickProgrees('dtis')}>
+              <TabsTrigger
+                value='regional'
+                onClick={() => handleClickProgrees('dtis')}
+              >
                 Infrastruktur (DTIS)
-                </TabsTrigger>
+              </TabsTrigger>
             </TabsList>
           </div>
         </Tabs>

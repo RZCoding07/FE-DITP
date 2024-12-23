@@ -19,9 +19,12 @@ export default function Awal() {
     setLoading(true)
     const tahun = new Date().getFullYear()
     try {
-      const response = await axios.post(`${apiUrl}/monica/getAllRecordsSumberips`, {
-        tahun: tahun,
-      })
+      const response = await axios.post(
+        `${apiUrl}/monica/getAllRecordsSumberips`,
+        {
+          tahun: tahun,
+        }
+      )
       setAwal(response.data)
     } catch (error: any) {
       console.error('Error fetching Awal:', error)
@@ -49,7 +52,7 @@ export default function Awal() {
       </Layout.Header>
 
       <Layout.Body>
-        <div className='mb-2 flex items-center justify-between'>
+        <div className='mb-2 flex w-full items-center justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900'>
           <div className='space-y-0.5'>
             <h2 className='text-2xl font-semibold tracking-tight'>
               Data Paket Pekerjaan ( IPS )
@@ -65,7 +68,7 @@ export default function Awal() {
           </div>
         </div>
 
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
+        <div className='flex-1 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
           {loading ? (
             // make center div h-full
             <div className='flex h-full items-center justify-center'>
@@ -74,10 +77,14 @@ export default function Awal() {
           ) : error ? (
             <p>Error fetching Awal</p>
           ) : (
-            <DataTable data={Awal} columns={columns} onRefresh={fetchInvesAwal} />
+            <DataTable
+              data={Awal}
+              columns={columns}
+              onRefresh={fetchInvesAwal}
+            />
           )}
         </div>
-        <div className='mb-2 flex items-center justify-between'>
+        <div className='mb-2 flex w-full items-center justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900'>
           <div className='space-y-0.5'>
             <h2 className='text-2xl font-semibold tracking-tight'>
               Data Paket Pekerjaan ( Non IPS )
@@ -93,7 +100,7 @@ export default function Awal() {
           </div>
         </div>
 
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
+        <div className='flex-1 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
           {loading ? (
             // make center div h-full
             <div className='flex h-full items-center justify-center'>
@@ -102,7 +109,11 @@ export default function Awal() {
           ) : error ? (
             <p>Error fetching Awal</p>
           ) : (
-            <DataTable data={Awal} columns={columns} onRefresh={fetchInvesAwal} />
+            <DataTable
+              data={Awal}
+              columns={columns}
+              onRefresh={fetchInvesAwal}
+            />
           )}
         </div>
       </Layout.Body>

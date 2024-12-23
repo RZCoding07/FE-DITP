@@ -25,7 +25,6 @@ export default function Tasks() {
   const [error, setError] = useState(null)
   const apiUrl = import.meta.env.VITE_API_NURSERY
 
-
   const fetchLokasiBibitan = async () => {
     setLoading(true)
     try {
@@ -41,7 +40,6 @@ export default function Tasks() {
       }, 2200)
     }
   }
-
 
   const fetchSeleksiBibitan = async () => {
     setLoading(true)
@@ -122,7 +120,6 @@ export default function Tasks() {
         </div>
       </Layout.Header>
 
-
       <Layout.Body>
         <div className='mb-2 flex items-center justify-between space-y-2'>
           <div>
@@ -130,18 +127,16 @@ export default function Tasks() {
               Master Data Norma PN (Pre Nursery)
             </h2>
           </div>
-
         </div>
         <div className='ml-auto flex space-x-2'>
-            <Link to='/create-norma-pn-bibitan'>
-              <Button>Tambah Data</Button>
-            </Link>
-            <Link to='/upload-norma-pn-bibitan'>
-              <Button>Upload Data</Button>
-            </Link>
-          </div>
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
+          <Link to='/create-norma-pn-bibitan'>
+            <Button>Tambah Data</Button>
+          </Link>
+          <Link to='/upload-norma-pn-bibitan'>
+            <Button>Upload Data</Button>
+          </Link>
+        </div>
+        <div className='flex-1 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
           {loading ? (
             // make center div h-full
             <div className='flex h-full items-center justify-center'>
@@ -151,9 +146,7 @@ export default function Tasks() {
             <p>Error fetching lokasi bibitan</p>
           ) : (
             <DataTable data={dataNormaPn} columns={colNormaPn} />
-
           )}
-        </div>
         </div>
       </Layout.Body>
 
@@ -164,18 +157,16 @@ export default function Tasks() {
               Master Data Norma MN (Main Nursery)
             </h2>
           </div>
-
         </div>
         <div className='ml-auto flex space-x-2'>
-            <Link to='/create-norma-mn-bibitan'>
-              <Button>Tambah Data</Button>
-            </Link>
-            <Link to='/upload-norma-mn-bibitan'>
-              <Button>Upload Data</Button>
-            </Link>
-          </div>
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
+          <Link to='/create-norma-mn-bibitan'>
+            <Button>Tambah Data</Button>
+          </Link>
+          <Link to='/upload-norma-mn-bibitan'>
+            <Button>Upload Data</Button>
+          </Link>
+        </div>
+        <div className='flex-1 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
           {loading ? (
             // make center div h-full
             <div className='flex h-full items-center justify-center'>
@@ -185,32 +176,29 @@ export default function Tasks() {
             <p>Error fetching lokasi bibitan</p>
           ) : (
             <DataTable data={dataNormaMn} columns={colNormaMn} />
-
           )}
-        </div>
+          \
         </div>
       </Layout.Body>
 
-
       <Layout.Body>
-        <div className='mb-2 flex items-center justify-between'>
+        <div className='mb-2 flex w-full items-center justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900'>
           <div className='space-y-0.5'>
             <h2 className='text-2xl font-semibold tracking-tight'>
               Data Stok Bibitan
             </h2>
             <div className='ml-auto flex space-x-2'>
-            <Link to='/upload-stok-lokasi-bibitan'>
-              <Button>Tambah Data</Button>
-            </Link>
-            <Link to='/upload-stok-lokasi-bibitan'>
-              <Button>Upload Data</Button>
-            </Link>
+              <Link to='/upload-stok-lokasi-bibitan'>
+                <Button>Tambah Data</Button>
+              </Link>
+              <Link to='/upload-stok-lokasi-bibitan'>
+                <Button>Upload Data</Button>
+              </Link>
+            </div>
           </div>
-          </div>
-
         </div>
 
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
+        <div className='flex-1 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
           {loading ? (
             // make center div h-full
             <div className='flex h-full items-center justify-center'>
@@ -225,24 +213,23 @@ export default function Tasks() {
       </Layout.Body>
 
       <Layout.Body>
-        <div className='mb-2 flex items-center justify-between'>
+        <div className='mb-2 flex w-full items-center justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900'>
           <div className='space-y-0.5'>
             <h2 className='text-2xl font-semibold tracking-tight'>
               Data Hasil Seleksi Bibitan
             </h2>
             <div className='ml-auto flex space-x-2'>
-            <Link to='/tambah-data-hasil-seleksi-bibitan'>
-              <Button> Tambah Data</Button>
-            </Link>
-            <Link to='/upload-hasil-seleksi-bibitan'>
-              <Button>Upload Data</Button>
-            </Link>
+              <Link to='/tambah-data-hasil-seleksi-bibitan'>
+                <Button> Tambah Data</Button>
+              </Link>
+              <Link to='/upload-hasil-seleksi-bibitan'>
+                <Button>Upload Data</Button>
+              </Link>
+            </div>
           </div>
-          </div>
-
         </div>
 
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
+        <div className='flex-1 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
           {loading ? (
             // make center div h-full
             <div className='flex h-full items-center justify-center'>
@@ -263,30 +250,28 @@ export default function Tasks() {
               Weekly Report Bibitan
             </h2>
           </div>
-
         </div>
         <div className='ml-auto flex space-x-2'>
-            <Link to='/create-uraian-pekerjaan-immature'>
-              <Button>Tambah Data</Button>
-            </Link>
-            <Link to='/upload-weekly-bibitan'>
-              <Button>Upload Data</Button>
-            </Link>
-          </div>
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-          {loading ? (
-            // make center div h-full
-            <div className='flex h-full items-center justify-center'>
-              <Loading />
-            </div>
-          ) : error ? (
-            <p>Error fetching lokasi bibitan</p>
-          ) : (
-            <DataTable data={dataWeeklyReport} columns={colWeeklyReport} />
-
-          )}
+          <Link to='/create-uraian-pekerjaan-immature'>
+            <Button>Tambah Data</Button>
+          </Link>
+          <Link to='/upload-weekly-bibitan'>
+            <Button>Upload Data</Button>
+          </Link>
         </div>
+        <div className='flex-1 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
+          <div className='flex-1 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
+            {loading ? (
+              // make center div h-full
+              <div className='flex h-full items-center justify-center'>
+                <Loading />
+              </div>
+            ) : error ? (
+              <p>Error fetching lokasi bibitan</p>
+            ) : (
+              <DataTable data={dataWeeklyReport} columns={colWeeklyReport} />
+            )}
+          </div>
         </div>
       </Layout.Body>
 
@@ -297,30 +282,28 @@ export default function Tasks() {
               Timeline Nursery Bibitan
             </h2>
           </div>
-
         </div>
         <div className='ml-auto flex space-x-2'>
-            <Link to='/create-uraian-pekerjaan-immature'>
-              <Button>Tambah Data</Button>
-            </Link>
-            <Link to='/upload-uraian-pekerjaan-immature'>
-              <Button>Upload Data</Button>
-            </Link>
-          </div>
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-          {loading ? (
-            // make center div h-full
-            <div className='flex h-full items-center justify-center'>
-              <Loading />
-            </div>
-          ) : error ? (
-            <p>Error fetching lokasi bibitan</p>
-          ) : (
-            <DataTable data={dataNormaPn} columns={columns} />
-
-          )}
+          <Link to='/create-uraian-pekerjaan-immature'>
+            <Button>Tambah Data</Button>
+          </Link>
+          <Link to='/upload-uraian-pekerjaan-immature'>
+            <Button>Upload Data</Button>
+          </Link>
         </div>
+        <div className='flex-1 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
+          <div className='flex-1 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
+            {loading ? (
+              // make center div h-full
+              <div className='flex h-full items-center justify-center'>
+                <Loading />
+              </div>
+            ) : error ? (
+              <p>Error fetching lokasi bibitan</p>
+            ) : (
+              <DataTable data={dataNormaPn} columns={columns} />
+            )}
+          </div>
         </div>
       </Layout.Body>
 
@@ -328,29 +311,25 @@ export default function Tasks() {
         <div className='mb-2 flex items-center justify-between space-y-2'>
           <div>
             <h2 className='text-2xl font-semibold tracking-tight'>
-            Data Stok Varietas
+              Data Stok Varietas
             </h2>
           </div>
-
         </div>
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-          {loading ? (
-            // make center div h-full
-            <div className='flex h-full items-center justify-center'>
-              <Loading />
-            </div>
-          ) : error ? (
-            <p>Error fetching lokasi bibitan</p>
-          ) : (
-            <DataTable data={dataNormaPn} columns={columns} />
-
-          )}
-        </div>
+        <div className='flex-1 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
+          <div className='flex-1 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
+            {loading ? (
+              // make center div h-full
+              <div className='flex h-full items-center justify-center'>
+                <Loading />
+              </div>
+            ) : error ? (
+              <p>Error fetching lokasi bibitan</p>
+            ) : (
+              <DataTable data={dataNormaPn} columns={columns} />
+            )}
+          </div>
         </div>
       </Layout.Body>
-
-
     </Layout>
   )
 }

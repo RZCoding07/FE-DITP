@@ -24,7 +24,7 @@ export default function Tasks() {
   const [error, setError] = useState(null)
 
   const getDataNormaImmature = async () => {
-      setLoading(true)
+    setLoading(true)
     try {
       const response = await axios.get(`${apiUrl}/master-uraian-pekerjaan`)
 
@@ -37,7 +37,6 @@ export default function Tasks() {
     setTimeout(() => {
       setLoading(false)
     }, 2200)
-
   }
 
   useEffect(() => {
@@ -61,30 +60,28 @@ export default function Tasks() {
               Master Data Norma TBM (Immature)
             </h2>
           </div>
-
         </div>
         <div className='ml-auto flex space-x-2'>
-            <Link to='/create-uraian-pekerjaan-immature'>
-              <Button>Tambah Data</Button>
-            </Link>
-            <Link to='/upload-uraian-pekerjaan-immature'>
-              <Button>Upload</Button>
-            </Link>
-          </div>
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-          {loading ? (
-            // make center div h-full
-            <div className='flex h-full items-center justify-center'>
-              <Loading />
-            </div>
-          ) : error ? (
-            <p>Error fetching lokasi bibitan</p>
-          ) : (
-            <DataTable data={dataNormaImmature} columns={columns} />
-
-          )}
+          <Link to='/create-uraian-pekerjaan-immature'>
+            <Button>Tambah Data</Button>
+          </Link>
+          <Link to='/upload-uraian-pekerjaan-immature'>
+            <Button>Upload</Button>
+          </Link>
         </div>
+        <div className='flex-1 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
+          <div className='flex-1 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
+            {loading ? (
+              // make center div h-full
+              <div className='flex h-full items-center justify-center'>
+                <Loading />
+              </div>
+            ) : error ? (
+              <p>Error fetching lokasi bibitan</p>
+            ) : (
+              <DataTable data={dataNormaImmature} columns={columns} />
+            )}
+          </div>
         </div>
       </Layout.Body>
       <Layout.Body>
@@ -94,30 +91,28 @@ export default function Tasks() {
               Master Data Norma TM (Mature)
             </h2>
           </div>
-
         </div>
         <div className='ml-auto flex space-x-2'>
-            <Link to='/create-uraian-pekerjaan-immature'>
-              <Button>Tambah Data</Button>
-            </Link>
-            <Link to='/upload-uraian-pekerjaan-immature'>
-              <Button>Upload</Button>
-            </Link>
-          </div>
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-        <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-          {loading ? (
-            // make center div h-full
-            <div className='flex h-full items-center justify-center'>
-              <Loading />
-            </div>
-          ) : error ? (
-            <p>Error fetching lokasi bibitan</p>
-          ) : (
-            <DataTable data={dataNormaImmature} columns={columns} />
-
-          )}
+          <Link to='/create-uraian-pekerjaan-immature'>
+            <Button>Tambah Data</Button>
+          </Link>
+          <Link to='/upload-uraian-pekerjaan-immature'>
+            <Button>Upload</Button>
+          </Link>
         </div>
+        <div className='flex-1 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
+          <div className='flex-1 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
+            {loading ? (
+              // make center div h-full
+              <div className='flex h-full items-center justify-center'>
+                <Loading />
+              </div>
+            ) : error ? (
+              <p>Error fetching lokasi bibitan</p>
+            ) : (
+              <DataTable data={dataNormaImmature} columns={columns} />
+            )}
+          </div>
         </div>
       </Layout.Body>
     </Layout>

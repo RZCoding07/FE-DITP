@@ -21,11 +21,10 @@ export default function Tasks() {
       const response = await axios.get(`${apiUrl}/uraian-pekerjaan`)
       setData(response.data.payload)
       setLoading(false)
-    } catch (error:any) {
+    } catch (error: any) {
       setError(error)
     }
   }
-
 
   useEffect(() => {
     fetchData()
@@ -43,7 +42,7 @@ export default function Tasks() {
       </Layout.Header>
 
       <Layout.Body>
-        <div className='mb-2 flex items-center justify-between'>
+        <div className='mb-2 flex w-full items-center justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900'>
           <div className='space-y-0.5'>
             <h2 className='text-2xl font-semibold tracking-tight'>
               Data Master Uraian Pekerjaan
@@ -64,7 +63,6 @@ export default function Tasks() {
         <div className='rounded-md border'>
           {/* <DataTable columns={columns} data={LokasiBibitan} /> */}
         </div>
-
       </Layout.Body>
     </Layout>
   )

@@ -90,7 +90,7 @@ const Body = React.forwardRef<
       {/* Blurred background */}
       <div
         className={cn(
-          'absolute opacity-50 inset-0 bg-gray-50 bg-[url("/bginvestasi.jpeg")] bg-cover bg-center  dark:bg-gradient dark:from-slate-950 dark:to-slate-900',
+          'absolute opacity-50 inset-0 bg-gray-50 bg-[url("/bginvestasi.jpeg")] bg-cover bg-center  dark:bg-gradient dark:from-slate-950 dark:to-slate-900 ',
           contextVal && contextVal.fixed && 'fixed'
         )}
         style={{
