@@ -7,6 +7,7 @@ import { FcDoughnutChart } from 'react-icons/fc'
 import { TopNav } from '@/components/top-nav'
 import { columns } from './components/columns.tsx'
 import { columns as colRekap } from './components/col-rekap.tsx'
+import { columns as colPekerjaan } from './components/col-pekerjaan.tsx'
 import { Loading } from '@/components/ui/loading.tsx'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
@@ -21,6 +22,7 @@ import {
 
 import cookie from 'js-cookie'
 import { DataTable } from './components/data-table.tsx'
+import { DataTablePekerjaan } from './components/data-table-pekerjaan.tsx'
 
 const user = cookie.get('user')
 const account_type = user ? JSON.parse(user).account_type : ''
@@ -46,6 +48,49 @@ export default function Tasks() {
 
   const apiUrl = import.meta.env.VITE_API_MONICA
 
+
+type HousingData = {
+  regional: string
+  rkapAmount: number
+  rkapPackage: number
+  hpsAmount: string
+  hpsPackage: number
+  sppbjAmount: string
+  sppbjPackage: number
+}
+
+const cdata: HousingData[] = [
+  {
+    regional: 'RPC1 (ex N3)',
+    rkapAmount: 35.16,
+    rkapPackage: 82,
+    hpsAmount: '-',
+    hpsPackage: 0,
+    sppbjAmount: '#######',
+    sppbjPackage: 89,
+  },
+  {
+    regional: 'RPC2 (ex N4)',
+    rkapAmount: 28.08,
+    rkapPackage: 19,
+    hpsAmount: '-',
+    hpsPackage: 1,
+    sppbjAmount: '#######',
+    sppbjPackage: 12,
+  },
+  {
+    regional: 'RPC3 (ex N5)',
+    rkapAmount: 3.64,
+    rkapPackage: 12,
+    hpsAmount: '-',
+    hpsPackage: 0,
+    sppbjAmount: '#######',
+    sppbjPackage: 14,
+  },
+  // Add more data as needed
+]
+
+  
   const handleClickProgrees = (progress: string) => {
     const data = dataRekap
     if (progress === 'keseluruhan') {
@@ -270,7 +315,7 @@ export default function Tasks() {
                 Selamat Datang Di MONICA
               </h4>
               <p className='text-white'>
-                Monitoring Pekerjaan Lapangan Capital Expenditure PTPN IV
+                Monitoring Investasi Capital Expenditure PTPN IV
               </p>
             </div>
             <div className='mt-4 xl:mt-0' />
@@ -623,6 +668,68 @@ export default function Tasks() {
                   <p>Error fetching data</p>
                 ) : (
                   <DataTable data={dataRekap} columns={colRekap} />
+                )}
+              </div>
+            </div>
+            {progressmasters !== '' ? (
+              <div className='mt-5 flex h-full w-full items-center justify-center'>
+                <div className='w-full bg-slate-50 rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900'>
+                  <div className='flex'>
+                    <h2 className='text-2xl font-semibold'>
+                      <img
+                        width='30'
+                        height='30'
+                        className='float-left mb-5 ml-auto mr-3'
+                        src='https://img.icons8.com/flat-round/3 0/bar-chart--v1.png'
+                        alt='bar-chart--v1'
+                      />
+                      Progress Pekerjaan Di{' '}
+                      <span className='uppercase'> {progressmasters}</span>
+                    </h2>
+                  </div>
+
+                  {progressmasters !== '' ? (
+                    loading ? (
+                      // Membuat elemen di tengah secara vertikal dan horizontal
+                      <div className='mt-5 flex h-full items-center justify-center'>
+                        <Loading />
+                      </div>
+                    ) : error ? (
+                      <p>Error fetching data</p>
+                    ) : (
+                      <>
+                        <DataTable data={data} columns={columns} />
+                      </>
+                    )
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+          </TabsContent>
+          <TabsContent value='paketPekerjaan' className='space-y-4'>
+            <div className='mt-5 flex h-full w-full items-center justify-center'>
+              <div className='0 w-full  rounded-lg border-2 bg-slate-50 bg-gradient-to-bl p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-900  dark:to-slate-950 '>
+                <div className='flex'>
+                  <h2 className='text-2xl font-semibold capitalize'>
+                    <img
+                      width='30'
+                      height='30'
+                      className='float-left mb-5 ml-auto mr-3'
+                      src='https://img.icons8.com/flat-round/3 0/bar-chart--v1.png'
+                      alt='bar-chart--v1'
+                    />
+                    Rekapitulasi Progress Paket Pekerjaan Investasi
+                  </h2>
+                  <br />
+                </div>
+                {loading ? (
+                  <div className='flex h-full items-center justify-center'>
+                    <Loading />
+                  </div>
+                ) : error ? (
+                  <p>Error fetching data</p>
+                ) : (
+                  <DataTablePekerjaan data={cdata} columns={colPekerjaan} />
                 )}
               </div>
             </div>
