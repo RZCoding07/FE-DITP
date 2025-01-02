@@ -4,7 +4,6 @@ export function Search() {
 
   const user = cookie.get('user')
   const account_type = user ? JSON.parse(user).account_type : ''
-  console.log(user)
   return (
 
     <div>

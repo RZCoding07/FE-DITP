@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import { createBrowserRouter } from 'react-router-dom'
 import GeneralError from './pages/errors/general-error'
 import NotFoundError from './pages/errors/not-found-error'
@@ -11,6 +12,7 @@ import { JSX } from 'react/jsx-runtime'
 const user = cookie.get('user')
 const app_type = user ? JSON.parse(user).app_type : ''
 
+
 // Helper untuk mendapatkan cookie
 const getCookie = (name: string) => {
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))
@@ -20,7 +22,7 @@ const getCookie = (name: string) => {
 // Loader untuk autentikasi
 const requireAuth = async () => {
   const userCookie = getCookie('user')
-  if (!userCookie) {
+  if (!userCookie  || userCookie.length === 0) {
     throw redirect('/sign-in') // Redirect ke halaman sign-in jika tidak ada cookie
   }
   return null
@@ -63,6 +65,25 @@ requireAuth().catch((error) => {
   }
 })
 
+let currentUrl = window.location.pathname;
+
+
+// Fungsi untuk menjalankan pemeriksaan secara berkala
+const checkAuthPeriodically = () => {
+  setInterval(async () => {
+    try {
+      await requireAuth();
+    } catch (error) {
+      toast.error('Sesi Anda telah berakhir. Silakan masuk kembali.');
+      window.location.reload();
+    }
+  }, 1000); // Setiap 1 detik
+};
+
+
+if (currentUrl !== '/sign-in') { 
+  checkAuthPeriodically();
+}
 
 let monicaRouter = [
   {
@@ -81,6 +102,12 @@ let monicaRouter = [
     path: 'sumber-ips',
     lazy: async () => ({
       Component: (await import('@/pages/sumber-ips-monica')).default,
+    }),
+  },
+  {
+    path: 'pengadaan-langsung',
+    lazy: async () => ({
+      Component: (await import('@/pages/pengadaan-langsung-monica')).default,
     }),
   },
   {
@@ -494,7 +521,6 @@ if (app_type === 'monica-ditn' || app_type === 'monica-infra' || app_type === 'm
   childrenRoutes = allRouter;
 }
 
-console.log('childrenRoutes', user )
 let mainRouter = [
   {
     path: '/',

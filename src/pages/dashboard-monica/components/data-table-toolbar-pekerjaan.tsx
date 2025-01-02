@@ -3,15 +3,7 @@ import { Table } from '@tanstack/react-table'
 import { Button } from '@/components/custom/button'
 import { Input } from '@/components/ui/input'
 import { DataTableViewOptions } from './data-table-view-options'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -33,22 +25,7 @@ export function DataTableToolbarPekerjaan<TData>({
         />
 
         {/* select option  */}
-        <Select>
-        <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Pilih Sub Investasi" />
-      </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Pilih Sub Investasi</SelectLabel>
-              <SelectItem value="Mesin & Instalasi">Mesin & Instalasi</SelectItem>
-              <SelectItem value="Investasi Kecil (Alat Pertanian & Perlengkapan Kantor)">Investasi Kecil (Alat Pertanian & Perlengkapan Kantor)</SelectItem>
-              <SelectItem value="Bangunan Perumahan">Bangunan Perumahan</SelectItem>
-              <SelectItem value="Bangunan Perusahaan">Bangunan Perusahaan</SelectItem>
-              <SelectItem value="Jalan, Jembatan & Saluran Air">Jalan, Jembatan & Saluran Air</SelectItem>
-              <SelectItem value="Alat Pengangkutan (Transportasi)">Alat Pengangkutan (Transportasi)</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+
 
         {isFiltered && (
           <Button
@@ -61,7 +38,6 @@ export function DataTableToolbarPekerjaan<TData>({
           </Button>
         )}
       </div>
-      <DataTableViewOptions table={table} />
     </div>
   )
 }

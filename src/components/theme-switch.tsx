@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useTheme } from './theme-provider'
 import { Button } from './custom/button'
+import cookie from 'js-cookie'
 
 export default function ThemeSwitch() {
   const { theme, setTheme } = useTheme()
@@ -19,9 +20,10 @@ export default function ThemeSwitch() {
     const themeColor = theme === 'dark' ? '#020817' : '#fff'
     const metaThemeColor = document.querySelector("meta[name='theme-color']")
     metaThemeColor && metaThemeColor.setAttribute('content', themeColor)
+    cookie.set('theme', theme)
   }, [theme])
 
-  console.log(theme)
+  // console.log(theme)
 
   return (
     <DropdownMenu>

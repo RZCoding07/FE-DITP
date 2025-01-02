@@ -23,20 +23,17 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-import { DataTablePagination } from './data-table-pagination'
-import { DataTableToolbarPekerjaan } from './data-table-toolbar-pekerjaan'
+import { DataTablePagination } from '../components/data-table-pagination'
+import { DataTableToolbar } from '../components/data-table-toolbar'
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  sub_investasi: string;
+  columns: ColumnDef<TData, TValue>[]
+  data: TData[]
 }
 
-
-export function DataTablePekerjaan<TData, TValue>({
+export function DataTable<TData, TValue>({
   columns,
   data,
-  sub_investasi,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
@@ -70,38 +67,28 @@ export function DataTablePekerjaan<TData, TValue>({
 
   return (
     <div className='space-y-4'>
-      <DataTableToolbarPekerjaan table={table} />
+      <DataTableToolbar table={table} />
       <div className='rounded-md border'>
         <Table>
-        <thead className='from-blue-500 to-green-500 bg-gradient bg-gradient-to-r text-white'>
-            <tr>
-            <th rowSpan={3} className='border'>
-                Regional
-              </th>
-              <th colSpan={6} className='border py-2'>
-                {sub_investasi}
-              </th>
-            </tr>
-            <tr>
-              <th colSpan={2} className='tg-bcrq border py-1'>
-                RKAP
-              </th>
-              <th className='tg-bcrq border py-1'>HPS</th>
-              <th className='tg-bcrq border py-1'>Pengadaan</th>
-              <th colSpan={2} className='tg-bcrq border py-1'>
-                SPPBJ
-              </th>
-            </tr>
-            <tr>
-              <th className='tg-bcrq border'>Rp. M</th>
-              <th className='tg-bcrq border'>Paket</th>
-              <th className='tg-bcrq border'>Paket</th>
-              <th className='tg-bcrq border'>Paket</th>
-              <th className='tg-bcrq border'>Rp. M</th>
-              <th className='tg-bcrq border'>Paket</th>
-            </tr>
-          </thead>
-          <TableBody className='text-center'>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id} colSpan={header.colSpan}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  )
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow

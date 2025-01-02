@@ -21,29 +21,38 @@ interface Peogress {
 }
 
 type HousingData = {
-  regional: string
+  rpc_code: string
   rkapAmount: number
   rkapPackage: number
-  hpsAmount: string
+  hps: string
+  pengadaan: number
   hpsPackage: number
-  sppbjAmount: string
-  sppbjPackage: number
+  sppbj: string
+  value_sppbj: number
+}
+
+
+const formatRupiah = (value: number) => {
+  if (!value) return 'Rp. 0' // Jika nilai kosong atau null
+  const numericValue = typeof value === 'number' ? value : parseFloat(value)
+  if (isNaN(numericValue)) return 'Rp. 0' // Jika nilai bukan angka
+  return `Rp. ${numericValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`
 }
 
 const columnHelper = createColumnHelper<HousingData>()
 
   export const columns = [
     columnHelper.group({
-      id: 'regional',
+      id: 'rpc_code',
       header: () => null,
       columns: [
-        columnHelper.accessor('regional', {
-          header: 'Regional',
+        columnHelper.accessor('rpc_code', {
+          header: 'rpc_code',
           cell: (info) => {
             return (
               <td rowSpan={3} className="p-2 align-middle">
                 <div className="flex items-center space-x-2">
-                  <span>{info.getValue()}</span>
+                  <span>{info.getValue().toUpperCase()}</span>
                 </div>
               </td>
             );
@@ -59,7 +68,7 @@ const columnHelper = createColumnHelper<HousingData>()
           columns: [
             columnHelper.accessor('rkapAmount', {
               header: 'Rp. M',
-              cell: info => info.getValue().toFixed(2),
+              cell: info => info.getValue(),
             }),
             columnHelper.accessor('rkapPackage', {
               header: 'Paket',
@@ -70,26 +79,31 @@ const columnHelper = createColumnHelper<HousingData>()
         columnHelper.group({
           header: 'HPS',
           columns: [
-            columnHelper.accessor('hpsAmount', {
+            columnHelper.accessor('hps', {
               header: 'Paket',
-              cell: info => info.getValue(),
-            }),
-            columnHelper.accessor('hpsPackage', {
+              cell: info => info.getValue() + ' PAKET',
+            })
+          ],
+        }),
+        columnHelper.group({
+          header: 'Pengadaan',
+          columns: [
+            columnHelper.accessor('pengadaan', {
               header: 'Paket',
-              cell: info => info.getValue() || '-',
-            }),
+              cell: info => info.getValue() + ' PAKET',
+            })
           ],
         }),
         columnHelper.group({
           header: 'SPPBJ',
           columns: [
-            columnHelper.accessor('sppbjAmount', {
+            columnHelper.accessor('value_sppbj', {
               header: 'Rp. M',
-              cell: info => info.getValue(),
+              cell: info => formatRupiah(info.getValue()),
             }),
-            columnHelper.accessor('sppbjPackage', {
+            columnHelper.accessor('sppbj', {
               header: 'Paket',
-              cell: info => info.getValue(),
+              cell: info => info.getValue() + ' PAKET',
             }),
           ],
         }),

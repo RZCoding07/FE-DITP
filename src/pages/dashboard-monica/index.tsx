@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Layout } from '@/components/custom/layout'
 import { Search } from '@/components/search'
 import ThemeSwitch from '@/components/theme-switch'
+import axios from 'axios'
 import { UserNav } from '@/components/user-nav'
 import { FcDoughnutChart } from 'react-icons/fc'
 import { TopNav } from '@/components/top-nav'
@@ -20,9 +21,20 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+
 import cookie from 'js-cookie'
 import { DataTable } from './components/data-table.tsx'
 import { DataTablePekerjaan } from './components/data-table-pekerjaan.tsx'
+import { Button } from '@/components/custom/button.tsx'
 
 const user = cookie.get('user')
 const account_type = user ? JSON.parse(user).account_type : ''
@@ -35,6 +47,7 @@ export default function Tasks() {
   const [countNinety, setCountNinety] = useState(0)
   const [countHundred, setCountHundred] = useState(0)
   const [data, setData] = useState([])
+  const [dataRekbesar, setDataRekBesar] = useState([])
   const [dataRekap, setDataRekap] = useState([])
   const [progressmasters, setProgressmasters] = useState('')
   const [loading, setLoading] = useState(true)
@@ -45,52 +58,51 @@ export default function Tasks() {
   const [p_hps, setP_hps] = useState(0)
   const [p_pengadaan, setP_pengadaan] = useState(0)
   const [p_sppbj, setP_sppbj] = useState(0)
+  const [selectedValueRekBesar, setSelectedValueRekBesar] = useState('Mesin & Instalasi');
 
   const apiUrl = import.meta.env.VITE_API_MONICA
 
+  type HousingData = {
+    regional: string
+    rkapAmount: number
+    rkapPackage: number
+    hpsAmount: string
+    hpsPackage: number
+    sppbjAmount: string
+    sppbjPackage: number
+  }
 
-type HousingData = {
-  regional: string
-  rkapAmount: number
-  rkapPackage: number
-  hpsAmount: string
-  hpsPackage: number
-  sppbjAmount: string
-  sppbjPackage: number
-}
+  const cdata: HousingData[] = [
+    {
+      regional: 'RPC1 (ex N3)',
+      rkapAmount: 35.16,
+      rkapPackage: 82,
+      hpsAmount: '-',
+      hpsPackage: 0,
+      sppbjAmount: '#######',
+      sppbjPackage: 89,
+    },
+    {
+      regional: 'RPC2 (ex N4)',
+      rkapAmount: 28.08,
+      rkapPackage: 19,
+      hpsAmount: '-',
+      hpsPackage: 1,
+      sppbjAmount: '#######',
+      sppbjPackage: 12,
+    },
+    {
+      regional: 'RPC3 (ex N5)',
+      rkapAmount: 3.64,
+      rkapPackage: 12,
+      hpsAmount: '-',
+      hpsPackage: 0,
+      sppbjAmount: '#######',
+      sppbjPackage: 14,
+    },
+    // Add more data as needed
+  ]
 
-const cdata: HousingData[] = [
-  {
-    regional: 'RPC1 (ex N3)',
-    rkapAmount: 35.16,
-    rkapPackage: 82,
-    hpsAmount: '-',
-    hpsPackage: 0,
-    sppbjAmount: '#######',
-    sppbjPackage: 89,
-  },
-  {
-    regional: 'RPC2 (ex N4)',
-    rkapAmount: 28.08,
-    rkapPackage: 19,
-    hpsAmount: '-',
-    hpsPackage: 1,
-    sppbjAmount: '#######',
-    sppbjPackage: 12,
-  },
-  {
-    regional: 'RPC3 (ex N5)',
-    rkapAmount: 3.64,
-    rkapPackage: 12,
-    hpsAmount: '-',
-    hpsPackage: 0,
-    sppbjAmount: '#######',
-    sppbjPackage: 14,
-  },
-  // Add more data as needed
-]
-
-  
   const handleClickProgrees = (progress: string) => {
     const data = dataRekap
     if (progress === 'keseluruhan') {
@@ -188,6 +200,38 @@ const cdata: HousingData[] = [
       setP_sppbj(totalSPPBJ)
     }
   }
+
+  const getAllRecordsperRPCRekeningBesar = async (rekBesar: string) => {
+    setLoading(true)
+    try {
+      const response = await fetch(
+        `${apiUrl}/monica/getAllRecordsperRPCRekeningBesar`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+          body: JSON.stringify({
+            rekeningBesar: rekBesar,
+          }),
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+
+      if (data) {
+        setDataRekBesar(data)
+          setLoading(false)
+      }
+    } catch (error: any) {
+      console.error('Failed to fetch progress:', error.message)
+    }
+  }
+
   const fetchAllProgress = async () => {
     setLoading(true)
     try {
@@ -267,6 +311,12 @@ const cdata: HousingData[] = [
     }
   }
 
+  const handleChange = (value: string) => {
+    console.log('Selected Value:', value);
+    setSelectedValueRekBesar(value);
+    getAllRecordsperRPCRekeningBesar(value);
+  };
+
   useEffect(() => {
     fetchAllRekap()
   }, [])
@@ -276,6 +326,11 @@ const cdata: HousingData[] = [
       fetchAllProgress()
     }
   }, [progressmasters])
+
+  useEffect(() => {
+    getAllRecordsperRPCRekeningBesar(selectedValueRekBesar);
+  }
+  , [selectedValueRekBesar]);
 
   return (
     <Layout>
@@ -631,51 +686,67 @@ const cdata: HousingData[] = [
             </div>
           </button>
         </div>
-        <Tabs
-          orientation='vertical'
-          defaultValue='keseluruhan'
-          className='space-y-4'
-        >
-          <div className='w-full overflow-x-auto pt-5'>
-            <TabsList>
-              <TabsTrigger value='keseluruhan'>Keseluruhan</TabsTrigger>
-              <TabsTrigger value='paketPekerjaan'>Paket Pekerjaan</TabsTrigger>
-              <TabsTrigger value='regional'>Regional</TabsTrigger>
-            </TabsList>
+        {progressmasters !== '' ? (
+          <div className='mt-5 flex h-full w-full items-center justify-center'>
+            <div className='w-full rounded-lg border-2 bg-slate-50 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900'>
+              <div className='flex'>
+                <h2 className='text-2xl font-semibold'>
+                  <img
+                    width='30'
+                    height='30'
+                    className='float-left mb-5 ml-auto mr-3'
+                    src='https://img.icons8.com/flat-round/3 0/bar-chart--v1.png'
+                    alt='bar-chart--v1'
+                  />
+                  Progress Pekerjaan Di{' '}
+                  <span className='uppercase'> {progressmasters}</span>
+                </h2>
+                <Button
+                  className='ml-auto'
+                  onClick={() => setProgressmasters('')}
+                >
+                  Kembali
+                </Button>
+              </div>
+
+              {progressmasters !== '' ? (
+                loading ? (
+                  // Membuat elemen di tengah secara vertikal dan horizontal
+                  <div className='mt-5 flex h-full items-center justify-center'>
+                    <Loading />
+                  </div>
+                ) : error ? (
+                  <p>Error fetching data</p>
+                ) : (
+                  <>
+                    <DataTable data={data} columns={columns} />
+                  </>
+                )
+              ) : null}
+            </div>
           </div>
-
-          <TabsContent value='keseluruhan' className='space-y-4'>
-            <div className='mt-5 flex h-full w-full items-center justify-center'>
-              <div className='0 w-full  rounded-lg border-2 bg-slate-50 bg-gradient-to-bl p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-900  dark:to-slate-950 '>
-                <div className='flex'>
-                  <h2 className='text-2xl font-semibold capitalize'>
-                    <img
-                      width='30'
-                      height='30'
-                      className='float-left mb-5 ml-auto mr-3'
-                      src='https://img.icons8.com/flat-round/3 0/bar-chart--v1.png'
-                      alt='bar-chart--v1'
-                    />
-                    Rekapitulasi Progress Pekerjaan Investasi
-                  </h2>
-                  <br />
-                </div>
-                {loading ? (
-                  <div className='flex h-full items-center justify-center'>
-                    <Loading />
-                  </div>
-                ) : error ? (
-                  <p>Error fetching data</p>
-                ) : (
-                  <DataTable data={dataRekap} columns={colRekap} />
-                )}
-              </div>
+        ) : null}
+        {progressmasters == '' ? (
+          <Tabs
+            orientation='vertical'
+            defaultValue='keseluruhan'
+            className='space-y-4'
+          >
+            <div className='w-full overflow-x-auto pt-5'>
+              <TabsList>
+                <TabsTrigger value='keseluruhan'>Keseluruhan</TabsTrigger>
+                <TabsTrigger value='paketPekerjaan'>
+                  Paket Pekerjaan
+                </TabsTrigger>
+                <TabsTrigger value='regional'>Regional</TabsTrigger>
+              </TabsList>
             </div>
-            {progressmasters !== '' ? (
+
+            <TabsContent value='keseluruhan' className='space-y-4'>
               <div className='mt-5 flex h-full w-full items-center justify-center'>
-                <div className='w-full bg-slate-50 rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900'>
+                <div className='0 w-full  rounded-lg border-2 bg-slate-50 bg-gradient-to-bl p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-900  dark:to-slate-950 '>
                   <div className='flex'>
-                    <h2 className='text-2xl font-semibold'>
+                    <h2 className='text-2xl font-semibold capitalize'>
                       <img
                         width='30'
                         height='30'
@@ -683,61 +754,27 @@ const cdata: HousingData[] = [
                         src='https://img.icons8.com/flat-round/3 0/bar-chart--v1.png'
                         alt='bar-chart--v1'
                       />
-                      Progress Pekerjaan Di{' '}
-                      <span className='uppercase'> {progressmasters}</span>
+                      Rekapitulasi Progress Pekerjaan Investasi
                     </h2>
+                    <br />
                   </div>
-
-                  {progressmasters !== '' ? (
-                    loading ? (
-                      // Membuat elemen di tengah secara vertikal dan horizontal
-                      <div className='mt-5 flex h-full items-center justify-center'>
-                        <Loading />
-                      </div>
-                    ) : error ? (
-                      <p>Error fetching data</p>
-                    ) : (
-                      <>
-                        <DataTable data={data} columns={columns} />
-                      </>
-                    )
-                  ) : null}
+                  {loading ? (
+                    <div className='flex h-full items-center justify-center'>
+                      <Loading />
+                    </div>
+                  ) : error ? (
+                    <p>Error fetching data</p>
+                  ) : (
+                    <DataTable data={dataRekap} columns={colRekap} />
+                  )}
                 </div>
               </div>
-            ) : null}
-          </TabsContent>
-          <TabsContent value='paketPekerjaan' className='space-y-4'>
-            <div className='mt-5 flex h-full w-full items-center justify-center'>
-              <div className='0 w-full  rounded-lg border-2 bg-slate-50 bg-gradient-to-bl p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-900  dark:to-slate-950 '>
-                <div className='flex'>
-                  <h2 className='text-2xl font-semibold capitalize'>
-                    <img
-                      width='30'
-                      height='30'
-                      className='float-left mb-5 ml-auto mr-3'
-                      src='https://img.icons8.com/flat-round/3 0/bar-chart--v1.png'
-                      alt='bar-chart--v1'
-                    />
-                    Rekapitulasi Progress Paket Pekerjaan Investasi
-                  </h2>
-                  <br />
-                </div>
-                {loading ? (
-                  <div className='flex h-full items-center justify-center'>
-                    <Loading />
-                  </div>
-                ) : error ? (
-                  <p>Error fetching data</p>
-                ) : (
-                  <DataTablePekerjaan data={cdata} columns={colPekerjaan} />
-                )}
-              </div>
-            </div>
-            {progressmasters !== '' ? (
+            </TabsContent>
+            <TabsContent value='paketPekerjaan' className='space-y-4'>
               <div className='mt-5 flex h-full w-full items-center justify-center'>
-                <div className='w-full bg-slate-50 rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900'>
+                <div className='0 w-full  rounded-lg border-2 bg-slate-50 bg-gradient-to-bl p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-900  dark:to-slate-950 '>
                   <div className='flex'>
-                    <h2 className='text-2xl font-semibold'>
+                    <h2 className='text-2xl font-semibold capitalize'>
                       <img
                         width='30'
                         height='30'
@@ -745,30 +782,54 @@ const cdata: HousingData[] = [
                         src='https://img.icons8.com/flat-round/3 0/bar-chart--v1.png'
                         alt='bar-chart--v1'
                       />
-                      Progress Pekerjaan Di{' '}
-                      <span className='uppercase'> {progressmasters}</span>
+                      Rekapitulasi Progress Paket Pekerjaan {selectedValueRekBesar}
                     </h2>
+                    <br />
                   </div>
-
-                  {progressmasters !== '' ? (
-                    loading ? (
-                      // Membuat elemen di tengah secara vertikal dan horizontal
-                      <div className='mt-5 flex h-full items-center justify-center'>
-                        <Loading />
-                      </div>
-                    ) : error ? (
-                      <p>Error fetching data</p>
-                    ) : (
-                      <>
-                        <DataTable data={data} columns={columns} />
-                      </>
-                    )
-                  ) : null}
+                  {loading ? (
+                    <div className='flex h-full items-center justify-center'>
+                      <Loading />
+                    </div>
+                  ) : error ? (
+                    <p>Error fetching data</p>
+                  ) : (
+                    <>
+                      <Select defaultValue={selectedValueRekBesar} onValueChange={handleChange}>
+                        <SelectTrigger className='w-[400px] float-end'>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem value='Mesin & Instalasi'>
+                              Mesin & Instalasi
+                            </SelectItem>
+                            <SelectItem value='Investasi Kecil (Alat Pertanian & Perlengkapan Kantor)'>
+                              Investasi Kecil (Alat Pertanian & Perlengkapan
+                              Kantor)
+                            </SelectItem>
+                            <SelectItem value='Bangunan Perumahan'>
+                              Bangunan Perumahan
+                            </SelectItem>
+                            <SelectItem value='Bangunan Perusahaan'>
+                              Bangunan Perusahaan
+                            </SelectItem>
+                            <SelectItem value='Jalan, Jembatan & Saluran Air'>
+                              Jalan, Jembatan & Saluran Air
+                            </SelectItem>
+                            <SelectItem value='Alat Pengangkutan (Transportasi)'>
+                              Alat Pengangkutan (Transportasi)
+                            </SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <DataTablePekerjaan sub_investasi={selectedValueRekBesar} data={dataRekbesar} columns={colPekerjaan} />
+                    </>
+                  )}
                 </div>
               </div>
-            ) : null}
-          </TabsContent>
-        </Tabs>
+            </TabsContent>
+          </Tabs>
+        ) : null}
       </Layout.Body>
     </Layout>
   )
@@ -820,3 +881,44 @@ const topNavNew = [
     isActive: false,
   },
 ]
+
+
+
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RPC 1 Ex N3' THEN    'RPC 1 (Ex N3)' 
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RPC1 (Ex N3)' THEN    'RPC 1 (Ex N3)' 
+
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RPC 1 Ex DSMTU' THEN 'RPC 1 (Ex DSMTU)'
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'DKSOKS (N3)' THEN    'RPC 1 (Ex DSMTU)'
+
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RPC 1 Ex DJABA' THEN 'RPC 1 (Ex DJABA)' 
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RKSO2 (DJABA)' THEN  'RPC 1 (Ex DJABA)'
+
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RPC 1 Ex DATIM' THEN 'RPC 1 (Ex DATIM)' 
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RKSO1 (DATIM)' THEN  'RPC 1 (Ex DATIM)'
+
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RPC 2 Ex N4' THEN     'RPC 2 (Ex N4)' 
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RPC2 (ex N4)' THEN    'RPC 2 (Ex N4)' 
+
+
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RPC 2 Ex N2' THEN    'RPC 2 (Ex N2)' 
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RKSO1 (N2)'   THEN   'RPC 2 (Ex N2)'
+
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RPC 3 Ex N5' THEN    'RPC 3 (Ex N5)' 
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RPC3 (Ex N5)' THEN   'RPC 3 (Ex N5)' 
+    
+    
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RPC 4 Ex N6' THEN    'RPC 4 (Ex N6)' 
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RPC4 (Ex N6)' THEN   'RPC 4 (Ex N6)' 
+
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RPC 5 Ex N13' THEN   'RPC 5 (Ex N13)' 
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RPC5 (Ex N13)' THEN  'RPC 5 (Ex N13)' 
+ 
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RPC 6 Ex N1' THEN    'RPC 6 (Ex N1)' 
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RKSO1 (Ex N1)' THEN  'RPC 6 (Ex N1)' 
+
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RPC 7 Ex N7' THEN    'RPC 7 (Ex N7)' 
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RKSO2 (N7)' THEN  'RPC 7 (Ex N7)' 
+
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RPC 2 Ex N14' THEN   'RPC 2 (Ex N14)' 
+// WHEN `iv_monica`.`awal`.`regionalEdit` = 'RKSO3 (N14)' THEN  'RPC 7 (Ex N14)' 
+

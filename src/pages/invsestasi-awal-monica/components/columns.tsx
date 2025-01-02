@@ -72,11 +72,11 @@ const formatRupiah = (value: number) => {
 
 export const columns: ColumnDef<InvesAwal>[] = [
   {
-    accessorKey: 'regionalEdit',
+    accessorKey: 'regionalEditMapped',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Regional Edit' />
+      <DataTableColumnHeader column={column} title='Regional' />
     ),
-    cell: ({ row }) => <span>{row.getValue('regionalEdit')}</span>,
+    cell: ({ row }) => <span>{row.getValue('regionalEditMapped')}</span>,
   },
   {
     accessorKey: 'kode',

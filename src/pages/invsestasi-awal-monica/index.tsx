@@ -19,6 +19,9 @@ export default function Awal() {
 
   const user = cookies.get('user')
 
+  const fullname = user ? JSON.parse(user).fullname : 'user'
+  const account_type = user ? JSON.parse(user).account_type : 'user'
+
   const fetchInvesAwal = async () => {
     setLoading(true)
     const tahun = new Date().getFullYear()
@@ -54,7 +57,7 @@ export default function Awal() {
       </Layout.Header>
 
       <Layout.Body>
-        <div className='mb-2 bg-slate-50 flex w-full items-center justify-between rounded-lg border-2 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900'>
+        <div className='mb-2 flex w-full items-center justify-between rounded-lg border-2 bg-slate-50 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900'>
           <div className='space-y-0.5'>
             <h2 className='text-2xl font-semibold tracking-tight'>
               Data Investasi Awal (SINUSA)
@@ -63,14 +66,16 @@ export default function Awal() {
               Here&apos;s a list of Awal in the system!
             </p>
           </div>
-          <div className='ml-auto flex space-x-2'>
-            <Link to='/upload-awal'>
-              <Button>Upload Data</Button>
-            </Link>
-          </div>
+          {(account_type === 'HO PalmCo' || account_type === 'Superadmin' ) && (
+            <div className='ml-auto flex space-x-2'>
+              <Link to='/upload-awal'>
+                <Button>Upload Data</Button>
+              </Link>
+            </div>
+          )}
         </div>
 
-        <div className='flex-1 bg-slate-50 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
+        <div className='flex-1 overflow-auto rounded-lg bg-slate-50 bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
           {loading ? (
             // make center div h-full
             <div className='flex h-full items-center justify-center'>
