@@ -296,8 +296,25 @@ export default function Dashboard() {
                 )}
               />
             </div>
+            <div>
+              <Controller
+                name="kebun"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                  styles={customStyles}
+                    placeholder="Pilih Afdeling"
+                    isSearchable
+                    options={kebunOptions}
+                    {...field}
+                    value={kebun}
+
+                  />
+                )}
+              />
             </div>
-        <div className="float-end -mt-20">
+            </div>
+        <div className="float-end -mt-5">
         <RobotInvestasi />
 
         </div>
