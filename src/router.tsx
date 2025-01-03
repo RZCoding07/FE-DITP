@@ -149,7 +149,7 @@ let monicaRouter = [
     lazy: async () => ({
       Component: (await import('./pages/dashboard-monica')).default,
     }),
-  },
+  }
 ]
 
 let nurseryRouter = [
@@ -241,6 +241,30 @@ let replantingRouter = [
 ]
 
 let immatureRouter = [
+  {
+    index: true,
+    lazy: async () => ({
+      Component: (await import('./pages/dashboard-tbm')).default,
+    }),
+  },
+  {
+    path: 'dashboard-pica-tbm',
+    lazy: async () => ({
+      Component: (await import('./pages/dashboard-tbm')).default,
+    }),
+  },
+  {
+    path: 'data-vegetatif',
+    lazy: async () => ({
+      Component: (await import('./pages/data-vegetatif')).default,
+    }),
+  },
+  {
+    path : 'upload-pengukuran-vegetatif',
+    lazy: async () => ({
+      Component: (await import('./pages/upload-pengukuran-vegetatif')).default,
+    }),
+  },
   {
     path: 'create-uraian-pekerjaan-immature',
     lazy: async () => ({

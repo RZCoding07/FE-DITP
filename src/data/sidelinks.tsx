@@ -270,6 +270,49 @@ export const monicaSideLinks: SideLink[] = [
   },
 ]
 
+export const immatureSideLinks: SideLink[] = [
+  {
+    title: 'Dashboard',
+    label: '',
+    href: '/',
+    icon: (
+      <img
+        width='20'
+        height='20'
+        src='https://img.icons8.com/color/28/doughnut-chart--v1.png'
+        alt='doughnut-chart--v1'
+      />
+    ),
+  },
+  {
+    title: 'Luas Areal Statement',
+    href: '/luas-areal',
+    icon: (
+<img width="20" height="20" src="https://img.icons8.com/cotton/20/map.png" alt="map"/>
+    ),
+  },
+  {
+    title: 'Pengukuran Vegetatif',
+    href: '/data-vegetatif',
+    icon: (
+      <img width="19" height="19" src="https://img.icons8.com/cotton/19/website-analytics--v1.png" alt="website-analytics--v1"/>
+    ),
+  },
+  {
+    title: 'Settings',
+    label: '',
+    href: '/settings',
+    icon: (
+      <img
+        width='20'
+        height='20'
+        src='https://img.icons8.com/3d-fluency/94/gear--v2.png'
+        alt='gear--v2'
+      />
+    ),
+  },
+]
+
 // Fungsi untuk memilih SideLink berdasarkan peran pengguna
 export const getSideLinks = (app_type: string): SideLink[] => {
   if (
@@ -280,6 +323,8 @@ export const getSideLinks = (app_type: string): SideLink[] => {
     return monicaSideLinks
   } else if (app_type === 'all') {
     return sidelinks
+  } else if (app_type === 'immature') {
+    return immatureSideLinks
   } else {
     return []
   }
