@@ -14,11 +14,9 @@ import cookie from 'js-cookie'
 import { Player, Controls } from '@lottiefiles/react-lottie-player'
 import { RobotInvestasi } from '@/components/loatie'
 import { Summary } from '@/components/summary'
-import { useForm, Controller } from "react-hook-form";
-// react select
+import { useForm, Controller } from 'react-hook-form'
 import Select from 'react-select'
 import { FcBarChart } from 'react-icons/fc'
-// custom styles for react select component with tsx
 const customStyles = {
   theme: (theme: any) => ({
     ...theme,
@@ -74,8 +72,7 @@ const customStyles = {
     ...provided,
     color: state.theme.mode === 'dark' ? 'white' : 'var(--text-secondary)',
   }),
-};
-
+}
 
 import { IconPdf } from '@tabler/icons-react'
 import { StokAwal } from './components/stokAwal'
@@ -84,9 +81,8 @@ export default function Dashboard() {
   const user = cookie.get('user')
   const fullname = user ? JSON.parse(user).fullname : 'user'
   const account_type = user ? JSON.parse(user).account_type : 'user'
-  console.log(user)
 
-  const [stokAwal, setStokAwal] = useState([])
+
   const currentYear = new Date().getFullYear()
   const currentMonth = new Date().getMonth() + 1
 
@@ -97,7 +93,11 @@ export default function Dashboard() {
     setValue,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm({});
+  } = useForm({})
+
+
+  const [bulanUpdate, setBulanUpdate] = useState([])
+  const [tahunUpdate, setTahunUpdate] = useState([])
 
   const bulanName = [
     { value: '1', label: 'Januari' },
@@ -132,46 +132,66 @@ export default function Dashboard() {
     { value: '2035', label: '2035' },
   ]
 
-  const defaultValueBulan = bulanName.find(
-    (item) => item.value === currentMonth.toString()
-  )
+  const fetchBulanTahun = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_IMMATURE}/vegetatif-distinct-tahun`
+      )
+      const data = response.data
 
-  const defaultValueTahun = tahunName.find(
-    (item) => item.value === currentYear.toString()
-  )
+      // jadi data itu isinya
 
-  const rpc = watch("rpc");
-  const kebun = watch("kebun");
-  const blok = watch("blok");
-  const afd = watch("afd");
-  const bulan = watch("bulan");
-  const tahun = watch("tahun");
+      // [
+      //   {
+      //     tahun: "2024",
+      //     bulan: "8",
+      //   },
+      //   {
+      //     tahun: "2024",
+      //     bulan: "9",
+      //   }
+      // ];
+
+      // aku mau jadikan itu untuk dropdown tahun dan bulan
+      
+      const tahun = data.map((item: any) => ({
+        value: item.tahun,
+        label: item.tahun,
+      }))
+
+      const bulan = data.map((item: any) => ({
+        value: item.bulan,
+        label: bulanName[parseInt(item.bulan) - 1].label,
+      }))
+
+      setTahunUpdate(tahun)
+      setBulanUpdate(bulan)
 
 
-    // Keseeluruhan
-    const [hitam, setHitam] = useState(0);
-    const [hijau, setHijau] = useState(0);
-    const [kuning, setKuning] = useState(0);
-    const [oren, setOren] = useState(0);
-    const [total, setTotal] = useState(0);
-    const [rpcOptions, setRpcOptions] = useState([]);
-    const [kebunOptions, setKebunOptions] = useState([]);
+    } catch (error) {
+      console.error('Error fetching stok awal:', error)
+    }
+  }
 
-    const fetchRpcOptions = async (tahun: number, bulan: number) => {
-      try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/rpc/${tahun}/${bulan}`);
-        const data = response.data;
-        const regionalOptions = data.map((item: { rpc: string }) => ({
-          value: item.rpc,
-          label: item.rpc,
-        }));
-        setRpcOptions(regionalOptions);
-      } catch (error) {
-        console.error("Error fetching rpc options:", error);
-      }
-    };
-  
+  const rpc = watch('rpc')
+  const kebun = watch('kebun')
+  const blok = watch('blok')
+  const afd = watch('afd')
+  const bulan = watch('bulan')
+  const tahun = watch('tahun')
 
+  // Keseeluruhan
+  const [hitam, setHitam] = useState(0)
+  const [hijau, setHijau] = useState(0)
+  const [kuning, setKuning] = useState(0)
+  const [oren, setOren] = useState(0)
+  const [total, setTotal] = useState(0)
+  const [rpcOptions, setRpcOptions] = useState([])
+  const [kebunOptions, setKebunOptions] = useState([])
+
+  useEffect(() => {
+    fetchBulanTahun()
+  }, [])
   return (
     <Layout>
       {/* ===== Top Heading ===== */}
@@ -198,14 +218,12 @@ export default function Dashboard() {
           <div className='flex items-center space-x-2'>
             <Select
               styles={customStyles}
-              options={tahunName}
-              defaultValue={defaultValueTahun}
+              options={tahunUpdate}
+              defaultValue={tahunUpdate[0]}
             />
-
             <Select
               styles={customStyles}
-              options={bulanName}
-              defaultValue={defaultValueBulan}  
+              options={bulanUpdate}
             />
 
             <Button className='flex items-center rounded-full'>
@@ -216,7 +234,7 @@ export default function Dashboard() {
         </div>
 
         <div className='py-5'>
-        <div className="rounded-xl bg-gradient-to-r from-blue-500 via-green-500 to-green-500 p-6 py-5 shadow-lg">
+          <div className='rounded-xl bg-gradient-to-r from-blue-500 via-green-500 to-green-500 p-6 py-5 shadow-lg'>
             <div className='flex flex-col xl:flex-row xl:items-center xl:justify-between'>
               <div>
                 <h4 className='text-2xl font-bold text-white'>
@@ -228,7 +246,7 @@ export default function Dashboard() {
                 </p>
               </div>
               <div className='float-right'>
-            {/* <Player
+                {/* <Player
               autoplay
               loop
               src='/EgrO8YnIZJ.json'
@@ -242,10 +260,9 @@ export default function Dashboard() {
                 buttons={['play', 'repeat', 'frame', 'debug']}
               />
             </Player> */}
-          </div>
+              </div>
             </div>
           </div>
-
         </div>
         <Summary
           data={{
@@ -255,68 +272,69 @@ export default function Dashboard() {
             hitam: hitam,
           }}
         />
-         <div className="grid grid-cols-4 gap-1 mt-5 align-end items-center">
-            <h2 className="text-2xl font-bold">Data PICA Cluster <strong>{bulanName[bulan - 1]?.label} {tahun}</strong>
-              <br />
-              <strong>
-                {rpc ? rpc.label : ""} {kebun ? " - " + kebun.label : ""} {afd ? " - " + afd.label : ""}
-              </strong>
-            </h2>
-            <div>
-              <Controller
-                name="rpc"
-                control={control}
-                render={({ field }) => (
-                  <Select
+        <div className='align-end mt-5 grid grid-cols-4 items-center gap-1'>
+          <h2 className='text-2xl font-bold'>
+            Data PICA Cluster{' '}
+            <strong>
+              {bulanName[bulan - 1]?.label} {tahun}
+            </strong>
+            <br />
+            <strong>
+              {rpc ? rpc.label : ''} {kebun ? ' - ' + kebun.label : ''}{' '}
+              {afd ? ' - ' + afd.label : ''}
+            </strong>
+          </h2>
+          <div>
+            <Controller
+              name='rpc'
+              control={control}
+              render={({ field }) => (
+                <Select
                   styles={customStyles}
-                    placeholder="Pilih RPC"
-                    isSearchable
-                    options={rpcOptions}
-                    {...field}
-                    value={rpc}
-
-                  />
-                )}
-              />
-            </div>
-            <div>
-              <Controller
-                name="kebun"
-                control={control}
-                render={({ field }) => (
-                  <Select
+                  placeholder='Pilih RPC'
+                  isSearchable
+                  options={rpcOptions}
+                  {...field}
+                  value={rpc}
+                />
+              )}
+            />
+          </div>
+          <div>
+            <Controller
+              name='kebun'
+              control={control}
+              render={({ field }) => (
+                <Select
                   styles={customStyles}
-                    placeholder="Pilih Kebun"
-                    isSearchable
-                    options={kebunOptions}
-                    {...field}
-                    value={kebun}
-
-                  />
-                )}
-              />
-            </div>
-            <div>
-              <Controller
-                name="kebun"
-                control={control}
-                render={({ field }) => (
-                  <Select
+                  placeholder='Pilih Kebun'
+                  isSearchable
+                  options={kebunOptions}
+                  {...field}
+                  value={kebun}
+                />
+              )}
+            />
+          </div>
+          <div>
+            <Controller
+              name='kebun'
+              control={control}
+              render={({ field }) => (
+                <Select
                   styles={customStyles}
-                    placeholder="Pilih Afdeling"
-                    isSearchable
-                    options={kebunOptions}
-                    {...field}
-                    value={kebun}
-
-                  />
-                )}
-              />
-            </div>
-            </div>
-        <div className="float-end -mt-5">
-        <RobotInvestasi />
-
+                  placeholder='Pilih Afdeling'
+                  isSearchable
+                  options={kebunOptions}
+                  {...field}
+                  value={kebun}
+                />
+              )}
+            />
+          </div>
+        </div>
+        <div className='float-end -mt-5'>
+          <RobotInvestasi />
         </div>
       </Layout.Body>
     </Layout>
