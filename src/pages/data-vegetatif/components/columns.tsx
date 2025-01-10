@@ -1,32 +1,23 @@
 export interface Vegetatif {
   id: string
-  entitas: string
+  regional: string
   kebun: string
-  afd: string
-  tahunTanam: number
+  afdeling: string
   blok: string
-  luas: number
-  sph: number
+  tahun_tanam: string
   varietas: string
-  lingkarBatang: number | null
-  tinggiBatang: number | null
-  jumlahPelepah: number | null
-  panjangRachis: number | null
-  lebarPetiola: number | null
-  jad: number | null
-  measurement1L: number | null
-  measurement1P: number | null
-  measurement2L: number | null
-  measurement2P: number | null
-  measurement3L: number | null
-  measurement3P: number | null
-  measurement4L: number | null
-  measurement4P: number | null
-  measurement5L: number | null
-  measurement5P: number | null
-  measurement6L: number | null
-  measurement6P: number | null
-  rerata: number | null
+  luas_ha: string
+  jumlah_pokok_awal_tanam: string
+  jumlah_pokok_sekarang: string
+  tinggi_tanaman_cm: string
+  jumlah_pelepah_bh: string
+  panjang_rachis_cm: string
+  lebar_petiola_cm: string
+  tebal_petiola_cm: string
+  jad_1_sisi: string
+  rerata_panjang_anak_daun: string
+  rerata_lebar_anak_daun: string
+  lingkar_batang_cm: string
   tahun: number
   bulan: number
 }

@@ -27,10 +27,9 @@ import { DataTablePagination } from '../components/data-table-pagination'
 import { DataTableToolbar } from '../components/data-table-toolbar'
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  columns: ColumnDef<TData, TValue>[]
+  data: TData[]
 }
-
 
 export function DataTable<TData, TValue>({
   columns,
@@ -71,49 +70,24 @@ export function DataTable<TData, TValue>({
       <DataTableToolbar table={table} />
       <div className='rounded-md border'>
         <Table>
-        <thead className='from-blue-500 to-green-500 bg-gradient-to-r text-white'>
-          <tr>
-            <th rowSpan={2} className="border border-gray-300 px-4 py-2">Entitas</th>
-            <th rowSpan={2} className="border border-gray-300 px-4 py-2">Kebun</th>
-            <th rowSpan={2} className="border border-gray-300 px-4 py-2">Afd</th>
-            <th rowSpan={2} className="border border-gray-300 px-4 py-2">Tahun Tanam</th>
-            <th rowSpan={2} className="border border-gray-300 px-4 py-2">Blok</th>
-            <th rowSpan={2} className="border border-gray-300 px-4 py-2">Luas (Ha)</th>
-            <th rowSpan={2} className="border border-gray-300 px-4 py-2">SPH</th>
-            <th rowSpan={2} className="border border-gray-300 px-4 py-2">Varietas</th>
-            <th rowSpan={2} className="border border-gray-300 px-4 py-2">Lingkar Batang (cm)</th>
-            <th rowSpan={2} className="border border-gray-300 px-4 py-2">Tinggi Batang (cm)</th>
-            <th rowSpan={2} className="border border-gray-300 px-4 py-2">Jumlah Pelepah (Bh)</th>
-            <th rowSpan={2} className="border border-gray-300 px-4 py-2">Panjang Rachis (cm)</th>
-            <th colSpan={2} className="border border-gray-300 px-4 py-2">Lebar Petiola (cm)</th>
-            <th rowSpan={2} className="border border-gray-300 px-4 py-2">JAD (Helai)</th>
-            <th colSpan={2} className="border border-gray-300 px-4 py-2">1</th>
-            <th colSpan={2} className="border border-gray-300 px-4 py-2">2</th>
-            <th colSpan={2} className="border border-gray-300 px-4 py-2">3</th>
-            <th colSpan={2} className="border border-gray-300 px-4 py-2">4</th>
-            <th colSpan={2} className="border border-gray-300 px-4 py-2">5</th>
-            <th colSpan={2} className="border border-gray-300 px-4 py-2">6</th>
-            <th colSpan={2} className="border border-gray-300 px-4 py-2">Rerata</th>
-          </tr>
-          <tr>
-            <th className="border border-gray-300 px-4 py-2">L</th>
-            <th className="border border-gray-300 px-4 py-2">T</th>
-            <th className="border border-gray-300 px-4 py-2">P</th>
-            <th className="border border-gray-300 px-4 py-2">L</th>
-            <th className="border border-gray-300 px-4 py-2">P</th>
-            <th className="border border-gray-300 px-4 py-2">L</th>
-            <th className="border border-gray-300 px-4 py-2">P</th>
-            <th className="border border-gray-300 px-4 py-2">L</th>
-            <th className="border border-gray-300 px-4 py-2">P</th>
-            <th className="border border-gray-300 px-4 py-2">L</th>
-            <th className="border border-gray-300 px-4 py-2">P</th>
-            <th className="border border-gray-300 px-4 py-2">L</th>
-            <th className="border border-gray-300 px-4 py-2">P</th>
-            <th className="border border-gray-300 px-4 py-2">L</th>
-            <th className="border border-gray-300 px-4 py-2">P</th>
-            <th className="border border-gray-300 px-4 py-2">L</th>
-          </tr>
-        </thead>
+          <TableHeader className='bg-gradient-to-r from-blue-500 to-green-500 text-white'>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id} colSpan={header.colSpan}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  )
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (

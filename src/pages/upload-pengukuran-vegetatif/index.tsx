@@ -18,62 +18,62 @@ import Select from 'react-select'
 import axios from 'axios'
 
 export default function UploadVegetatif() {
-    const customStyles = {
-        theme: (theme: any) => ({
-          ...theme,
-          colors: {
-            ...theme.colors,
-            primary25: 'var(--bg-secondary)',
-            primary: 'var(--text-primary)',
-          },
-        }),
-        control: (provided: any) => ({
-          ...provided,
-          backgroundColor: 'var(--bg-primary)',
-          borderColor: 'var(--border-primary)',
-          borderRadius: '10.5rem',
-          boxShadow: 'none',
-          color: 'var(--text-primary)',
-          width: '250px', // Set desired width here
-          minHeight: '2.5rem',
-          '&:hover': {
-            borderColor: 'var(--border-primary)',
-          },
-        }),
-        menu: (provided: any) => ({
-          ...provided,
-          backgroundColor: '#fff',
-          color: 'black',
-          boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.15)',
-          borderRadius: '0.5rem',
-        }),
-        option: (base: any, state: any) => ({
-          ...base,
-          color: state.isSelected ? 'var(--text-primary)' : 'var(--text-secondary)',
-          backgroundColor: state.isSelected
-            ? 'var(--bg-secondary)'
-            : 'var(--bg-primary)',
-          whiteSpace: 'nowrap', // Prevent text from wrapping
-          overflow: 'hidden', // Hide overflow
-          textOverflow: 'ellipsis', // Add ellipsis if text is too long
-          '&:hover': {
-            backgroundColor: 'var(--bg-secondary)',
-            color: 'var(--text-primary)',
-          },
-        }),
-        singleValue: (provided: any) => ({
-          ...provided,
-          color: 'var(--text-primary)',
-        }),
-        input: (provided: any) => ({
-          ...provided,
-          color: 'var(--text-primary)',
-        }),
-        placeholder: (provided: any, state: any) => ({
-          ...provided,
-          color: state.theme.mode === 'dark' ? 'white' : 'var(--text-secondary)',
-        }),
-      };
+  const customStyles = {
+    theme: (theme: any) => ({
+      ...theme,
+      colors: {
+        ...theme.colors,
+        primary25: 'var(--bg-secondary)',
+        primary: 'var(--text-primary)',
+      },
+    }),
+    control: (provided: any) => ({
+      ...provided,
+      backgroundColor: 'var(--bg-primary)',
+      borderColor: 'var(--border-primary)',
+      borderRadius: '10.5rem',
+      boxShadow: 'none',
+      color: 'var(--text-primary)',
+      width: '250px', // Set desired width here
+      minHeight: '2.5rem',
+      '&:hover': {
+        borderColor: 'var(--border-primary)',
+      },
+    }),
+    menu: (provided: any) => ({
+      ...provided,
+      backgroundColor: '#fff',
+      color: 'black',
+      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.15)',
+      borderRadius: '0.5rem',
+    }),
+    option: (base: any, state: any) => ({
+      ...base,
+      color: state.isSelected ? 'var(--text-primary)' : 'var(--text-secondary)',
+      backgroundColor: state.isSelected
+        ? 'var(--bg-secondary)'
+        : 'var(--bg-primary)',
+      whiteSpace: 'nowrap', // Prevent text from wrapping
+      overflow: 'hidden', // Hide overflow
+      textOverflow: 'ellipsis', // Add ellipsis if text is too long
+      '&:hover': {
+        backgroundColor: 'var(--bg-secondary)',
+        color: 'var(--text-primary)',
+      },
+    }),
+    singleValue: (provided: any) => ({
+      ...provided,
+      color: 'var(--text-primary)',
+    }),
+    input: (provided: any) => ({
+      ...provided,
+      color: 'var(--text-primary)',
+    }),
+    placeholder: (provided: any, state: any) => ({
+      ...provided,
+      color: state.theme.mode === 'dark' ? 'white' : 'var(--text-secondary)',
+    }),
+  }
 
   const [isLoadingUpload, setIsLoadingUpload] = useState(false)
   const [isUploadingDone, setIsUploadingDone] = useState(false)
@@ -82,35 +82,24 @@ export default function UploadVegetatif() {
   const user = JSON.parse(cookie.get('user') || '{}')
 
   interface UploadData {
-    entitas: string;
-    kebun: string;
-    afd: string;
-    tahunTanam: number;
-    blok: string;
-    luas: number;
-    sph: number;
-    varietas: string;
-    lingkarBatang: number | null;
-    tinggiBatang: number | null;
-    jumlahPelepah: number | null;
-    panjangRachis: number | null;
-    lebarPetiolaL: number | null;
-    lebarPetiolaT: number | null;
-    jad: number | null;
-    measurement1L: number | null;
-    measurement1P: number | null;
-    measurement2L: number | null;
-    measurement2P: number | null;
-    measurement3L: number | null;
-    measurement3P: number | null;
-    measurement4L: number | null;
-    measurement4P: number | null;
-    measurement5L: number | null;
-    measurement5P: number | null;
-    measurement6L: number | null;
-    measurement6P: number | null;
-    rerataL: number | null;
-    rerataP: number | null;
+    regional: string
+    kebun: string
+    afdeling: string
+    blok: string
+    tahun_tanam: string
+    varietas: string
+    luas_ha: string
+    jumlah_pokok_awal_tanam: string
+    jumlah_pokok_sekarang: string
+    tinggi_tanaman_cm: string
+    jumlah_pelepah_bh: string
+    panjang_rachis_cm: string
+    lebar_petiola_cm: string
+    tebal_petiola_cm: string
+    jad_1_sisi: string
+    rerata_panjang_anak_daun: string
+    rerata_lebar_anak_daun: string
+    lingkar_batang_cm: string
   }
 
   const [mappedData, setMappedData] = useState<UploadData[]>([])
@@ -217,35 +206,24 @@ export default function UploadVegetatif() {
   useEffect(() => {
     if (values.length > 0) {
       const mapped = values.map((value) => ({
-        entitas: value[0],
+        regional: value[0],
         kebun: value[1],
-        afd: value[2],
-        tahunTanam: value[3],
-        blok: value[4],
-        luas: value[5],
-        sph: value[6],
-        varietas: value[7],
-        lingkarBatang: value[8] ? Number(value[8]) : null,
-        tinggiBatang: value[9] ? Number(value[9]) : null,
-        jumlahPelepah: value[10] ? Number(value[10]) : null,
-        panjangRachis: value[11] ? Number(value[11]) : null,
-        lebarPetiolaL: value[12] ? Number(value[12]) : null,
-        lebarPetiolaT: value[13] ? Number(value[13]) : null,
-        jad: value[14] ? Number(value[14]) : null,
-        measurement1L: value[15] ? Number(value[15]) : null,
-        measurement1P: value[16] ? Number(value[16]) : null,
-        measurement2L: value[17] ? Number(value[17]) : null,
-        measurement2P: value[18] ? Number(value[18]) : null,
-        measurement3L: value[19] ? Number(value[19]) : null,
-        measurement3P: value[20] ? Number(value[20]) : null,
-        measurement4L: value[21] ? Number(value[21]) : null,
-        measurement4P: value[22] ? Number(value[22]) : null,
-        measurement5L: value[23] ? Number(value[23]) : null,
-        measurement5P: value[24] ? Number(value[24]) : null,
-        measurement6L: value[25] ? Number(value[25]) : null,
-        measurement6P: value[26] ? Number(value[26]) : null,
-        rerataL: value[27] ? Number(value[27]) : null,
-        rerataP: value[28] ? Number(value[28]) : null,
+        afdeling: value[2],
+        blok: value[3],
+        tahun_tanam: value[4],
+        varietas: value[5],
+        luas_ha: value[6],
+        jumlah_pokok_awal_tanam: value[7],
+        jumlah_pokok_sekarang: value[8],
+        tinggi_tanaman_cm: value[9],
+        jumlah_pelepah_bh: value[10],
+        panjang_rachis_cm: value[11],
+        lebar_petiola_cm: value[12],
+        tebal_petiola_cm: value[13],
+        jad_1_sisi: value[14],
+        rerata_panjang_anak_daun: value[15],
+        rerata_lebar_anak_daun: value[16],
+        lingkar_batang_cm: value[17],
         tahun: tahun || getCurrentYear(),
         bulan: bulan || getCurrentMonth() + 1,
       }))
@@ -308,7 +286,6 @@ export default function UploadVegetatif() {
     }, 3000)
   }
 
-
   const bulanName = [
     { value: '1', label: 'Januari' },
     { value: '2', label: 'Februari' },
@@ -342,8 +319,12 @@ export default function UploadVegetatif() {
     { value: '2035', label: '2035' },
   ]
 
-    const defaultValueTahun = tahunName.find((item) => item.value === getCurrentYear().toString())
-    const defaultValueBulan = bulanName.find((item) => item.value === (getCurrentMonth() + 1).toString())
+  const defaultValueTahun = tahunName.find(
+    (item) => item.value === getCurrentYear().toString()
+  )
+  const defaultValueBulan = bulanName.find(
+    (item) => item.value === (getCurrentMonth() + 1).toString()
+  )
 
   return (
     <Layout>
@@ -358,30 +339,29 @@ export default function UploadVegetatif() {
 
       <Layout.Body>
         <Card>
-            
           <CardHeader>
             <CardTitle>Upload Pengukuran Vegetatif</CardTitle>
-            <div className="flex pt-5">
-            <Select
-            styles={customStyles}
-              options={tahunName}
-              className=''
-              defaultValue={defaultValueTahun}
-              onChange= {(e:any) => setTahun(e.value)}
- 
-            />
+            <div className='flex pt-5'>
+              <Select
+                styles={customStyles}
+                options={tahunName}
+                className=''
+                defaultValue={defaultValueTahun}
+                onChange={(e: any) => setTahun(e.value)}
+              />
 
-            <Select
-            styles={customStyles}
+              <Select
+                styles={customStyles}
                 className='float-end ml-5'
-              options={bulanName}
-              defaultValue={defaultValueBulan} 
-              onChange= {(e:any) => setBulan(e.value)}
-            />
+                options={bulanName}
+                defaultValue={defaultValueBulan}
+                onChange={(e: any) => setBulan(e.value)}
+              />
             </div>
             <div className='flex items-center justify-between'>
               <p className='text-muted-foreground'>
-                Upload file .csv atau .xlsx untuk menambahkan data Monitoring Vegetatif
+                Upload file .csv atau .xlsx untuk menambahkan data Monitoring
+                Vegetatif
               </p>
             </div>
             <div className='flex items-center justify-between'>

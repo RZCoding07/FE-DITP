@@ -301,6 +301,12 @@ let allRouter = [
     }),
   },
   {
+    path: 'dashboard-immature',
+    lazy: async () => ({
+      Component: (await import('./pages/dashboard-tbm')).default,
+    }),
+  },
+  {
     path: 'dashboard-monica',
     lazy: async () => ({
       Component: (await import('./pages/dashboard-monica')).default,

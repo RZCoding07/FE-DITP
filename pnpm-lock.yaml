@@ -110,6 +110,12 @@ dependencies:
   dayjs:
     specifier: ^1.11.10
     version: 1.11.13
+  highcharts:
+    specifier: ^12.1.2
+    version: 12.1.2
+  highcharts-react-official:
+    specifier: ^3.2.1
+    version: 3.2.1(highcharts@12.1.2)(react@18.3.1)
   js-cookie:
     specifier: ^3.0.5
     version: 3.0.5
@@ -4095,6 +4101,20 @@ packages:
       hast-util-parse-selector: 2.2.5
       property-information: 5.6.0
       space-separated-tokens: 1.1.5
+    dev: false
+
+  /highcharts-react-official@3.2.1(highcharts@12.1.2)(react@18.3.1):
+    resolution: {integrity: sha512-hyQTX7ezCxl7JqumaWiGsroGWalzh24GedQIgO3vJbkGOZ6ySRAltIYjfxhrq4HszJOySZegotEF7v+haQ75UA==}
+    peerDependencies:
+      highcharts: '>=6.0.0'
+      react: '>=16.8.0'
+    dependencies:
+      highcharts: 12.1.2
+      react: 18.3.1
+    dev: false
+
+  /highcharts@12.1.2:
+    resolution: {integrity: sha512-paZ72q1um0zZT1sS+O/3JfXVSOLPmZ0zlo8SgRc0rEplPFPQUPc4VpkgQS8IUTueeOBgIWwVpAWyC9tBYbQ0kg==}
     dev: false
 
   /highlight.js@10.7.3:

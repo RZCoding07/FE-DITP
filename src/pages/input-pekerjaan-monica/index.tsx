@@ -239,7 +239,7 @@ export default function SearchKodeInvestasi() {
           if (response.data.length === 0) {
             toast.error('Data Investasi di Regional Anda tidak ditemukan!')
           } else {
-            toast.success('Data ditemukan!')
+            toast.success('Data No PK berhasil ditampilkan!')
           }
         } catch (error) {
           if (axios.isAxiosError(error)) {
