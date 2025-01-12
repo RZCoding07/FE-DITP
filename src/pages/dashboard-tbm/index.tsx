@@ -12,7 +12,6 @@ import { FcDoughnutChart, FcBarChart } from 'react-icons/fc'
 import { IconPdf } from '@tabler/icons-react'
 import cookie from 'js-cookie'
 import { Player, Controls } from '@lottiefiles/react-lottie-player'
-import { RobotInvestasi } from '@/components/loatie'
 import { Summary } from '@/components/summary'
 import Select from 'react-select'
 import { useDashboardForm } from '@/hooks/use-dashboard-form'
@@ -46,32 +45,16 @@ export default function Dashboard() {
     tbm4: 0,
   })
 
-  const [tbmDataPopulasi, setTbmDataPopulasi] = useState({
-    tbm1: 0,
-    tbm2: 0,
-    tbm3: 0,
-    tbm4: 0,
+  const [tbmDataScorePelepahBlok, setTbmDataScorePelepahBlok] = useState({
+    tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
+    tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
+    tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
   })
 
-  const [tbmDataJumlahPelepah, setTbmDataJumlahPelepah] = useState({
-    tbm1: 0,
-    tbm2: 0,
-    tbm3: 0,
-    tbm4: 0,
-  })
-
-  const [tbmDataLingkarBatang, setTbmDataLingkarBatang] = useState({
-    tbm1: 0,
-    tbm2: 0,
-    tbm3: 0,
-    tbm4: 0,
-  })
-
-  const [colorData, setColorData] = useState({
-    hitam: 0,
-    hijau: 0,
-    kuning: 0,
-    oren: 0,
+  const [tbmDataScoreLingkarBlok, setTbmDataScoreLingkarBlok] = useState({
+    tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
+    tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
+    tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
   })
 
   const rpcOptions = [
@@ -82,6 +65,13 @@ export default function Dashboard() {
 
   const [kebunOptions, setKebunOptions] = useState([])
   const [afdOptions, setAfdOptions] = useState([])
+
+  const [colorData, setColorData] = useState({
+    hitam: 0,
+    hijau: 0,
+    kuning: 0,
+    oren: 0,
+  })
 
   const rpc = watch('rpc')
   const kebun = watch('kebun')
@@ -99,33 +89,90 @@ export default function Dashboard() {
           tbm4: number
         } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
 
-        const countEmastbmResults: {
+        const pokokSekarangResults: {
           tbm1: number
           tbm2: number
           tbm3: number
           tbm4: number
         } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
 
-        const countHijautbmResults: {
+        const calJumlahPelepahResults: {
           tbm1: number
           tbm2: number
           tbm3: number
           tbm4: number
         } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
 
-        const countMerahtbmResults: {
+        const calLingkarBatangResults: {
           tbm1: number
           tbm2: number
           tbm3: number
           tbm4: number
         } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
 
-        const countHitamtbmResults: {
+        const avgPelepahResults: {
           tbm1: number
           tbm2: number
           tbm3: number
           tbm4: number
         } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
+
+        const avgLingkarBatangResults: {
+          tbm1: number
+          tbm2: number
+          tbm3: number
+          tbm4: number
+        } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
+
+        const scoreLingkarBatangResults: {
+          tbm1: {
+            score100: number
+            score90: number
+            score80: number
+            total: number
+          }
+          tbm2: {
+            score100: number
+            score90: number
+            score80: number
+            total: number
+          }
+          tbm3: {
+            score100: number
+            score90: number
+            score80: number
+            total: number
+          }
+        } = {
+          tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
+          tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
+          tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
+        }
+
+        const scoreJumlahPelepahResults: {
+          tbm1: {
+            score100: number
+            score90: number
+            score80: number
+            total: number
+          }
+          tbm2: {
+            score100: number
+            score90: number
+            score80: number
+            total: number
+          }
+          tbm3: {
+            score100: number
+            score90: number
+            score80: number
+            total: number
+          }
+        } = {
+          tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
+          tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
+          tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
+        }
 
         for (let i = 1; i < 5; i++) {
           const tahunTanam = tahun.value - i
@@ -140,15 +187,103 @@ export default function Dashboard() {
             input_tahun_tanam: tahunTanam,
           })
 
+          const newScores = Object.values(response.data).map((item: any) => {
+            const age = bulan.value
+            const blok = item.blok
+            const scoreLingkarBatang = getScoreLingkarBatang(
+              age,
+              parseFloat(item.rata_rata_lingkar_batang)
+            )
+            const scoreJumlahPelepah = getScoreJumlahPelepah(
+              age,
+              parseFloat(item.rata_rata_jumlah_pelepah)
+            )
+
+            return {
+              [`tbm${i}`]: {
+                blok,
+                scoreLingkarBatang,
+                scoreJumlahPelepah,
+              },
+            }
+          })
+
           const totalLuasHa: number = Object.values(response.data).reduce(
             (acc: number, curr: any) => acc + parseFloat(curr.total_luas_ha),
             0
           )
 
-          tbmResults[`tbm${i as 1 | 2 | 3 | 4}`] = totalLuasHa
-        }
+          const totalPokokSekarang: number = Object.values(
+            response.data
+          ).reduce(
+            (acc: number, curr: any) =>
+              acc + parseFloat(curr.total_jumlah_pokok_sekarang),
+            0
+          )
 
+          const totalCalJumlahPelepah: number = Object.values(
+            response.data
+          ).reduce(
+            (acc: number, curr: any) =>
+              acc + parseFloat(curr.total_cal_jumlah_pelepah),
+            0
+          )
+
+          const totalCalLingkarBatang: number = Object.values(
+            response.data
+          ).reduce(
+            (acc: number, curr: any) =>
+              acc + parseFloat(curr.total_cal_lingkar_batang),
+            0
+          )
+
+          tbmResults[`tbm${i as 1 | 2 | 3 | 4}`] = totalLuasHa
+
+          pokokSekarangResults[`tbm${i as 1 | 2 | 3 | 4}`] = totalPokokSekarang
+
+          calJumlahPelepahResults[`tbm${i as 1 | 2 | 3 | 4}`] =
+            totalCalJumlahPelepah
+
+          calLingkarBatangResults[`tbm${i as 1 | 2 | 3 | 4}`] =
+            totalCalLingkarBatang
+
+          avgPelepahResults[`tbm${i as 1 | 2 | 3 | 4}`] =
+            totalCalJumlahPelepah / totalPokokSekarang
+
+          avgLingkarBatangResults[`tbm${i as 1 | 2 | 3 | 4}`] =
+            totalCalLingkarBatang / totalPokokSekarang
+
+          if (i < 4) {
+            scoreJumlahPelepahResults[`tbm${i as 1 | 2 | 3}`] = {
+              score100: newScores.filter(
+                (item: any) => item[`tbm${i}`].scoreJumlahPelepah === 'Skor 100'
+              ).length,
+              score90: newScores.filter(
+                (item: any) => item[`tbm${i}`].scoreJumlahPelepah === 'Skor 90'
+              ).length,
+              score80: newScores.filter(
+                (item: any) => item[`tbm${i}`].scoreJumlahPelepah === 'Skor 80'
+              ).length,
+              total: newScores.length,
+            }
+
+            scoreLingkarBatangResults[`tbm${i as 1 | 2 | 3}`] = {
+              score100: newScores.filter(
+                (item: any) => item[`tbm${i}`].scoreLingkarBatang === 'Skor 100'
+              ).length,
+              score90: newScores.filter(
+                (item: any) => item[`tbm${i}`].scoreLingkarBatang === 'Skor 90'
+              ).length,
+              score80: newScores.filter(
+                (item: any) => item[`tbm${i}`].scoreLingkarBatang === 'Skor 80'
+              ).length,
+              total: newScores.length,
+            }
+          }
+        }
         setTbmData(tbmResults)
+        setTbmDataScorePelepahBlok(scoreJumlahPelepahResults)
+        setTbmDataScoreLingkarBlok(scoreLingkarBatangResults)
       } catch (error) {
         console.error('Error fetching data:', error)
       }
@@ -171,7 +306,7 @@ export default function Dashboard() {
             value: item.kebun,
             label: item.kebun,
           }))
-      
+
           setKebunOptions(kebun)
           setValue('kebun', null)
           setValue('afd', null)
@@ -181,7 +316,6 @@ export default function Dashboard() {
       }
 
       fetchKebunData()
-
     }
   }, [rpc])
 
@@ -200,7 +334,7 @@ export default function Dashboard() {
           }))
 
           setAfdOptions(afd)
-          setValue('afd', null) 
+          setValue('afd', null)
         } catch (error) {
           console.error('Error fetching afd:', error)
         }
@@ -234,6 +368,9 @@ export default function Dashboard() {
         <WelcomeBanner />
 
         <Summary
+          tbmData={tbmData}
+          tbmDataScorePelepahBlok={tbmDataScorePelepahBlok}
+          tbmDataScoreLingkarBlok={tbmDataScoreLingkarBlok}
           data={colorData}
           dataTbm={{
             ...tbmData,
@@ -251,6 +388,8 @@ export default function Dashboard() {
           rpcOptions={rpcOptions}
           kebunOptions={kebunOptions}
           afdOptions={afdOptions}
+          tbmDataScorePelepahBlok={tbmDataScorePelepahBlok}
+          tbmDataScoreLingkarBlok={tbmDataScoreLingkarBlok}
         />
       </Layout.Body>
     </Layout>
@@ -341,6 +480,8 @@ function DataPicaCluster({
   rpcOptions,
   kebunOptions,
   afdOptions,
+  tbmDataScorePelepahBlok,
+  tbmDataScoreLingkarBlok,
 }: {
   control: any
   rpc: any
@@ -351,6 +492,46 @@ function DataPicaCluster({
   rpcOptions: any[]
   kebunOptions: any[]
   afdOptions: any[]
+  tbmDataScorePelepahBlok: {
+    tbm1: {
+      score100: number
+      score90: number
+      score80: number
+      total: number
+    }
+    tbm2: {
+      score100: number
+      score90: number
+      score80: number
+      total: number
+    }
+    tbm3: {
+      score100: number
+      score90: number
+      score80: number
+      total: number
+    }
+  }
+  tbmDataScoreLingkarBlok: {
+    tbm1: {
+      score100: number
+      score90: number
+      score80: number
+      total: number
+    }
+    tbm2: {
+      score100: number
+      score90: number
+      score80: number
+      total: number
+    }
+    tbm3: {
+      score100: number
+      score90: number
+      score80: number
+      total: number
+    }
+  }
 }) {
   return (
     <>
@@ -408,8 +589,12 @@ function DataPicaCluster({
             styles={customStyles}
             placeholder='Pilih Blok / Luasan'
             isSearchable
-            options={kebunOptions}
-            {...control.register('afd')}
+            defaultValue={{ value: 'blok', label: 'Blok' }}
+            options={[
+              { value: 'blok', label: 'Blok' },
+              { value: 'luasan', label: 'Luasan' },
+            ]}
+            {...control.register('blok')}
             value={afd}
           />
           <div className='flex'>
@@ -420,11 +605,11 @@ function DataPicaCluster({
         </div>
       </div>
 
-      <div className='align-end mt-5 grid grid-cols-4 items-center gap-2'>
-        <DonutChart />
-        <div className='float-end -mt-5 flex justify-center align-middle'>
-          <RobotInvestasi />
-        </div>
+      <DonutChart
+        tbmDataScorePelepahBlok={tbmDataScorePelepahBlok}
+        tbmDataScoreLingkarBlok={tbmDataScoreLingkarBlok}
+      />
+      <div className='float-end -mt-5 flex justify-center align-middle'>
       </div>
     </>
   )

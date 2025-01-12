@@ -8,7 +8,10 @@ export const Summary = (dataProps: any) => {
     {
       show: true,
       name: 'Emas',
-      progress: 1,
+      progress:
+      dataProps.dataTbm.tbm2 == null
+        ? 0
+        : dataProps.dataTbm.tbm2.toLocaleString('id-ID'),
       circular: 'emas',
       image: '/2.png',
       color: '#FFA500',

@@ -41,15 +41,15 @@ BEGIN
             ROUND(AVG(CAST(rerata_panjang_anak_daun AS DECIMAL)), 2) AS rata_rata_panjang_anak_daun,
             ROUND(AVG(CAST(rerata_lebar_anak_daun AS DECIMAL)), 2) AS rata_rata_lebar_anak_daun,
             ROUND(AVG(CAST(lingkar_batang_cm AS DECIMAL)), 2) AS rata_rata_lingkar_batang,
-            ROUND(SUM(CAST(cal_jumlah_pelepah AS DECIMAL)), 2) AS total_cal_jumlah_pelepah,
-            ROUND(SUM(CAST(cal_lingkar_batang AS DECIMAL)), 2) AS total_cal_lingkar_batang,
-            ROUND(SUM(CAST(cal_tinggi_tanaman AS DECIMAL)), 2) AS total_cal_tinggi_tanaman,
+            ROUND(SUM(CAST(cal_jumlah_pelepah AS DECIMAL)), 2) AS total_cal_jumlah_pelepah, // cal ini perkalian antara jumlah pelepah dan jumlah pokok sekarang
+            ROUND(SUM(CAST(cal_lingkar_batang AS DECIMAL)), 2) AS total_cal_lingkar_batang, // cal ini perkalian antara lingkar batang dan jumlah pokok sekarang
+            ROUND(SUM(CAST(cal_tinggi_tanaman AS DECIMAL)), 2) AS total_cal_tinggi_tanaman, // cal ini perkalian antara tinggi tanaman dan jumlah pokok sekarang
             ''', input_filtered_by, ''' AS filtered_by
         FROM vw_vegetatif
         WHERE 1=1'
     );
 
-    -- Add WHERE conditions dynamically
+    -- Si Paling Dinamis
     IF input_regional IS NOT NULL THEN
         SET sql_query = CONCAT(sql_query, ' AND LOWER(regional) LIKE LOWER(\'%', input_regional, '%\')');
     END IF;
