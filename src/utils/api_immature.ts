@@ -21,3 +21,18 @@ export const fetchVegetativeProc = async (params: any) => {
   return response.data;
 };
 
+export const fetchKebun = async (params: any) => {
+  const url = `${API_BASE_URL}/get-kebun-where-reg-vegetatif`;
+  const response = await axios.post(url, params, {
+    headers: { 'Content-Type': 'application/json' },
+  });
+  return response.data;
+};
+
+export const fetchAfd = async (params: any) => {
+  const url = `${API_BASE_URL}/get-afd-where-kebun-vegetatif`;
+  const response = await axios.post(url, params, {
+    headers: { 'Content-Type': 'application/json' },
+  });
+  return response.data;
+}

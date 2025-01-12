@@ -14,7 +14,7 @@ export const customStyles = {
       borderRadius: '10.5rem',
       boxShadow: 'none',
       color: 'var(--text-primary)',
-      width: '250px', // Set desired width here
+      width: '100%', // Set desired width here
       minHeight: '2.5rem',
       '&:hover': {
         borderColor: 'var(--border-primary)',

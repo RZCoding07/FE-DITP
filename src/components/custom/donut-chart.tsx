@@ -6,35 +6,52 @@ const DonutChart: React.FC = () => {
   const options: ApexOptions = {
     series: [44, 55, 41, 17],
     labels: ['Emas', 'Hijau', 'Merah', 'Hitam'],
-
-    
     chart: {
       width: 380,
       type: 'donut',
+      foreColor: '#ffffff',
     },
     colors: ['#FFA500', '#00a300', '#FF0000', '#000000'],
-    
     plotOptions: {
       pie: {
         startAngle: -90,
         endAngle: 270,
+        donut: {
+          labels: {
+            show: true,
+            total: {
+              show: true,
+              label: 'Total',
+              formatter: function (w) {
+                return w.globals.seriesTotals.reduce(
+                  (a: any, b: any) => a + b,
+                  0
+                )
+              },
+              color: '#ffffff',
+              fontWeight: 'bold',
+            },
+          },
+        },
       },
     },
     dataLabels: {
-      enabled: false,
+      enabled: true,
+      formatter: function (val: any) {
+        return val.toFixed(0) + '%'
+      },
     },
     fill: {
       type: 'gradient',
     },
     legend: {
       formatter: function (val, opts) {
-        return `${val} - ${opts.w.globals.series[opts.seriesIndex]}`
+        return `&nbsp;${val} <br/> &nbsp;${opts.w.globals.series[opts.seriesIndex]}<br/>`
       },
       labels: {
-        colors: '#ffffff', // Custom label colors for the legend
+        colors: '#ffffff',
       },
     },
-
     responsive: [
       {
         breakpoint: 480,
@@ -51,34 +68,42 @@ const DonutChart: React.FC = () => {
   }
 
   return (
-<>
-<div className='mt-5 dark:bg-slate-900 p-5 rounded-lg mr-3'>     <h2 className='text-xl font-semibold text-center'>TBM 1</h2>
-      <ReactApexChart
-        options={options}
-        series={options.series}
-        type='donut'
-        height={350}
-      />
-    </div>
-    <div className='mt-5 dark:bg-slate-900 p-5 rounded-lg mr-3'>
-      <h2 className='text-xl font-semibold text-center'>TBM 2</h2>
-      <ReactApexChart
-        options={options}
-        series={options.series}
-        type='donut'
-        height={350}
-      />
-    </div>
-    <div className='mt-5 dark:bg-slate-900 p-5 rounded-lg mr-3'>
-      <h2 className='text-xl font-semibold text-center'>TBM 3</h2>
-      <ReactApexChart
-        options={options}
-        series={options.series}
-        type='donut'
-        height={350}
-      />
-    </div>
-</>
+    <>
+      <div className='mr-3 mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md  shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+        {' '}
+        <h2 className='text-center text-xl font-semibold'>TBM 1</h2>
+        <hr className='border-cyan-400 my-2' />
+        <ReactApexChart
+          options={options}
+          series={options.series}
+          type='donut'
+          height={350}
+        />
+      </div>
+      <div className='mr-3 mt-5 rounded-lg  border border-cyan-500 bg-white p-5 shadow-md  shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 '>
+        <h2 className='text-center text-xl font-semibold'>TBM 2</h2>
+        <hr className='border-cyan-400 my-2' />
+ 
+
+        <ReactApexChart
+          options={options}
+          series={options.series}
+          type='donut'
+          height={350}
+        />
+      </div>
+      <div className='mr-3 mt-5 rounded-lg  border border-cyan-500 bg-white p-5 shadow-md  shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 '>
+        <h2 className='text-center text-xl font-semibold'>TBM 3</h2>
+        <hr className='border-cyan-400 my-2' />
+ 
+        <ReactApexChart
+          options={options}
+          series={options.series}
+          type='donut'
+          height={350}
+        />
+      </div>
+    </>
   )
 }
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Controller } from 'react-hook-form'
 import { Layout } from '@/components/custom/layout'
 import { Button } from '@/components/custom/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -15,10 +16,11 @@ import { RobotInvestasi } from '@/components/loatie'
 import { Summary } from '@/components/summary'
 import Select from 'react-select'
 import { useDashboardForm } from '@/hooks/use-dashboard-form'
-import { fetchVegetativeProc } from '@/utils/api'
+import { fetchVegetativeProc, fetchKebun, fetchAfd } from '@/utils/api_immature'
 import { TOP_NAV } from '@/utils/constants'
 import { customStyles } from '@/styles/select-styles'
 import DonutChart from '@/components/custom/donut-chart'
+import { FaRecycle, FaSync } from 'react-icons/fa'
 
 export default function Dashboard() {
   const user = cookie.get('user')
@@ -28,6 +30,7 @@ export default function Dashboard() {
   const {
     control,
     watch,
+    setValue,
     errors,
     isSubmitting,
     bulanOptions,
@@ -71,8 +74,14 @@ export default function Dashboard() {
     oren: 0,
   })
 
-  const [rpcOptions, setRpcOptions] = useState([])
+  const rpcOptions = [
+    { value: 'RPC1', label: 'RPC 1' },
+    { value: 'RPC4', label: 'RPC 4' },
+    { value: 'RPC6', label: 'RPC 6' },
+  ]
+
   const [kebunOptions, setKebunOptions] = useState([])
+  const [afdOptions, setAfdOptions] = useState([])
 
   const rpc = watch('rpc')
   const kebun = watch('kebun')
@@ -150,6 +159,57 @@ export default function Dashboard() {
     }
   }, [bulan, tahun])
 
+  useEffect(() => {
+    if (rpc) {
+      const fetchKebunData = async () => {
+        try {
+          const response = await fetchKebun({
+            rpc: rpc.value,
+          })
+
+          const kebun = response.map((item: any) => ({
+            value: item.kebun,
+            label: item.kebun,
+          }))
+      
+          setKebunOptions(kebun)
+          setValue('kebun', null)
+          setValue('afd', null)
+        } catch (error) {
+          console.error('Error fetching kebun:', error)
+        }
+      }
+
+      fetchKebunData()
+
+    }
+  }, [rpc])
+
+  useEffect(() => {
+    if (kebun) {
+      const fetchAfdData = async () => {
+        try {
+          const response = await fetchAfd({
+            rpc: rpc.value,
+            kebun: kebun.value,
+          })
+
+          const afd = response.map((item: any) => ({
+            value: item.afdeling,
+            label: item.afdeling,
+          }))
+
+          setAfdOptions(afd)
+          setValue('afd', null) 
+        } catch (error) {
+          console.error('Error fetching afd:', error)
+        }
+      }
+
+      fetchAfdData()
+    }
+  }, [kebun])
+
   return (
     <Layout>
       <Layout.Header>
@@ -163,6 +223,7 @@ export default function Dashboard() {
 
       <Layout.Body>
         <DashboardHeader
+          fullname={fullname}
           control={control}
           tahunOptions={tahunOptions}
           bulanOptions={bulanOptions}
@@ -189,11 +250,8 @@ export default function Dashboard() {
           tahun={tahun}
           rpcOptions={rpcOptions}
           kebunOptions={kebunOptions}
+          afdOptions={afdOptions}
         />
-
-        <div className='float-end -mt-5'>
-          <RobotInvestasi />
-        </div>
       </Layout.Body>
     </Layout>
   )
@@ -201,38 +259,47 @@ export default function Dashboard() {
 
 function DashboardHeader({
   control,
+  fullname,
   tahunOptions,
   bulanOptions,
   defaultTahun,
   defaultBulan,
 }: {
   control: any
+  fullname: any
   tahunOptions: any
   bulanOptions: any
   defaultTahun: any
   defaultBulan: any
 }) {
   return (
-    <div className='mb-2 flex items-center justify-between space-y-2'>
-      <div className='flex items-center space-x-2'>
-        <FcDoughnutChart size={40} />
+    <div className='mb-2 flex items-center justify-between space-y-2 '>
+      <div className='flex items-center space-x-2 '>
+        <FcDoughnutChart
+          size={40}
+          style={{ animation: 'spin 4s linear infinite' }}
+        />
         <h1 className='text-2xl font-bold tracking-tight'>
           Dashboard PICA TBM
         </h1>
       </div>
-
+      <h1>Hi, Welcome back {fullname}👋</h1>
       <div className='flex items-center space-x-2'>
-        <Select
-          styles={customStyles}
-          options={tahunOptions}
+        <Controller
+          name='tahun'
+          control={control}
           defaultValue={defaultTahun}
-          {...control.register('tahun')}
+          render={({ field }) => (
+            <Select {...field} styles={customStyles} options={tahunOptions} />
+          )}
         />
-        <Select
-          styles={customStyles}
-          options={bulanOptions}
+        <Controller
+          name='bulan'
+          control={control}
           defaultValue={defaultBulan}
-          {...control.register('bulan')}
+          render={({ field }) => (
+            <Select {...field} styles={customStyles} options={bulanOptions} />
+          )}
         />
 
         <Button className='flex items-center rounded-full'>
@@ -273,6 +340,7 @@ function DataPicaCluster({
   tahun,
   rpcOptions,
   kebunOptions,
+  afdOptions,
 }: {
   control: any
   rpc: any
@@ -282,46 +350,83 @@ function DataPicaCluster({
   tahun: any
   rpcOptions: any[]
   kebunOptions: any[]
+  afdOptions: any[]
 }) {
   return (
-    <div className='align-end mt-5 grid grid-cols-4 items-center gap-1'>
-      <h2 className='text-2xl font-bold'>
-        Data PICA Cluster{' '}
-        <strong>
-          {bulan ? bulan.label : ''} {tahun ? tahun.label : ''}
-        </strong>
-        <br />
-        <strong>
-          {rpc ? rpc.label : ''} {kebun ? ' - ' + kebun.label : ''}{' '}
-          {afd ? ' - ' + afd.label : ''}
-        </strong>
-      </h2>
-      <Select
-        styles={customStyles}
-        placeholder='Pilih RPC'
-        isSearchable
-        options={rpcOptions}
-        {...control.register('rpc')}
-        value={rpc}
-      />
-      <Select
-        styles={customStyles}
-        placeholder='Pilih Kebun'
-        isSearchable
-        options={kebunOptions}
-        {...control.register('kebun')}
-        value={kebun}
-      />
-      <Select
-        styles={customStyles}
-        placeholder='Pilih Afdeling'
-        isSearchable
-        options={kebunOptions}
-        {...control.register('afd')}
-        value={afd}
-      />
-      <DonutChart />
-    </div>
+    <>
+      <div className='align-end mt-5 grid grid-cols-[30%_70%] items-center'>
+        <h2 className='text-2xl font-bold'>
+          PICA Cluster {rpc ? rpc.label : ''} {kebun ? ' / ' + kebun.label : ''}{' '}
+          {afd ? ' / ' + afd.label : ''} <br />
+          <strong>
+            {bulan ? bulan.label : ''} {tahun ? tahun.label : ''}
+          </strong>
+        </h2>
+        <div className='grid grid-cols-5 items-center gap-3'>
+          <Controller
+            name='rpc'
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                styles={customStyles}
+                placeholder='Pilih RPC'
+                isSearchable
+                options={rpcOptions}
+              />
+            )}
+          />
+          <Controller
+            name='kebun'
+            control={control}
+            render={({ field }) => (
+              <Select
+                styles={customStyles}
+                placeholder='Pilih Kebun'
+                isSearchable
+                options={kebunOptions}
+                {...field}
+              />
+            )}
+          />
+
+          <Controller
+            name='afd'
+            control={control}
+            render={({ field }) => (
+              <Select
+                styles={customStyles}
+                placeholder='Pilih Afdeling'
+                isSearchable
+                options={afdOptions}
+                {...field}
+              />
+            )}
+          />
+
+          <Select
+            styles={customStyles}
+            placeholder='Pilih Blok / Luasan'
+            isSearchable
+            options={kebunOptions}
+            {...control.register('afd')}
+            value={afd}
+          />
+          <div className='flex'>
+            <Button className='flex items-center rounded-full'>
+              <FaSync style={{ animation: 'spin 8s linear infinite' }} />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className='align-end mt-5 grid grid-cols-4 items-center gap-2'>
+        <DonutChart />
+        <div className='float-end -mt-5 flex justify-center align-middle'>
+          <RobotInvestasi />
+        </div>
+      </div>
+    </>
   )
 }
 

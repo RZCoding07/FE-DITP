@@ -104,7 +104,7 @@ export const Summary = (dataProps: any) => {
         item.show ? (
           <Card
             key={i}
-            className='bg-gradient-to-br py-2 shadow-lg dark:from-slate-900 dark:via-slate-950 dark:to-transparent'
+            className='bg-gradient-to-br py-2 shadow-md dark:from-slate-900 dark:via-slate-950 dark:to-transparent border border-cyan-500 shadow-cyan-500'
           >
             <CardContent className='flex items-center px-2 py-2'>
               <div className='relative float-end mr-2 h-10 w-10'>
@@ -127,10 +127,11 @@ export const Summary = (dataProps: any) => {
         item.show ? (
           <Card
             key={i}
-            className='py-1 shadow-lg'
+            className='py-1 shadow-md dark:from-slate-900 dark:via-slate-950 dark:to-transparent border'
             style={{
               background: `linear-gradient(135deg, ${item.color} 55%, ${item.color}29 45%)`,
               borderColor: item.color,
+        
             }}
           >
             <CardContent className='flex items-center px-2 py-2'>

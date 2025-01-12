@@ -24,7 +24,6 @@ export default function Sidebar({
   const account_type = user ? JSON.parse(user).account_type : 'user'
   const app_type = user ? JSON.parse(user).app_type : ''
 
-
   /* Make body not scrollable when navBar is opened */
   useEffect(() => {
     if (navOpened) {
@@ -83,7 +82,7 @@ export default function Sidebar({
           className={`z-40 h-full flex-1 overflow-auto ${navOpened ? 'max-h-screen' : 'max-h-0 py-0 md:max-h-screen md:py-2'}`}
           closeNav={() => setNavOpened(false)}
           isCollapsed={isCollapsed}
-          links={getSideLinks(app_type)}  
+          links={getSideLinks(app_type)}
         />
 
         {/* Scrollbar width toggle button */}
@@ -99,32 +98,15 @@ export default function Sidebar({
           />
         </Button>
         <div data-sidebar='footer' className='flex flex-col gap-2 p-2'>
-          <ul
-            data-sidebar='menu'
-            className='flex w-full min-w-0 flex-col gap-1'
-          >
-            <li data-sidebar='menu-item' className='group/menu-item relative'>
-              <button
-                data-sidebar='menu-button'
-                data-size='lg'
-                className='peer/menu-button ring-sidebar-ring active:bg-sidebar-accent active:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground [&amp;>span:last-child]:truncate [&amp;>svg]:size-4 [&amp;>svg]:shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground flex h-12 w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none transition-[width,height,padding] focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:font-medium group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-0'
-                type='button'
-              >
-                <span className='relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg'>
-                  <span className='flex h-full w-full items-center justify-center rounded-lg bg-muted'>
-                    <img src='ptpn4.png' alt='logo' style={{ width: '35px' }} />                  
-                    </span>
-                </span>
-                <div className='grid flex-1 text-left text-sm leading-tight'>
-                  <span className='truncate font-semibold'>{fullname}</span>
-                  <span className='truncate text-xs'>
-                    {account_type}
-                  </span>
-                </div>
-
-              </button>
-            </li>
-          </ul>
+          <div className={`flex items-center ${!isCollapsed ? 'gap-2' : ''}`}>
+            <img src='ptpn4.png' alt='logo' style={{ width: '35px' }} />
+            <div
+              className={`flex flex-col justify-end truncate ${isCollapsed ? 'invisible w-0' : 'visible w-auto'}`}
+            >
+              <span className='ml-2 font-medium'>{fullname}</span>
+              <span className='ml-2 text-xs capitalize'>{account_type}</span>
+            </div>
+          </div>
         </div>
       </Layout>
     </aside>
