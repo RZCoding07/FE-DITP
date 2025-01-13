@@ -24,6 +24,7 @@ type HousingData = {
   rpc_code: string
   rkap_nilai_proyek: number
   rkap_jumlah_paket: number
+  tekpol: string
   hps: string
   pengadaan: number
   hpsPackage: number
@@ -74,6 +75,15 @@ const columnHelper = createColumnHelper<HousingData>()
               header: 'Paket',
               cell: info => info.getValue() + ' PAKET',
             }),
+          ],
+        }),
+        columnHelper.group({
+          header: 'Tekpol',
+          columns: [
+            columnHelper.accessor('tekpol', {
+              header: 'Paket',
+              cell: info => info.getValue() + ' PAKET',
+            })
           ],
         }),
         columnHelper.group({

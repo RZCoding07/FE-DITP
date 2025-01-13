@@ -86,6 +86,7 @@ export function DataTablePekerjaan<TData, TValue>({
               <th colSpan={2} className='tg-bcrq border py-1'>
                 RKAP
               </th>
+              <th className='tg-bcrq border py-1'>Tekpol</th>
               <th className='tg-bcrq border py-1'>HPS</th>
               <th className='tg-bcrq border py-1'>Pengadaan</th>
               <th colSpan={2} className='tg-bcrq border py-1'>
@@ -94,6 +95,7 @@ export function DataTablePekerjaan<TData, TValue>({
             </tr>
             <tr>
               <th className='tg-bcrq border'>Rp. M</th>
+              <th className='tg-bcrq border'>Paket</th>
               <th className='tg-bcrq border'>Paket</th>
               <th className='tg-bcrq border'>Paket</th>
               <th className='tg-bcrq border'>Paket</th>
