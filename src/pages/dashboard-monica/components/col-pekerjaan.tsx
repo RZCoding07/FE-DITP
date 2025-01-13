@@ -69,7 +69,7 @@ const columnHelper = createColumnHelper<HousingData>()
           columns: [
             columnHelper.accessor('rkap_nilai_proyek', {
               header: 'Rp. M',
-              cell: info => info.getValue(),
+              cell: info => formatRupiah(info.getValue()),
             }),
             columnHelper.accessor('rkap_jumlah_paket', {
               header: 'Paket',

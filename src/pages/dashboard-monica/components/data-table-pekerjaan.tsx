@@ -78,7 +78,7 @@ export function DataTablePekerjaan<TData, TValue>({
             <th rowSpan={3} className='border'>
                 Regional
               </th>
-              <th colSpan={6} className='border py-2'>
+              <th colSpan={7} className='border py-2'>
                 {sub_investasi}
               </th>
             </tr>
