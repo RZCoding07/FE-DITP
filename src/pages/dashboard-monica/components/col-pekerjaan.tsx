@@ -22,8 +22,8 @@ interface Peogress {
 
 type HousingData = {
   rpc_code: string
-  rkapAmount: number
-  rkapPackage: number
+  rkap_nilai_proyek: number
+  rkap_jumlah_paket: number
   hps: string
   pengadaan: number
   hpsPackage: number
@@ -66,11 +66,11 @@ const columnHelper = createColumnHelper<HousingData>()
         columnHelper.group({
           header: 'RKAP',
           columns: [
-            columnHelper.accessor('rkapAmount', {
+            columnHelper.accessor('rkap_nilai_proyek', {
               header: 'Rp. M',
               cell: info => info.getValue(),
             }),
-            columnHelper.accessor('rkapPackage', {
+            columnHelper.accessor('rkap_jumlah_paket', {
               header: 'Paket',
               cell: info => info.getValue(),
             }),

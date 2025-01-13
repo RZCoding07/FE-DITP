@@ -155,7 +155,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
   })
 
   return (
-    <div className='grid gap-4 lg:grid-cols-4 2xl:grid-cols-4'>
+    <div className='grid gap-4 lg:grid-cols-4 2xl:grid-cols-4 align-middle justify-center'>
       {tbmCharts}
       <RobotInvestasi />
     </div>
