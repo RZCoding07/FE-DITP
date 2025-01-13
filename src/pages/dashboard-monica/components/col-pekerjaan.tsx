@@ -72,7 +72,7 @@ const columnHelper = createColumnHelper<HousingData>()
             }),
             columnHelper.accessor('rkap_jumlah_paket', {
               header: 'Paket',
-              cell: info => info.getValue(),
+              cell: info => info.getValue() + ' PAKET',
             }),
           ],
         }),
