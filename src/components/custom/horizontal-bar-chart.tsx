@@ -9,7 +9,7 @@ const StockAnalysisChart = (dataprops: any) => {
 
   const dataset = dataprops.dataset[dataprops.val]
 
-  console.log(dataset)
+  let score = dataprops.score
 
 
   const categories = [
@@ -34,22 +34,18 @@ const StockAnalysisChart = (dataprops: any) => {
       return { category, filter }
     })
   } else if (dataprops.untuk === 'Total Luasan') {
-    
     datas = categories.map((category) => {
-        const filter = dataset.reduce((sum: number, item: any) => {
-          return item.regional === category
-            ? sum + parseFloat(item.luas_ha || '0')
-            : sum;
-        }, 0); // Sum total_luas_ha hanya untuk item yang sesuai kategori
-        
-        // Round the sum and remove commas
-        const roundedFilter = Math.round(filter); // Round the result
-      
-        return { category, filter: roundedFilter };
-      });
-      
+      const filter = dataset.reduce((sum: number, item: any) => {
+        return item.regional === category
+          ? sum + parseFloat(item.luas_ha || '0')
+          : sum
+      }, 0) // Sum total_luas_ha hanya untuk item yang sesuai kategori
 
-    console.log(datas)
+      // Round the sum and remove commas
+      const roundedFilter = Math.round(filter) // Round the result
+
+      return { category, filter: roundedFilter }
+    })
   }
 
   const options: ApexOptions = {

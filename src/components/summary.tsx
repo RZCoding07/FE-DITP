@@ -5,8 +5,6 @@ import { Button } from '@/components/custom/button'
 export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClick: (data: any) => void }) => {
   const tahunValue = dataProps?.dataTbm?.tahun?.value
 
-  console.log(dataProps.data)
-
   const data = [
     {
       show: true,

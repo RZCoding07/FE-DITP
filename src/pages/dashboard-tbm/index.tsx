@@ -86,7 +86,6 @@ export default function Dashboard() {
   const [scores, setScores] = useState<any[]>([])
   const [tbmRes, setTbmRes] = useState<any[]>([])
 
-
   const [colorData, setColorData] = useState({
     emas: 0,
     hijau: 0,
@@ -100,6 +99,13 @@ export default function Dashboard() {
   const bulan = watch('bulan')
   const tahun = watch('tahun')
 
+  useEffect(() => {
+    const emasScores = scores.filter((score:any) => {
+      return (Object.values(score)[0] as any).scoreTinggiBatang == 0
+    });
+
+    console.log('emasScores', emasScores)
+  }, [scores])
   useEffect(() => {
     const fetchProcVegetatifDefault = async () => {
       try {
@@ -196,7 +202,6 @@ export default function Dashboard() {
         }
 
         for (let i = 1; i < 5; i++) {
-      
           const tahunTanam = tahun.value - i
           const response = await fetchVegetativeProc({
             input_filtered_by: 'Blok',
@@ -210,29 +215,24 @@ export default function Dashboard() {
             input_tbm: 'tbm' + i,
           })
 
-
-          setTbmRes(prev => [...prev, Object.values(response.data)])
+          setTbmRes((prev) => [...prev, Object.values(response.data)])
 
           const newScores = Object.values(response.data).map((item: any) => {
-          //  console length response.data
-            console.log('response.data',  Object.values(response.data).length)
+            //  console length response.data
+            // console.log('response.data',  Object.values(response.data).length)
             const age = bulan.value
             const blok = item.blok
             const scoreLingkarBatang =
-              getScoreLingkarBatang(
-                age,
-                parseFloat(item.lingkar_batang_cm)
-              ) * 0.4
+              getScoreLingkarBatang(age, parseFloat(item.lingkar_batang_cm)) *
+              0.4
             const scoreJumlahPelepah =
-              getScoreJumlahPelepah(
-                age,
-                parseFloat(item.jumlah_pelepah_bh)
-              ) * 0.2
+              getScoreJumlahPelepah(age, parseFloat(item.jumlah_pelepah_bh)) *
+              0.2
 
             const scoreTinggiBatang =
               getScoreTinggiTanaman(
                 age,
-                parseFloat(item.rata_rata_tinggi_tanaman)
+                parseFloat(item.tinggi_tanaman_cm)
               ) * 0.1
 
             const scoreKerapatanPokok =
@@ -248,16 +248,34 @@ export default function Dashboard() {
               scoreTinggiBatang +
               scoreKerapatanPokok
 
+            let colorCategory = ''
+
+            if (totalSeleksian <= 80) {
+              colorCategory = 'hitam'
+            } else if (totalSeleksian > 80 && totalSeleksian <= 89) {
+              colorCategory = 'merah'
+            } else if (totalSeleksian > 89 && totalSeleksian <= 96) {
+              colorCategory = 'hijau'
+            } else if (totalSeleksian > 96) {
+              colorCategory = 'emas'
+            }
+
+            let luas = parseFloat(item.luas_ha)
+            let regional = item.regional
+
             setScores((prev) => [
               ...prev,
               {
                 [`tbm${i}`]: {
+                  regional,
                   blok,
                   scoreLingkarBatang,
                   scoreJumlahPelepah,
                   scoreTinggiBatang,
                   scoreKerapatanPokok,
                   totalSeleksian,
+                  colorCategory,
+                  luas
                 },
               },
             ])
@@ -278,12 +296,15 @@ export default function Dashboard() {
 
             return {
               [`tbm${i}`]: {
+                regional,
                 blok,
                 scoreLingkarBatang,
                 scoreJumlahPelepah,
                 scoreTinggiBatang,
                 scoreKerapatanPokok,
                 totalSeleksian,
+                colorCategory,
+                luas
               },
             }
           })
@@ -424,11 +445,11 @@ export default function Dashboard() {
     }
   }, [kebun])
 
-  const [selectedCard, setSelectedCard] = useState<any| null>(null);
+  const [selectedCard, setSelectedCard] = useState<any | null>(null)
   const handleCardClick = (cardData: any) => {
     // console.log('tbmRes', tbmRes)
-    setSelectedCard(cardData); // Simpan parameter atau lakukan tindakan lainnya
-  };
+    setSelectedCard(cardData) // Simpan parameter atau lakukan tindakan lainnya
+  }
 
   const dataRules = [
     {
@@ -473,7 +494,6 @@ export default function Dashboard() {
       textColor: '#ffffff',
     },
   ]
-
 
   let topNav: { title: string; href: string; isActive: boolean }[] = []
 
@@ -541,48 +561,47 @@ export default function Dashboard() {
           }}
           onCardClick={handleCardClick}
         />
-              <div className='flex'>
-        {dataRules.map((item, i) =>
-          item.show ? (
-            <div
-              key={i}
-              className='w-full block mt-5 bg-gradient-to-br   dark:from-slate-900 dark:via-slate-950 dark:to-slate-950'
-              style={{
-                background: `linear-gradient(135deg, ${item.color} 55%, ${item.color}69 45%)`,
-                borderColor: item.color,
-          
-              }}
-           >
-                <div className='py-1 px-4 flex items-center justify-between'>
+        <div className='flex'>
+          {dataRules.map((item, i) =>
+            item.show ? (
+              <div
+                key={i}
+                className='mt-5 block w-full bg-gradient-to-br   dark:from-slate-900 dark:via-slate-950 dark:to-slate-950'
+                style={{
+                  background: `linear-gradient(135deg, ${item.color} 55%, ${item.color}69 45%)`,
+                  borderColor: item.color,
+                }}
+              >
+                <div className='flex items-center justify-between px-4 py-1'>
                   <p className='text-sm font-semibold capitalize text-white'>
                     {item.name}
-                 
                   </p>
-                  <span className='text-xs font-semibold text-white text-end'>
-                  {item.rules}
-
+                  <span className='text-end text-xs font-semibold text-white'>
+                    {item.rules}
                   </span>
                 </div>
-            </div>
-          ) : null
-        )}
-      </div>
-      {selectedCard && (
-        <div className='grid grid-cols-2 gap-4 mt-5'>
-          <StockAnalysisChart 
-          dataset={tbmRes}
-          untuk='Total Luasan'
-          title={selectedCard.name}
-          val={selectedCard.val}
-          />
-          <StockAnalysisChart 
-          dataset={tbmRes}
-          untuk='Total Blok'
-          title={selectedCard.name}
-          val={selectedCard.val}
-          />
+              </div>
+            ) : null
+          )}
         </div>
-      )}
+        {selectedCard && (
+          <div className='mt-5 grid grid-cols-2 gap-4'>
+            <StockAnalysisChart
+              dataset={tbmRes}
+              untuk='Total Luasan'
+              score={scores}
+              title={selectedCard.name}
+              val={selectedCard.val}
+            />
+            <StockAnalysisChart
+              dataset={tbmRes}
+              untuk='Total Blok'
+              score={scores}
+              title={selectedCard.name}
+              val={selectedCard.val}
+            />
+          </div>
+        )}
         <DataPicaCluster
           control={control}
           rpc={rpc}
@@ -656,7 +675,7 @@ function DashboardHeader({
 }
 
 function WelcomeBanner() {
-return (
+  return (
     <div className='py-5'>
       <div className='rounded-xl bg-gradient-to-r from-blue-500 via-green-500 to-green-500 p-6 py-5 shadow-lg'>
         <div className='flex flex-col xl:flex-row xl:items-center xl:justify-between'>
@@ -738,10 +757,8 @@ function DataPicaCluster({
     }
   }
 }) {
-
   return (
     <>
-
       <div className='align-end mt-5 grid grid-cols-[30%_70%] items-center'>
         <h2 className='text-2xl font-bold'>
           PICA Cluster {rpc ? rpc.label : ''} {kebun ? ' / ' + kebun.label : ''}{' '}
@@ -942,37 +959,38 @@ function getScoreJumlahPelepah(age: any, frondCount: any) {
 
 function getScoreTinggiTanaman(age: any, value: any) {
   const rulesTinggiTanaman: any = {
-    '1': { min: 21, max: 21 },
-    '2': { min: 22.74, max: 24.02 },
-    '3': { min: 24.48, max: 27.04 },
-    '4': { min: 26.22, max: 30.06 },
-    '5': { min: 27.96, max: 33.08 },
-    '6': { min: 29.7, max: 36.1 },
-    '7': { min: 36.37, max: 41.07 },
-    '8': { min: 42.67, max: 46.03 },
-    '9': { min: 48, max: 51 },
-    '10': { min: 53.33, max: 56.37 },
-    '11': { min: 58.67, max: 63.03 },
-    '12': { min: 64, max: 69.7 },
-    '13': { min: 69.82, max: 74.2 },
-    '14': { min: 75.63, max: 78.7 },
-    '15': { min: 80.65, max: 83.2 },
-    '16': { min: 85.57, max: 87.7 },
-    '17': { min: 90.48, max: 93.08 },
-    '18': { min: 95.4, max: 98.9 },
-    '19': { min: 101.92, max: 104.62 },
-    '20': { min: 108.43, max: 110.33 },
-    '21': { min: 114.95, max: 116.05 },
-    '22': { min: 121.47, max: 121.77 },
-    '23': { min: 127.48, max: 127.98 },
-    '24': { min: 133.2, max: 134.5 },
-    '25': { min: 139.42, max: 139.83 },
-    '26': { min: 144.33, max: 146.47 },
-    '27': { min: 149.25, max: 153.1 },
-    '28': { min: 154.17, max: 159.73 },
-    '29': { min: 159.08, max: 166.37 },
-    '30': { min: 164, max: 173 },
-  }
+    '1': { min: Math.ceil(21), max: Math.ceil(21) },
+    '2': { min: Math.ceil(22.74), max: Math.ceil(24.02) },
+    '3': { min: Math.ceil(24.48), max: Math.ceil(27.04) },
+    '4': { min: Math.ceil(26.22), max: Math.ceil(30.06) },
+    '5': { min: Math.ceil(27.96), max: Math.ceil(33.08) },
+    '6': { min: Math.ceil(29.7), max: Math.ceil(36.1) },
+    '7': { min: Math.ceil(36.37), max: Math.ceil(41.07) },
+    '8': { min: Math.ceil(42.67), max: Math.ceil(46.03) },
+    '9': { min: Math.ceil(48), max: Math.ceil(51) },
+    '10': { min: Math.ceil(53.33), max: Math.ceil(56.37) },
+    '11': { min: Math.ceil(58.67), max: Math.ceil(63.03) },
+    '12': { min: Math.ceil(64), max: Math.ceil(69.7) },
+    '13': { min: Math.ceil(69.82), max: Math.ceil(74.2) },
+    '14': { min: Math.ceil(75.63), max: Math.ceil(78.7) },
+    '15': { min: Math.ceil(80.65), max: Math.ceil(83.2) },
+    '16': { min: Math.ceil(85.57), max: Math.ceil(87.7) },
+    '17': { min: Math.ceil(90.48), max: Math.ceil(93.08) },
+    '18': { min: Math.ceil(95.4), max: Math.ceil(98.9) },
+    '19': { min: Math.ceil(101.92), max: Math.ceil(104.62) },
+    '20': { min: Math.ceil(108.43), max: Math.ceil(110.33) },
+    '21': { min: Math.ceil(114.95), max: Math.ceil(116.05) },
+    '22': { min: Math.ceil(121.47), max: Math.ceil(121.77) },
+    '23': { min: Math.ceil(127.48), max: Math.ceil(127.98) },
+    '24': { min: Math.ceil(133.2), max: Math.ceil(134.5) },
+    '25': { min: Math.ceil(139.42), max: Math.ceil(139.83) },
+    '26': { min: Math.ceil(144.33), max: Math.ceil(146.47) },
+    '27': { min: Math.ceil(149.25), max: Math.ceil(153.1) },
+    '28': { min: Math.ceil(154.17), max: Math.ceil(159.73) },
+    '29': { min: Math.ceil(159.08), max: Math.ceil(166.37) },
+    '30': { min: Math.ceil(164), max: Math.ceil(173) },
+  };
+  
 
   if (value < rulesTinggiTanaman[age].min) {
     return 80
