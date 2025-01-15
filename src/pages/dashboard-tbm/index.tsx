@@ -89,7 +89,7 @@ export default function Dashboard() {
   const [colorData, setColorData] = useState({
     emas: 0,
     hijau: 0,
-    merah: 0,
+    merah: 0, 
     hitam: 0,
   })
 
@@ -251,13 +251,13 @@ export default function Dashboard() {
             let colorCategory = ''
 
             if (totalSeleksian <= 80) {
-              colorCategory = 'hitam'
+              colorCategory = 'black'
             } else if (totalSeleksian > 80 && totalSeleksian <= 89) {
-              colorCategory = 'merah'
+              colorCategory = 'red'
             } else if (totalSeleksian > 89 && totalSeleksian <= 96) {
-              colorCategory = 'hijau'
+              colorCategory = 'green'
             } else if (totalSeleksian > 96) {
-              colorCategory = 'emas'
+              colorCategory = 'gold'
             }
 
             let luas = parseFloat(item.luas_ha)
@@ -591,6 +591,7 @@ export default function Dashboard() {
               untuk='Total Luasan'
               score={scores}
               title={selectedCard.name}
+              color={selectedCard.circular}
               val={selectedCard.val}
             />
             <StockAnalysisChart
@@ -598,6 +599,7 @@ export default function Dashboard() {
               untuk='Total Blok'
               score={scores}
               title={selectedCard.name}
+              color={selectedCard.circular}
               val={selectedCard.val}
             />
           </div>

@@ -9,6 +9,8 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
     {
       show: true,
       name: 'Emas',
+      val: 0,
+
       progress:
       dataProps.data.emas == null
         ? 0
@@ -22,6 +24,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
     {
       show: true,
       name: 'Hijau',
+      val: 1,
       progress: dataProps.data.hijau == null ? 0 : dataProps.data.hijau.toLocaleString('id-ID'),
 
       circular: 'green',
@@ -33,7 +36,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       show: true,
       name: 'Merah',
       progress: dataProps.data.merah == null ? 0 : dataProps.data.merah.toLocaleString('id-ID'),
-
+      val: 2,
       circular: 'red',
       image: '/2.png',
       color: '#FF0000',
@@ -42,6 +45,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
     {
       show: true,
       name: 'Hitam',
+      val: 3,
       progress: dataProps.data.hitam == null ? 0 : dataProps.data.hitam.toLocaleString('id-ID'),
       circular: 'black',
       image: '/2.png',
@@ -59,7 +63,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         dataProps.dataTbm.tbm1 == null
           ? 0
           : dataProps.dataTbm.tbm1.toLocaleString('id-ID'),
-      circular: 'green',
+      circular: 'all',
       image: '/2.png',
       color: '#00a300',
       textColor: '#ffffff',
@@ -72,7 +76,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         dataProps.dataTbm.tbm2 == null
           ? 0
           : dataProps.dataTbm.tbm2.toLocaleString('id-ID'),
-      circular: 'yellow',
+      circular: 'all',
       image: '/2.png',
       color: '#FFFF00',
       textColor: '#000000',
@@ -85,7 +89,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         dataProps.dataTbm.tbm3 == null
           ? 0
           : dataProps.dataTbm.tbm3.toLocaleString('id-ID'),
-      circular: 'orange',
+      circular: 'all',
       image: '/2.png',
       color: '#FFA500',
       textColor: '#ffffff',
@@ -99,7 +103,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         dataProps.dataTbm.tbm4 == null
           ? 0
           : dataProps.dataTbm.tbm4.toLocaleString('id-ID'),
-      circular: 'black',
+      circular: 'all',
       image: '/2.png',
       color: '#000000',
       textColor: '#ffffff',
@@ -131,16 +135,6 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
               </div>
 
             </CardContent>
-            {/* <div className="flex -mt-10 relative float-end mr-2">
-            <Button
-                  className='mt-2 text'
-                  size='sm'
-                  variant='secondary-outline'
-                  onClick={() => onCardClick(item)}
-                >
-                  Tutup Detail
-                </Button>
-            </div> */}
           </Card>
         ) : null
       )}

@@ -2,16 +2,10 @@ import React from 'react'
 import ReactApexChart from 'react-apexcharts'
 import { ApexOptions } from 'apexcharts'
 import cookie from 'js-cookie'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 
 const StockAnalysisChart = (dataprops: any) => {
   const theme = cookie.get('theme') || 'light'
-
-  const dataset = dataprops.dataset[dataprops.val]
-
-  let score = dataprops.score
-
-
   const categories = [
     'RPC1',
     'RPC2',
@@ -24,29 +18,90 @@ const StockAnalysisChart = (dataprops: any) => {
     'RPC2(EX-N14)',
   ]
 
+  const dataset = dataprops.dataset[dataprops.val]
+
+  let score = dataprops.score
+
+
+  const countColorBlocks = (data: any, regional: string) => {
+    const tbmKeys = ['tbm1', 'tbm2', 'tbm3', 'tbm4']
+    return data.reduce((count: number, item: any) => {
+      return tbmKeys.some(
+        (key) =>
+          item[key] &&
+          item[key].regional === regional &&
+          item[key].colorCategory === dataprops.color
+      )
+        ? count + 1
+        : count
+    }, 0)
+  }
+
+  const sumColorLuas = (data: any, regional: string) => {
+    const tbmKeys = ['tbm1', 'tbm2', 'tbm3', 'tbm4'];
+    const total = data.reduce((sum: number, item: any) => {
+      return tbmKeys.reduce((innerSum: number, key) => {
+        return item[key] &&
+          item[key].regional === regional &&
+          item[key].colorCategory === dataprops.color
+          ? innerSum + parseFloat(item[key].luas || '0')
+          : innerSum;
+      }, sum);
+    }, 0);
+  
+    return Math.round(total);
+  };
+  
+
   let datas: any[] = []
 
   if (dataprops.untuk === 'Total Blok') {
-    datas = categories.map((category) => {
-      const filter = dataset.filter(
-        (data: any) => data.regional === category
-      ).length
-      return { category, filter }
-    })
+    if (dataprops.color == 'all') {
+      datas = categories.map((category) => {
+        const filter = dataset.filter(
+          (data: any) => data.regional === category
+        ).length
+        return { category, filter }
+      })
+    } else {
+      const dataColor = score.filter((score: any) => {
+        return (
+          (Object.values(score)[0] as any).colorCategory === dataprops.color
+        )
+      })
+
+      datas = categories.map((category) => {
+        const filter = countColorBlocks(dataColor, category)
+        return { category, filter }
+      })
+    }
   } else if (dataprops.untuk === 'Total Luasan') {
-    datas = categories.map((category) => {
-      const filter = dataset.reduce((sum: number, item: any) => {
-        return item.regional === category
-          ? sum + parseFloat(item.luas_ha || '0')
-          : sum
-      }, 0) // Sum total_luas_ha hanya untuk item yang sesuai kategori
+    if (dataprops.color == 'all') {
+      datas = categories.map((category) => {
+        const filter = dataset.reduce((sum: number, item: any) => {
+          return item.regional === category
+            ? sum + parseFloat(item.luas_ha || '0')
+            : sum
+        }, 0) 
+        const roundedFilter = Math.round(filter)
 
-      // Round the sum and remove commas
-      const roundedFilter = Math.round(filter) // Round the result
+        return { category, filter: roundedFilter }
+      })
+    } else {
+      const dataColor = score.filter((score: any) => {
+        return (
+          (Object.values(score)[0] as any).colorCategory === dataprops.color
+        )
+      })
 
-      return { category, filter: roundedFilter }
-    })
+
+      datas = categories.map((category) => {
+        const filter = sumColorLuas(dataColor, category)
+        return { category, filter }
+      })
+    }
   }
+
 
   const options: ApexOptions = {
     chart: {
