@@ -14,67 +14,11 @@ import toast from 'react-hot-toast'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Box, CircularProgress, Typography } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
+import slugify from 'slugify';
 import Select from 'react-select'
 import axios from 'axios'
 
-export default function UploadVegetatif() {
-  const customStyles = {
-    theme: (theme: any) => ({
-      ...theme,
-      colors: {
-        ...theme.colors,
-        primary25: 'var(--bg-secondary)',
-        primary: 'var(--text-primary)',
-      },
-    }),
-    control: (provided: any) => ({
-      ...provided,
-      backgroundColor: 'var(--bg-primary)',
-      borderColor: 'var(--border-primary)',
-      borderRadius: '10.5rem',
-      boxShadow: 'none',
-      color: 'var(--text-primary)',
-      width: '250px', // Set desired width here
-      minHeight: '2.5rem',
-      '&:hover': {
-        borderColor: 'var(--border-primary)',
-      },
-    }),
-    menu: (provided: any) => ({
-      ...provided,
-      backgroundColor: '#fff',
-      color: 'black',
-      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.15)',
-      borderRadius: '0.5rem',
-    }),
-    option: (base: any, state: any) => ({
-      ...base,
-      color: state.isSelected ? 'var(--text-primary)' : 'var(--text-secondary)',
-      backgroundColor: state.isSelected
-        ? 'var(--bg-secondary)'
-        : 'var(--bg-primary)',
-      whiteSpace: 'nowrap', // Prevent text from wrapping
-      overflow: 'hidden', // Hide overflow
-      textOverflow: 'ellipsis', // Add ellipsis if text is too long
-      '&:hover': {
-        backgroundColor: 'var(--bg-secondary)',
-        color: 'var(--text-primary)',
-      },
-    }),
-    singleValue: (provided: any) => ({
-      ...provided,
-      color: 'var(--text-primary)',
-    }),
-    input: (provided: any) => ({
-      ...provided,
-      color: 'var(--text-primary)',
-    }),
-    placeholder: (provided: any, state: any) => ({
-      ...provided,
-      color: state.theme.mode === 'dark' ? 'white' : 'var(--text-secondary)',
-    }),
-  }
-
+export default function UploadUser() {
   const [isLoadingUpload, setIsLoadingUpload] = useState(false)
   const [isUploadingDone, setIsUploadingDone] = useState(false)
   const [progressValue, setProgressValue] = useState(0)
@@ -82,33 +26,16 @@ export default function UploadVegetatif() {
   const user = JSON.parse(cookie.get('user') || '{}')
 
   interface UploadData {
-    regional: string
-    kebun: string
-    afdeling: string
-    blok: string
-    tahun_tanam: string
-    varietas: string
-    luas_ha: number
-    jumlah_pokok_awal_tanam: string
-    jumlah_pokok_sekarang: string
-    tinggi_tanaman_cm: string
-    jumlah_pelepah_bh: string
-    panjang_rachis_cm: string
-    lebar_petiola_cm: string
-    tebal_petiola_cm: string
-    jad_1_sisi: string
-    rerata_panjang_anak_daun: string
-    rerata_lebar_anak_daun: string
-    lingkar_batang_cm: string
+    w1: { label: string; value: string }
+    w2: { label: string; value: string }
+    w3: { label: string; value: string }
+    measurement: string
   }
 
   const [mappedData, setMappedData] = useState<UploadData[]>([])
   const [values, setValues] = useState<any[]>([])
   const [fileName, setFileName] = useState(null)
   const [loading, setLoading] = useState(false)
-
-  const [bulan, setBulan] = useState(null)
-  const [tahun, setTahun] = useState(null)
 
   const getCurrentMonth = () => {
     const date = new Date()
@@ -205,29 +132,14 @@ export default function UploadVegetatif() {
 
   useEffect(() => {
     if (values.length > 0) {
-      const mapped = values.map((value) => ({
-        regional: value[0],
-        kebun: value[1],
-        afdeling: value[2],
-        blok: value[3],
-        tahun_tanam: value[4],
-        varietas: value[5],
-        luas_ha: Number(value[6]),
-        jumlah_pokok_awal_tanam: value[7],
-        jumlah_pokok_sekarang: value[8],
-        tinggi_tanaman_cm: value[9],
-        jumlah_pelepah_bh: value[10],
-        panjang_rachis_cm: value[11],
-        lebar_petiola_cm: value[12],
-        tebal_petiola_cm: value[13],
-        jad_1_sisi: value[14],
-        rerata_panjang_anak_daun: value[15],
-        rerata_lebar_anak_daun: value[16],
-        lingkar_batang_cm: value[17],
-        tahun: tahun || getCurrentYear(),
-        bulan: bulan || getCurrentMonth() + 1,
-      }))
+        const mapped = values.map((value) => ({
+            w1: { label: value[1], value: slugify(value[1], { lower: true }) },
+            w2: { label: value[2], value: slugify(value[2], { lower: true }) },
+            w3: { label: value[3], value: slugify(value[3], { lower: true }) },
+            measurement: value[4]
+        }));
 
+      
       setMappedData(mapped)
       console.log(mapped) // Log mappedData here
     }
@@ -248,7 +160,7 @@ export default function UploadVegetatif() {
     for (let i = 0; i < 10; i++) {
       const chunk = mappedData.slice(i * chunkSize, (i + 1) * chunkSize)
       uploadPromises.push(
-        fetch(`${apiUrl}/vegetatif/upload`, {
+        fetch(`${apiUrl}/pi/upload`, {
           method: 'POST',
           headers: {
             Accept: 'application/json',
@@ -286,46 +198,6 @@ export default function UploadVegetatif() {
     }, 3000)
   }
 
-  const bulanName = [
-    { value: '1', label: 'Januari' },
-    { value: '2', label: 'Februari' },
-    { value: '3', label: 'Maret' },
-    { value: '4', label: 'April' },
-    { value: '5', label: 'Mei' },
-    { value: '6', label: 'Juni' },
-    { value: '7', label: 'Juli' },
-    { value: '8', label: 'Agustus' },
-    { value: '9', label: 'September' },
-    { value: '10', label: 'Oktober' },
-    { value: '11', label: 'November' },
-    { value: '12', label: 'Desember' },
-  ]
-
-  const tahunName = [
-    { value: '2021', label: '2021' },
-    { value: '2022', label: '2022' },
-    { value: '2023', label: '2023' },
-    { value: '2024', label: '2024' },
-    { value: '2025', label: '2025' },
-    { value: '2026', label: '2026' },
-    { value: '2027', label: '2027' },
-    { value: '2028', label: '2028' },
-    { value: '2029', label: '2029' },
-    { value: '2030', label: '2030' },
-    { value: '2031', label: '2031' },
-    { value: '2032', label: '2032' },
-    { value: '2033', label: '2033' },
-    { value: '2034', label: '2034' },
-    { value: '2035', label: '2035' },
-  ]
-
-  const defaultValueTahun = tahunName.find(
-    (item) => item.value === getCurrentYear().toString()
-  )
-  const defaultValueBulan = bulanName.find(
-    (item) => item.value === (getCurrentMonth() + 1).toString()
-  )
-
   return (
     <Layout>
       {/* ===== Top Heading ===== */}
@@ -340,28 +212,11 @@ export default function UploadVegetatif() {
       <Layout.Body>
         <Card>
           <CardHeader>
-            <CardTitle>Upload Pengukuran Vegetatif</CardTitle>
-            <div className='flex pt-5'>
-              <Select
-                styles={customStyles}
-                options={tahunName}
-                className=''
-                defaultValue={defaultValueTahun}
-                onChange={(e: any) => setTahun(e.value)}
-              />
-
-              <Select
-                styles={customStyles}
-                className='float-end ml-5'
-                options={bulanName}
-                defaultValue={defaultValueBulan}
-                onChange={(e: any) => setBulan(e.value)}
-              />
-            </div>
+            <CardTitle>Upload Data Problem Idendification</CardTitle>
             <div className='flex items-center justify-between'>
               <p className='text-muted-foreground'>
-                Upload file .csv atau .xlsx untuk menambahkan data Monitoring
-                Vegetatif
+                Upload file .csv atau .xlsx untuk menambahkan data Problem Identification
+                SPPBJ
               </p>
             </div>
             <div className='flex items-center justify-between'>
@@ -468,7 +323,7 @@ export default function UploadVegetatif() {
                   </button>
                 ) : null}
                 <button className='cursor-pointer rounded-full bg-slate-600 px-5 py-[.675rem] text-center text-sm font-semibold text-white transition duration-300 ease-in-out hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300 disabled:cursor-not-allowed'>
-                  <Link to='/data-vegetatif'>Kembali</Link>
+                  <Link to='/paket-pekerjaan-monica'>Kembali</Link>
                 </button>
               </div>
             </div>

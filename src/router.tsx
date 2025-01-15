@@ -254,6 +254,12 @@ let immatureRouter = [
     }),
   },
   {
+    path: 'pica-tbm',
+    lazy: async () => ({
+      Component: (await import('./pages/pica')).default,
+    }),
+  },
+  {
     path: 'data-vegetatif',
     lazy: async () => ({
       Component: (await import('./pages/data-vegetatif')).default,
@@ -263,6 +269,12 @@ let immatureRouter = [
     path : 'upload-pengukuran-vegetatif',
     lazy: async () => ({
       Component: (await import('./pages/upload-pengukuran-vegetatif')).default,
+    }),
+  },
+  {
+    path : 'upload-problem-identification',
+    lazy: async () => ({
+      Component: (await import('./pages/upload-data-pi-tbm')).default,
     }),
   },
   {

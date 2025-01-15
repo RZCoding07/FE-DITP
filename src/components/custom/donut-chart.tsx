@@ -114,7 +114,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
 
   const renderDonutChart = (title: string, series: number[]) => (
     <div className='mr-3 mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-      <h2 className='text-center text-xl font-semibold text-white'>{title}</h2>
+      <h2 className='text-center text-xl font-semibold'>{title}</h2>
       <hr className='my-2 border-cyan-400' />
       <ReactApexChart
         options={options}
@@ -124,8 +124,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
       />
     </div>
   )
-
-  const tbmCharts = Object.keys(tbmDataScorePelepahBlok).map((tbmKey) => {
+  const tbmCharts = Object.keys(tbmDataScorePelepahBlok).map((tbmKey, index) => {
     const pelepahData =
       tbmDataScorePelepahBlok[tbmKey as keyof typeof tbmDataScorePelepahBlok]
     const lingkarData =
@@ -138,14 +137,14 @@ const DonutChart: React.FC<DonutChartProps> = ({
       avgLingkar90,
       avgLingkar80,
     } = calculateAverages(pelepahData, lingkarData)
-
+  
     // Placeholder grades, replace with logic to calculate actual percentages
     console.log(avgPelepah100)
     const gradeA = avgPelepah100 + avgLingkar100
     const gradeB = avgPelepah90 + avgLingkar90
     const gradeC = avgPelepah80 + avgLingkar80
     const gradeD = 100 - gradeA - gradeB - gradeC
-
+  
     return renderDonutChart(`TBM ${tbmKey.slice(-1)}`, [
       gradeA,
       gradeB,
@@ -153,13 +152,15 @@ const DonutChart: React.FC<DonutChartProps> = ({
       gradeD,
     ])
   })
-
+  
   return (
-    <div className='grid gap-4 lg:grid-cols-4 2xl:grid-cols-4 align-middle justify-center'>
-      {tbmCharts}
+    <div className='grid gap-4 lg:grid-cols-4 2xl:grid-cols-4'>
+      {tbmCharts.map((chart, index) => (
+        <div key={index}>{chart}</div>  // Add a key here
+      ))}
       <RobotInvestasi />
     </div>
   )
-}
+}  
 
 export default DonutChart

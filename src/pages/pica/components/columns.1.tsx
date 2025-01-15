@@ -1,7 +1,9 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { Vegetatif } from './columns'
 import { DataTableColumnHeader } from './data-table-column-header'
-
+import { Button } from '@/components/custom/button'
+import { Link } from 'react-router-dom'
+import { FaPencilAlt } from 'react-icons/fa'
 
 // regional: string
 // kebun: string
@@ -24,11 +26,18 @@ import { DataTableColumnHeader } from './data-table-column-header'
 
 export const columns: ColumnDef<Vegetatif>[] = [
   {
-    id: 'number',
-    header: 'No.',
-    cell: ({ row }) => <span>{row.index + 1}</span>,
-    enableSorting: false,
-    enableHiding: false,
+    accessorKey: 'aksi',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Aksi' />
+    ),
+    cell: ({ row }) => 
+    <div className='flex space-x-2'>
+      <Link to={`/data-vegetatif/${row.original.id}/edit`}>
+        <Button size='sm' variant='default'>
+          IDENTIFIKASI MASALAH
+        </Button>
+      </Link>
+    </div>,
   },
   {
     accessorKey: 'regional',

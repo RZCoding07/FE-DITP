@@ -1,25 +1,73 @@
-2 DOS DOLOK SINUMBAH 162 HA BLOK 02 D.E.F.G.H.I.J
-6 GUB GUNUNG BAYU 116 HA BLOK 05 I.X.05 K.L.M
-6 GUB GUNUNG BAYU 107 HA BLOK 05 A.05 C .02 B 05 E 05 J
-6 GUB GUNUNG BAYU 123 HA BLOK 05 P.T.U.V.W
-6 GUB GUNUNG BAYU 116 HA BLOK 03 P.AC.AD.AE/04 Q
-6 GUB GUNUNG BAYU 124 HA BLOK 05 I.X.05 K.L.M
-4 PAM PASIR MANDOGE 130 HA BLOK 00 AB.AH.AI.AJ.AK.05.DB.DD
-4 PAM PASIR MANDOGE 133 HA BLOK 00 X.Y.Z.AA.AB.AC/00 AD.AE.AF
-4 PAM PASIR MANDOGE 128 HA BLOK 00 P.Q.R.ST.U.V.W
-4 PAM PASIR MANDOGE 141 HA BLOK 05 CZ 07 G 91 A 00 I.L.M.K.J.N.O
-4 PAM PASIR MANDOGE 119 HA BLOK 00 A.B.C.D.E.F.G
-4 PAM PASIR MANDOGE 124 HA BLOK 01 P.R.01.W.Y.Z.05.CX.XY.0 7F
-4 PAM PASIR MANDOGE 138 HA BLOK 04 U.05 CO.CP.CQ.07.A.B.C.J.01H.J
-8 BUL BUKIT LIMA 123 HA BLOK 00 A.B.C 00 D.E.F.G.K 
-8 BUL BUKIT LIMA 126 HA BLOK 00 H.I.J.L.M.N.O.P.R
-8 BUL BUKIT LIMA 115 HA BLOK 00 Q.S.T.U.V.W.X.Y
-9 ABA AIR BATU 125 HA BLOK 09 AB AG AI AJ AL AM
-9 ABA AIR BATU 100 HA BLOK 09 AR.09 AY BG BH BJ
-9 ABA AIR BATU 108 HA BLOK 09 AH AK 09 AO AP AS AW
-9 ABA AIR BATU 118 HA BLOK 05 A 03 E 09 R.S
-9 ABA AIR BATU 112 HA BLOK 09 V W X Z AA
-11 TIU TANAH HITAM ULU 51 HA BLOK 01 A B C
-12 AJA AJAMU 203 HA BLOK 01 R.U.X.V.W.Z.AA
 
  
+
+ const datasets = [
+{
+  "1": 21,
+  "2": 22.74,
+  "3": 24.48,
+  "4": 26.22,
+  "5": 27.96,
+  "6": 29.7,
+  "7": 36.37,
+  "8": 43.03,
+  "9": 49.7,
+  "10": 56.37,
+  "11": 63.03,
+  "12": 69.7,
+  "13": 74.2,
+  "14": 78.7,
+  "15": 83.2,
+  "16": 87.7,
+  "17": 92.2,
+  "18": 96.7,
+  "19": 102.95,
+  "20": 109.2,
+  "21": 115.45,
+  "22": 121.7,
+  "23": 127.95,
+  "24": 134.2,
+  "25": 139.67,
+  "26": 145.13,
+  "27": 150.6,
+  "28": 156.07,
+  "29": 161.53,
+  "30": 167
+},
+{"1":21,"2":23.2,"3":25.4,"4":27.6,"5":29.8,"6":32,"7":37.33,"8":42.67,"9":48,"10":53.33,"11":58.67,"12":64,"13":69.82,"14":75.63,"15":81.45,"16":87.27,"17":93.08,"18":98.9,"19":104.62,"20":110.33,"21":116.05,"22":121.77,"23":127.48,"24":133.2,"25":139.83,"26":146.47,"27":153.1,"28":159.73,"29":166.37,"30":173},
+{"1":21,"2":24.02,"3":27.04,"4":30.06,"5":33.08,"6":36.1,"7":41.07,"8":46.03,"9":51,"10":55.97,"11":60.93,"12":65.9,"13":70.82,"14":75.73,"15":80.65,"16":85.57,"17":90.48,"18":95.4,"19":101.92,"20":108.43,"21":114.95,"22":121.47,"23":127.98,"24":134.5,"25":139.42,"26":144.33,"27":149.25,"28":154.17,"29":159.08,"30":164},
+{"1":21,"2":24.02,"3":27.04,"4":30.06,"5":33.08,"6":36.1,"7":41.07,"8":46.03,"9":51,"10":55.97,"11":60.93,"12":65.9,"13":70.82,"14":75.73,"15":80.65,"16":85.57,"17":90.48,"18":95.4,"19":101.92,"20":108.43,"21":114.95,"22":121.47,"23":127.98,"24":134.5,"25":139.42,"26":144.33,"27":149.25,"28":154.17,"29":159.08,"30":164},
+{"1":21,"2":22.74,"3":24.48,"4":26.22,"5":27.96,"6":29.7,"7":36.37,"8":43.03,"9":49.7,"10":56.37,"11":63.03,"12":69.7,"13":74.2,"14":78.7,"15":83.2,"16":87.7,"17":92.2,"18":96.7,"19":102.95,"20":109.2,"21":115.45,"22":121.7,"23":127.95,"24":134.2,"25":139.67,"26":145.13,"27":150.6,"28":156.07,"29":161.53,"30":167}
+];
+
+const minMaxValues = {};
+
+for (let i = 1; i <= 30; i++) {
+  const values = datasets.map(dataset => dataset[i]);
+  minMaxValues[i] = {
+    min: Math.min(...values),
+    max: Math.max(...values)
+  };
+}
+
+console.log(minMaxValues);
+
+
+  const [colorData, setColorData] = useState({
+    emas: 0,
+    hijau: 0,
+    merah: 0,
+    hitam: 0,
+  })
+
+
+
+            
+              setColorData((prev) => ({
+                ...prev,
+                hitam: totalSeleksian <= 80 ? prev.hitam + 1 : prev.hitam,
+                merah: totalSeleksian > 80 && totalSeleksian <= 89 ? prev.merah + 1 : prev.merah,
+                hijau: totalSeleksian > 89 && totalSeleksian <= 96 ? prev.hijau + 1 : prev.hijau,
+                emas: totalSeleksian > 96 ? prev.emas + 1 : prev.emas,
+              }));
+              

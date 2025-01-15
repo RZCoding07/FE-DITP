@@ -24,13 +24,6 @@ import { DataTableColumnHeader } from './data-table-column-header'
 
 export const columns: ColumnDef<Vegetatif>[] = [
   {
-    id: 'number',
-    header: 'No.',
-    cell: ({ row }) => <span>{row.index + 1}</span>,
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
     accessorKey: 'regional',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Regional' />

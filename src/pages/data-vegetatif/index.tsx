@@ -12,7 +12,7 @@ import { Loading } from '@/components/ui/loading'
 import cookies from 'js-cookie'
 
 export default function Awal() {
-  const [Awal, setAwal] = useState([])
+const [Awal, setAwal] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const apiUrl = import.meta.env.VITE_API_IMMATURE

@@ -10,12 +10,11 @@ import '@/index.css'
 // if user app_type nya monica maka gunakan monicaRouter
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
       <PrimeReactProvider value={{ unstyled: true }}>
         <RouterProvider router={router} />
         <Toaster position='top-center' toastOptions={{ duration: 3000 }} />
       </PrimeReactProvider>
     </ThemeProvider>
-  </React.StrictMode>
 )
