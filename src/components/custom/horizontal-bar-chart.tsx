@@ -274,6 +274,22 @@ export const StockAnalysisChart = ({
 
   return (
     <div id='chart'>
+            <style>{`
+        .apexcharts-menu {
+          color :"#000" !important;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .apexcharts-menu-item {
+          padding: 10px 15px;
+          font-size: 14px;
+          cursor: pointer;
+          color:"#000" !important;
+        }
+        .apexcharts-menu-item:hover {
+          color: ${theme == 'dark' ? '#ffcc00' : '#007BFF'} !important;
+        }
+      `}</style>
       <Card className='bg-gradient border border-cyan-500 bg-white bg-gradient-to-bl shadow-lg shadow-cyan-500 dark:from-slate-900 dark:to-slate-950'>
         <CardContent className='mb-0 pb-0'>
           <h2 className='pt-3 text-center text-xl font-semibold'>
