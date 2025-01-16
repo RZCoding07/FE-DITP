@@ -11,7 +11,9 @@ export const StockAnalysisChartKebun = ({
   dataprops: any
   onEventClick: (data: any) => void
 }) => {
+
   const theme = cookie.get('theme') || 'light'
+
 
   console.log('theme', theme)
 
@@ -114,16 +116,17 @@ export const StockAnalysisChartKebun = ({
     {
       name: dataprops.title,
       type: 'bar',
-      data: datas.map((item) => item.filter),
+      data:  datas.map((item) => item.filter),
       color: '#6345bf',
     },
   ]
 
   return (
     <div id='chart'>
-      <style>{`
+              <style>{`
         .apexcharts-menu {
-          color :"#000" !important;
+          background-color: ${theme =='dark' ? "#333" : "#fff"} !important;
+          color: ${theme == 'dark' ? "#fff" : "#000"} !important;
           border-radius: 8px;
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
@@ -131,10 +134,11 @@ export const StockAnalysisChartKebun = ({
           padding: 10px 15px;
           font-size: 14px;
           cursor: pointer;
-          color:"#000" !important;
+          color: ${theme == 'dark' ? "#fff" : "#000"} !important;
         }
         .apexcharts-menu-item:hover {
-          color: ${theme == 'dark' ? '#ffcc00' : '#007BFF'} !important;
+          background-color: ${theme == 'dark' ? "#555" : "#f0f0f0"} !important;
+          color: ${theme == 'dark' ? "#ffcc00" : "#007BFF"} !important;
         }
       `}</style>
 
