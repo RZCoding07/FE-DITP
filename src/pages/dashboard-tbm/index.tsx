@@ -624,7 +624,10 @@ export default function Dashboard() {
         <h2 className='font-semibold text-2xl'>Grafik Rincian {selectedCard.name} Per Regional</h2>
          <Button
            variant={'secondary'}
-           onClick={() => setSelectedCard(null)}
+           onClick={() => {
+             setSelectedCard(null);
+             setSelectedEvent(null);
+           }}
            className="flex rounded-full items-center"
          >
            <img
