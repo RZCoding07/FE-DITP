@@ -15,6 +15,10 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       dataProps.data.emas == null
         ? 0
         : dataProps.data.emas.toLocaleString('id-ID'),
+      progressLuas:
+      dataProps.data.emas == null
+        ? 0
+        : dataProps.dataLuas.emas.toLocaleString('id-ID'),
       circular: 'gold',
       image: '/2.png',
       color: '#FFA500',
@@ -26,6 +30,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       name: 'Hijau',
       val: 1,
       progress: dataProps.data.hijau == null ? 0 : dataProps.data.hijau.toLocaleString('id-ID'),
+      progressLuas: dataProps.dataLuas.hijau == null ? 0 : dataProps.dataLuas.hijau.toLocaleString('id-ID'),
 
       circular: 'green',
       image: '/2.png',
@@ -36,6 +41,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       show: true,
       name: 'Merah',
       progress: dataProps.data.merah == null ? 0 : dataProps.data.merah.toLocaleString('id-ID'),
+      progressLuas: dataProps.dataLuas.merah == null ? 0 : dataProps.dataLuas.merah.toLocaleString('id-ID'),
       val: 2,
       circular: 'red',
       image: '/2.png',
@@ -47,6 +53,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       name: 'Hitam',
       val: 3,
       progress: dataProps.data.hitam == null ? 0 : dataProps.data.hitam.toLocaleString('id-ID'),
+      progressLuas: dataProps.data.hitam == null ? 0 : dataProps.dataLuas.hitam.toLocaleString('id-ID'),
       circular: 'black',
       image: '/2.png',
       color: '#000000',
@@ -119,7 +126,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
             onClick={() => onCardClick(item)}
             className='bg-gradient-to-br  py-2 shadow-md dark:from-slate-900 dark:via-slate-950 dark:to-transparent border border-cyan-500 shadow-cyan-500'
           >
-            <CardContent className='flex items-center px-2 py-2'>
+            <CardContent className='flex items-center px-2 py-1'>
               <div className='relative float-end mr-2 h-10 w-10'>
                 <img
                   width='64'
@@ -150,23 +157,33 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         
             }}
           >
-            <CardContent className='flex items-center px-2 py-2'>
+            <CardContent className='flex items-center px-2 py-1'>
               <div className='relative mr-2 h-10 w-10'>
                 <img src={item.image} alt={item.name} />
               </div>
-              <div>
+              <div className='grid grid-cols-2 py-0 my-0  align-middle items-center w-full'>
                 <p
                   className='text-sm font-semibold capitalize'
                   style={{ color: `${item.textColor}` }}
                 >
                   {item.name}
                 </p>
+                <div className='py-0 my-0 items-end'>
                 <p
-                  className='font-semibold'
+                  className='font-semibold float-right'
                   style={{ color: `${item.textColor}` }}
                 >
-                  {item.progress}
+                  {item.progress} Blok
                 </p>
+                <br />
+                <p
+                  className='font-semibold float-end'
+                  style={{ color: `${item.textColor}` }}
+                >
+                  {item.progressLuas} HA
+                </p>
+                </div>
+
               </div>
             </CardContent>
           </Card>

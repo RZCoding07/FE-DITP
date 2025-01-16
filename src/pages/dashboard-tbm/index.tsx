@@ -19,9 +19,10 @@ import { fetchVegetativeProc, fetchKebun, fetchAfd } from '@/utils/api_immature'
 import { TOP_NAV } from '@/utils/constants'
 import { customStyles } from '@/styles/select-styles'
 import DonutChart from '@/components/custom/donut-chart'
-import StockAnalysisChart from '@/components/custom/horizontal-bar-chart'
+import { StockAnalysisChart } from '@/components/custom/horizontal-bar-chart'
+import { StockAnalysisChartKebun } from '@/components/custom/horizontal-kebun-bar-chart'
 
-import { FaRecycle, FaSync } from 'react-icons/fa'
+import { FaEyeDropper, FaRecycle, FaSync } from 'react-icons/fa'
 import {
   Table,
   TableBody,
@@ -85,11 +86,19 @@ export default function Dashboard() {
   const [afdOptions, setAfdOptions] = useState([])
   const [scores, setScores] = useState<any[]>([])
   const [tbmRes, setTbmRes] = useState<any[]>([])
+  const [isKebun, setIsKebun] = useState<boolean>(false)
 
   const [colorData, setColorData] = useState({
     emas: 0,
     hijau: 0,
-    merah: 0, 
+    merah: 0,
+    hitam: 0,
+  })
+
+  const [colorDataLuas, setColorDataLuas] = useState({
+    emas: 0,
+    hijau: 0,
+    merah: 0,
     hitam: 0,
   })
 
@@ -100,9 +109,9 @@ export default function Dashboard() {
   const tahun = watch('tahun')
 
   useEffect(() => {
-    const emasScores = scores.filter((score:any) => {
+    const emasScores = scores.filter((score: any) => {
       return (Object.values(score)[0] as any).scoreTinggiBatang == 0
-    });
+    })
 
     console.log('emasScores', emasScores)
   }, [scores])
@@ -230,10 +239,8 @@ export default function Dashboard() {
               0.2
 
             const scoreTinggiBatang =
-              getScoreTinggiTanaman(
-                age,
-                parseFloat(item.tinggi_tanaman_cm)
-              ) * 0.1
+              getScoreTinggiTanaman(age, parseFloat(item.tinggi_tanaman_cm)) *
+              0.1
 
             const scoreKerapatanPokok =
               getScoreKerapatanPokok(
@@ -262,12 +269,14 @@ export default function Dashboard() {
 
             let luas = parseFloat(item.luas_ha)
             let regional = item.regional
+            let kebun = item.kebun
 
             setScores((prev) => [
               ...prev,
               {
                 [`tbm${i}`]: {
                   regional,
+                  kebun,
                   blok,
                   scoreLingkarBatang,
                   scoreJumlahPelepah,
@@ -275,7 +284,7 @@ export default function Dashboard() {
                   scoreKerapatanPokok,
                   totalSeleksian,
                   colorCategory,
-                  luas
+                  luas,
                 },
               },
             ])
@@ -294,6 +303,20 @@ export default function Dashboard() {
               emas: totalSeleksian > 96 ? prev.emas + 1 : prev.emas,
             }))
 
+            setColorDataLuas((prev) => ({
+              ...prev,
+              hitam: totalSeleksian <= 80 ? prev.hitam + luas : prev.hitam,
+              merah:
+                totalSeleksian > 80 && totalSeleksian <= 89
+                  ? prev.merah + luas
+                  : prev.merah,
+              hijau:
+                totalSeleksian > 89 && totalSeleksian <= 96
+                  ? prev.hijau + luas
+                  : prev.hijau,
+              emas: totalSeleksian > 96 ? prev.emas + luas : prev.emas,
+            }))
+
             return {
               [`tbm${i}`]: {
                 regional,
@@ -304,7 +327,7 @@ export default function Dashboard() {
                 scoreKerapatanPokok,
                 totalSeleksian,
                 colorCategory,
-                luas
+                luas,
               },
             }
           })
@@ -446,9 +469,18 @@ export default function Dashboard() {
   }, [kebun])
 
   const [selectedCard, setSelectedCard] = useState<any | null>(null)
+  const [selectedEvent, setSelectedEvent] = useState<any | null>(null)
+
   const handleCardClick = (cardData: any) => {
     // console.log('tbmRes', tbmRes)
     setSelectedCard(cardData) // Simpan parameter atau lakukan tindakan lainnya
+    setIsKebun(false)
+  }
+
+  const handleEventClick = (eventData: any) => {
+    // console.log('tbmRes', tbmRes)
+    setSelectedEvent(eventData) // Simpan parameter atau lakukan tindakan lainnya
+    setIsKebun(true)
   }
 
   const dataRules = [
@@ -553,6 +585,7 @@ export default function Dashboard() {
             tbmDataScorePelepahBlok,
             tbmDataScoreLingkarBlok,
             data: colorData,
+            dataLuas: colorDataLuas,
             score: scores,
             dataTbm: {
               ...tbmData,
@@ -585,22 +618,78 @@ export default function Dashboard() {
           )}
         </div>
         {selectedCard && (
+     <>
+     <div className="align-middle items-center w-full">
+       <div className="mt-5 flex justify-between">
+        <h2 className='font-semibold text-2xl'>Grafik Rincian {selectedCard.name} Per Regional</h2>
+         <Button
+           variant={'secondary'}
+           onClick={() => setSelectedCard(null)}
+           className="flex rounded-full items-center"
+         >
+           <img
+             width="20"
+             height="48"
+             src="https://img.icons8.com/external-beshi-flat-kerismaker/48/external-Hide-user-interface-beshi-flat-kerismaker.png"
+             alt="external-Hide-user-interface-beshi-flat-kerismaker"
+           />{' '}
+           <span className="ml-2">Hide Chart</span>
+         </Button>
+       </div>
+   
+       <div className="mt-5 grid grid-cols-2 gap-4">
+         <StockAnalysisChart
+           dataprops={{
+             dataset: tbmRes,
+             untuk: 'Total Luasan',
+             score: scores,
+             title: selectedCard.name,
+             color: selectedCard.circular,
+             val: selectedCard.val,
+           }}
+           onEventClick={handleEventClick}
+         />
+         <StockAnalysisChart
+           dataprops={{
+             dataset: tbmRes,
+             untuk: 'Total Blok',
+             score: scores,
+             title: selectedCard.name,
+             color: selectedCard.circular,
+             val: selectedCard.val,
+           }}
+           onEventClick={handleEventClick}
+         />
+       </div>
+     </div>
+   </>
+   
+        )}
+        {selectedEvent && isKebun && (
           <div className='mt-5 grid grid-cols-2 gap-4'>
-            <StockAnalysisChart
-              dataset={tbmRes}
-              untuk='Total Luasan'
-              score={scores}
-              title={selectedCard.name}
-              color={selectedCard.circular}
-              val={selectedCard.val}
+            <StockAnalysisChartKebun
+              dataprops={{
+                dataset: selectedEvent.sumLuasBlok,
+                untuk: 'Total Luasan',
+                categories: selectedEvent.categories,
+                title: selectedEvent.name,
+                color: selectedEvent.color,
+                val: selectedEvent.val,
+                category: selectedEvent.selectedCategory,
+              }}
+              onEventClick={handleEventClick}
             />
-            <StockAnalysisChart
-              dataset={tbmRes}
-              untuk='Total Blok'
-              score={scores}
-              title={selectedCard.name}
-              color={selectedCard.circular}
-              val={selectedCard.val}
+            <StockAnalysisChartKebun
+              dataprops={{
+                dataset: selectedEvent.countBlok,
+                categories: selectedEvent.categories,
+                untuk: 'Total Blok',
+                title: selectedEvent.name,
+                color: selectedEvent.color,
+                val: selectedEvent.val,
+                category: selectedEvent.selectedCategory,
+              }}
+              onEventClick={handleEventClick}
             />
           </div>
         )}
@@ -991,8 +1080,7 @@ function getScoreTinggiTanaman(age: any, value: any) {
     '28': { min: Math.ceil(154.17), max: Math.ceil(159.73) },
     '29': { min: Math.ceil(159.08), max: Math.ceil(166.37) },
     '30': { min: Math.ceil(164), max: Math.ceil(173) },
-  };
-  
+  }
 
   if (value < rulesTinggiTanaman[age].min) {
     return 80

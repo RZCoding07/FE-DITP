@@ -1,12 +1,33 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import ReactApexChart from 'react-apexcharts'
 import { ApexOptions } from 'apexcharts'
 import cookie from 'js-cookie'
 import { Card, CardContent } from '@/components/ui/card'
 
-const StockAnalysisChart = (dataprops: any) => {
+export const StockAnalysisChart = ({
+  dataprops,
+  onEventClick,
+}: {
+  dataprops: any
+  onEventClick: (data: any) => void
+}) => {
+  const handleChartClick = (selectedCategory: string, distinctKebun: any[], countBlok: any[], sumLuasBlok: any[]) => {
+    const eventData = {
+      name: dataprops.title,
+      value: dataprops.val,
+      color: dataprops.color,
+      categories: distinctKebun, // Pass distinctKeb
+      countBlok,     // Pass countBlok to the parent
+      sumLuasBlok,   // Pass sumLuasBlok to the parent
+      selectedCategory,  // Pass the selected category to the parent
+    }
+    onEventClick(eventData)
+  }
+
   const theme = cookie.get('theme') || 'light'
-  const categories = [
+
+  // Initialize categories with default values
+  const [categories, setCategories] = useState<string[]>([
     'RPC1',
     'RPC2',
     'RPC3',
@@ -16,12 +37,12 @@ const StockAnalysisChart = (dataprops: any) => {
     'RPC7',
     'RPC2(EX-N2)',
     'RPC2(EX-N14)',
-  ]
+  ])
+
+  const [isKebun, setIsKebun] = useState<boolean>(false)
 
   const dataset = dataprops.dataset[dataprops.val]
-
   let score = dataprops.score
-
 
   const countColorBlocks = (data: any, regional: string) => {
     const tbmKeys = ['tbm1', 'tbm2', 'tbm3', 'tbm4']
@@ -38,25 +59,24 @@ const StockAnalysisChart = (dataprops: any) => {
   }
 
   const sumColorLuas = (data: any, regional: string) => {
-    const tbmKeys = ['tbm1', 'tbm2', 'tbm3', 'tbm4'];
+    const tbmKeys = ['tbm1', 'tbm2', 'tbm3', 'tbm4']
     const total = data.reduce((sum: number, item: any) => {
       return tbmKeys.reduce((innerSum: number, key) => {
         return item[key] &&
           item[key].regional === regional &&
           item[key].colorCategory === dataprops.color
           ? innerSum + parseFloat(item[key].luas || '0')
-          : innerSum;
-      }, sum);
-    }, 0);
-  
-    return Math.round(total);
-  };
-  
+          : innerSum
+      }, sum)
+    }, 0)
+
+    return Math.round(total)
+  }
 
   let datas: any[] = []
 
   if (dataprops.untuk === 'Total Blok') {
-    if (dataprops.color == 'all') {
+    if (dataprops.color === 'all') {
       datas = categories.map((category) => {
         const filter = dataset.filter(
           (data: any) => data.regional === category
@@ -76,13 +96,13 @@ const StockAnalysisChart = (dataprops: any) => {
       })
     }
   } else if (dataprops.untuk === 'Total Luasan') {
-    if (dataprops.color == 'all') {
+    if (dataprops.color === 'all') {
       datas = categories.map((category) => {
         const filter = dataset.reduce((sum: number, item: any) => {
           return item.regional === category
             ? sum + parseFloat(item.luas_ha || '0')
             : sum
-        }, 0) 
+        }, 0)
         const roundedFilter = Math.round(filter)
 
         return { category, filter: roundedFilter }
@@ -94,7 +114,6 @@ const StockAnalysisChart = (dataprops: any) => {
         )
       })
 
-
       datas = categories.map((category) => {
         const filter = sumColorLuas(dataColor, category)
         return { category, filter }
@@ -103,11 +122,61 @@ const StockAnalysisChart = (dataprops: any) => {
   }
 
 
+  console.log('datas', datas.map((item) => item.filter))
   const options: ApexOptions = {
     chart: {
       height: 350,
       type: 'bar', // Change to 'bar' for horizontal bars
       stacked: false,
+      events: {
+        dataPointSelection: (event, chartContext, { dataPointIndex }) => {
+          const selectedCategory = categories[dataPointIndex]
+          setIsKebun(true)
+
+          console.log(selectedCategory)
+          const tbmKeys = ['tbm1', 'tbm2', 'tbm3', 'tbm4']
+          const selectedData = score.filter((score: any) => {
+            return (
+              (Object.values(score)[0] as any).regional === selectedCategory
+            )
+          })
+          const kebun = selectedData.reduce((acc: any, item: any) => {
+            return tbmKeys.reduce((innerAcc: any, key) => {
+              return item[key] && item[key].kebun
+                ? innerAcc.concat(item[key].kebun)
+                : innerAcc
+            }, acc)
+          }, [])
+          // masi ada nama kebun yang sama, jadi aku mau distinct lagi
+          const distinctKebun = [...new Set(kebun)]
+
+          // setelah didistict aku mau hitung count blok berdasarkan kebun
+
+          const countBlok = distinctKebun.map((kebun: any) => {
+            const count = selectedData.reduce((acc: number, item: any) => {
+              return tbmKeys.reduce((innerAcc: number, key) => {
+                return item[key] && item[key].kebun === kebun
+                  ? innerAcc + 1
+                  : innerAcc
+              }, acc)
+            }, 0)
+            return { category: kebun, filter: count }
+          })
+
+          const sumLuasBlok = distinctKebun.map((kebun: any) => {
+            const sum = selectedData.reduce((acc: number, item: any) => {
+              return tbmKeys.reduce((innerAcc: number, key) => {
+                return item[key] && item[key].kebun === kebun
+                  ? innerAcc + parseFloat(item[key].luas || '0')
+                  : innerAcc
+              }, acc)
+            }, 0)
+            return { category: kebun, filter: Math.round(sum) }
+          })
+
+          handleChartClick(selectedCategory, distinctKebun, countBlok, sumLuasBlok)
+        },
+      },
     },
 
     dataLabels: {
@@ -166,12 +235,12 @@ const StockAnalysisChart = (dataprops: any) => {
       intersect: false,
       x: {
         show: true,
-        formatter: (val) => `Tahun: ${val}`, // Display x-axis value
+        formatter: (val) => `${val}`, // Display x-axis value
       },
       y: {
         formatter: (val, { series, seriesIndex }) => {
           const seriesName = series[seriesIndex]?.name || 'Tidak Diketahui'
-          return `Nilai: ${val} `
+          return `${val} `
         },
       },
     },
@@ -196,7 +265,7 @@ const StockAnalysisChart = (dataprops: any) => {
 
   const series = [
     {
-      name: 'Blok',
+      name: 'Total:',
       type: 'bar',
       data: datas.map((item) => item.filter),
       color: '#00b0ff',
@@ -221,5 +290,3 @@ const StockAnalysisChart = (dataprops: any) => {
     </div>
   )
 }
-
-export default StockAnalysisChart

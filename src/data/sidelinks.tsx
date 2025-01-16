@@ -288,36 +288,28 @@ export const immatureSideLinks: SideLink[] = [
     title: 'Luas Areal Statement',
     href: '/luas-areal',
     icon: (
-      <img
-        width='20'
-        height='20'
-        src='https://img.icons8.com/cotton/20/map.png'
-        alt='map'
-      />
+<img width="20" height="20" src="https://img.icons8.com/avantgarde/20/map.png" alt="map"/>
     ),
   },
   {
     title: 'Pengukuran Vegetatif',
     href: '/data-vegetatif',
     icon: (
-      <img
-        width='19'
-        height='19'
-        src='https://img.icons8.com/cotton/19/website-analytics--v1.png'
-        alt='website-analytics--v1'
-      />
+<img width="20" height="20" src="https://img.icons8.com/avantgarde/20/lipids.png" alt="lipids"/>
+    ),
+  },
+  {
+    title: 'Monitoring PICA TBM',
+    href: '/pica-tbm',
+    icon: (
+<img width="20" height="20" src="https://img.icons8.com/arcade/20/system-task.png" alt="system-task"/>
     ),
   },
   {
     title: 'Master Data PI',
     href: '/upload-problem-identification',
     icon: (
-      <img
-        width='20'
-        height='20'
-        src='https://img.icons8.com/pulsar-color/20/why-us-male.png'
-        alt='why-us-male'
-      />
+<img width="20" height="20" src="https://img.icons8.com/fluency/20/data-configuration.png" alt="data-configuration"/>
     ),
   },
 
