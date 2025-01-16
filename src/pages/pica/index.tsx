@@ -22,7 +22,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import slugify from 'slugify'
 import Select from 'react-select'
 import axios from 'axios'
-import StockAnalysisChart from '@/components/custom/bar-chart'
+import StockAnalysisChartBar from '@/components/custom/bar-chart'
 import { fetchKebun } from '@/utils/api_immature'
 
 export default function PicaTbm() {
@@ -108,7 +108,7 @@ export default function PicaTbm() {
             </div>
           </CardHeader>
           <CardContent>
-            <StockAnalysisChart />
+            <StockAnalysisChartBar />
             <Tabs
               orientation='vertical'
               defaultValue='grafik'
@@ -131,7 +131,7 @@ export default function PicaTbm() {
                    &nbsp;    Data Masalah PICA {rpc.label}
                     </h2>
                     <div className='flex items-center space-x-2'>
-                      <button className='flex items-center rounded-md bg-cyan-300 px-2 py-1 text-white'>
+                      <button className='flex items-center rounded-md bg-cyan-600 px-2 py-1 text-white'>
                         <FaFileExcel className='mr-1' />
                         Export Excel
                       </button>

@@ -1,18 +1,22 @@
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
+import cookie from 'js-cookie';
 
-const StockAnalysisChart: React.FC = () => {
+const StockAnalysisChartBar: React.FC = () => {
+  const theme = cookie.get('theme') || 'light';
   const options: ApexOptions = {
     chart: {
       height: 350,
       type: 'line',
       stacked: false,
+      foreColor: theme === 'dark' ? '#ffffff' : '#000000',
     },
 
     dataLabels: {
       enabled: true,
       offsetY: -5,
+      formatter: (val:any) => `${Math.round(val)} Ha`,
     },
     stroke: {
       width: [1, 1, 4],
@@ -23,7 +27,7 @@ const StockAnalysisChart: React.FC = () => {
       labels: {
         show: true,
         style: {
-          colors: '#000000',
+          colors: theme === 'dark' ? '#ffffff' : '#000000',
           fontSize: '12px',
           fontFamily: 'Arial, sans-serif',
         },
@@ -31,7 +35,7 @@ const StockAnalysisChart: React.FC = () => {
       title: {
         text: 'Tahun', // Add title for x-axis
         style: {
-          color: '#000000',
+          color: theme === 'dark' ? '#ffffff' : '#000000',
         },
       },
     },
@@ -43,17 +47,17 @@ const StockAnalysisChart: React.FC = () => {
         },
         axisBorder: {
           show: true,
-          color: '#000000',
+          color: theme === 'dark' ? '#ffffff' : '#000000',
         },
         labels: {
           style: {
-            colors: '#000000',
+            colors: theme === 'dark' ? '#ffffff' : '#000000',
           },
         },
         title: {
           text: 'Total Luasan (Ha)',
           style: {
-            color: '#000000',
+            color: theme === 'dark' ? '#ffffff' : '#000000',
           },
         },
         tooltip: {
@@ -67,6 +71,7 @@ const StockAnalysisChart: React.FC = () => {
       x: {
         show: true,
         formatter: (val) => `Tahun: ${val}`, // Display x-axis value
+        
       },
       y: {
         formatter: (val, { series, seriesIndex }) => {
@@ -106,4 +111,4 @@ const StockAnalysisChart: React.FC = () => {
   );
 };
 
-export default StockAnalysisChart;
+export default StockAnalysisChartBar;

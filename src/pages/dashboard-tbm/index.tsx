@@ -18,9 +18,10 @@ import { useDashboardForm } from '@/hooks/use-dashboard-form'
 import { fetchVegetativeProc, fetchKebun, fetchAfd } from '@/utils/api_immature'
 import { TOP_NAV } from '@/utils/constants'
 import { customStyles } from '@/styles/select-styles'
-import DonutChart from '@/components/custom/donut-chart'
 import { StockAnalysisChart } from '@/components/custom/horizontal-bar-chart'
 import { StockAnalysisChartKebun } from '@/components/custom/horizontal-kebun-bar-chart'
+import StockAnalysisChartBar from '@/components/custom/bar-chart'
+import DonutChart from '@/components/custom/donut-chart'
 
 import { FaEyeDropper, FaRecycle, FaSync } from 'react-icons/fa'
 import {
@@ -710,6 +711,7 @@ export default function Dashboard() {
           afdOptions={afdOptions}
           tbmDataScorePelepahBlok={tbmDataScorePelepahBlok}
           tbmDataScoreLingkarBlok={tbmDataScoreLingkarBlok}
+          scores={scores}
         />
       </Layout.Body>
     </Layout>
@@ -802,6 +804,7 @@ function DataPicaCluster({
   afdOptions,
   tbmDataScorePelepahBlok,
   tbmDataScoreLingkarBlok,
+  scores,
 }: {
   control: any
   rpc: any
@@ -852,6 +855,7 @@ function DataPicaCluster({
       total: number
     }
   }
+  scores: any[]
 }) {
   return (
     <>
@@ -924,11 +928,38 @@ function DataPicaCluster({
         </div>
       </div>
 
-      <DonutChart
-        tbmDataScorePelepahBlok={tbmDataScorePelepahBlok}
-        tbmDataScoreLingkarBlok={tbmDataScoreLingkarBlok}
-      />
-      <div className='float-end -mt-5 flex justify-center align-middle'></div>
+      <DonutChart />
+      <div className='block w-full items-center justify-center gap-2 align-middle'>
+        <div className='mr-3 mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+          <div className='w-full items-center align-middle'>
+            <div className='flex justify-between'>
+              <h2 className='text-xl font-semibold'>
+                Result Problem Identification & Corrective Action
+              </h2>
+              <Button
+                  variant={'secondary'}
+          
+                  className='flex items-center rounded-full'
+                >
+                  <img
+                    width='20'
+                    height='20'
+                    src='https://img.icons8.com/external-beshi-flat-kerismaker/48/external-Hide-user-interface-beshi-flat-kerismaker.png'
+                    alt='external-Hide-user-interface-beshi-flat-kerismaker'
+                  />{' '}
+                  <span className='ml-2'>Hide Result</span>
+                </Button>
+            </div>
+          </div>
+          <hr className='my-3 border-cyan-400' />
+          <div className='mr-3 mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+            <h2 className='text-xl font-semibold'>
+              Total Blok Merah dan Hitam
+            </h2>
+            <StockAnalysisChartBar />
+          </div>
+        </div>
+      </div>
     </>
   )
 }
