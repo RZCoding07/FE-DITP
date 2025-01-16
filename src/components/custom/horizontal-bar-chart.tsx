@@ -184,7 +184,7 @@ export const StockAnalysisChart = ({
       offsetX: 5, // Adjust label position for horizontal bars
     },
     stroke: {
-      width: [1], // Single series, so only one width
+      width: [1], // Single series, so only one dat
     },
     plotOptions: {
       bar: {

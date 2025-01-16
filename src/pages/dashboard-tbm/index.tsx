@@ -577,7 +577,8 @@ export default function Dashboard() {
           defaultBulan={defaultBulan}
         />
 
-        <WelcomeBanner />
+        {/* <WelcomeBanner /> */}
+        <br />
 
         <Summary
           dataProps={{
@@ -618,55 +619,56 @@ export default function Dashboard() {
           )}
         </div>
         {selectedCard && (
-     <>
-     <div className="align-middle items-center w-full">
-       <div className="mt-5 flex justify-between">
-        <h2 className='font-semibold text-2xl'>Grafik Rincian {selectedCard.name} Per Regional</h2>
-         <Button
-           variant={'secondary'}
-           onClick={() => {
-             setSelectedCard(null);
-             setSelectedEvent(null);
-           }}
-           className="flex rounded-full items-center"
-         >
-           <img
-             width="20"
-             height="48"
-             src="https://img.icons8.com/external-beshi-flat-kerismaker/48/external-Hide-user-interface-beshi-flat-kerismaker.png"
-             alt="external-Hide-user-interface-beshi-flat-kerismaker"
-           />{' '}
-           <span className="ml-2">Hide Chart</span>
-         </Button>
-       </div>
-   
-       <div className="mt-5 grid grid-cols-2 gap-4">
-         <StockAnalysisChart
-           dataprops={{
-             dataset: tbmRes,
-             untuk: 'Total Luasan',
-             score: scores,
-             title: selectedCard.name,
-             color: selectedCard.circular,
-             val: selectedCard.val,
-           }}
-           onEventClick={handleEventClick}
-         />
-         <StockAnalysisChart
-           dataprops={{
-             dataset: tbmRes,
-             untuk: 'Total Blok',
-             score: scores,
-             title: selectedCard.name,
-             color: selectedCard.circular,
-             val: selectedCard.val,
-           }}
-           onEventClick={handleEventClick}
-         />
-       </div>
-     </div>
-   </>
-   
+          <>
+            <div className='w-full items-center align-middle'>
+              <div className='mt-5 flex justify-between'>
+                <h2 className='text-2xl font-semibold'>
+                  Grafik Rincian {selectedCard.name} Per Regional
+                </h2>
+                <Button
+                  variant={'secondary'}
+                  onClick={() => {
+                    setSelectedCard(null)
+                    setSelectedEvent(null)
+                  }}
+                  className='flex items-center rounded-full'
+                >
+                  <img
+                    width='20'
+                    height='20'
+                    src='https://img.icons8.com/external-beshi-flat-kerismaker/48/external-Hide-user-interface-beshi-flat-kerismaker.png'
+                    alt='external-Hide-user-interface-beshi-flat-kerismaker'
+                  />{' '}
+                  <span className='ml-2'>Hide Chart</span>
+                </Button>
+              </div>
+
+              <div className='mt-5 grid grid-cols-2 gap-4'>
+                <StockAnalysisChart
+                  dataprops={{
+                    dataset: tbmRes,
+                    untuk: 'Total Luasan',
+                    score: scores,
+                    title: selectedCard.name,
+                    color: selectedCard.circular,
+                    val: selectedCard.val,
+                  }}
+                  onEventClick={handleEventClick}
+                />
+                <StockAnalysisChart
+                  dataprops={{
+                    dataset: tbmRes,
+                    untuk: 'Total Blok',
+                    score: scores,
+                    title: selectedCard.name,
+                    color: selectedCard.circular,
+                    val: selectedCard.val,
+                  }}
+                  onEventClick={handleEventClick}
+                />
+              </div>
+            </div>
+          </>
         )}
         {selectedEvent && isKebun && (
           <div className='mt-5 grid grid-cols-2 gap-4'>
@@ -855,8 +857,8 @@ function DataPicaCluster({
     <>
       <div className='align-end mt-5 grid grid-cols-[30%_70%] items-center'>
         <h2 className='text-2xl font-bold'>
-          PICA Cluster {rpc ? rpc.label : ''} {kebun ? ' / ' + kebun.label : ''}{' '}
-          {afd ? ' / ' + afd.label : ''} <br />
+          PICA Cluster {rpc ? rpc.label : ''} {kebun ? ' - ' + kebun.label : ''}{' '}
+          {afd ? ' - ' + afd.label : ''} <br />
           <strong>
             {bulan ? bulan.label : ''} {tahun ? tahun.label : ''}
           </strong>
@@ -913,7 +915,6 @@ function DataPicaCluster({
               { value: 'luasan', label: 'Luasan' },
             ]}
             {...control.register('blok')}
-            value={afd}
           />
           <div className='flex'>
             <Button className='flex items-center rounded-full'>
