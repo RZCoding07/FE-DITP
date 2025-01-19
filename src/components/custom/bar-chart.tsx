@@ -32,7 +32,11 @@ const StockAnalysisChartBar: React.FC = () => {
       type: 'line',
       stacked: false,
       foreColor: theme === 'dark' ? '#ffffff' : '#000000',
+      zoom: {
+        enabled: false, // Disables zoom
+      },
     },
+    
     xaxis: {
       categories: categories, // Menetapkan kategori dari state 'categories'
       labels: {

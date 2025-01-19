@@ -97,17 +97,32 @@ export default function Sidebar({
             className={`h-5 w-5 ${isCollapsed ? 'rotate-180' : ''}`}
           />
         </Button>
+           <style>{`
+           /* CSS Manual */
+.hide-sm {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .hide-sm {
+    display: flex; /* Menampilkan elemen pada layar ukuran xl dan lebih besar */
+  }
+}
+  `}</style>
+        {/* Footer */}
         <div data-sidebar='footer' className='flex flex-col gap-2 p-2'>
-          <div className={`flex items-center ${!isCollapsed ? 'gap-2' : ''}`}>
-            <img src='ptpn4.png' alt='logo' style={{ width: '35px' }} />
-            <div
-              className={`flex flex-col justify-end truncate ${isCollapsed ? 'invisible w-0' : 'visible w-auto'}`}
-            >
-              <span className='ml-2 font-medium'>{fullname}</span>
-              <span className='ml-2 text-xs capitalize'>{account_type}</span>
-            </div>
-          </div>
-        </div>
+  <div className={`flex ml-1 items-center ${!isCollapsed ? 'gap-2' : ''}`}>
+    <img src='ptpn4.png' alt='logo' className='hide-sm' style={{ width: '35px' }} />
+    <div
+      className={`flex flex-col justify-end truncate ${isCollapsed ? 'invisible w-0' : 'visible w-auto'} 
+      hide-sm`}
+    >
+      <span className='ml-2 font-medium'>{fullname}</span>
+      <span className='ml-2 text-xs capitalize'>{account_type}</span>
+    </div>
+  </div>
+</div>
+
       </Layout>
     </aside>
   )
