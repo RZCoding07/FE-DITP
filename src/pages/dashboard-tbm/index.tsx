@@ -459,7 +459,7 @@ export default function Dashboard() {
         setTbmData(tbmResults)
         setTbmDataScorePelepahBlok(scoreJumlahPelepahResults)
         setTbmDataScoreLingkarBlok(scoreLingkarBatangResults)
-        toast.success('Data berhasil ditampilkan!', {
+        toast.success('Seluruh data TBM berhasil ditampilkan!', {
           duration: 2000,
         })
       } catch (error) {
