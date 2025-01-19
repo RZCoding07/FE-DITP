@@ -248,9 +248,9 @@ export default function Dashboard() {
           tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
         }
 
-         const loader =  toast.loading(`Memuat data untuk Keseluruhan TBM...`, {
-            duration: 2000,
-          })
+        const loader = toast.loading(`Memuat data untuk Keseluruhan TBM...`, {
+          duration: 2000,
+        })
 
         for (let i = 1; i < 5; i++) {
           const tahunTanam = tahun.value - i
@@ -454,7 +454,7 @@ export default function Dashboard() {
         setTbmDataScorePelepahBlok(scoreJumlahPelepahResults)
         setTbmDataScoreLingkarBlok(scoreLingkarBatangResults)
         toast.success('Seluruh data TBM berhasil ditampilkan!', {
-          id : loader,
+          id: loader,
           duration: 2000,
         })
       } catch (error) {
@@ -649,7 +649,7 @@ export default function Dashboard() {
                         />{' '}
                         <span className='ml-2'>Hide Chart</span>
                       </Button>
-                    
+
                     </div>
                     <hr className='my-2 mt-4 border-cyan-400' />
 
@@ -767,13 +767,24 @@ export default function Dashboard() {
                 <div className="grid grid-cols-[40%_60%]" >
                   <div className='items-center justify-center align-middle mr-4'>
                     <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-                      <h2 className='text-xl font-semibold'>Rekapitulasi {selectedCard.name}</h2>
+                      <h2 className='text-xl font-semibold'>Rekapitulasi  {blok ? blok.label : 'Blok'} {selectedCard.name}
+                      </h2>
                       <hr className='my-2 border-cyan-400' />
                       <div className="grid grid-cols-1">
-                        <p className='text-sm font-semibold text-cyan-300 -mb-5'>
-                          *Grafik Per {blok ? blok.label : 'Blok'}
-
+                        <div className="grid grid-cols-[40%_60%]">
+                        <p className='text-xs font-semibold text-cyan-300 -mb-9                                            '>
+                          *Grafik Per {blok ? blok.label : 'Blok'}<br />
+                          <strong>
+                            &nbsp; (  {bulan ? bulan.label : ''} {tahun ? tahun.label : ''} )
+                          </strong>
                         </p>
+                        <p className='float-end text-end text-sm font-semibold text-cyan-300 -mb-5'>
+                    
+                          {rpc ? rpc.label : ''} {kebun ? ' - ' + kebun.label : ''}{' '}
+                          {afd ? ' - ' + afd.label : ''}
+              
+                        </p>
+                        </div>
                         <DonutChartTbm
                         />
                         <div className="relative">
@@ -873,6 +884,7 @@ export default function Dashboard() {
                   rpc={rpc}
                   kebun={kebun}
                   afd={afd}
+                  blok={blok}
                   bulan={bulan}
                   tahun={tahun}
                   rpcOptions={rpcOptions}
@@ -974,6 +986,7 @@ function DataPicaCluster({
   rpc,
   kebun,
   afd,
+  blok,
   bulan,
   tahun,
   rpcOptions,
@@ -987,6 +1000,7 @@ function DataPicaCluster({
   rpc: any
   kebun: any
   afd: any
+  blok: any
   bulan: any
   tahun: any
   rpcOptions: any[]
@@ -1051,16 +1065,11 @@ function DataPicaCluster({
             <hr className='my-3 border-cyan-400' />
             <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-r dark:from-cyan-700 dark:to-cyan-600'>
               <h2 className='text-xl font-semibold'>
-                Total Blok Merah dan Hitam
+                Total {blok ? blok.label : 'Blok'}  Merah dan Hitam
               </h2>
               <StockAnalysisChartBar />
             </div>
-            {/* <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-cyan-600'>
-              <h2 className='text-xl font-semibold'>
-                Grafik PICA TBM
-              </h2>
-              <KuadranChart />
-            </div> */}
+
           </div>
         </div>
       </div>

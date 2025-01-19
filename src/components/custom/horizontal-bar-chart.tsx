@@ -337,7 +337,7 @@ export const StockAnalysisChart = ({
         options={options}
         series={series}
         type='bar'
-        height={350}
+        height={368}
       />
 
     </div>
