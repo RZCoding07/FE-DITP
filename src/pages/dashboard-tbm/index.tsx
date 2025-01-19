@@ -25,7 +25,7 @@ import DonutChart from '@/components/custom/donut-chart'
 import DonutChartTbm from '@/components/custom/donut-chart-tbm'
 import KuadranChart from '@/components/custom/kuadran'
 import { Summary as STbm } from '@/components/summarytbm'
-
+import toast from 'react-hot-toast'
 import { FaEyeDropper, FaRecycle, FaSync } from 'react-icons/fa'
 import {
   Table,
@@ -122,6 +122,7 @@ export default function Dashboard() {
   // }, [scores])
   useEffect(() => {
     const fetchProcVegetatifDefault = async () => {
+      const loadingToast = toast.loading('Fetching data...');
       try {
             // Reset all values to zero
       setTbmRes([]);  // reset tbmRes array
@@ -443,6 +444,9 @@ export default function Dashboard() {
               total: newScores.length,
             }
           }
+          toast.success('Data fetched successfully!', {
+            id: loadingToast, // Use the same toast id to update
+          });
         }
         setTbmData(tbmResults)
         setTbmDataScorePelepahBlok(scoreJumlahPelepahResults)
