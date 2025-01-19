@@ -15,7 +15,23 @@ export const useDashboardForm = () => {
     setValue,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm({})
+  } = useForm({
+    defaultValues: {
+      rpc: null,
+      kebun: null,
+      afd: null,
+      blok: { value: 'blok', label: 'Blok' },
+      tahun: null,
+      bulan: null,
+    },
+  })
+
+  const rpc: any = watch('rpc')
+  const kebun: any = watch('kebun')
+  const afd: any = watch('afd')
+  const blok: any = watch('blok')
+  const bulan: any = watch('bulan')
+  const tahun: any = watch('tahun')
 
   useEffect(() => {
     const fetchBulanTahun = async () => {
@@ -61,5 +77,11 @@ export const useDashboardForm = () => {
     tahunOptions,
     defaultBulan,
     defaultTahun,
+    rpc,
+    kebun,
+    afd,
+    blok,
+    bulan,
+    tahun,
   }
 }

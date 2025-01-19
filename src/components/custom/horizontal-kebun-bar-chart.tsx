@@ -122,7 +122,7 @@ export const StockAnalysisChartKebun = ({
   ]
 
   return (
-    <div id='chart'>
+    <div id='chart' className='grid gap-5 grid-cols-1 '>
               <style>{`
         .apexcharts-menu {
           background-color: ${theme =='dark' ? "#333" : "#fff"} !important;
@@ -142,7 +142,7 @@ export const StockAnalysisChartKebun = ({
         }
       `}</style>
 
-      <Card className='bg-gradient border border-cyan-500 bg-white bg-gradient-to-bl shadow-lg shadow-cyan-500 dark:from-slate-900 dark:to-slate-950'>
+      <Card className='bg-gradient border border-cyan-500 bg-white bg-gradient-to-bl shadow-lg shadow-cyan-500 dark:from-slate-900 dark:to-slate-950 '>
         <CardContent className='mb-0 pb-0'>
           <h2 className='pt-3 text-center text-xl font-semibold'>
             {dataprops.untuk} Kebun {dataprops.category} - ( {dataprops.title} )

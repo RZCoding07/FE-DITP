@@ -41,8 +41,21 @@ export const StockAnalysisChart = ({
 
   const [isKebun, setIsKebun] = useState<boolean>(false)
 
-  const dataset = dataprops.dataset[dataprops.val]
+  let dataset = dataprops.dataset[dataprops.val]
+
+
   let score = dataprops.score
+
+  let dataValueOfAllTBM = score.map((item: any) => {
+    return Object.values(item)[0]
+  }
+  )
+
+  if (dataprops.title == 'Keseluruhan TBM') {
+    dataset = dataValueOfAllTBM
+  }
+
+  console.log('dataset', dataset)
 
   const countColorBlocks = (data: any, regional: string) => {
     const tbmKeys = ['tbm1', 'tbm2', 'tbm3', 'tbm4']
@@ -83,7 +96,8 @@ export const StockAnalysisChart = ({
         ).length
         return { category, filter }
       })
-    } else {
+    }
+    else {
       const dataColor = score.filter((score: any) => {
         return (
           (Object.values(score)[0] as any).colorCategory === dataprops.color
@@ -92,6 +106,16 @@ export const StockAnalysisChart = ({
 
       datas = categories.map((category) => {
         const filter = countColorBlocks(dataColor, category)
+        return { category, filter }
+      })
+    }
+
+    if (dataprops.title === 'Keseluruhan TBM') {
+
+      datas = categories.map((category) => {
+        const filter = dataset.filter(
+          (data: any) => data.regional === category
+        ).length
         return { category, filter }
       })
     }
@@ -119,10 +143,22 @@ export const StockAnalysisChart = ({
         return { category, filter }
       })
     }
+
+    if (dataprops.title === 'Keseluruhan TBM') {
+      datas = categories.map((category) => {
+        const filter = dataset.reduce((sum: number, item: any) => {
+          return item.regional === category
+            ? sum + parseFloat(item.luas || '0')
+            : sum
+        }, 0)
+        const roundedFilter = Math.round(filter)
+
+        return { category, filter: roundedFilter }
+      })
+    }
   }
 
 
-  console.log('datas', datas.map((item) => item.filter))
   const options: ApexOptions = {
     chart: {
       height: 350,
@@ -133,7 +169,7 @@ export const StockAnalysisChart = ({
           const selectedCategory = categories[dataPointIndex]
           setIsKebun(true)
 
-          console.log(selectedCategory)
+
           const tbmKeys = ['tbm1', 'tbm2', 'tbm3', 'tbm4']
           const selectedData = score.filter((score: any) => {
             return (
@@ -274,9 +310,9 @@ export const StockAnalysisChart = ({
 
   return (
     <div id='chart'>
-              <style>{`
+      <style>{`
         .apexcharts-menu {
-          background-color: ${theme =='dark' ? "#333" : "#fff"} !important;
+          background-color: ${theme == 'dark' ? "#333" : "#fff"} !important;
           color: ${theme == 'dark' ? "#fff" : "#000"} !important;
           border-radius: 8px;
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -292,19 +328,19 @@ export const StockAnalysisChart = ({
           color: ${theme == 'dark' ? "#ffcc00" : "#007BFF"} !important;
         }
       `}</style>
-      <Card className='bg-gradient border border-cyan-500 bg-white bg-gradient-to-bl shadow-lg shadow-cyan-500 dark:from-slate-900 dark:to-slate-950'>
-        <CardContent className='mb-0 pb-0'>
-          <h2 className='pt-3 text-center text-xl font-semibold'>
-            {dataprops.untuk} {dataprops.title}
-          </h2>
-          <ReactApexChart
-            options={options}
-            series={series}
-            type='bar'
-            height={350}
-          />
-        </CardContent>
-      </Card>
+
+      <h2 className=' text-xl font-semibold'>
+        {dataprops.untuk} {dataprops.title}
+      </h2>
+      <hr className='my-2 border-cyan-400' />
+
+      <ReactApexChart
+        options={options}
+        series={series}
+        type='bar'
+        height={350}
+      />
+
     </div>
   )
 }

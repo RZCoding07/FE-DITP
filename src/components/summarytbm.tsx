@@ -9,7 +9,6 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
     {
       show: true,
       name: 'Emas',
-      type: 'color',
       val: 0,
 
       progress:
@@ -29,8 +28,6 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
     {
       show: true,
       name: 'Hijau',
-      type: 'color',
-
       val: 1,
       progress: dataProps.data.hijau == null ? 0 : dataProps.data.hijau.toLocaleString('id-ID'),
       progressLuas: dataProps.dataLuas.hijau == null ? 0 : dataProps.dataLuas.hijau.toLocaleString('id-ID'),
@@ -43,8 +40,6 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
     {
       show: true,
       name: 'Merah',
-      type: 'color',
-
       progress: dataProps.data.merah == null ? 0 : dataProps.data.merah.toLocaleString('id-ID'),
       progressLuas: dataProps.dataLuas.merah == null ? 0 : dataProps.dataLuas.merah.toLocaleString('id-ID'),
       val: 2,
@@ -56,8 +51,6 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
     {
       show: true,
       name: 'Hitam',
-      type: 'color',
-
       val: 3,
       progress: dataProps.data.hitam == null ? 0 : dataProps.data.hitam.toLocaleString('id-ID'),
       progressLuas: dataProps.data.hitam == null ? 0 : dataProps.dataLuas.hitam.toLocaleString('id-ID'),
@@ -71,7 +64,6 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
     {
       show: true,
       name: 'Emas',
-
       progress: 1,
       circular: 'gold',
       rules: 'Kelas A : 97 - 100',
@@ -116,7 +108,6 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
     {
       show: true,
       name: 'TBM 1' + ' - TT ' + (tahunValue ? tahunValue - 1 : 0),
-      type: 'tbm',
       val: 0,
       progress:
         dataProps.dataTbm.tbm1 == null
@@ -129,8 +120,6 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
     },
     {
       show: true,
-
-      type: 'tbm',
       name: 'TBM 2' + ' - TT ' + (tahunValue ? tahunValue - 2 : 0),
       val: 1,
       progress:
@@ -144,8 +133,6 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
     },
     {
       show: true,
-      type: 'tbm',
-
       name: 'TBM 3' + ' - TT ' + (tahunValue ? tahunValue - 3 : 0),
       val: 2,
       progress:
@@ -160,7 +147,6 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
 
     {
       show: true,
-      type: 'tbm',
       name: 'TBM 3' + ' - > ' + (tahunValue ? tahunValue - 3 : 0),
       val: 3,
       progress:
@@ -179,118 +165,48 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
     + dataProps.dataTbm.tbm2
     + dataProps.dataTbm.tbm1
   ).toFixed(2);
-
+  
   // Convert to number before formatting
   const totalLuasFormat = Number(totalLuas).toLocaleString('id-ID');
-
+  
   return (
     <>
-      <h2 className='font-semibold mb-1 -mt-5'>Luas TBM Total : {
-        totalLuasFormat
-      } HA</h2>
-      <div className='grid gap-4 lg:grid-cols-4 2xl:grid-cols-4'>
-        {data.map((item, i) =>
-          item.show ? (
-            <Card
-              key={i}
-              className='py-1 shadow-md dark:from-slate-900 dark:via-slate-950 dark:to-transparent border dark:hover:border-cyan-500 hover:shadow-cyan-500'
-              onClick={() => onCardClick(item)} // Kirim data ke parent saat card di-klik
-              style={{
-                background: `linear-gradient(135deg, ${item.color} 55%, ${item.color}29 45%)`,
-                borderColor: item.color,
-
-              }}
-            >
-              <CardContent className='flex items-center px-2 py-1'>
-                <div className='relative mr-2 h-10 w-10'>
-                  <img src={item.image} alt={item.name} />
-                </div>
-                <div className='grid grid-cols-2 py-0 my-0  align-middle items-center w-full'>
-                  <p
-                    className='text-sm font-semibold capitalize'
-                    style={{ color: `${item.textColor}` }}
-                  >
-                    {item.name}
-                  </p>
-                  <div className='py-0 my-0 items-end'>
-                    <p
-                      className='font-semibold float-right'
-                      style={{ color: `${item.textColor}` }}
-                    >
-                      {item.progress} Blok
-                    </p>
-                    <br />
-                    <p
-                      className='font-semibold float-end'
-                      style={{ color: `${item.textColor}` }}
-                    >
-                      {item.progressLuas} HA
-                    </p>
-                  </div>
-
-                </div>
-              </CardContent>
-            </Card>
-          ) : null
-        )}
-
-
-      </div>
-      <div className='flex -mt-2'>
-        {dataRules.map((item, i) =>
-          item.show ? (
-            <div
-              key={i}
-              className='mt-5 block w-full bg-gradient-to-br   dark:from-slate-900 dark:via-slate-950 dark:to-slate-950'
-              style={{
-                background: `linear-gradient(135deg, ${item.color} 55%, ${item.color}69 45%)`,
-                borderColor: item.color,
-              }}
-            >
-              <div className='flex items-center justify-between px-4 py-1'>
-                <p className='text-sm font-semibold capitalize text-white'>
+    <div className='grid gap-4 lg:grid-cols-4 2xl:grid-cols-2 mt-5'>
+      {data.map((item, i) =>
+        item.show ? (
+          <Card
+            key={i}
+            className='py-1 shadow-md dark:from-slate-900 dark:via-slate-950 dark:to-transparent border dark:hover:border-cyan-500 hover:shadow-cyan-500'
+            onClick={() => onCardClick(item)} // Kirim data ke parent saat card di-klik
+            style={{
+              background: `linear-gradient(135deg, ${item.color} 55%, ${item.color}29 45%)`,
+              borderColor: item.color,
+            }}
+          >
+            <CardContent className='flex items-center px-2 py-1'>
+              <div className='relative mr-2 w-10 h-10'>
+                <img src={item.image} alt={item.name} className="object-contain" />
+              </div>
+              <div className='grid grid-cols-[20%_80%] py-0 my-0 text-xs align-middle items-center w-full'>
+                <p className='text-sm font-semibold capitalize' style={{ color: `${item.textColor}` }}>
                   {item.name}
                 </p>
-                <span className='text-end text-xs font-semibold text-white'>
-                  {item.rules}
-                </span>
+                <div className='py-0 my-0 items-end'>
+                  <p className='font-semibold float-right' style={{ color: `${item.textColor}` }}>
+                    {item.progress} Blok
+                  </p>
+                  <br />
+                  <p className='font-semibold float-end' style={{ color: `${item.textColor}` }}>
+                    {item.progressLuas} HA
+                  </p>
+                </div>
               </div>
-            </div>
-          ) : null
-        )}
-      </div>
-
-      <div className='grid gap-4 lg:grid-cols-4 2xl:grid-cols-4 mt-4'>
-        {dataTbm.map((item, i) =>
-          item.show ? (
-            <Card
-              key={i}
-              onClick={() => onCardClick(item)}
-              className='bg-gradient-to-br  py-2 shadow-md dark:from-slate-900 dark:via-slate-950 dark:to-transparent border border-cyan-500 shadow-cyan-500  
-            dark:hover:bg-slate-700 '
-            >
-              <CardContent className='flex items-center px-2 py-1'>
-                <div className='relative float-end mr-2 h-10 w-10'>
-                  <img
-                    width='64'
-                    height='64'
-                    src='https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-oil-oil-gas-flaticons-flat-flat-icons.png'
-                    alt='external-oil-oil-gas-flaticons-flat-flat-icons'
-                  />
-                </div>
-                <div>
-                  <p className='text-sm font-semibold capitalize'>{item.name}</p>
-                  <p className='font-semibold'>{item.progress} HA</p>
-
-                </div>
-
-              </CardContent>
-            </Card>
-          ) : null
-        )}
-
-      </div>
-    </>
-
+            </CardContent>
+          </Card>
+        ) : null
+      )}
+    </div>
+  </>
+  
   )
 }

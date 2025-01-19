@@ -1,10 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
 import cookie from 'js-cookie';
 
 const StockAnalysisChartBar: React.FC = () => {
-  const theme = cookie.get('theme') || 'light';
+  const [theme, setTheme] = useState<string>(cookie.get('theme') || 'light');
+
+  useEffect(() => {
+    setTheme(cookie.get('theme') || 'light'); // Memastikan pembaruan tema terjadi
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 100);
+
+  }, []);
+
+  const [categories, setCategories] = useState<string[]>([
+    'RPC1',
+    'RPC2',
+    'RPC3',
+    'RPC4',
+    'RPC5',
+    'RPC6',
+    'RPC7',
+    'RPC2(EX-N2)',
+    'RPC2(EX-N14)',
+  ]);
+
   const options: ApexOptions = {
     chart: {
       height: 350,
@@ -12,18 +33,8 @@ const StockAnalysisChartBar: React.FC = () => {
       stacked: false,
       foreColor: theme === 'dark' ? '#ffffff' : '#000000',
     },
-
-    dataLabels: {
-      enabled: true,
-      offsetY: -5,
-      formatter: (val:any) => `${Math.round(val)} Ha`,
-    },
-    stroke: {
-      width: [1, 1, 4],
-    },
     xaxis: {
-      
-      categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
+      categories: categories, // Menetapkan kategori dari state 'categories'
       labels: {
         show: true,
         style: {
@@ -33,45 +44,47 @@ const StockAnalysisChartBar: React.FC = () => {
         },
       },
       title: {
-        text: 'Tahun', // Add title for x-axis
+        text: 'Regional', // Judul untuk x-axis
         style: {
           color: theme === 'dark' ? '#ffffff' : '#000000',
         },
       },
     },
-    yaxis: [
-      {
-        seriesName: 'Blok Hitam',
-        axisTicks: {
-          show: true,
-        },
-        axisBorder: {
-          show: true,
-          color: theme === 'dark' ? '#ffffff' : '#000000',
-        },
-        labels: {
-          style: {
-            colors: theme === 'dark' ? '#ffffff' : '#000000',
-          },
-        },
-        title: {
-          text: 'Total Luasan (Ha)',
-          style: {
-            color: theme === 'dark' ? '#ffffff' : '#000000',
-          },
-        },
-        tooltip: {
-          enabled: true,
+    yaxis: {
+      axisTicks: {
+        show: true,
+      },
+      axisBorder: {
+        show: true,
+        color: theme === 'dark' ? '#ffffff' : '#000000',
+      },
+      labels: {
+        style: {
+          colors: theme === 'dark' ? '#ffffff' : '#000000',
         },
       },
-    ],
+      title: {
+        text: 'Total Luasan Ha', // Judul untuk y-axis
+        style: {
+          color: theme === 'dark' ? '#ffffff' : '#000000',
+        },
+      },
+    },
+  
+    dataLabels: {
+      enabled: true,
+      offsetY: -5,
+      formatter: (val: any) => `${Math.round(val)} Ha`,
+    },
+    stroke: {
+      width: [1, 1, 4],
+    },
     tooltip: {
       shared: true,
       intersect: false,
       x: {
         show: true,
-        formatter: (val) => `Tahun: ${val}`, // Display x-axis value
-        
+        formatter: (val) => `Category: ${val}`, // Menampilkan kategori (x-axis)
       },
       y: {
         formatter: (val, { series, seriesIndex }) => {
@@ -93,20 +106,20 @@ const StockAnalysisChartBar: React.FC = () => {
     {
       name: 'Blok Hitam',
       type: 'column',
-      data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6],
+      data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6, 5.2],
       color: 'rgba(15, 23, 42, 0.95)',
     },
     {
       name: 'Blok Merah',
       type: 'column',
-      data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5],
+      data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5, 9.2],
       color: '#DC143C',
     },
   ];
 
   return (
-    <div id="chart">
-      <ReactApexChart options={options} series={series} type="line" height={350} />
+    <div id="char2t">
+      <ReactApexChart options={options} series={series} type="line" height={250} />
     </div>
   );
 };
