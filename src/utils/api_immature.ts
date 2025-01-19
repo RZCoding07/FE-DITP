@@ -13,14 +13,13 @@ export const fetchDistinctYears = async () => {
       console.error(error)
     }
   }
-  export const fetchVegetativeProc = async (params: any) => {
-    const url = `${API_BASE_URL}/vegetatif-proc?${new URLSearchParams(params).toString()}`;
-    const response = await axios.get(url, {
-      headers: { 'Content-Type': 'application/json' },
-    });
-    return response.data;
-  };
-  
+export const fetchVegetativeProc = async (params: any) => {
+  const url = `${API_BASE_URL}/vegetatif-proc`;
+  const response = await axios.post(url, params, {
+    headers: { 'Content-Type': 'application/json' },
+  });
+  return response.data;
+};
 
 export const fetchKebun = async (params: any) => {
   const url = `${API_BASE_URL}/get-kebun-where-reg-vegetatif`;
