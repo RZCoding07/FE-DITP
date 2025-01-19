@@ -13,11 +13,30 @@ export const fetchDistinctYears = async () => {
       console.error(error)
     }
   }
+  
+// Simple cache using a Map
+const cache = new Map();
+
 export const fetchVegetativeProc = async (params: any) => {
+  // Generate a cache key based on the params (can use a JSON string or a custom key generator)
+  const cacheKey = JSON.stringify(params);
+
+  // Check if the data is already in the cache
+  if (cache.has(cacheKey)) {
+    console.log('Returning cached data');
+    return cache.get(cacheKey); // Return the cached data
+  }
+
+  // If the data is not cached, make the API request
   const url = `${API_BASE_URL}/vegetatif-proc`;
   const response = await axios.post(url, params, {
     headers: { 'Content-Type': 'application/json' },
   });
+
+  // Store the response data in the cache
+  cache.set(cacheKey, response.data);
+
+  // Return the data from the API
   return response.data;
 };
 

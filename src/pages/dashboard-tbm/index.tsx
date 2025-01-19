@@ -122,7 +122,7 @@ export default function Dashboard() {
   // }, [scores])
   useEffect(() => {
     const fetchProcVegetatifDefault = async () => {
-      const loadingToast = toast.loading('Fetching data...');
+    
       try {
             // Reset all values to zero
       setTbmRes([]);  // reset tbmRes array
@@ -249,6 +249,16 @@ export default function Dashboard() {
         }
 
         for (let i = 1; i < 5; i++) {
+
+          if (i === 4 ) {
+            toast.loading(`Memuat data untuk TBM > 3...`, {  
+              duration: 2000,
+            })
+          } else {
+            toast.loading(`Memuat data untuk TBM ${i}...`, {
+              duration: 2000,
+            })
+          }
           const tahunTanam = tahun.value - i
           const response = await fetchVegetativeProc({
             input_filtered_by: 'Blok',
@@ -444,13 +454,14 @@ export default function Dashboard() {
               total: newScores.length,
             }
           }
-          toast.success('Data fetched successfully!', {
-            id: loadingToast, // Use the same toast id to update
-          });
+
         }
         setTbmData(tbmResults)
         setTbmDataScorePelepahBlok(scoreJumlahPelepahResults)
         setTbmDataScoreLingkarBlok(scoreLingkarBatangResults)
+        toast.success('Data berhasil ditampilkan!', {
+          duration: 2000,
+        })
       } catch (error) {
         console.error('Error fetching data:', error)
       }
