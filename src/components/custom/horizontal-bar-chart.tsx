@@ -329,10 +329,9 @@ export const StockAnalysisChart = ({
         }
       `}</style>
 
-      <h2 className=' text-xl font-semibold'>
+      <h2 className=' text-xl font-semibold text-center'>
         {dataprops.untuk} {dataprops.title}
       </h2>
-      <hr className='my-2 border-cyan-400' />
 
       <ReactApexChart
         options={options}

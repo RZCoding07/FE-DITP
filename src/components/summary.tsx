@@ -1,9 +1,13 @@
-import React from 'react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/custom/button'
+import React, { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/custom/button';
 
 export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClick: (data: any) => void }) => {
-  const tahunValue = dataProps?.dataTbm?.tahun?.value
+  const tahunValue = dataProps?.dataTbm?.tahun?.value;
+
+  // State untuk menyimpan id kartu yang diklik
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
+  const [selectedTbm, setSelectedTbm] = useState<number | null>(null); // Untuk TBM terpisah
 
   const data = [
     {
@@ -11,30 +15,20 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       name: 'Emas',
       type: 'color',
       val: 0,
-
-      progress:
-        dataProps.data.emas == null
-          ? 0
-          : dataProps.data.emas.toLocaleString('id-ID'),
-      progressLuas:
-        dataProps.data.emas == null
-          ? 0
-          : dataProps.dataLuas.emas.toLocaleString('id-ID'),
+      progress: dataProps.data.emas == null ? 0 : dataProps.data.emas.toLocaleString('id-ID'),
+      progressLuas: dataProps.dataLuas.emas == null ? 0 : dataProps.dataLuas.emas.toLocaleString('id-ID'),
       circular: 'gold',
       image: '/2.png',
       color: '#FFA500',
       textColor: '#ffffff',
     },
-
     {
       show: true,
       name: 'Hijau',
       type: 'color',
-
       val: 1,
       progress: dataProps.data.hijau == null ? 0 : dataProps.data.hijau.toLocaleString('id-ID'),
       progressLuas: dataProps.dataLuas.hijau == null ? 0 : dataProps.dataLuas.hijau.toLocaleString('id-ID'),
-
       circular: 'green',
       image: '/2.png',
       color: '#00a300',
@@ -44,7 +38,6 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       show: true,
       name: 'Merah',
       type: 'color',
-
       progress: dataProps.data.merah == null ? 0 : dataProps.data.merah.toLocaleString('id-ID'),
       progressLuas: dataProps.dataLuas.merah == null ? 0 : dataProps.dataLuas.merah.toLocaleString('id-ID'),
       val: 2,
@@ -57,21 +50,20 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       show: true,
       name: 'Hitam',
       type: 'color',
-
       val: 3,
       progress: dataProps.data.hitam == null ? 0 : dataProps.data.hitam.toLocaleString('id-ID'),
-      progressLuas: dataProps.data.hitam == null ? 0 : dataProps.dataLuas.hitam.toLocaleString('id-ID'),
+      progressLuas: dataProps.dataLuas.hitam == null ? 0 : dataProps.dataLuas.hitam.toLocaleString('id-ID'),
       circular: 'black',
       image: '/2.png',
       color: '#000000',
       textColor: '#ffffff',
     },
-  ]
+  ];
+
   const dataRules = [
     {
       show: true,
       name: 'Emas',
-
       progress: 1,
       circular: 'gold',
       rules: 'Kelas A : 97 - 100',
@@ -79,7 +71,6 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       color: '#FFA500',
       textColor: '#ffffff',
     },
-
     {
       show: true,
       name: 'Hijau',
@@ -110,7 +101,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       color: '#000000',
       textColor: '#ffffff',
     },
-  ]
+  ];
 
   const dataTbm = [
     {
@@ -118,10 +109,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       name: 'TBM 1' + ' - TT ' + (tahunValue ? tahunValue - 1 : 0),
       type: 'tbm',
       val: 0,
-      progress:
-        dataProps.dataTbm.tbm1 == null
-          ? 0
-          : dataProps.dataTbm.tbm1.toLocaleString('id-ID'),
+      progress: dataProps.dataTbm.tbm1 == null ? 0 : dataProps.dataTbm.tbm1.toLocaleString('id-ID'),
       circular: 'all',
       image: '/2.png',
       color: '#00a300',
@@ -129,14 +117,10 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
     },
     {
       show: true,
-
       type: 'tbm',
       name: 'TBM 2' + ' - TT ' + (tahunValue ? tahunValue - 2 : 0),
       val: 1,
-      progress:
-        dataProps.dataTbm.tbm2 == null
-          ? 0
-          : dataProps.dataTbm.tbm2.toLocaleString('id-ID'),
+      progress: dataProps.dataTbm.tbm2 == null ? 0 : dataProps.dataTbm.tbm2.toLocaleString('id-ID'),
       circular: 'all',
       image: '/2.png',
       color: '#FFFF00',
@@ -145,39 +129,29 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
     {
       show: true,
       type: 'tbm',
-
       name: 'TBM 3' + ' - TT ' + (tahunValue ? tahunValue - 3 : 0),
       val: 2,
-      progress:
-        dataProps.dataTbm.tbm3 == null
-          ? 0
-          : dataProps.dataTbm.tbm3.toLocaleString('id-ID'),
+      progress: dataProps.dataTbm.tbm3 == null ? 0 : dataProps.dataTbm.tbm3.toLocaleString('id-ID'),
       circular: 'all',
       image: '/2.png',
       color: '#FFA500',
       textColor: '#ffffff',
     },
-
     {
       show: true,
       type: 'tbm',
-      name: 'TBM 3' + ' - > ' + (tahunValue ? tahunValue - 3 : 0),
+      name: 'TBM 4' + ' - TT ' + (tahunValue ? tahunValue - 4 : 0),
       val: 3,
-      progress:
-        dataProps.dataTbm.tbm4 == null
-          ? 0
-          : dataProps.dataTbm.tbm4,
+      progress: dataProps.dataTbm.tbm4 == null ? 0 : dataProps.dataTbm.tbm4,
       circular: 'all',
       image: '/2.png',
       color: '#000000',
       textColor: '#ffffff',
     },
-  ]
+  ];
 
   const totalLuas = (
-    dataProps.dataTbm.tbm4 + dataProps.dataTbm.tbm3
-    + dataProps.dataTbm.tbm2
-    + dataProps.dataTbm.tbm1
+    dataProps.dataTbm.tbm4 + dataProps.dataTbm.tbm3 + dataProps.dataTbm.tbm2 + dataProps.dataTbm.tbm1
   ).toFixed(2);
 
   // Convert to number before formatting
@@ -185,19 +159,28 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
 
   return (
     <>
-      <h2 className='font-semibold mb-1 -mt-5'>Luas TBM Total : {
-        totalLuasFormat
-      } HA</h2>
+      <h2 className='font-semibold mb-1 -mt-5'>
+        Luas TBM Total : {totalLuasFormat} HA
+      </h2>
       <div className='grid gap-4 lg:grid-cols-4 2xl:grid-cols-4'>
         {data.map((item, i) =>
           item.show ? (
             <Card
               key={i}
-              className='py-1 shadow-md dark:from-slate-900 dark:via-slate-950 dark:to-transparent border dark:hover:border-cyan-500 hover:shadow-cyan-500'
-              onClick={() => onCardClick(item)} // Kirim data ke parent saat card di-klik
+              className={`py-1 shadow-md dark:from-slate-900 dark:via-slate-950 dark:to-transparent border hover:shadow-cyan-500 ${
+                selectedCard === i ? '' : ''
+              }`}
+              onClick={() => {
+                setSelectedCard(i); // Set the clicked card as selected
+                setSelectedTbm(null); // Reset TBM selection
+                onCardClick(item); // Kirim data ke parent saat card di-klik
+              }}
               style={{
-                background: `linear-gradient(135deg, ${item.color} 55%, ${item.color}29 45%)`,
+                background: selectedCard === i ? `linear-gradient(135deg, ${item.color} 55%, ${item.color}29 45%)` :
+                `linear-gradient(135deg, ${item.color} 55%, ${item.color}29 45%)`,
                 borderColor: item.color,
+
+                boxShadow: selectedCard === i ? '0 4px 10px rgba(0, 225, 255, 0.74)' : '',
 
               }}
             >
@@ -206,42 +189,30 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
                   <img src={item.image} alt={item.name} />
                 </div>
                 <div className='grid grid-cols-2 py-0 my-0  align-middle items-center w-full'>
-                  <p
-                    className='text-sm font-semibold capitalize'
-                    style={{ color: `${item.textColor}` }}
-                  >
+                  <p className='text-sm font-semibold capitalize' style={{ color: `${item.textColor}` }}>
                     {item.name}
                   </p>
                   <div className='py-0 my-0 items-end'>
-                    <p
-                      className='font-semibold float-right'
-                      style={{ color: `${item.textColor}` }}
-                    >
+                    <p className='font-semibold float-right' style={{ color: `${item.textColor}` }}>
                       {item.progress} Blok
                     </p>
                     <br />
-                    <p
-                      className='font-semibold float-end'
-                      style={{ color: `${item.textColor}` }}
-                    >
+                    <p className='font-semibold float-end' style={{ color: `${item.textColor}` }}>
                       {item.progressLuas} HA
                     </p>
                   </div>
-
                 </div>
               </CardContent>
             </Card>
           ) : null
         )}
-
-
       </div>
       <div className='flex -mt-2'>
         {dataRules.map((item, i) =>
           item.show ? (
             <div
               key={i}
-              className='mt-5 block w-full bg-gradient-to-br   dark:from-slate-900 dark:via-slate-950 dark:to-slate-950'
+              className='mt-5 block w-full bg-gradient-to-br dark:from-slate-900 dark:via-slate-950 dark:to-slate-950'
               style={{
                 background: `linear-gradient(135deg, ${item.color} 55%, ${item.color}69 45%)`,
                 borderColor: item.color,
@@ -265,9 +236,14 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
           item.show ? (
             <Card
               key={i}
-              onClick={() => onCardClick(item)}
-              className='bg-gradient-to-br  py-2 shadow-md dark:from-slate-900 dark:via-slate-950 dark:to-transparent border border-cyan-500 shadow-cyan-500  
-            dark:hover:bg-slate-700 '
+              onClick={() => {
+                setSelectedTbm(i); // Set the selected TBM card separately
+                setSelectedCard(null); // Reset color selection
+                onCardClick(item); // Kirim data ke parent saat TBM card di-klik
+              }}
+              className={`bg-gradient-to-br py-2 shadow-md dark:from-slate-900 dark:via-slate-950 dark:to-transparent border border-cyan-500 shadow-cyan-500 ${
+                selectedTbm === i ? 'bg-cyan-500 text-white' : ''
+              }`}
             >
               <CardContent className='flex items-center px-2 py-1'>
                 <div className='relative float-end mr-2 h-10 w-10'>
@@ -281,16 +257,12 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
                 <div>
                   <p className='text-sm font-semibold capitalize'>{item.name}</p>
                   <p className='font-semibold'>{item.progress} HA</p>
-
                 </div>
-
               </CardContent>
             </Card>
           ) : null
         )}
-
       </div>
     </>
-
-  )
-}
+  );
+};

@@ -266,6 +266,12 @@ let immatureRouter = [
     }),
   },
   {
+    path: 'data-pi',
+    lazy: async () => ({
+      Component: (await import('./pages/data-pi')).default,
+    }),
+  },
+  {
     path : 'upload-pengukuran-vegetatif',
     lazy: async () => ({
       Component: (await import('./pages/upload-pengukuran-vegetatif')).default,

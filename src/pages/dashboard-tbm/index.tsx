@@ -122,39 +122,39 @@ export default function Dashboard() {
   // }, [scores])
   useEffect(() => {
     const fetchProcVegetatifDefault = async () => {
-    
+
       try {
-            // Reset all values to zero
-      setTbmRes([]);  // reset tbmRes array
-      setScores([]);  // reset scores array
-      setColorData({
-        hitam: 0,
-        merah: 0,
-        hijau: 0,
-        emas: 0,
-      });  // reset colorData
-      setColorDataLuas({
-        hitam: 0,
-        merah: 0,
-        hijau: 0,
-        emas: 0,
-      });  // reset colorDataLuas
-      setTbmData({
-        tbm1: 0,
-        tbm2: 0,
-        tbm3: 0,
-        tbm4: 0,
-      });  // reset tbmData
-      setTbmDataScorePelepahBlok({
-        tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
-        tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
-        tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
-      });  // reset tbmDataScorePelepahBlok
-      setTbmDataScoreLingkarBlok({
-        tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
-        tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
-        tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
-      });  // reset tbmDataScoreLingkarBlok
+        // Reset all values to zero
+        setTbmRes([]);  // reset tbmRes array
+        setScores([]);  // reset scores array
+        setColorData({
+          hitam: 0,
+          merah: 0,
+          hijau: 0,
+          emas: 0,
+        });  // reset colorData
+        setColorDataLuas({
+          hitam: 0,
+          merah: 0,
+          hijau: 0,
+          emas: 0,
+        });  // reset colorDataLuas
+        setTbmData({
+          tbm1: 0,
+          tbm2: 0,
+          tbm3: 0,
+          tbm4: 0,
+        });  // reset tbmData
+        setTbmDataScorePelepahBlok({
+          tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
+          tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
+          tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
+        });  // reset tbmDataScorePelepahBlok
+        setTbmDataScoreLingkarBlok({
+          tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
+          tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
+          tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
+        });  // reset tbmDataScoreLingkarBlok
 
         const tbmResults: {
           tbm1: number
@@ -250,8 +250,8 @@ export default function Dashboard() {
 
         for (let i = 1; i < 5; i++) {
 
-          if (i === 4 ) {
-            toast.loading(`Memuat data untuk TBM > 3...`, {  
+          if (i === 4) {
+            toast.loading(`Memuat data untuk TBM > 3...`, {
               duration: 2000,
             })
           } else {
@@ -525,8 +525,8 @@ export default function Dashboard() {
   const [selectedCard, setSelectedCard] = useState({
     type: 'all',
     name: 'Keseluruhan TBM',
-    circular : '',
-    val: 0, 
+    circular: '',
+    val: 0,
 
   })
   const [selectedEvent, setSelectedEvent] = useState<any | null>(null)
@@ -626,268 +626,274 @@ export default function Dashboard() {
           onCardClick={handleCardClick}
         />
 
-          <>
-            <div className='w-full items-center align-middle'>
+        <>
+          <div className='w-full items-center align-middle'>
 
-              {selectedCard.type === 'color' && (
-                <>
-                  <div className='mt-5 flex justify-between align-middle items-center'>
-                    <h2 className='text-2xl font-semibold'>
-                      Grafik Rincian {selectedCard.name}
-                    </h2>
+            {selectedCard.type === 'color' && (
+              <>
+                <div className='items-center justify-center align-middle mr-4'>
+                  <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                    <div className='flex justify-between align-middle items-center'>
+                      <h2 className='text-2xl font-semibold'>
+                        Grafik Rincian {selectedCard.name}
+                      </h2>
 
-                    <Button
-                      variant={'secondary'}
-                      onClick={() => {
-                        setSelectedCard({ type: '', name: '', circular: '', val: 0 })
-                        setSelectedEvent(null)
-                      }}
-                      className='flex items-center rounded-full'
-                    >
-                      <img
-                        width='20'
-                        height='20'
-                        src='https://img.icons8.com/external-beshi-flat-kerismaker/48/external-Hide-user-interface-beshi-flat-kerismaker.png'
-                        alt='external-Hide-user-interface-beshi-flat-kerismaker'
-                      />{' '}
-                      <span className='ml-2'>Hide Chart</span>
-                    </Button>
-                  </div>
-
-                  <div className='mt-5 grid grid-cols-2 gap-4'>
-                    <StockAnalysisChart
-                      dataprops={{
-                        dataset: tbmRes,
-                        untuk: 'Total Luasan',
-                        score: scores,
-                        title: selectedCard.name,
-                        color: selectedCard.circular,
-                        val: selectedCard.val,
-                      }}
-                      onEventClick={handleEventClick}
-                    />
-                    <StockAnalysisChart
-                      dataprops={{
-                        dataset: tbmRes,
-                        untuk: 'Total Blok',
-                        score: scores,
-                        title: selectedCard.name,
-                        color: selectedCard.circular,
-                        val: selectedCard.val,
-                      }}
-                      onEventClick={handleEventClick}
-                    />
-                  </div>
-                </>
-              )}
-
-
-                <>
-                  <div className="grid grid-cols-[59%_41%] mt-5">
-                    <h2 className='text-2xl font-bold mt-3'>
-                      PICA Cluster {selectedCard.name} {' '}
-                      {rpc ? ' - ' + rpc.label : ''} {kebun ? ' - ' + kebun.label : ''}{' '}
-                      {afd ? ' - ' + afd.label : ''}
-                      <strong>
-                        &nbsp; (  {bulan ? bulan.label : ''} {tahun ? tahun.label : ''} )
-                      </strong>
-                    </h2>
-                    <div className='flex gap-3 mt-1'>
-                      <Controller
-                        name='rpc'
-                        control={control}
-                        render={({ field }) => (
-                          <Select
-                            {...field}
-                            styles={customStyles}
-                            placeholder='Pilih RPC'
-                            isSearchable
-                            options={rpcOptions}
-                          />
-                        )}
-                      />
-                      <Controller
-                        name='kebun'
-                        control={control}
-                        render={({ field }) => (
-                          <Select
-                            styles={customStyles}
-                            placeholder='Pilih Kebun'
-                            isSearchable
-                            options={kebunOptions}
-                            {...field}
-                          />
-                        )}
-                      />
-
-                      <Controller
-                        name='afd'
-                        control={control}
-                        render={({ field }) => (
-                          <Select
-                            styles={customStyles}
-                            placeholder='Pilih Afdeling'
-                            isSearchable
-                            options={afdOptions}
-                            {...field}
-                          />
-                        )}
-                      />
-
-
-                      <Controller
-                        name='blok'
-                        control={control}
-                        render={({ field }) => (
-                          <Select
-                            styles={customStyles}
-                            placeholder='Pilih Blok / Luasan'
-                            isSearchable
-                            defaultValue={{ value: 'blok', label: 'Blok' }}
-                            
-                            options={[
-                              { value: 'blok', label: 'Blok' },
-                              { value: 'luasan', label: 'Luasan' },
-                            ]}
-                            {...field}
-                          />
-                        )}
-                      />
-
-
-                      <div className='flex'>
-                        <Button className='flex items-center rounded-full'>
-                          <FaSync style={{ animation: 'spin 8s linear infinite' }} />
-                        </Button>
-                      </div>
+                      <Button
+                        variant={'secondary'}
+                        onClick={() => {
+                          setSelectedCard({ type: '', name: 'Keseluruhan TBM', circular: '', val: 0 })
+                          setSelectedEvent(null)
+                        }}
+                        className='flex items-center rounded-full'
+                      >
+                        <img
+                          width='20'
+                          height='20'
+                          src='https://img.icons8.com/external-beshi-flat-kerismaker/48/external-Hide-user-interface-beshi-flat-kerismaker.png'
+                          alt='external-Hide-user-interface-beshi-flat-kerismaker'
+                        />{' '}
+                        <span className='ml-2'>Hide Chart</span>
+                      </Button>
+                    
                     </div>
-                  </div>
-   
-                  <div className="grid grid-cols-[40%_60%]" >
-                    <div className='items-center justify-center align-middle mr-4'>
-                      <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-                        <h2 className='text-xl font-semibold'>Rekapitulasi {selectedCard.name}</h2>
-                        <hr className='my-2 border-cyan-400' />
-                        <div className="grid grid-cols-1">
-                          <p className='text-sm font-semibold text-cyan-300 -mb-5'>
-                            *Grafik Per {blok ? blok.label : 'Blok'}
+                    <hr className='my-2 mt-4 border-cyan-400' />
 
-                          </p>
-                          <DonutChartTbm
-                          />
-                          <div className="relative">
-                            <STbm
-                              dataProps={{
-                                tbmData,
-                                tbmDataScorePelepahBlok,
-                                tbmDataScoreLingkarBlok,
-                                data: colorData,
-                                dataLuas: colorDataLuas,
-                                score: scores,
-                                dataTbm: {
-                                  ...tbmData,
-                                  tahun: watch('tahun'),
-                                },
-                              }}
-                              onCardClick={handleCardClick}
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-
-                    <div className='items-center justify-center align-middle'>
-
-                      <div className='mt-5'>
-                        <div className='items-center justify-center align-middle'>
-                          <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-                            <div className="grid grid-cols-1">
-
-                              {blok && blok.value === 'blok' && (
-                                <StockAnalysisChart
-                                  dataprops={{
-                                    dataset: tbmRes,
-                                    untuk: 'Total Blok',
-                                    score: scores,
-                                    title: selectedCard.name,
-                                    color: selectedCard.circular,
-                                    val: selectedCard.val,
-                                  }}
-                                  onEventClick={handleEventClick}
-                                />
-                              )}
-
-                              {blok && blok.value === 'luasan' && (
-                                <StockAnalysisChart
-                                  dataprops={{
-                                    dataset: tbmRes,
-                                    untuk: 'Total Luasan',
-                                    score: scores,
-                                    title: selectedCard.name,
-                                    color: selectedCard.circular,
-                                    val: selectedCard.val,
-                                  }}
-                                  onEventClick={handleEventClick}
-                                />
-                              )}
-
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {selectedEvent && isKebun && (
-                    <div className='mt-5 grid grid-cols-2 gap-4'>
-                      <StockAnalysisChartKebun
+                    <div className='mt-5 grid grid-cols-2 gap-5'>
+                      <StockAnalysisChart
                         dataprops={{
-                          dataset: selectedEvent.sumLuasBlok,
+                          dataset: tbmRes,
                           untuk: 'Total Luasan',
-                          categories: selectedEvent.categories,
-                          title: selectedEvent.name,
-                          color: selectedEvent.color,
-                          val: selectedEvent.val,
-                          category: selectedEvent.selectedCategory,
+                          score: scores,
+                          title: selectedCard.name,
+                          color: selectedCard.circular,
+                          val: selectedCard.val,
                         }}
                         onEventClick={handleEventClick}
                       />
-                      <StockAnalysisChartKebun
+                      <StockAnalysisChart
                         dataprops={{
-                          dataset: selectedEvent.countBlok,
-                          categories: selectedEvent.categories,
+                          dataset: tbmRes,
                           untuk: 'Total Blok',
-                          title: selectedEvent.name,
-                          color: selectedEvent.color,
-                          val: selectedEvent.val,
-                          category: selectedEvent.selectedCategory,
+                          score: scores,
+                          title: selectedCard.name,
+                          color: selectedCard.circular,
+                          val: selectedCard.val,
                         }}
                         onEventClick={handleEventClick}
                       />
                     </div>
-                  )}
+                  </div>
+                </div>
+              </>
+            )}
+            {selectedCard.type !== 'color' && (
 
-                  <DataPicaCluster
-                    control={control}
-                    rpc={rpc}
-                    kebun={kebun}
-                    afd={afd}
-                    bulan={bulan}
-                    tahun={tahun}
-                    rpcOptions={rpcOptions}
-                    kebunOptions={kebunOptions}
-                    afdOptions={afdOptions}
-                    tbmDataScorePelepahBlok={tbmDataScorePelepahBlok}
-                    tbmDataScoreLingkarBlok={tbmDataScoreLingkarBlok}
-                    scores={scores}
-                  />
+              <>
+                <div className="grid grid-cols-[59%_41%] mt-5">
+                  <h2 className='text-2xl font-bold mt-3'>
+                    PICA Cluster {selectedCard.name} {' '}
+                    {rpc ? ' - ' + rpc.label : ''} {kebun ? ' - ' + kebun.label : ''}{' '}
+                    {afd ? ' - ' + afd.label : ''}
+                    <strong>
+                      &nbsp; (  {bulan ? bulan.label : ''} {tahun ? tahun.label : ''} )
+                    </strong>
+                  </h2>
+                  <div className='flex gap-3 mt-1'>
+                    <Controller
+                      name='rpc'
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          styles={customStyles}
+                          placeholder='Pilih RPC'
+                          isSearchable
+                          options={rpcOptions}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name='kebun'
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          styles={customStyles}
+                          placeholder='Pilih Kebun'
+                          isSearchable
+                          options={kebunOptions}
+                          {...field}
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      name='afd'
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          styles={customStyles}
+                          placeholder='Pilih Afdeling'
+                          isSearchable
+                          options={afdOptions}
+                          {...field}
+                        />
+                      )}
+                    />
 
 
-                </>
+                    <Controller
+                      name='blok'
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          styles={customStyles}
+                          placeholder='Pilih Blok / Luasan'
+                          isSearchable
+                          defaultValue={{ value: 'blok', label: 'Blok' }}
+
+                          options={[
+                            { value: 'blok', label: 'Blok' },
+                            { value: 'luasan', label: 'Luasan' },
+                          ]}
+                          {...field}
+                        />
+                      )}
+                    />
 
 
-            </div>
-          </>
+                    <div className='flex'>
+                      <Button className='flex items-center rounded-full'>
+                        <FaSync style={{ animation: 'spin 8s linear infinite' }} />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-[40%_60%]" >
+                  <div className='items-center justify-center align-middle mr-4'>
+                    <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                      <h2 className='text-xl font-semibold'>Rekapitulasi {selectedCard.name}</h2>
+                      <hr className='my-2 border-cyan-400' />
+                      <div className="grid grid-cols-1">
+                        <p className='text-sm font-semibold text-cyan-300 -mb-5'>
+                          *Grafik Per {blok ? blok.label : 'Blok'}
+
+                        </p>
+                        <DonutChartTbm
+                        />
+                        <div className="relative">
+                          <STbm
+                            dataProps={{
+                              tbmData,
+                              tbmDataScorePelepahBlok,
+                              tbmDataScoreLingkarBlok,
+                              data: colorData,
+                              dataLuas: colorDataLuas,
+                              score: scores,
+                              dataTbm: {
+                                ...tbmData,
+                                tahun: watch('tahun'),
+                              },
+                            }}
+                            onCardClick={handleCardClick}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div className='items-center justify-center align-middle'>
+
+                    <div className='mt-5'>
+                      <div className='items-center justify-center align-middle'>
+                        <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                          <div className="grid grid-cols-1">
+
+                            {blok && blok.value === 'blok' && (
+                              <StockAnalysisChart
+                                dataprops={{
+                                  dataset: tbmRes,
+                                  untuk: 'Total Blok',
+                                  score: scores,
+                                  title: selectedCard.name,
+                                  color: selectedCard.circular,
+                                  val: selectedCard.val,
+                                }}
+                                onEventClick={handleEventClick}
+                              />
+                            )}
+
+                            {blok && blok.value === 'luasan' && (
+                              <StockAnalysisChart
+                                dataprops={{
+                                  dataset: tbmRes,
+                                  untuk: 'Total Luasan',
+                                  score: scores,
+                                  title: selectedCard.name,
+                                  color: selectedCard.circular,
+                                  val: selectedCard.val,
+                                }}
+                                onEventClick={handleEventClick}
+                              />
+                            )}
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {selectedEvent && isKebun && (
+                  <div className='mt-5 grid grid-cols-2 gap-4'>
+                    <StockAnalysisChartKebun
+                      dataprops={{
+                        dataset: selectedEvent.sumLuasBlok,
+                        untuk: 'Total Luasan',
+                        categories: selectedEvent.categories,
+                        title: selectedEvent.name,
+                        color: selectedEvent.color,
+                        val: selectedEvent.val,
+                        category: selectedEvent.selectedCategory,
+                      }}
+                      onEventClick={handleEventClick}
+                    />
+                    <StockAnalysisChartKebun
+                      dataprops={{
+                        dataset: selectedEvent.countBlok,
+                        categories: selectedEvent.categories,
+                        untuk: 'Total Blok',
+                        title: selectedEvent.name,
+                        color: selectedEvent.color,
+                        val: selectedEvent.val,
+                        category: selectedEvent.selectedCategory,
+                      }}
+                      onEventClick={handleEventClick}
+                    />
+                  </div>
+                )}
+
+                <DataPicaCluster
+                  control={control}
+                  rpc={rpc}
+                  kebun={kebun}
+                  afd={afd}
+                  bulan={bulan}
+                  tahun={tahun}
+                  rpcOptions={rpcOptions}
+                  kebunOptions={kebunOptions}
+                  afdOptions={afdOptions}
+                  tbmDataScorePelepahBlok={tbmDataScorePelepahBlok}
+                  tbmDataScoreLingkarBlok={tbmDataScoreLingkarBlok}
+                  scores={scores}
+                />
+
+
+              </>
+
+            )}
+          </div>
+        </>
 
       </Layout.Body>
     </Layout >

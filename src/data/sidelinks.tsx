@@ -307,7 +307,7 @@ export const immatureSideLinks: SideLink[] = [
   },
   {
     title: 'Master Data PI',
-    href: '/upload-problem-identification',
+    href: '/data-pi',
     icon: (
 <img width="20" height="20" src="https://img.icons8.com/fluency/20/data-configuration.png" alt="data-configuration"/>
     ),
