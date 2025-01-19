@@ -248,17 +248,11 @@ export default function Dashboard() {
           tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
         }
 
-        for (let i = 1; i < 5; i++) {
+         const loader =  toast.loading(`Memuat data untuk Keseluruhan TBM...`, {
+            duration: 2000,
+          })
 
-          if (i === 4) {
-            toast.loading(`Memuat data untuk TBM > 3...`, {
-              duration: 2000,
-            })
-          } else {
-            toast.loading(`Memuat data untuk TBM ${i}...`, {
-              duration: 2000,
-            })
-          }
+        for (let i = 1; i < 5; i++) {
           const tahunTanam = tahun.value - i
           const response = await fetchVegetativeProc({
             input_filtered_by: 'Blok',
@@ -460,6 +454,7 @@ export default function Dashboard() {
         setTbmDataScorePelepahBlok(scoreJumlahPelepahResults)
         setTbmDataScoreLingkarBlok(scoreLingkarBatangResults)
         toast.success('Seluruh data TBM berhasil ditampilkan!', {
+          id : loader,
           duration: 2000,
         })
       } catch (error) {
