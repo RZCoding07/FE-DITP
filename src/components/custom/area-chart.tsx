@@ -40,7 +40,7 @@ const StockAnalysisChartArea: React.FC = () => {
   // Apex chart options
   const options: ApexOptions = {
     chart: {
-      height: 450,
+      height: 350,
       type: 'area',
       stacked: true,
       foreColor: theme === 'dark' ? '#ffffff' : '#000000',
@@ -153,14 +153,14 @@ const StockAnalysisChartArea: React.FC = () => {
             <SelectValue placeholder="Pilih jumlah masalah" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="5">5 Masalah</SelectItem>
+            <SelectItem value="5">5 Masalah Terbesar</SelectItem>
             <SelectItem value="9">Semua Masalah</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div id="chart2t">
-        <ReactApexChart options={options} series={series} type="area" height={450} />
+        <ReactApexChart options={options} series={series} type="area" height={350} />
       </div>
     </div>
   );

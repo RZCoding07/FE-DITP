@@ -773,18 +773,18 @@ export default function Dashboard() {
                       <hr className='my-2 border-cyan-400' />
                       <div className="grid xl:grid-cols-1">
                         <div className="grid sm:grid-cols-1 xl:grid-cols-[40%_60%]">
-                        <p className='text-xs font-semibold text-cyan-300 -mb-9                                            '>
-                          *Grafik Per {blok ? blok.label : 'Blok'}<br />
-                          <strong>
-                            &nbsp; (  {bulan ? bulan.label : ''} {tahun ? tahun.label : ''} )
-                          </strong>
-                        </p>
-                        <p className='float-end text-end text-sm font-semibold text-cyan-300 -mb-5'>
-                    
-                          {rpc ? rpc.label : ''} {kebun ? ' - ' + kebun.label : ''}{' '}
-                          {afd ? ' - ' + afd.label : ''}
-              
-                        </p>
+                          <p className='text-xs font-semibold text-cyan-300 -mb-9                                            '>
+                            *Grafik Per {blok ? blok.label : 'Blok'}<br />
+                            <strong>
+                              &nbsp; (  {bulan ? bulan.label : ''} {tahun ? tahun.label : ''} )
+                            </strong>
+                          </p>
+                          <p className='float-end text-end text-sm font-semibold text-cyan-300 -mb-5'>
+
+                            {rpc ? rpc.label : ''} {kebun ? ' - ' + kebun.label : ''}{' '}
+                            {afd ? ' - ' + afd.label : ''}
+
+                          </p>
                         </div>
                         <DonutChartTbm
                         />
@@ -1061,7 +1061,7 @@ function DataPicaCluster({
             <div className='w-full items-center align-middle'>
               <div className='flex justify-between'>
                 <h2 className='text-xl font-semibold'>
-                  Result Problem Identification & Corrective Action { name}
+                  Result Problem Identification & Corrective Action {name}
                 </h2>
 
               </div>
@@ -1069,22 +1069,22 @@ function DataPicaCluster({
             <hr className='my-3 border-cyan-400' />
             <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-r dark:from-cyan-700 dark:to-cyan-600'>
               <h2 className='text-xl font-semibold'>
-                Total {blok ? blok.label : 'Blok'}  Merah dan Hitam { name}
+                Total {blok ? blok.label : 'Blok'}  Merah dan Hitam {name}
               </h2>
               <StockAnalysisChartBar />
             </div>
-          <div className="grid grid-cols-2 gap-4">
-          <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-r dark:from-slate-900 dark:to-slate-950'>
-          <h2 className='text-xl font-semibold'>
-                Top Problem Identification  { name}
+            <div className="grid grid-cols-2 gap-4">
+              <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-r dark:from-slate-900 dark:to-slate-950'>
+                <h2 className='text-xl font-semibold'>
+                  Top Problem Identification  {name}
                 </h2>
 
-              <StockAnalysisChartArea 
-                
-              />
-          </div>
+                <StockAnalysisChartArea
 
-          </div>
+                />
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
