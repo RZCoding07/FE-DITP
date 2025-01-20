@@ -61,8 +61,8 @@ export default function PicaTbm() {
     { value: 'DATIM', label: 'DATIM' },
     { value: 'DJABA', label: 'DJABA' },
     { value: 'DSMTU', label: 'DSMTU' },
-    { value: 'RPC2N2', label: 'RPC 2 (EX-N2)' },
-    { value: 'RPC2N14', label: 'RPC 2 (EX-N14)' },
+    { value: 'RPC2N2', label: 'RPC2N2' },
+    { value: 'RPC2N14', label: 'RPC2N14' },
   ]
 
   const fetchInvesAwal = async () => {

@@ -43,7 +43,6 @@ export const StockAnalysisChart = ({
 
   let dataset = dataprops.dataset[dataprops.val]
 
-
   let score = dataprops.score
 
   let dataValueOfAllTBM = score.map((item: any) => {
@@ -54,7 +53,6 @@ export const StockAnalysisChart = ({
   if (dataprops.title == 'Keseluruhan TBM') {
     dataset = dataValueOfAllTBM
 
-    console.log('dataset', dataset) 
   }
 
   const countColorBlocks = (data: any, regional: string) => {
@@ -176,6 +174,9 @@ export const StockAnalysisChart = ({
               (Object.values(score)[0] as any).regional === selectedCategory
             )
           })
+          console.log('val', dataprops.val)
+          console.log('selectedData', selectedData)
+
           const kebun = selectedData.reduce((acc: any, item: any) => {
             return tbmKeys.reduce((innerAcc: any, key) => {
               return item[key] && item[key].kebun

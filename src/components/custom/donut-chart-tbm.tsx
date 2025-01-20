@@ -4,9 +4,20 @@ import { ApexOptions } from 'apexcharts'
 import { RobotInvestasi } from '../loatie'
 import { Button } from '@/components/custom/button'
 
-const DonutChartTbm: React.FC = () => {
+const DonutChartTbm = ({
+  dataprops }: {
+    dataprops: any
+  }) => {
+
+  console.log('dataprops', dataprops)
+
   // Data untuk donut chart
-  const series = [45, 30, 25, 20] // Nilai untuk Emas Hijau, Merah, dan Hitam
+  let series: any = []
+  if (dataprops.blok === 'blok') {
+    series = [dataprops.data.emas, dataprops.data.hijau, dataprops.data.merah, dataprops.data.hitam] // Nilai untuk Emas Hijau, Merah, dan Hitam
+  } else {
+    series = [dataprops.dataLuas.emas, dataprops.dataLuas.hijau, dataprops.dataLuas.merah, dataprops.dataLuas.hitam] // Nilai untuk Emas Hijau,
+  }
   const options: ApexOptions = {
     chart: {
       type: 'donut',
@@ -21,7 +32,7 @@ const DonutChartTbm: React.FC = () => {
     },
     dataLabels: {
       enabled: true,
-      formatter: (val: number) => `${val.toFixed(0)}%`, // Format data menjadi persentase
+      formatter: (val: number) => `${Math.round(val)}%`, // Format data menjadi persentase
     },
 
     fill: {
@@ -46,14 +57,14 @@ const DonutChartTbm: React.FC = () => {
   }
 
   return (
-  <>
-          <ReactApexChart
-          options={options}
-          series={series}
-          type='donut'
-          height={210}
-        />
-  </>
+    <>
+      <ReactApexChart
+        options={options}
+        series={series}
+        type='donut'
+        height={210}
+      />
+    </>
 
 
   )

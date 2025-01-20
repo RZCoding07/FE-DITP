@@ -15,11 +15,12 @@ export const StockAnalysisChartKebun = ({
   const theme = cookie.get('theme') || 'light'
 
 
-  console.log('theme', theme)
 
   let datas: any[] = []
 
   datas = dataprops.dataset
+  
+  console.log('datas', datas)
 
   const options: ApexOptions = {
     chart: {

@@ -22,7 +22,6 @@ import { StockAnalysisChart } from '@/components/custom/horizontal-bar-chart'
 import StockAnalysisChartArea from '@/components/custom/area-chart'
 import { StockAnalysisChartKebun } from '@/components/custom/horizontal-kebun-bar-chart'
 import StockAnalysisChartBar from '@/components/custom/bar-chart'
-import DonutChart from '@/components/custom/donut-chart'
 import DonutChartTbm from '@/components/custom/donut-chart-tbm'
 import KuadranChart from '@/components/custom/kuadran'
 import { Summary as STbm } from '@/components/summarytbm'
@@ -89,8 +88,8 @@ export default function Dashboard() {
     { value: 'RPC5', label: 'RPC 5' },
     { value: 'RPC6', label: 'RPC 6' },
     { value: 'RPC7', label: 'RPC 7' },
-    { value: 'RPC2N2', label: 'RPC 2(EX-N2)' },
-    { value: 'RPC2N14', label: 'RPC 2(EX-N14)' },
+    { value: 'RPC2N2', label: 'RPC2N2' },
+    { value: 'RPC2N14', label: 'RPC2N14' },
   ]
 
   const [kebunOptions, setKebunOptions] = useState([])
@@ -685,7 +684,7 @@ export default function Dashboard() {
             {selectedCard.type !== 'color' && (
 
               <>
-                <div className="grid sm:grid-cols-1 xl:grid-cols-[59%_41%] mt-5">
+                <div className="grid sm:grid-cols-1 xl:grid-cols-[53%_47%] mt-5">
                   <h2 className='text-2xl font-bold mt-3'>
                     PICA Cluster {selectedCard.name} {' '}
                     {rpc ? ' - ' + rpc.label : ''} {kebun ? ' - ' + kebun.label : ''}{' '}
@@ -737,32 +736,36 @@ export default function Dashboard() {
                     />
 
 
-                    <Controller
-                      name='blok'
-                      control={control}
-                      render={({ field }) => (
-                        <Select
-                          styles={customStyles}
-                          placeholder='Pilih Blok / Luasan'
-                          isSearchable
-                          defaultValue={{ value: 'blok', label: 'Blok' }}
-
-                          options={[
-                            { value: 'blok', label: 'Blok' },
-                            { value: 'luasan', label: 'Luasan' },
-                          ]}
-                          {...field}
-                        />
-                      )}
-                    />
 
 
                     <div className='flex'>
                       <Button className='flex items-center rounded-full'>
                         <FaSync style={{ animation: 'spin 8s linear infinite' }} />
                       </Button>
+                      <h2 className='text-lg mt-1 ml-5 mr-2'>Sortir berdasarkan : </h2>
+                      <Controller
+                        name='blok'
+                        control={control}
+                        render={({ field }) => (
+                          <Select
+                            styles={customStyles}
+                            placeholder='Pilih Blok / Luasan'
+                            isSearchable
+                            defaultValue={{ value: 'blok', label: 'Blok' }}
+
+                            options={[
+                              { value: 'blok', label: 'Blok' },
+                              { value: 'luasan', label: 'Luasan' },
+                            ]}
+                            {...field}
+                          />
+                        )}
+                      />
+
                     </div>
                   </div>
+
+
                 </div>
 
                 <div className="grid sm:grid-cols-1 xl:grid-cols-[40%_60%]" >
@@ -787,7 +790,19 @@ export default function Dashboard() {
                           </p>
                         </div>
                         <DonutChartTbm
-                        />
+                          dataprops={{
+                            tbmData,
+                            tbmDataScorePelepahBlok,
+                            tbmDataScoreLingkarBlok,
+                            data: colorData,
+                            dataLuas: colorDataLuas,
+                            blok: blok ? blok.value : 'blok',
+                            score: scores,
+                            dataTbm: {
+                              ...tbmData,
+                              tahun: watch('tahun'),
+                            },
+                          }} />
                         <div className="relative">
                           <STbm
                             dataProps={{
