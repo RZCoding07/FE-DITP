@@ -142,7 +142,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       type: 'tbm',
       name: 'TBM > 3' + ' - TT > ' + (tahunValue ? tahunValue - 4 : 0),
       val: 3,
-      progress: dataProps.dataTbm.tbm4 == null ? 0 : dataProps.dataTbm.tbm4,
+      progress: dataProps.dataTbm.tbm4 == null ? 0 : dataProps.dataTbm.tbm4.toLocaleString('id-ID'),
       circular: 'all',
       image: '/2.png',
       color: '#000000',
@@ -154,7 +154,6 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
     dataProps.dataTbm.tbm4 + dataProps.dataTbm.tbm3 + dataProps.dataTbm.tbm2 + dataProps.dataTbm.tbm1
   ).toFixed(2);
 
-  // Convert to number before formatting
   const totalLuasFormat = Number(totalLuas).toLocaleString('id-ID');
 
   return (
@@ -256,7 +255,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
                 </div>
                 <div>
                   <p className='text-sm font-semibold capitalize'>{item.name}</p>
-                  <p className='font-semibold'>{item.progress} HA</p>
+                  <p className='font-semibold'>{(item.progress)} HA</p>
                 </div>
               </CardContent>
             </Card>

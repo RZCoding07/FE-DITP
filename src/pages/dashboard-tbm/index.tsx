@@ -89,8 +89,8 @@ export default function Dashboard() {
     { value: 'RPC5', label: 'RPC 5' },
     { value: 'RPC6', label: 'RPC 6' },
     { value: 'RPC7', label: 'RPC 7' },
-    { value: 'RPC2(EX-N2)', label: 'RPC 2(EX-N2)' },
-    { value: 'RPC2(EX-N14)', label: 'RPC 2(EX-N14)' },
+    { value: 'RPC2N2', label: 'RPC 2(EX-N2)' },
+    { value: 'RPC2N14', label: 'RPC 2(EX-N14)' },
   ]
 
   const [kebunOptions, setKebunOptions] = useState([])

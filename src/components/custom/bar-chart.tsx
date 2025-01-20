@@ -22,8 +22,8 @@ const StockAnalysisChartBar: React.FC = () => {
     'RPC5',
     'RPC6',
     'RPC7',
-    'RPC2(EX-N2)',
-    'RPC2(EX-N14)',
+    'RPC2N2',
+    'RPC2N14',
   ]);
 
   const options: ApexOptions = {

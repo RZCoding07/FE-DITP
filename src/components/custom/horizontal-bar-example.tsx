@@ -53,9 +53,9 @@ export const StockAnalysisChart = ({
 
   if (dataprops.title == 'Keseluruhan TBM') {
     dataset = dataValueOfAllTBM
-
-    console.log('dataset', dataset) 
   }
+
+  console.log('dataset', dataset)
 
   const countColorBlocks = (data: any, regional: string) => {
     const tbmKeys = ['tbm1', 'tbm2', 'tbm3', 'tbm4']
@@ -176,6 +176,8 @@ export const StockAnalysisChart = ({
               (Object.values(score)[0] as any).regional === selectedCategory
             )
           })
+
+
           const kebun = selectedData.reduce((acc: any, item: any) => {
             return tbmKeys.reduce((innerAcc: any, key) => {
               return item[key] && item[key].kebun
