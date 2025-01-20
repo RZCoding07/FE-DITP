@@ -140,7 +140,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
     {
       show: true,
       type: 'tbm',
-      name: 'TBM > 3' + ' - TT > ' + (tahunValue ? tahunValue - 4 : 0),
+      name: 'TBM > 3' + ' - TT > ' + (tahunValue ? tahunValue - 3 : 0),
       val: 3,
       progress: dataProps.dataTbm.tbm4 == null ? 0 : dataProps.dataTbm.tbm4.toLocaleString('id-ID'),
       circular: 'all',
