@@ -39,6 +39,8 @@ export default function Sidebar({
         `fixed left-0 right-0 top-0 z-50 w-full border-r-2 border-r-muted transition-[width] md:bottom-0 md:right-auto md:h-svh ${isCollapsed ? 'md:w-14' : 'md:w-64'}`,
         className
       )}
+
+      style={{ height: '100%' }}
     >
       {/* Overlay in mobile */}
       <div
@@ -97,11 +99,13 @@ export default function Sidebar({
             className={`h-5 w-5 ${isCollapsed ? 'rotate-180' : ''}`}
           />
         </Button>
-           <style>{`
+        <style>{`
            /* CSS Manual */
 .hide-sm {
   display: none;
 }
+
+
 
 @media (min-width: 1280px) {
   .hide-sm {
@@ -110,18 +114,18 @@ export default function Sidebar({
 }
   `}</style>
         {/* Footer */}
-        <div data-sidebar='footer' className='flex flex-col gap-2 p-2'>
-  <div className={`flex ml-1 items-center ${!isCollapsed ? 'gap-2' : ''}`}>
-    <img src='ptpn4.png' alt='logo' className='hide-sm' style={{ width: '35px' }} />
-    <div
-      className={`flex flex-col justify-end truncate ${isCollapsed ? 'invisible w-0' : 'visible w-auto'} 
+        <div data-sidebar='footer' className='flex flex-col gap-2 p-2 mt-auto mb-5'>
+          <div className={`flex ml-1 items-center ${!isCollapsed ? 'gap-2' : ''}`}>
+            <img src='ptpn4.png' alt='logo' className='hide-sm' style={{ width: '35px' }} />
+            <div
+              className={`flex flex-col justify-end truncate ${isCollapsed ? 'invisible w-0' : 'visible w-auto'} 
       hide-sm`}
-    >
-      <span className='ml-2 font-medium'>{fullname}</span>
-      <span className='ml-2 text-xs capitalize'>{account_type}</span>
-    </div>
-  </div>
-</div>
+            >
+              <span className='ml-2 font-medium'>{fullname}</span>
+              <span className='ml-2 text-xs capitalize'>{account_type}</span>
+            </div>
+          </div>
+        </div>
 
       </Layout>
     </aside>

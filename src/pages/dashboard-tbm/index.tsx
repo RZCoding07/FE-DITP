@@ -906,7 +906,7 @@ export default function Dashboard() {
                               tahun: watch('tahun'),
                             },
                           }} />
-                        <div className="relative">
+                        <div>
                           <STbm
                             dataProps={{
                               tbmData,

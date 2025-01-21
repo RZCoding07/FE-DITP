@@ -267,7 +267,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
 
   return (
     <>
-      <div className='grid gap-4 lg:grid-cols-4 2xl:grid-cols-2 mt-5'>
+      <div className='grid gap-4 grid-cols-2 mt-5'>
         {data.map((item: any, i:any) =>
           item.show ? (
             <Card
