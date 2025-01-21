@@ -81,6 +81,7 @@ export default function Dashboard() {
   })
 
   const rpcOptions = [
+    { value: 'all', label: 'Semua RPC' },
     { value: 'RPC1', label: 'RPC 1' },
     { value: 'RPC2', label: 'RPC 2' },
     { value: 'RPC3', label: 'RPC 3' },
@@ -112,14 +113,6 @@ export default function Dashboard() {
     hitam: 0,
   })
 
-
-  // useEffect(() => {
-  //   const emasScores = scores.filter((score: any) => {
-  //     return (Object.values(score)[0] as any).scoreTinggiBatang == 0
-  //   })
-
-  //   console.log('emasScores', emasScores)
-  // }, [scores])
   useEffect(() => {
     const fetchProcVegetatifDefault = async () => {
 
@@ -272,7 +265,7 @@ export default function Dashboard() {
             //  console length response.data
             // console.log('response.data',  Object.values(response.data).length)
             let age = bulan.value * i
-            if(age > 36) {
+            if (age > 36) {
               age = 36
             }
             const blok = item.blok
@@ -294,7 +287,7 @@ export default function Dashboard() {
                 parseFloat(item.jumlah_pokok_sekarang)
               ) * 0.3
 
-        
+
             const totalSeleksian =
               scoreLingkarBatang +
               scoreJumlahPelepah +
@@ -315,9 +308,6 @@ export default function Dashboard() {
               colorCategory = ''
             }
 
-
-  
-
             let luas = parseFloat(item.luas_ha)
             let regional = item.regional
             let kebun = item.kebun
@@ -325,7 +315,7 @@ export default function Dashboard() {
             let jumlah = parseFloat(item.jumlah_pelepah_bh)
             let tinggi = parseFloat(item.tinggi_tanaman_cm)
 
-            if (scoreLingkarBatang === 0 || scoreJumlahPelepah === 0 || scoreTinggiBatang === 0 || scoreKerapatanPokok === 0 || totalSeleksian === 0 || colorCategory === '' || luas === 0) { 
+            if (scoreLingkarBatang === 0 || scoreJumlahPelepah === 0 || scoreTinggiBatang === 0 || scoreKerapatanPokok === 0 || totalSeleksian === 0 || colorCategory === '' || luas === 0) {
               console.log('Data dengan score 0:', {
                 age,
                 blok,
@@ -559,12 +549,15 @@ export default function Dashboard() {
   const handleCardClick = (cardData: any) => {
     // console.log('tbmRes', tbmRes)
     setSelectedCard(cardData) // Simpan parameter atau lakukan tindakan lainnya
+    console.log('cardData', cardData)
+    setValue('rpc', { value: 'all', label: 'Semua RPC' })
     setIsKebun(false)
   }
 
   const handleEventClick = (eventData: any) => {
     // console.log('tbmRes', tbmRes)
     setSelectedEvent(eventData) // Simpan parameter atau lakukan tindakan lainnya
+    setValue('rpc', rpcOptions.find((item) => item.value === eventData.selectedCategory) || { value: '', label: '' })
     setIsKebun(true)
   }
 
@@ -904,7 +897,7 @@ export default function Dashboard() {
                             tbm2LuasByColor,
                             tbm3LuasByColor,
                             tbm4LuasByColor,
-                            
+
                             blok: blok ? blok.value : 'blok',
                             score: scores,
                             ctg: selectedCard.ctg,
@@ -929,9 +922,9 @@ export default function Dashboard() {
                               tbm2LuasByColor,
                               tbm3LuasByColor,
                               tbm4LuasByColor,
-                            ctg: selectedCard.ctg,
-                            title: selectedCard.name,
-                              
+                              ctg: selectedCard.ctg,
+                              title: selectedCard.name,
+
                               dataTbm: {
                                 ...tbmData,
                                 tahun: watch('tahun'),
@@ -952,32 +945,82 @@ export default function Dashboard() {
                         <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
                           <div className="grid xl:grid-cols-1">
 
-                            {blok && blok.value === 'blok' && (
-                              <StockAnalysisChart
-                                dataprops={{
-                                  dataset: tbmRes,
-                                  untuk: 'Total Blok',
-                                  score: scores,
-                                  title: selectedCard.name,
-                                  color: selectedCard.circular,
-                                  val: selectedCard.val,
-                                }}
-                                onEventClick={handleEventClick}
-                              />
+                            {isKebun === false && (
+                              <>
+                                {blok && blok.value === 'blok' && (
+                                  <StockAnalysisChart
+                                    dataprops={{
+                                      dataset: tbmRes,
+                                      untuk: 'Total Blok',
+                                      score: scores,
+                                      rpc: rpc,
+                                      kebun: kebun,
+                                      afd: afd,
+                                      ctg: selectedCard.ctg,
+                                      title: selectedCard.name,
+                                      color: selectedCard.circular,
+                                      val: selectedCard.val,
+                                    }}
+                                    onEventClick={handleEventClick}
+                                  />
+                                )}
+
+                                {blok && blok.value === 'luasan' && (
+                                  <StockAnalysisChart
+                                    dataprops={{
+                                      dataset: tbmRes,
+                                      untuk: 'Total Luasan',
+                                      score: scores,
+                                      ctg: selectedCard.ctg,
+                                      rpc: rpc,
+                                      kebun: kebun,
+                                      afd: afd,
+                                      title: selectedCard.name,
+                                      color: selectedCard.circular,
+                                      val: selectedCard.val,
+                                    }}
+                                    onEventClick={handleEventClick}
+                                  />
+                                )}
+                              </>
+
                             )}
 
-                            {blok && blok.value === 'luasan' && (
-                              <StockAnalysisChart
-                                dataprops={{
-                                  dataset: tbmRes,
-                                  untuk: 'Total Luasan',
-                                  score: scores,
-                                  title: selectedCard.name,
-                                  color: selectedCard.circular,
-                                  val: selectedCard.val,
-                                }}
-                                onEventClick={handleEventClick}
-                              />
+                            {selectedEvent && isKebun && (
+                              <>
+
+                                {blok && blok.value === 'luasan' && (
+                                  <StockAnalysisChartKebun
+                                    dataprops={{
+                                      dataset: selectedEvent.sumLuasBlok,
+                                      untuk: 'Total Luasan',
+                                      categories: selectedEvent.categories,
+                                      title: selectedEvent.name,
+                                      color: selectedEvent.color,
+                                      val: selectedEvent.val,
+                                      category: selectedEvent.selectedCategory,
+                                    }}
+                                    onEventClick={handleEventClick}
+                                  />
+                                )}
+
+                                {blok && blok.value === 'blok' && (
+
+                                  <StockAnalysisChartKebun
+                                    dataprops={{
+                                      dataset: selectedEvent.countBlok,
+                                      categories: selectedEvent.categories,
+                                      untuk: 'Total Blok',
+                                      title: selectedEvent.name,
+                                      color: selectedEvent.color,
+                                      val: selectedEvent.val,
+                                      category: selectedEvent.selectedCategory,
+                                    }}
+                                    onEventClick={handleEventClick}
+                                  />
+                                )}
+                              </>
+
                             )}
 
                           </div>
@@ -986,34 +1029,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
-                {selectedEvent && isKebun && (
-                  <div className='mt-5 grid xl:grid-cols-2 sm:grid-cols-1 gap-4'>
-                    <StockAnalysisChartKebun
-                      dataprops={{
-                        dataset: selectedEvent.sumLuasBlok,
-                        untuk: 'Total Luasan',
-                        categories: selectedEvent.categories,
-                        title: selectedEvent.name,
-                        color: selectedEvent.color,
-                        val: selectedEvent.val,
-                        category: selectedEvent.selectedCategory,
-                      }}
-                      onEventClick={handleEventClick}
-                    />
-                    <StockAnalysisChartKebun
-                      dataprops={{
-                        dataset: selectedEvent.countBlok,
-                        categories: selectedEvent.categories,
-                        untuk: 'Total Blok',
-                        title: selectedEvent.name,
-                        color: selectedEvent.color,
-                        val: selectedEvent.val,
-                        category: selectedEvent.selectedCategory,
-                      }}
-                      onEventClick={handleEventClick}
-                    />
-                  </div>
-                )}
+
 
                 <DataPicaCluster
                   control={control}
@@ -1384,7 +1400,7 @@ function getScoreTinggiTanaman(age: any, value: any) {
     '32': { min: Math.ceil(164), max: Math.ceil(173) },
     '33': { min: Math.ceil(164), max: Math.ceil(173) },
     '34': { min: Math.ceil(164), max: Math.ceil(173) },
-    '35': { min: Math.ceil(164), max: Math.ceil(173) },                        
+    '35': { min: Math.ceil(164), max: Math.ceil(173) },
     '36': { min: Math.ceil(164), max: Math.ceil(173) }
   };
 

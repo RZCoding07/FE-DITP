@@ -19,7 +19,7 @@ export const StockAnalysisChartKebun = ({
   let datas: any[] = []
 
   datas = dataprops.dataset
-  
+
   console.log('datas', datas)
 
   const options: ApexOptions = {
@@ -117,16 +117,16 @@ export const StockAnalysisChartKebun = ({
     {
       name: dataprops.title,
       type: 'bar',
-      data:  datas.map((item) => item.filter),
+      data: datas.map((item) => item.filter),
       color: '#6345bf',
     },
   ]
 
   return (
-    <div id='chart' className='grid gap-5 grid-cols-1 '>
-              <style>{`
+    <div id='chart' className='grid gap-5 grid-cols-1'>
+      <style>{`
         .apexcharts-menu {
-          background-color: ${theme =='dark' ? "#333" : "#fff"} !important;
+          background-color: ${theme == 'dark' ? "#333" : "#fff"} !important;
           color: ${theme == 'dark' ? "#fff" : "#000"} !important;
           border-radius: 8px;
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -143,19 +143,17 @@ export const StockAnalysisChartKebun = ({
         }
       `}</style>
 
-      <Card className='bg-gradient border border-cyan-500 bg-white bg-gradient-to-bl shadow-lg shadow-cyan-500 dark:from-slate-900 dark:to-slate-950 '>
-        <CardContent className='mb-0 pb-0'>
-          <h2 className='pt-3 text-center text-xl font-semibold'>
-            {dataprops.untuk} Kebun {dataprops.category} - ( {dataprops.title} )
-          </h2>
-          <ReactApexChart
-            options={options}
-            series={series}
-            type='bar'
-            height='500px'
-          />
-        </CardContent>
-      </Card>
+
+      <h2 className='text-center text-xl -mb-10 font-semibold mb-0 pb-0'>
+        {dataprops.untuk} Kebun {dataprops.category} - ( {dataprops.title} )
+      </h2>
+      <ReactApexChart
+        options={options}
+        series={series}
+        type='bar'
+        height='375px'
+      />
+
     </div>
   )
 }

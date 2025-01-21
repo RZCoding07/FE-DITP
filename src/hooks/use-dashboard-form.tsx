@@ -17,7 +17,7 @@ export const useDashboardForm = () => {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      rpc: null,
+      rpc: { value: 'all', label: 'Semua RPC' },
       kebun: null,
       afd: null,
       blok: { value: 'blok', label: 'Blok' },

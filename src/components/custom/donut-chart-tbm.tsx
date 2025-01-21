@@ -10,7 +10,7 @@ const DonutChartTbm = ({
   }) => {
 
 
-  console.log(dataprops)
+  // console.log(dataprops)
   // Data untuk donut chart
   let series: any = []
 

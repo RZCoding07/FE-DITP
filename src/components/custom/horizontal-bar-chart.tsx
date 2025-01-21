@@ -159,6 +159,34 @@ export const StockAnalysisChart = ({
     }
   }
 
+  const filter_by_regional = (data: any, regional: string) => {
+    return data.filter((item: any) => item.regional === regional)
+  }
+
+  const filter_by_regional_and_kebun = (data: any, regional: string, kebun: string) => {
+    return data.filter((item: any) => item.regional === regional && item.kebun === kebun)
+  }
+
+  const distinctKebunWhereFilterByRegional = (data: any, regional: string) => {
+    const getRegional = filter_by_regional(data, regional)
+    const kebun = getRegional.reduce((acc: any, item: any) => {
+      return item.kebun ? acc.concat(item.kebun) : acc
+    }, [])
+    return [...new Set(kebun)]
+  }
+
+  const sumBlokByDistinctKebun = (data: any, regional: string, kebun: string) => {
+    const getRegional = filter_by_regional_and_kebun(data, regional, kebun)
+    return getRegional.length
+  }
+
+  const sumLuasBlokByDistinctKebun = (data: any, regional: string, kebun: string) => {
+    const getRegional = filter_by_regional_and_kebun(data, regional, kebun)
+    const sum = getRegional.reduce((acc: number, item: any) => {
+      return parseFloat(item.luas_ha || '0') + acc
+    }, 0)
+    return Math.round(sum)
+  }
 
   const options: ApexOptions = {
     chart: {
@@ -169,54 +197,24 @@ export const StockAnalysisChart = ({
         dataPointSelection: (event, chartContext, { dataPointIndex }) => {
           const selectedCategory = categories[dataPointIndex]
           setIsKebun(true)
-
-
-          const tbmKeys = ['tbm1', 'tbm2', 'tbm3', 'tbm4']
-          const selectedData = score.filter((score: any) => {
-            return (
-              (Object.values(score)[0] as any).regional === selectedCategory
-            )
-          })
-          console.log('val', dataprops.val)
-          console.log('selectedData', selectedData)
-
-          const kebun = selectedData.reduce((acc: any, item: any) => {
-            return tbmKeys.reduce((innerAcc: any, key) => {
-              return item[key] && item[key].kebun
-                ? innerAcc.concat(item[key].kebun)
-                : innerAcc
-            }, acc)
-          }, [])
-          // masi ada nama kebun yang sama, jadi aku mau distinct lagi
-          const distinctKebun = [...new Set(kebun)]
-
-          // setelah didistict aku mau hitung count blok berdasarkan kebun
+          const distinctKebun = distinctKebunWhereFilterByRegional(dataset, selectedCategory)
 
           const countBlok = distinctKebun.map((kebun: any) => {
-            const count = selectedData.reduce((acc: number, item: any) => {
-              return tbmKeys.reduce((innerAcc: number, key) => {
-                return item[key] && item[key].kebun === kebun
-                  ? innerAcc + 1
-                  : innerAcc
-              }, acc)
-            }, 0)
-            return { category: kebun, filter: count }
+            return { category: kebun, filter: sumBlokByDistinctKebun(dataset, selectedCategory, kebun) }
           })
 
           const sumLuasBlok = distinctKebun.map((kebun: any) => {
-            const sum = selectedData.reduce((acc: number, item: any) => {
-              return tbmKeys.reduce((innerAcc: number, key) => {
-                return item[key] && item[key].kebun === kebun
-                  ? innerAcc + parseFloat(item[key].luas || '0')
-                  : innerAcc
-              }, acc)
-            }, 0)
-            return { category: kebun, filter: Math.round(sum) }
-          })
+            return { category: kebun, filter: sumLuasBlokByDistinctKebun(dataset, selectedCategory, kebun) }
+          })        // console.log('selectedCategory', selectedCategory)
+
+          // console.log('distinctKebun', distinctKebun)
+          console.log('countBlok', countBlok)
+          console.log('sumLuasBlok', sumLuasBlok)
 
           handleChartClick(selectedCategory, distinctKebun, countBlok, sumLuasBlok)
         },
       },
+      
     },
 
     dataLabels: {
