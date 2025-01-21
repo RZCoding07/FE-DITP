@@ -72,7 +72,7 @@ export default function Chats() {
       <Layout.Body className='sm:overflow-hidden'>
         <section className='flex h-full gap-6'>
           {/* Left Side */}
-          <div className='flex w-full flex-col gap-2 sm:w-56 lg:w-72 2xl:w-80'>
+          <div className='flex w-full flex-col gap-2 sm:w-56 lg:w-72 2lg:w-80'>
             <div className='sticky top-0 z-10 -mx-4 bg-background px-4 pb-3 shadow-md sm:static sm:z-auto sm:mx-0 sm:p-0 sm:shadow-none'>
               <div className='flex items-center justify-between py-2'>
                 <div className='flex gap-2'>

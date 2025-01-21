@@ -165,7 +165,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       <h2 className='font-semibold mb-1 -mt-5'>
         Luas TBM Total : {totalLuasFormat} HA
       </h2>
-      <div className='grid gap-4 lg:grid-cols-4 2xl:grid-cols-4'>
+      <div className='grid gap-4 lg:grid-cols-4 2lg:grid-cols-4'>
         {data.map((item, i) =>
           item.show ? (
             <Card
@@ -232,7 +232,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         )}
       </div>
 
-      <div className='grid gap-4 lg:grid-cols-4 2xl:grid-cols-4 mt-4'>
+      <div className='grid gap-4 lg:grid-cols-4 2lg:grid-cols-4 mt-4'>
         {dataTbm.map((item, i) =>
           item.show ? (
             <Card

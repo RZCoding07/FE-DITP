@@ -364,7 +364,7 @@ export default function Tasks() {
         </div>
 
         <div className='rounded-lg bg-gradient-to-r from-blue-500 to-green-500 p-6 shadow-lg'>
-          <div className='flex flex-col xl:flex-row xl:items-center xl:justify-between'>
+          <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between'>
             <div>
               <h4 className='text-2xl font-bold text-white'>
                 Selamat Datang Di MONICA
@@ -373,7 +373,7 @@ export default function Tasks() {
                 Monitoring Investasi Capital Expenditure PTPN IV
               </p>
             </div>
-            <div className='mt-4 xl:mt-0' />
+            <div className='mt-4 lg:mt-0' />
           </div>
         </div>
 
@@ -406,7 +406,7 @@ export default function Tasks() {
           </div>
         </Tabs>
 
-        <div className='mt-5 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-5'>
+        <div className='mt-5 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-5'>
           {/* Progress Di <br/> PKS */}
           <button
             className='text-start'
@@ -546,7 +546,7 @@ export default function Tasks() {
           </button>
         </div>
 
-        <div className='mt-5 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-5'>
+        <div className='mt-5 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-5'>
           {/* Progress Di <br/> PKS */}
           <button
             className='text-end'

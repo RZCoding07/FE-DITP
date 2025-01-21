@@ -747,7 +747,7 @@ export default function Dashboard() {
                     </div>
                     <hr className='my-2 mt-4 border-cyan-400' />
 
-                    <div className='mt-5 grid xl:grid-cols-2 gap-5 sm:grid-cols-1'>
+                    <div className='mt-5 grid lg:grid-cols-2 gap-5 sm:grid-cols-1'>
                       <StockAnalysisChart
                         dataprops={{
                           dataset: tbmRes,
@@ -778,7 +778,7 @@ export default function Dashboard() {
             {selectedCard.type !== 'color' && (
 
               <>
-                <div className="grid sm:grid-cols-1 xl:grid-cols-[53%_47%] mt-5">
+                <div className="grid sm:grid-cols-1 lg:grid-cols-[53%_47%] mt-5">
                   <h2 className='text-2xl font-bold mt-3'>
                     PICA Cluster {selectedCard.name} {' '}
                     {rpc ? ' - ' + rpc.label : ''} {kebun ? ' - ' + kebun.label : ''}{' '}
@@ -862,14 +862,14 @@ export default function Dashboard() {
 
                 </div>
 
-                <div className="grid sm:grid-cols-1 xl:grid-cols-[40%_60%]" >
-                  <div className='items-center justify-center align-middle xl:mr-4'>
+                <div className="grid sm:grid-cols-1 lg:grid-cols-[40%_60%]" >
+                  <div className='items-center justify-center align-middle lg:mr-4'>
                     <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
                       <h2 className='text-xl font-semibold'>Rekapitulasi  {blok ? blok.label : 'Blok'} {selectedCard.name}
                       </h2>
                       <hr className='my-2 border-cyan-400' />
-                      <div className="grid xl:grid-cols-1">
-                        <div className="grid sm:grid-cols-1 xl:grid-cols-[40%_60%]">
+                      <div className="grid lg:grid-cols-1">
+                        <div className="grid sm:grid-cols-1 lg:grid-cols-[40%_60%]">
                           <p className='text-xs font-semibold text-cyan-300 -mb-9                                            '>
                             *Grafik Per {blok ? blok.label : 'Blok'}<br />
                             <strong>
@@ -942,7 +942,7 @@ export default function Dashboard() {
                     <div className='mt-5'>
                       <div className='items-center justify-center align-middle'>
                         <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-                          <div className="grid xl:grid-cols-1">
+                          <div className="grid lg:grid-cols-1">
 
                             {isKebun === false && (
                               <>
@@ -1086,7 +1086,7 @@ function DashboardHeader({
         </h1>
       </div>
       <h1>Hi, Welcome back {fullname}👋</h1>
-      <div className='xl:flex sm:grid sm:grid-cols-1 items-center space-x-2'>
+      <div className='lg:flex sm:grid sm:grid-cols-1 items-center space-x-2'>
         <Controller
           name='tahun'
           control={control}
@@ -1117,7 +1117,7 @@ function WelcomeBanner() {
   return (
     <div className='py-5'>
       <div className='rounded-xl bg-gradient-to-r from-blue-500 via-green-500 to-green-500 p-6 py-5 shadow-lg'>
-        <div className='flex flex-col xl:flex-row xl:items-center xl:justify-between'>
+        <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between'>
           <div>
             <h4 className='text-2xl font-bold text-white'>
               Selamat Datang Di PICA TBM
