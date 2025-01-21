@@ -271,7 +271,10 @@ export default function Dashboard() {
           const newScores = Object.values(response.data).map((item: any) => {
             //  console length response.data
             // console.log('response.data',  Object.values(response.data).length)
-            const age = bulan.value
+            let age = bulan.value * i
+            if(age > 36) {
+              age = 36
+            }
             const blok = item.blok
             const scoreLingkarBatang =
               getScoreLingkarBatang(age, parseFloat(item.lingkar_batang_cm)) *
@@ -291,6 +294,7 @@ export default function Dashboard() {
                 parseFloat(item.jumlah_pokok_sekarang)
               ) * 0.3
 
+        
             const totalSeleksian =
               scoreLingkarBatang +
               scoreJumlahPelepah +
@@ -307,11 +311,36 @@ export default function Dashboard() {
               colorCategory = 'green'
             } else if (totalSeleksian > 96) {
               colorCategory = 'gold'
+            } else {
+              colorCategory = ''
             }
+
+
+  
 
             let luas = parseFloat(item.luas_ha)
             let regional = item.regional
             let kebun = item.kebun
+            let lingkar = parseFloat(item.lingkar_batang_cm)
+            let jumlah = parseFloat(item.jumlah_pelepah_bh)
+            let tinggi = parseFloat(item.tinggi_tanaman_cm)
+
+            if (scoreLingkarBatang === 0 || scoreJumlahPelepah === 0 || scoreTinggiBatang === 0 || scoreKerapatanPokok === 0 || totalSeleksian === 0 || colorCategory === '' || luas === 0) { 
+              console.log('Data dengan score 0:', {
+                age,
+                blok,
+                lingkar,
+                scoreLingkarBatang,
+                scoreJumlahPelepah,
+                tinggi,
+                scoreTinggiBatang,
+                scoreKerapatanPokok,
+                totalSeleksian,
+                colorCategory,
+                luas
+              });
+            }
+
 
             setScores((prev) => [
               ...prev,
@@ -900,6 +929,8 @@ export default function Dashboard() {
                               tbm2LuasByColor,
                               tbm3LuasByColor,
                               tbm4LuasByColor,
+                            ctg: selectedCard.ctg,
+                            title: selectedCard.name,
                               
                               dataTbm: {
                                 ...tbmData,
@@ -1200,6 +1231,7 @@ function DataPicaCluster({
 function getScoreLingkarBatang(age: any, value: any) {
   // Input validation
   if (age < 1 || age > 36) {
+    console.log(age)
     return 0
   }
 
@@ -1246,7 +1278,7 @@ function getScoreLingkarBatang(age: any, value: any) {
     return 100
   } else if (
     value >= thresholds[age].score90[0] &&
-    value <= thresholds[age].score90[1]
+    value < thresholds[age].score100
   ) {
     return 90
   } else if (value < thresholds[age].score80) {
@@ -1348,20 +1380,27 @@ function getScoreTinggiTanaman(age: any, value: any) {
     '28': { min: Math.ceil(154.17), max: Math.ceil(159.73) },
     '29': { min: Math.ceil(159.08), max: Math.ceil(166.37) },
     '30': { min: Math.ceil(164), max: Math.ceil(173) },
+    '31': { min: Math.ceil(164), max: Math.ceil(173) },
+    '32': { min: Math.ceil(164), max: Math.ceil(173) },
+    '33': { min: Math.ceil(164), max: Math.ceil(173) },
+    '34': { min: Math.ceil(164), max: Math.ceil(173) },
+    '35': { min: Math.ceil(164), max: Math.ceil(173) },                        
+    '36': { min: Math.ceil(164), max: Math.ceil(173) }
+  };
+
+  // Cek apakah age valid dalam rulesTinggiTanaman
+  if (rulesTinggiTanaman[age]) {
+    if (value < rulesTinggiTanaman[age].min) {
+      return 80;
+    } else if (value >= rulesTinggiTanaman[age].min && value < rulesTinggiTanaman[age].max) {
+      return 90;
+    } else if (value >= rulesTinggiTanaman[age].max) {
+      return 100;
+    }
   }
 
-  if (value < rulesTinggiTanaman[age].min) {
-    return 80
-  } else if (
-    value >= rulesTinggiTanaman[age].min &&
-    value <= rulesTinggiTanaman[age].max
-  ) {
-    return 90
-  } else if (value > rulesTinggiTanaman[age].max) {
-    return 100
-  } else {
-    return 0
-  }
+  // Jika age tidak valid, kembalikan nilai 0 atau nilai default
+  return 0;
 }
 
 function getScoreKerapatanPokok(

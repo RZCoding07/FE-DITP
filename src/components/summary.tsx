@@ -170,9 +170,8 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
           item.show ? (
             <Card
               key={i}
-              className={`py-1 shadow-md dark:from-slate-900 dark:via-slate-950 dark:to-transparent border hover:shadow-cyan-500 ${
-                selectedCard === i ? '' : ''
-              }`}
+              className={`py-1 shadow-md dark:from-slate-900 dark:via-slate-950 dark:to-transparent border hover:shadow-cyan-500 ${selectedCard === i ? '' : ''
+                }`}
               onClick={() => {
                 setSelectedCard(i); // Set the clicked card as selected
                 setSelectedTbm(null); // Reset TBM selection
@@ -180,17 +179,16 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
               }}
               style={{
                 background: selectedCard === i ? `linear-gradient(135deg, ${item.color} 55%, ${item.color}29 45%)` :
-                `linear-gradient(135deg, ${item.color} 55%, ${item.color}29 45%)`,
+                  `linear-gradient(135deg, ${item.color} 55%, ${item.color}29 45%)`,
                 borderColor: item.color,
 
-                boxShadow: selectedCard === i ? '0 4px 10px rgba(0, 225, 255, 0.74)' : '',
+                boxShadow: selectedCard === i ? '0 4px 10px rgba(91, 219, 236, 0.74)' : '',
 
               }}
             >
-              <CardContent className='flex items-center px-2 py-1'>
-                <div className='relative mr-2 h-10 w-10'>
-                  <img src={item.image} alt={item.name} />
-                </div>
+              <CardContent className='flex items-center px-2 py-1'>                <div className='relative mr-2 h-10 w-10'>
+                <img src={item.image} alt={item.name} />
+              </div>
                 <div className='grid grid-cols-2 py-0 my-0  align-middle items-center w-full'>
                   <p className='text-sm font-semibold capitalize' style={{ color: `${item.textColor}` }}>
                     {item.name}
@@ -244,10 +242,12 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
                 setSelectedCard(null); // Reset color selection
                 onCardClick(item); // Kirim data ke parent saat TBM card di-klik
               }}
-              className={`bg-gradient-to-br py-2 shadow-md dark:from-slate-900 dark:via-slate-950 dark:to-transparent border border-cyan-500 shadow-cyan-500 ${
-                selectedTbm === i ? 'bg-cyan-500 text-white' : ''
-              }`}
+              className={` py-2 shadow-md  border border-cyan-500 shadow-cyan-500 ${selectedTbm === i ? 'bg-blue-500 from-blue-500 to-blue-500 text-white' : ''
+                }`}
+
+              {...(selectedTbm === i ? { style: { background: 'linear-gradient(to right, #129bb0, #006d8e)' } } : {})}
             >
+
               <CardContent className='flex items-center px-2 py-1'>
                 <div className='relative float-end mr-2 h-10 w-10'>
                   <img
