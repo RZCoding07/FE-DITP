@@ -151,7 +151,7 @@ export const StockAnalysisChartKebun = ({
         options={options}
         series={series}
         type='bar'
-        height='375px'
+        height='345px'
       />
 
     </div>
