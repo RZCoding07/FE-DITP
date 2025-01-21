@@ -9,14 +9,91 @@ const DonutChartTbm = ({
     dataprops: any
   }) => {
 
-  console.log('dataprops', dataprops)
 
+  console.log(dataprops)
   // Data untuk donut chart
   let series: any = []
-  if (dataprops.blok === 'blok') {
-    series = [dataprops.data.emas, dataprops.data.hijau, dataprops.data.merah, dataprops.data.hitam] // Nilai untuk Emas Hijau, Merah, dan Hitam
+
+  if (dataprops.title === 'Keseluruhan TBM') {
+    if (dataprops.blok === 'blok') {
+      series = [dataprops.data.emas, dataprops.data.hijau, dataprops.data.merah, dataprops.data.hitam] // Nilai untuk Emas Hijau, Merah, dan Hitam
+    } else {
+      series = [dataprops.dataLuas.emas, dataprops.dataLuas.hijau, dataprops.dataLuas.merah, dataprops.dataLuas.hitam] // Nilai untuk Emas Hijau,
+    }
   } else {
-    series = [dataprops.dataLuas.emas, dataprops.dataLuas.hijau, dataprops.dataLuas.merah, dataprops.dataLuas.hitam] // Nilai untuk Emas Hijau,
+    if (dataprops.blok === 'blok') {
+      if (dataprops.ctg == 'tbm1') {
+        series = [
+          dataprops.tbm1ColorCount.gold,
+          dataprops.tbm1ColorCount.green,
+          dataprops.tbm1ColorCount.red,
+          dataprops.tbm1ColorCount.black
+        ]
+        .map(value => (value == null ? 0 : value));  // Ganti null atau undefined dengan 0, tetap pertahankan 0 yang ada
+      } else if (dataprops.ctg == 'tbm2') {
+        series = [
+          dataprops.tbm2ColorCount.gold,
+          dataprops.tbm2ColorCount.green,
+          dataprops.tbm2ColorCount.red,
+          dataprops.tbm2ColorCount.black
+        ]
+        .map(value => (value == null ? 0 : value));  // Ganti null atau undefined dengan 0, tetap pertahankan 0 yang ada
+      } else if (dataprops.ctg == 'tbm3') {
+        series = [
+          dataprops.tbm3ColorCount.gold,
+          dataprops.tbm3ColorCount.green,
+          dataprops.tbm3ColorCount.red,
+          dataprops.tbm3ColorCount.black
+        ]
+        .map(value => (value == null ? 0 : value));  // Ganti null atau undefined dengan 0, tetap pertahankan 0 yang ada
+      } else if (dataprops.ctg == 'tbm4') {
+        series = [
+          dataprops.tbm4ColorCount.gold,
+          dataprops.tbm4ColorCount.green,
+          dataprops.tbm4ColorCount.red,
+          dataprops.tbm4ColorCount.black
+        ]
+        .map(value => (value == null ? 0 : value));  // Ganti null atau undefined dengan 0, tetap pertahankan 0 yang ada
+      }
+    
+      console.log(series);
+    } else {
+      if (dataprops.ctg == 'tbm1') {
+        series = [
+          dataprops.tbm1LuasByColor.gold,
+          dataprops.tbm1LuasByColor.green,
+          dataprops.tbm1LuasByColor.red,
+          dataprops.tbm1LuasByColor.black
+        ]
+        .map(value => (value == null ? 0 : value));  // Ganti null atau undefined dengan 0, tetap pertahankan 0 yang ada
+      } else if (dataprops.ctg == 'tbm2') {
+        series = [
+          dataprops.tbm2LuasByColor.gold,
+          dataprops.tbm2LuasByColor.green,
+          dataprops.tbm2LuasByColor.red,
+          dataprops.tbm2LuasByColor.black
+        ]
+        .map(value => (value == null ? 0 : value));  // Ganti null atau undefined dengan 0, tetap pertahankan 0 yang ada
+      } else if (dataprops.ctg == 'tbm3') {
+        series = [
+          dataprops.tbm3LuasByColor.gold,
+          dataprops.tbm3LuasByColor.green,
+          dataprops.tbm3LuasByColor.red,
+          dataprops.tbm3LuasByColor.black
+        ]
+        .map(value => (value == null ? 0 : value));  // Ganti null atau undefined dengan 0, tetap pertahankan 0 yang ada
+      } else if (dataprops.ctg == 'tbm4') {
+        series = [
+          dataprops.tbm4LuasByColor.gold,
+          dataprops.tbm4LuasByColor.green,
+          dataprops.tbm4LuasByColor.red,
+          dataprops.tbm4LuasByColor.black
+        ]
+        .map(value => (value == null ? 0 : value));  // Ganti null atau undefined dengan 0, tetap pertahankan 0 yang ada
+      }
+    }
+    
+    
   }
   const options: ApexOptions = {
     chart: {
@@ -64,6 +141,7 @@ const DonutChartTbm = ({
         type='donut'
         height={210}
       />
+
     </>
 
 

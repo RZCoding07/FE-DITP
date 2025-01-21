@@ -520,6 +520,7 @@ export default function Dashboard() {
   const [selectedCard, setSelectedCard] = useState({
     type: 'all',
     name: 'Keseluruhan TBM',
+    ctg: 'tbm-all',
     circular: '',
     val: 0,
 
@@ -581,6 +582,78 @@ export default function Dashboard() {
     return null; // Jika tidak ada data yang sesuai
   };
 
+
+  const [tbm1ColorCount, setTbm1ColorCount] = useState<any>({});
+  const [tbm2ColorCount, setTbm2ColorCount] = useState<any>({});
+  const [tbm3ColorCount, setTbm3ColorCount] = useState<any>({});
+  const [tbm4ColorCount, setTbm4ColorCount] = useState<any>({});
+
+  const [tbm1LuasByColor, setTbm1LuasByColor] = useState<any>({});
+  const [tbm2LuasByColor, setTbm2LuasByColor] = useState<any>({});
+  const [tbm3LuasByColor, setTbm3LuasByColor] = useState<any>({});
+  const [tbm4LuasByColor, setTbm4LuasByColor] = useState<any>({});
+
+
+
+  useEffect(() => {
+    let score = scores
+    let z = score.reduce((acc: any, x: any) => {
+      const key = Object.keys(x)[0];
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(Object.values(x)[0]);
+      return acc;
+    }, {});
+
+    function sumLuasByColorCategory(data: any) {
+      return data.reduce((acc: any, item: any) => {
+        const color = item.colorCategory;
+        acc[color] = (acc[color] || 0) + item.luas; // Menambahkan luas untuk colorCategory
+        return acc;
+      }, {});
+    }
+
+
+    // Fungsi untuk menghitung jumlah setiap colorCategory
+    function countColorCategories(data: any) {
+      return data.reduce((acc: any, item: any) => {
+        const color = item.colorCategory;
+        acc[color] = (acc[color] || 0) + 1; // Menambahkan jumlah untuk colorCategory
+        return acc;
+      }, {});
+    }
+
+    // Mendapatkan data untuk setiap tbm
+    let tbm1Data = z['tbm1'] ?? []
+    let tbm2Data = z['tbm2'] ?? []
+    let tbm3Data = z['tbm3'] ?? []
+    let tbm4Data = z['tbm4'] ?? []
+
+    // Menghitung jumlah untuk setiap colorCategory dalam setiap tbm
+    let tbm1ColorCount = countColorCategories(tbm1Data);
+    let tbm2ColorCount = countColorCategories(tbm2Data);
+    let tbm3ColorCount = countColorCategories(tbm3Data);
+    let tbm4ColorCount = countColorCategories(tbm4Data);
+
+    // Menghitung total luas untuk setiap colorCategory dalam setiap tbm
+    let tbm1LuasByColor = sumLuasByColorCategory(tbm1Data);
+    let tbm2LuasByColor = sumLuasByColorCategory(tbm2Data);
+    let tbm3LuasByColor = sumLuasByColorCategory(tbm3Data);
+    let tbm4LuasByColor = sumLuasByColorCategory(tbm4Data);
+
+    setTbm1ColorCount(tbm1ColorCount);
+    setTbm2ColorCount(tbm2ColorCount);
+    setTbm3ColorCount(tbm3ColorCount);
+    setTbm4ColorCount(tbm4ColorCount);
+
+    setTbm1LuasByColor(tbm1LuasByColor);
+    setTbm2LuasByColor(tbm2LuasByColor);
+    setTbm3LuasByColor(tbm3LuasByColor);
+    setTbm4LuasByColor(tbm4LuasByColor);
+
+  }, [selectedCard, scores])
+
   return (
     <Layout>
       <Layout.Header>
@@ -636,7 +709,7 @@ export default function Dashboard() {
                       <Button
                         variant={'secondary'}
                         onClick={() => {
-                          setSelectedCard({ type: '', name: 'Keseluruhan TBM', circular: '', val: 0 })
+                          setSelectedCard({ type: '', name: 'Keseluruhan TBM', circular: '', ctg: 'tbm-all', val: 0 })
                           setSelectedEvent(null)
                         }}
                         className='flex items-center rounded-full'
@@ -792,12 +865,21 @@ export default function Dashboard() {
                         <DonutChartTbm
                           dataprops={{
                             tbmData,
-                            tbmDataScorePelepahBlok,
-                            tbmDataScoreLingkarBlok,
                             data: colorData,
                             dataLuas: colorDataLuas,
+                            tbm1ColorCount,
+                            tbm2ColorCount,
+                            tbm3ColorCount,
+                            tbm4ColorCount,
+                            tbm1LuasByColor,
+                            tbm2LuasByColor,
+                            tbm3LuasByColor,
+                            tbm4LuasByColor,
+                            
                             blok: blok ? blok.value : 'blok',
                             score: scores,
+                            ctg: selectedCard.ctg,
+                            title: selectedCard.name,
                             dataTbm: {
                               ...tbmData,
                               tahun: watch('tahun'),
@@ -807,11 +889,18 @@ export default function Dashboard() {
                           <STbm
                             dataProps={{
                               tbmData,
-                              tbmDataScorePelepahBlok,
-                              tbmDataScoreLingkarBlok,
                               data: colorData,
                               dataLuas: colorDataLuas,
                               score: scores,
+                              tbm1ColorCount,
+                              tbm2ColorCount,
+                              tbm3ColorCount,
+                              tbm4ColorCount,
+                              tbm1LuasByColor,
+                              tbm2LuasByColor,
+                              tbm3LuasByColor,
+                              tbm4LuasByColor,
+                              
                               dataTbm: {
                                 ...tbmData,
                                 tahun: watch('tahun'),
