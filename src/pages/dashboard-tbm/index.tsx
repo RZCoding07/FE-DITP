@@ -549,7 +549,6 @@ export default function Dashboard() {
   const handleCardClick = (cardData: any) => {
     // console.log('tbmRes', tbmRes)
     setSelectedCard(cardData) // Simpan parameter atau lakukan tindakan lainnya
-    console.log('cardData', cardData)
     setValue('rpc', { value: 'all', label: 'Semua RPC' })
     setIsKebun(false)
   }
@@ -830,13 +829,13 @@ export default function Dashboard() {
                       )}
                     />
 
+                    <Button className='flex items-center rounded-full'>
+                      <FaSync style={{ animation: 'spin 8s linear infinite' }} />
+                    </Button>
 
 
+                    <div className='-ml-5 flex'>
 
-                    <div className='flex'>
-                      <Button className='flex items-center rounded-full'>
-                        <FaSync style={{ animation: 'spin 8s linear infinite' }} />
-                      </Button>
                       <h2 className='text-lg mt-1 ml-5 mr-2'>Sortir berdasarkan : </h2>
                       <Controller
                         name='blok'
