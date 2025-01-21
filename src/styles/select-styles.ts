@@ -7,6 +7,7 @@ export const customStyles = {
         primary: 'var(--text-primary)',
       },
     }),
+    
     control: (provided: any) => ({
       ...provided,
       backgroundColor: 'var(--bg-primary)',
@@ -52,6 +53,11 @@ export const customStyles = {
     placeholder: (provided: any, state: any) => ({
       ...provided,
       color: state.theme.mode === 'dark' ? 'white' : 'var(--text-secondary)',
+      whiteSpace: 'nowrap',  // Menghindari teks melompat ke baris berikutnya
+      overflow: 'hidden',    // Menyembunyikan teks yang melampaui batas
+      textOverflow: 'ellipsis',  // Menambahkan elipsis di akhir teks
+      maxWidth: '200px',    // Tentukan batas lebar maksimal sesuai kebutuhan
+      width: '100%',        // Pastikan lebar placeholder responsif
     }),
   }
   

@@ -806,11 +806,12 @@ export default function Dashboard() {
                       control={control}
                       render={({ field }) => (
                         <Select
+                        {...field}
+
                           styles={customStyles}
                           placeholder='Pilih Kebun'
                           isSearchable
                           options={kebunOptions}
-                          {...field}
                         />
                       )}
                     />
@@ -820,11 +821,11 @@ export default function Dashboard() {
                       control={control}
                       render={({ field }) => (
                         <Select
+                        {...field}
                           styles={customStyles}
                           placeholder='Pilih Afdeling'
                           isSearchable
                           options={afdOptions}
-                          {...field}
                         />
                       )}
                     />
