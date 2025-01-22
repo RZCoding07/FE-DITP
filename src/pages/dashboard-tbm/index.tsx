@@ -314,8 +314,8 @@ export default function Dashboard() {
             let regional = item.regional
             let kebun = item.kebun
             let lingkar = parseFloat(item.lingkar_batang_cm)
-            let jumlah = parseFloat(item.jumlah_pelepah_bh)
             let tinggi = parseFloat(item.tinggi_tanaman_cm)
+            let jumPelepah = parseFloat(item.jumlah_pelepah_bh)
 
             if (scoreLingkarBatang === 0 || scoreJumlahPelepah === 0 || scoreTinggiBatang === 0 || scoreKerapatanPokok === 0 || totalSeleksian === 0 || colorCategory === '' || luas === 0) {
               console.log('Data dengan score 0:', {
@@ -329,7 +329,8 @@ export default function Dashboard() {
                 scoreKerapatanPokok,
                 totalSeleksian,
                 colorCategory,
-                luas
+                luas,
+                jumPelepah
               });
             }
 
@@ -348,6 +349,7 @@ export default function Dashboard() {
                   totalSeleksian,
                   colorCategory,
                   luas,
+                  jumPelepah
                 },
               },
             ])
@@ -686,7 +688,7 @@ export default function Dashboard() {
     });
 
     // Menyusun data dalam format array yang bisa digunakan untuk XLSX
-    const headers = ["Jenis TBM", "Regional", "Kebun", "Blok", "Luasan", "Score Lingkar Batang", "Score Jumlah Pelepah", "Score Tinggi Batang", "Score Kerapatan Pokok", "Total Seleksian", "Kategori Warna"];
+    const headers = ["Jenis TBM", "Regional", "Kebun", "Blok", "Luasan", "Jumlah Pelepah", "Score Lingkar Batang", "Score Jumlah Pelepah", "Score Tinggi Batang", "Score Kerapatan Pokok", "Total Seleksian", "Kategori Warna"];
 
     // Mengonversi data menjadi array 2D
     const data = scores.map((item) => {
@@ -701,6 +703,7 @@ export default function Dashboard() {
         data.kebun,
         data.blok,
         data.luas,
+        data.jumPelepah,
         data.scoreLingkarBatang,
         data.scoreJumlahPelepah,
         data.scoreTinggiBatang,
@@ -748,7 +751,7 @@ export default function Dashboard() {
 
     // Apply background color for "Kategori Warna" column (column K, index 10)
     data.forEach((row, rowIndex) => {
-      const color = row[10]?.toLowerCase(); // Access the Kategori Warna value (column 10)
+      const color = row[11]?.toLowerCase(); // Access the Kategori Warna value (column 10)
       if (colorMapping[color]) {
         const cellRef = XLSX.utils.encode_cell({ r: rowIndex + 1, c: 10 }); // Row index is +1 because of header
         ws[cellRef] = ws[cellRef] || {}; // Ensure the cell exists
