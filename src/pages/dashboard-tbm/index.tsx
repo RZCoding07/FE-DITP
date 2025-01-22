@@ -1208,7 +1208,9 @@ function DashboardHeader({
           )}
         />
 
-        <Button className='flex items-center rounded-full'>
+        <Button className='flex items-center rounded-full'
+          variant={'secondary'}
+        >
           Download
           <IconPdf size={20} className='ml-2 bg-red-500 text-white' />
         </Button>
