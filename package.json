@@ -73,6 +73,9 @@
     "slugify": "^1.6.6",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
+    "xlsx": "^0.18.5",
+    "xlsx-js-style": "^1.2.0",
+    "xlsx-style": "^0.8.13",
     "zod": "^3.22.4"
   },
   "devDependencies": {

@@ -25,6 +25,7 @@ import StockAnalysisChartBar from '@/components/custom/bar-chart'
 import DonutChartTbm from '@/components/custom/donut-chart-tbm'
 import KuadranChart from '@/components/custom/kuadran'
 import { Summary as STbm } from '@/components/summarytbm'
+import * as XLSX from 'xlsx-js-style'
 import toast from 'react-hot-toast'
 import { FaEyeDropper, FaRecycle, FaSync } from 'react-icons/fa'
 import {
@@ -673,7 +674,101 @@ export default function Dashboard() {
     setTbm3LuasByColor(tbm3LuasByColor);
     setTbm4LuasByColor(tbm4LuasByColor);
 
+    console.log('score', score)
+
   }, [selectedCard, scores])
+
+  const handleDownload = () => {
+    // Menampilkan toast loading
+    const loadingToast = toast.loading('Downloading... Please wait!', {
+      position: 'top-right',
+    });
+
+    // Menyusun data dalam format array yang bisa digunakan untuk XLSX
+    const headers = ["Jenis TBM", "Regional", "Kebun", "Blok", "Score Lingkar Batang", "Score Jumlah Pelepah", "Score Tinggi Batang", "Score Kerapatan Pokok", "Total Seleksian", "Kategori Warna", "Luasan"];
+
+    // Mengonversi data menjadi array 2D
+    const data = scores.map((item) => {
+      const key = Object.keys(item)[0];
+      const data = item[key];
+      return [
+        key.toUpperCase(),
+        data.regional,
+        data.kebun,
+        data.blok,
+        data.scoreLingkarBatang,
+        data.scoreJumlahPelepah,
+        data.scoreTinggiBatang,
+        data.scoreKerapatanPokok,
+        data.totalSeleksian,
+        data.colorCategory,
+        data.luas,
+      ];
+    });
+
+    // Create the worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
+
+    // Styling the header
+    const headerStyle = {
+      fill: {
+        fgColor: { rgb: "10CCAD" }, // Background color for header
+      },
+      font: {
+        color: { rgb: "FFFFFF" }, // White font for header
+        bold: true,
+      },
+    };
+
+    // Apply header styles (for the first row)
+    ws['A1'].s = headerStyle;
+    ws['B1'].s = headerStyle;
+    ws['C1'].s = headerStyle;
+    ws['D1'].s = headerStyle;
+    ws['E1'].s = headerStyle;
+    ws['F1'].s = headerStyle;
+    ws['G1'].s = headerStyle;
+    ws['H1'].s = headerStyle;
+    ws['I1'].s = headerStyle;
+    ws['J1'].s = headerStyle;
+    ws['K1'].s = headerStyle;
+
+    // Custom background color for "Kategori Warna"
+    const colorMapping: any = {
+      'gold': 'FFA500',
+      'green': '00a300',
+      'red': 'FF0000',
+      'black': '000000'
+    };
+
+    // Apply background color for "Kategori Warna" column (column K, index 10)
+    data.forEach((row, rowIndex) => {
+      const color = row[9]?.toLowerCase(); // Access the Kategori Warna value (column 10)
+      if (colorMapping[color]) {
+        const cellRef = XLSX.utils.encode_cell({ r: rowIndex + 1, c: 10 }); // Row index is +1 because of header
+        ws[cellRef] = ws[cellRef] || {}; // Ensure the cell exists
+        ws[cellRef].s = {
+          fill: {
+            fgColor: { rgb: colorMapping[color] }, // Set background color
+          }
+        };
+      }
+    });
+
+    // Append the worksheet to the workbook
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    // Menyimpan file excel
+    XLSX.writeFile(wb, `Hasil Seleksi TBM Bulan ${bulan.label} Tahun ${tahun.label}.xlsx`);
+
+    // Menutup toast loading dan menampilkan toast selesai
+    toast.loading('Downloading... Please wait!', {
+      id: loadingToast,
+      duration: 2000,
+    });
+  };
+
 
   return (
     <Layout>
@@ -694,6 +789,7 @@ export default function Dashboard() {
           bulanOptions={bulanOptions}
           defaultTahun={defaultTahun}
           defaultBulan={defaultBulan}
+          onDownload={handleDownload}
         />
 
         {/* <WelcomeBanner /> */}
@@ -738,7 +834,7 @@ export default function Dashboard() {
                         <img
                           width='20'
                           height='20'
-                          src='https://img.icons8.com/external-beshi-flat-kerismaker/48/external-Hide-user-interface-beshi-flat-kerismaker.png'
+                          src='https://img.icons8.com/external-beshi-flat-kerismaker/28/external-Hide-user-interface-beshi-flat-kerismaker.png'
                           alt='external-Hide-user-interface-beshi-flat-kerismaker'
                         />{' '}
                         <span className='ml-2'>Hide Chart</span>
@@ -806,7 +902,7 @@ export default function Dashboard() {
                       control={control}
                       render={({ field }) => (
                         <Select
-                        {...field}
+                          {...field}
 
                           styles={customStyles}
                           placeholder='Pilih Kebun'
@@ -821,7 +917,7 @@ export default function Dashboard() {
                       control={control}
                       render={({ field }) => (
                         <Select
-                        {...field}
+                          {...field}
                           styles={customStyles}
                           placeholder='Pilih Afdeling'
                           isSearchable
@@ -1067,6 +1163,7 @@ function DashboardHeader({
   bulanOptions,
   defaultTahun,
   defaultBulan,
+  onDownload,
 }: {
   control: any
   fullname: any
@@ -1074,6 +1171,7 @@ function DashboardHeader({
   bulanOptions: any
   defaultTahun: any
   defaultBulan: any
+  onDownload: any
 }) {
   return (
     <div className='mb-2 flex items-center justify-between space-y-2 '>
@@ -1105,10 +1203,30 @@ function DashboardHeader({
           )}
         />
 
-        <Button className='flex items-center rounded-full'>
-          Download
+        <Button 
+          variant={'secondary'}
+        
+        className='flex items-center rounded-full'>
+          Download PDF
           <IconPdf size={20} className='ml-2 bg-red-500 text-white' />
         </Button>
+
+        <Button
+          onClick={() => {
+            onDownload()
+          }}
+          className='flex items-center rounded-full'
+        >
+
+          {' '}
+          <span className='ml-2'>Export Excel</span>
+          {' '}
+          
+          &nbsp;
+                    <img width="28" height="28" src="https://img.icons8.com/fluency/28/microsoft-excel-2019.png" alt="microsoft-excel-2019" />
+
+        </Button>
+
       </div>
     </div>
   )
@@ -1265,7 +1383,7 @@ function getScoreLingkarBatang(age: any, value: any) {
     11: { score100: 144, score90: [130, 143], score80: 130 },
     12: { score100: 150, score90: [135, 149], score80: 135 },
     13: { score100: 157, score90: [141, 156], score80: 141 },
-    14: { score100: 164, score90: [148, 163], score80: 148 },
+    14: { score100: 164, score90: [128, 163], score80: 128 },
     15: { score100: 171, score90: [154, 170], score80: 154 },
     16: { score100: 178, score90: [160, 177], score80: 160 },
     17: { score100: 185, score90: [167, 184], score80: 167 },
@@ -1277,7 +1395,7 @@ function getScoreLingkarBatang(age: any, value: any) {
     23: { score100: 228, score90: [205, 227], score80: 205 },
     24: { score100: 235, score90: [212, 234], score80: 212 },
     25: { score100: 242, score90: [218, 241], score80: 218 },
-    26: { score100: 249, score90: [224, 248], score80: 224 },
+    26: { score100: 249, score90: [224, 228], score80: 224 },
     27: { score100: 256, score90: [230, 255], score80: 230 },
     28: { score100: 263, score90: [237, 262], score80: 237 },
     29: { score100: 270, score90: [243, 259], score80: 243 },
@@ -1332,9 +1450,9 @@ function getScoreJumlahPelepah(age: any, frondCount: any) {
     24: { score100: 40, score90: 38, score80: 36 },
     25: { score100: 43, score90: 40, score80: 38 },
     26: { score100: 45, score90: 43, score80: 41 },
-    27: { score100: 48, score90: 45, score80: 43 },
-    28: { score100: 50, score90: 48, score80: 45 },
-    29: { score100: 53, score90: 50, score80: 48 },
+    27: { score100: 28, score90: 45, score80: 43 },
+    28: { score100: 50, score90: 28, score80: 45 },
+    29: { score100: 53, score90: 50, score80: 28 },
     30: { score100: 56, score90: 53, score80: 50 },
     31: { score100: 56, score90: 55, score80: 51 },
     32: { score100: 56, score90: 55, score80: 51 },
@@ -1368,13 +1486,13 @@ function getScoreTinggiTanaman(age: any, value: any) {
   const rulesTinggiTanaman: any = {
     '1': { min: Math.ceil(21), max: Math.ceil(21) },
     '2': { min: Math.ceil(22.74), max: Math.ceil(24.02) },
-    '3': { min: Math.ceil(24.48), max: Math.ceil(27.04) },
+    '3': { min: Math.ceil(24.28), max: Math.ceil(27.04) },
     '4': { min: Math.ceil(26.22), max: Math.ceil(30.06) },
     '5': { min: Math.ceil(27.96), max: Math.ceil(33.08) },
     '6': { min: Math.ceil(29.7), max: Math.ceil(36.1) },
     '7': { min: Math.ceil(36.37), max: Math.ceil(41.07) },
     '8': { min: Math.ceil(42.67), max: Math.ceil(46.03) },
-    '9': { min: Math.ceil(48), max: Math.ceil(51) },
+    '9': { min: Math.ceil(28), max: Math.ceil(51) },
     '10': { min: Math.ceil(53.33), max: Math.ceil(56.37) },
     '11': { min: Math.ceil(58.67), max: Math.ceil(63.03) },
     '12': { min: Math.ceil(64), max: Math.ceil(69.7) },
@@ -1382,13 +1500,13 @@ function getScoreTinggiTanaman(age: any, value: any) {
     '14': { min: Math.ceil(75.63), max: Math.ceil(78.7) },
     '15': { min: Math.ceil(80.65), max: Math.ceil(83.2) },
     '16': { min: Math.ceil(85.57), max: Math.ceil(87.7) },
-    '17': { min: Math.ceil(90.48), max: Math.ceil(93.08) },
+    '17': { min: Math.ceil(90.28), max: Math.ceil(93.08) },
     '18': { min: Math.ceil(95.4), max: Math.ceil(98.9) },
     '19': { min: Math.ceil(101.92), max: Math.ceil(104.62) },
     '20': { min: Math.ceil(108.43), max: Math.ceil(110.33) },
     '21': { min: Math.ceil(114.95), max: Math.ceil(116.05) },
     '22': { min: Math.ceil(121.47), max: Math.ceil(121.77) },
-    '23': { min: Math.ceil(127.48), max: Math.ceil(127.98) },
+    '23': { min: Math.ceil(127.28), max: Math.ceil(127.98) },
     '24': { min: Math.ceil(133.2), max: Math.ceil(134.5) },
     '25': { min: Math.ceil(139.42), max: Math.ceil(139.83) },
     '26': { min: Math.ceil(144.33), max: Math.ceil(146.47) },
