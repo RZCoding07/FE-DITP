@@ -690,8 +690,11 @@ export default function Dashboard() {
 
     // Mengonversi data menjadi array 2D
     const data = scores.map((item) => {
-      const key = Object.keys(item)[0];
+      let key = Object.keys(item)[0];
       const data = item[key];
+      if(key === 'tbm4'){
+        key = 'TBM > 3'
+      }
       return [
         key.toUpperCase(),
         data.regional,
