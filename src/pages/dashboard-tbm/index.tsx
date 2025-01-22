@@ -38,6 +38,7 @@ import {
   Paper,
   Typography,
 } from '@mui/material'
+import { text } from 'stream/consumers'
 
 export default function Dashboard() {
   const user = cookie.get('user')
@@ -685,7 +686,7 @@ export default function Dashboard() {
     });
 
     // Menyusun data dalam format array yang bisa digunakan untuk XLSX
-    const headers = ["Jenis TBM", "Regional", "Kebun", "Blok", "Score Lingkar Batang", "Score Jumlah Pelepah", "Score Tinggi Batang", "Score Kerapatan Pokok", "Total Seleksian", "Kategori Warna", "Luasan"];
+    const headers = ["Jenis TBM", "Regional", "Kebun", "Blok", "Luasan", "Score Lingkar Batang", "Score Jumlah Pelepah", "Score Tinggi Batang", "Score Kerapatan Pokok", "Total Seleksian", "Kategori Warna"];
 
     // Mengonversi data menjadi array 2D
     const data = scores.map((item) => {
@@ -696,13 +697,13 @@ export default function Dashboard() {
         data.regional,
         data.kebun,
         data.blok,
+        data.luas,
         data.scoreLingkarBatang,
         data.scoreJumlahPelepah,
         data.scoreTinggiBatang,
         data.scoreKerapatanPokok,
         data.totalSeleksian,
         data.colorCategory,
-        data.luas,
       ];
     });
 
@@ -744,14 +745,18 @@ export default function Dashboard() {
 
     // Apply background color for "Kategori Warna" column (column K, index 10)
     data.forEach((row, rowIndex) => {
-      const color = row[9]?.toLowerCase(); // Access the Kategori Warna value (column 10)
+      const color = row[10]?.toLowerCase(); // Access the Kategori Warna value (column 10)
       if (colorMapping[color]) {
         const cellRef = XLSX.utils.encode_cell({ r: rowIndex + 1, c: 10 }); // Row index is +1 because of header
         ws[cellRef] = ws[cellRef] || {}; // Ensure the cell exists
         ws[cellRef].s = {
           fill: {
             fgColor: { rgb: colorMapping[color] }, // Set background color
-          }
+          },
+          font: {
+            color: { rgb: "FFFFFF" }, // White font for header
+            bold: true,
+          },
         };
       }
     });
@@ -1203,11 +1208,8 @@ function DashboardHeader({
           )}
         />
 
-        <Button 
-          variant={'secondary'}
-        
-        className='flex items-center rounded-full'>
-          Download PDF
+        <Button className='flex items-center rounded-full'>
+          Download
           <IconPdf size={20} className='ml-2 bg-red-500 text-white' />
         </Button>
 
