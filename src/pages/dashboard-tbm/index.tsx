@@ -740,6 +740,7 @@ export default function Dashboard() {
     ws['I1'].s = headerStyle;
     ws['J1'].s = headerStyle;
     ws['K1'].s = headerStyle;
+    ws['L1'].s = headerStyle;
 
     // Custom background color for "Kategori Warna"
     const colorMapping: any = {
@@ -753,7 +754,7 @@ export default function Dashboard() {
     data.forEach((row, rowIndex) => {
       const color = row[11]?.toLowerCase(); // Access the Kategori Warna value (column 10)
       if (colorMapping[color]) {
-        const cellRef = XLSX.utils.encode_cell({ r: rowIndex + 1, c: 10 }); // Row index is +1 because of header
+        const cellRef = XLSX.utils.encode_cell({ r: rowIndex + 1, c: 11 }); // Row index is +1 because of header
         ws[cellRef] = ws[cellRef] || {}; // Ensure the cell exists
         ws[cellRef].s = {
           fill: {
