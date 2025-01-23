@@ -3,8 +3,34 @@ import ReactApexChart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
 import cookie from 'js-cookie';
 
-const StockAnalysisChartBar: React.FC = () => {
+const StockAnalysisChartBar = ({
+  dataprops }: {
+    dataprops: any
+  }) => {
+
   const [theme, setTheme] = useState<string>(cookie.get('theme') || 'light');
+
+  // Mengonversi data menjadi array 2D
+  let data = dataprops.scores.map((item: any) => {
+    let key = Object.keys(item)[0];
+    const data = item[key];
+    return [
+      key,
+      data.regional,
+      data.kebun,
+      data.afdeling,
+      data.blok,
+      data.luas,
+      data.jumPelepah,
+      data.scoreLingkarBatang,
+      data.scoreJumlahPelepah,
+      data.scoreTinggiBatang,
+      data.scoreKerapatanPokok,
+      data.totalSeleksian,
+      data.colorCategory,
+    ];
+  });
+
 
   useEffect(() => {
     setTheme(cookie.get('theme') || 'light'); // Memastikan pembaruan tema terjadi
@@ -26,6 +52,7 @@ const StockAnalysisChartBar: React.FC = () => {
     'RPC2N14',
   ]);
 
+
   const options: ApexOptions = {
     chart: {
       height: 350,
@@ -36,7 +63,7 @@ const StockAnalysisChartBar: React.FC = () => {
         enabled: false, // Disables zoom
       },
     },
-    
+
     xaxis: {
       categories: categories, // Menetapkan kategori dari state 'categories'
       labels: {
@@ -74,11 +101,11 @@ const StockAnalysisChartBar: React.FC = () => {
         },
       },
     },
-  
+
     dataLabels: {
       enabled: true,
       offsetY: -5,
-      formatter: (val: any) => `${Math.round(val)} Ha`,
+      formatter: (val: any) => `${val.toFixed(2)} Ha`,
     },
     stroke: {
       width: [1, 1, 4],

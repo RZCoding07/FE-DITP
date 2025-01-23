@@ -332,7 +332,7 @@ export default function Dashboard() {
                 luas,
                 jumPelepah
               });
-            } 
+            }
 
             let afdeling = item.afdeling
 
@@ -696,7 +696,7 @@ export default function Dashboard() {
     const data = scores.map((item) => {
       let key = Object.keys(item)[0];
       const data = item[key];
-      if(key === 'tbm4'){
+      if (key === 'tbm4') {
         key = 'TBM > 3'
       }
       return [
@@ -1153,6 +1153,8 @@ export default function Dashboard() {
                   afd={afd}
                   blok={blok}
                   name={selectedCard.name}
+                  ctg={selectedCard.ctg}
+                  selectedCard={selectedCard}
                   bulan={bulan}
                   tahun={tahun}
                   rpcOptions={rpcOptions}
@@ -1236,12 +1238,11 @@ function DashboardHeader({
           className='flex items-center rounded-full'
         >
 
-          {' '}
           <span className='ml-2'>Export Excel</span>
-          {' '}
-          
+
           &nbsp;
-                    <img width="28" height="28" src="https://img.icons8.com/fluency/28/microsoft-excel-2019.png" alt="microsoft-excel-2019" />
+
+          <img width="28" height="28" src="https://img.icons8.com/fluency/28/microsoft-excel-2019.png" alt="microsoft-excel-2019" />
 
         </Button>
 
@@ -1277,6 +1278,8 @@ function DataPicaCluster({
   afd,
   blok,
   name,
+  ctg,
+  selectedCard,
   bulan,
   tahun,
   rpcOptions,
@@ -1291,6 +1294,8 @@ function DataPicaCluster({
   kebun: any
   afd: any
   blok: any
+  ctg : any
+  selectedCard: any
   name: string
   bulan: any
   tahun: any
@@ -1358,7 +1363,20 @@ function DataPicaCluster({
               <h2 className='text-xl font-semibold'>
                 Total {blok ? blok.label : 'Blok'}  Merah dan Hitam {name}
               </h2>
-              <StockAnalysisChartBar />
+              <StockAnalysisChartBar 
+                dataprops={
+                  {
+                    scores: scores,
+                    ctg: selectedCard.ctg,
+                    rpc: rpc,
+                    kebun: kebun,
+                    afd: afd,
+                    title: selectedCard.name,
+                    color: selectedCard.circular,
+                    val: selectedCard.val,
+                  }
+                }
+              />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-r dark:from-slate-900 dark:to-slate-950'>
@@ -1560,5 +1578,11 @@ function getScoreKerapatanPokok(
   jum_pokok_awal: any,
   jum_pokok_akhir: any
 ) {
-  return (jum_pokok_akhir / jum_pokok_awal) * 100
+  let result = 0
+  result = (jum_pokok_akhir / jum_pokok_awal) * 100
+  if(result > 30) {
+    return 100
+  } else {
+    return result
+  }
 }
