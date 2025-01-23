@@ -332,7 +332,9 @@ export default function Dashboard() {
                 luas,
                 jumPelepah
               });
-            }
+            } 
+
+            let afdeling = item.afdeling
 
 
             setScores((prev) => [
@@ -341,6 +343,7 @@ export default function Dashboard() {
                 [`tbm${i}`]: {
                   regional,
                   kebun,
+                  afdeling,
                   blok,
                   scoreLingkarBatang,
                   scoreJumlahPelepah,
@@ -677,7 +680,6 @@ export default function Dashboard() {
     setTbm3LuasByColor(tbm3LuasByColor);
     setTbm4LuasByColor(tbm4LuasByColor);
 
-    console.log('score', score)
 
   }, [selectedCard, scores])
 
@@ -688,7 +690,7 @@ export default function Dashboard() {
     });
 
     // Menyusun data dalam format array yang bisa digunakan untuk XLSX
-    const headers = ["Jenis TBM", "Regional", "Kebun", "Blok", "Luasan", "Jumlah Pelepah", "Score Lingkar Batang", "Score Jumlah Pelepah", "Score Tinggi Batang", "Score Kerapatan Pokok", "Total Seleksian", "Kategori Warna"];
+    const headers = ["Jenis TBM", "Regional", "Kebun", "Afdeling", "Blok", "Luasan", "Jumlah Pelepah", "Score Lingkar Batang", "Score Jumlah Pelepah", "Score Tinggi Batang", "Score Kerapatan Pokok", "Total Seleksian", "Kategori Warna"];
 
     // Mengonversi data menjadi array 2D
     const data = scores.map((item) => {
@@ -701,6 +703,7 @@ export default function Dashboard() {
         key.toUpperCase(),
         data.regional,
         data.kebun,
+        data.afdeling,
         data.blok,
         data.luas,
         data.jumPelepah,
@@ -713,6 +716,9 @@ export default function Dashboard() {
       ];
     });
 
+
+
+    console.log('data', data)
     // Create the worksheet
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
@@ -741,6 +747,7 @@ export default function Dashboard() {
     ws['J1'].s = headerStyle;
     ws['K1'].s = headerStyle;
     ws['L1'].s = headerStyle;
+    ws['M1'].s = headerStyle;
 
     // Custom background color for "Kategori Warna"
     const colorMapping: any = {
@@ -752,9 +759,9 @@ export default function Dashboard() {
 
     // Apply background color for "Kategori Warna" column (column K, index 10)
     data.forEach((row, rowIndex) => {
-      const color = row[11]?.toLowerCase(); // Access the Kategori Warna value (column 10)
+      const color = row[12]?.toLowerCase(); // Access the Kategori Warna value (column 10)
       if (colorMapping[color]) {
-        const cellRef = XLSX.utils.encode_cell({ r: rowIndex + 1, c: 11 }); // Row index is +1 because of header
+        const cellRef = XLSX.utils.encode_cell({ r: rowIndex + 1, c: 12 }); // Row index is +1 because of header
         ws[cellRef] = ws[cellRef] || {}; // Ensure the cell exists
         ws[cellRef].s = {
           fill: {

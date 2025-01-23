@@ -46,7 +46,6 @@ export const StockAnalysisChart = ({
   let score = dataprops.score
 
 
-  console.log('score', score.length)
 
   let dataValueOfAllTBM = score.map((item: any) => {
     return Object.values(item)[0]
