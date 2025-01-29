@@ -331,6 +331,12 @@ let allRouter = [
     }),
   },
   {
+    path: 'foresight-ai',
+    lazy: async () => ({
+      Component: (await import('./pages/foresight-ai')).default,
+    }),
+  },
+  {
     path: 'users',
     lazy: async () => ({
       Component: (await import('@/pages/users')).default,

@@ -10,37 +10,7 @@ const StockAnalysisChartBar = ({
 
   const [theme, setTheme] = useState<string>(cookie.get('theme') || 'light');
 
-  // Mengonversi data menjadi array 2D
-  let data = dataprops.scores.map((item: any) => {
-    let key = Object.keys(item)[0];
-    const data = item[key];
-    return [
-      key,
-      data.regional,
-      data.kebun,
-      data.afdeling,
-      data.blok,
-      data.luas,
-      data.jumPelepah,
-      data.scoreLingkarBatang,
-      data.scoreJumlahPelepah,
-      data.scoreTinggiBatang,
-      data.scoreKerapatanPokok,
-      data.totalSeleksian,
-      data.colorCategory,
-    ];
-  });
-
-
-  useEffect(() => {
-    setTheme(cookie.get('theme') || 'light'); // Memastikan pembaruan tema terjadi
-    setTimeout(() => {
-      window.dispatchEvent(new Event('resize'));
-    }, 100);
-
-  }, []);
-
-  const [categories, setCategories] = useState<string[]>([
+  const rpcOptions = [
     'RPC1',
     'RPC2',
     'RPC3',
@@ -50,7 +20,14 @@ const StockAnalysisChartBar = ({
     'RPC7',
     'RPC2N2',
     'RPC2N14',
-  ]);
+  ];
+
+  useEffect(() => {
+    setTheme(cookie.get('theme') || 'light'); // Memastikan pembaruan tema terjadi
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 100);
+  }, []);
 
 
   const options: ApexOptions = {
@@ -63,9 +40,8 @@ const StockAnalysisChartBar = ({
         enabled: false, // Disables zoom
       },
     },
-
     xaxis: {
-      categories: categories, // Menetapkan kategori dari state 'categories'
+      categories: rpcOptions, // Menetapkan kategori dari state 'rpcOptions'
       labels: {
         show: true,
         style: {
@@ -101,7 +77,6 @@ const StockAnalysisChartBar = ({
         },
       },
     },
-
     dataLabels: {
       enabled: true,
       offsetY: -5,
@@ -137,22 +112,27 @@ const StockAnalysisChartBar = ({
     {
       name: 'Blok Hitam',
       type: 'column',
-      data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6, 5.2],
       color: 'rgba(15, 23, 42, 0.95)',
+      data : [1, 0, 0, 0, 0, 0, 0, 0, 0]
     },
     {
       name: 'Blok Merah',
       type: 'column',
-      data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5, 9.2],
       color: '#DC143C',
+      data : [0, 0, 0, 0, 0, 0, 0, 0, 0]
     },
   ];
 
   return (
-    <div id="char2t">
-      <ReactApexChart options={options} series={series} type="line" height={250} />
+    <div id="chart">
+      <ReactApexChart
+        options={options}
+        series={series}
+        type='bar'
+        height={250}
+      />
     </div>
   );
 };
 
-export default StockAnalysisChartBar;
+export default StockAnalysisChartBar; 

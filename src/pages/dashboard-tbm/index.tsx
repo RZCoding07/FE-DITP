@@ -548,7 +548,7 @@ export default function Dashboard() {
     name: 'Keseluruhan TBM',
     ctg: 'tbm-all',
     circular: '',
-    val: 0,
+    val: 4,
 
   })
   const [selectedEvent, setSelectedEvent] = useState<any | null>(null)
@@ -682,6 +682,21 @@ export default function Dashboard() {
 
 
   }, [selectedCard, scores])
+
+
+
+  const getDataScoreAll = (tbm: string) => {
+    const filteredScores = scores.filter((score) => {
+      const tbmKey = Object.keys(score)[0];
+      return tbmKey === tbm;
+    });
+
+    if (filteredScores.length > 0) {
+      return filteredScores;
+    }
+    return null; // Jika tidak ada data yang sesuai
+  }
+
 
   const handleDownload = () => {
     // Menampilkan toast loading
@@ -865,6 +880,9 @@ export default function Dashboard() {
                     <div className='mt-5 grid lg:grid-cols-2 gap-5 sm:grid-cols-1'>
                       <StockAnalysisChart
                         dataprops={{
+                          rpc,  
+                          kebun,
+                          afd,
                           dataset: tbmRes,
                           untuk: 'Total Luasan',
                           score: scores,
@@ -876,6 +894,9 @@ export default function Dashboard() {
                       />
                       <StockAnalysisChart
                         dataprops={{
+                          rpc,
+                          kebun,
+                          afd,
                           dataset: tbmRes,
                           untuk: 'Total Blok',
                           score: scores,
@@ -1107,12 +1128,17 @@ export default function Dashboard() {
                                 {blok && blok.value === 'luasan' && (
                                   <StockAnalysisChartKebun
                                     dataprops={{
+                                      rpc,
+                                      kebun,
+                                      afd,
+                                      datasets: tbmRes,
+                                      score: scores,
                                       dataset: selectedEvent.sumLuasBlok,
                                       untuk: 'Total Luasan',
                                       categories: selectedEvent.categories,
                                       title: selectedEvent.name,
                                       color: selectedEvent.color,
-                                      val: selectedEvent.val,
+                                      val: selectedCard.val,
                                       category: selectedEvent.selectedCategory,
                                     }}
                                     onEventClick={handleEventClick}
@@ -1123,12 +1149,17 @@ export default function Dashboard() {
 
                                   <StockAnalysisChartKebun
                                     dataprops={{
+                                      rpc,
+                                      kebun,
+                                      afd,
+                                      datasets : tbmRes,
+                                      score: scores,
                                       dataset: selectedEvent.countBlok,
                                       categories: selectedEvent.categories,
                                       untuk: 'Total Blok',
                                       title: selectedEvent.name,
                                       color: selectedEvent.color,
-                                      val: selectedEvent.val,
+                                      val: selectedCard.val,
                                       category: selectedEvent.selectedCategory,
                                     }}
                                     onEventClick={handleEventClick}
@@ -1348,7 +1379,7 @@ function DataPicaCluster({
     <>
 
       <div className="grid">
-        <div className='block w-full items-center justify-center align-middle'>
+        <div className='items-center justify-center align-middle'>
           <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
             <div className='w-full items-center align-middle'>
               <div className='flex justify-between'>
@@ -1359,39 +1390,28 @@ function DataPicaCluster({
               </div>
             </div>
             <hr className='my-3 border-cyan-400' />
-            <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-r dark:from-cyan-700 dark:to-cyan-600'>
-              <h2 className='text-xl font-semibold'>
-                Total {blok ? blok.label : 'Blok'}  Merah dan Hitam {name}
-              </h2>
-              <StockAnalysisChartBar 
-                dataprops={
-                  {
-                    scores: scores,
-                    ctg: selectedCard.ctg,
-                    rpc: rpc,
-                    kebun: kebun,
-                    afd: afd,
-                    title: selectedCard.name,
-                    color: selectedCard.circular,
-                    val: selectedCard.val,
-                  }
-                }
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-r dark:from-slate-900 dark:to-slate-950'>
-                <h2 className='text-xl font-semibold'>
-                  Top Problem Identification  {name}
-                </h2>
 
-                <StockAnalysisChartArea
+            <div className='items-center justify-center align-middle mr-4'>
+                  <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-3 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-cyan-700 dark:to-cyan-600'>
+                    <div className='flex justify-between align-middle items-center'>
+                      <h2 className='text-xl font-semibold'>
+                       Total {blok.label} Merah Hitam {name}
+                      </h2>
 
-                />
-              </div>
+                    </div>
+                    <hr className='my-2 mt-4 border-cyan-400' />
 
+                    <div className='mt-5 grid lg:grid-cols-1 sm:grid-cols-1'>
+                    <StockAnalysisChartBar 
+                      dataprops={{
+                        scores,
+                      }}
+                    />
+                    </div>
+                  </div>
+                </div>
             </div>
           </div>
-        </div>
       </div>
 
     </>
@@ -1580,7 +1600,7 @@ function getScoreKerapatanPokok(
 ) {
   let result = 0
   result = (jum_pokok_akhir / jum_pokok_awal) * 100
-  if(result > 30) {
+  if(result > 100) {
     return 100
   } else {
     return result

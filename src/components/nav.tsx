@@ -62,12 +62,12 @@ export default function Nav({
     <div
       data-collapsed={isCollapsed}
       className={cn(
-        'group border-b bg-background py-2 transition-[max-height,padding] duration-500 data-[collapsed=true]:py-2 md:border-none',
+        'group border-b bg-background py-2 transition-[max-height,padding] duration-500 data-[collapsed=true]:py-2 md:border-none scrollbar-thin scrollbar-thumb-primary-foreground scrollbar-track-primary-500',
         className
       )}
     >
       <TooltipProvider delayDuration={0}>
-        <nav className='grid gap-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2'>
+        <nav className='grid gap-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2 scrollbar-thin scrollbar-thumb-primary-foreground scrollbar-track-primary-500'>
           {links.map(renderLink)}
         </nav>
       </TooltipProvider>

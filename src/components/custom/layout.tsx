@@ -86,7 +86,7 @@ const Body = React.forwardRef<
   }
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen sm:min-h-[120vh] md:min-h-[140vh] lg:min-h-[160vh] xl:min-h-[180vh]">
       {/* Blurred background */}
       <div
         className={cn(

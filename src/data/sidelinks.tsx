@@ -93,7 +93,7 @@ export const sidelinks: SideLink[] = [
   },
   {
     title: 'FORESIGHT-AI',
-    label: 'Coming Soon ',
+    label: 'New',
     href: '/foresight-ai',
     icon: (
       <img

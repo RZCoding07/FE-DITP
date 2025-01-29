@@ -26,7 +26,7 @@ export const StockAnalysisChart = ({
 
   const theme = cookie.get('theme') || 'light'
 
-  // Initialize categories with default values
+
   const [categories, setCategories] = useState<string[]>([
     'RPC1',
     'RPC2',
@@ -44,7 +44,6 @@ export const StockAnalysisChart = ({
   let dataset = dataprops.dataset[dataprops.val]
 
   let score = dataprops.score
-
 
 
   let dataValueOfAllTBM = score.map((item: any) => {
@@ -181,137 +180,141 @@ export const StockAnalysisChart = ({
 
   const sumLuasBlokByDistinctKebun = (data: any, regional: string, kebun: string) => {
     const getRegional = filter_by_regional_and_kebun(data, regional, kebun)
-    const sum = getRegional.reduce((acc: number, item: any) => {
+  let sum = 0
+  if (dataprops.val == 4) {
+    sum = getRegional.reduce((acc: number, item: any) => {
+      return parseFloat(item.luas || '0') + acc
+    }, 0)
+  } else {
+    sum = getRegional.reduce((acc: number, item: any) => {
       return parseFloat(item.luas_ha || '0') + acc
     }, 0)
-    return Math.round(sum)
   }
+  return Math.round(sum)
+}
 
-  const options: ApexOptions = {
-    chart: {
-      height: 350,
-      type: 'bar', // Change to 'bar' for horizontal bars
-      stacked: false,
-      events: {
-        dataPointSelection: (event, chartContext, { dataPointIndex }) => {
-          const selectedCategory = categories[dataPointIndex]
-          setIsKebun(true)
-          const distinctKebun = distinctKebunWhereFilterByRegional(dataset, selectedCategory)
+const options: ApexOptions = {
+  chart: {
+    height: 350,
+    type: 'bar', // Change to 'bar' for horizontal bars
+    stacked: false,
+    events: {
+      dataPointSelection: (event, chartContext, { dataPointIndex }) => {
+        const selectedCategory = categories[dataPointIndex]
+        setIsKebun(true)
+        const distinctKebun = distinctKebunWhereFilterByRegional(dataset, selectedCategory)
 
-          const countBlok = distinctKebun.map((kebun: any) => {
-            return { category: kebun, filter: sumBlokByDistinctKebun(dataset, selectedCategory, kebun) }
-          })
+        const countBlok = distinctKebun.map((kebun: any) => {
+          return { category: kebun, filter: sumBlokByDistinctKebun(dataset, selectedCategory, kebun) }
+        })
 
-          const sumLuasBlok = distinctKebun.map((kebun: any) => {
-            return { category: kebun, filter: sumLuasBlokByDistinctKebun(dataset, selectedCategory, kebun) }
-          })        // console.log('selectedCategory', selectedCategory)
+        const sumLuasBlok = distinctKebun.map((kebun: any) => {
+          return { category: kebun, filter: sumLuasBlokByDistinctKebun(dataset, selectedCategory, kebun) }
+        })        // console.log('selectedCategory', selectedCategory)
 
-          // console.log('distinctKebun', distinctKebun)
-          console.log('countBlok', countBlok)
-          console.log('sumLuasBlok', sumLuasBlok)
 
-          handleChartClick(selectedCategory, distinctKebun, countBlok, sumLuasBlok)
-        },
-      },
-      
-    },
-
-    dataLabels: {
-      enabled: true,
-      offsetX: 5, // Adjust label position for horizontal bars
-    },
-    stroke: {
-      width: [1], // Single series, so only one dat
-    },
-    plotOptions: {
-      bar: {
-        borderRadius: 4,
-        borderRadiusApplication: 'end',
-        horizontal: true,
+        handleChartClick(selectedCategory, distinctKebun, countBlok, sumLuasBlok)
       },
     },
-    xaxis: {
-      categories: categories,
-      labels: {
-        show: true,
-        style: {
-          colors: theme === 'dark' ? '#ffffff' : '#000000',
-          fontSize: '12px',
-          fontFamily: 'Arial, sans-serif',
-        },
-      },
-      title: {
-        text: dataprops.untuk,
-        style: {
-          color: theme === 'dark' ? '#ffffff' : '#000000',
-        },
+
+  },
+
+  dataLabels: {
+    enabled: true,
+    offsetX: 5, // Adjust label position for horizontal bars
+  },
+  stroke: {
+    width: [1], // Single series, so only one dat
+  },
+  plotOptions: {
+    bar: {
+      borderRadius: 4,
+      borderRadiusApplication: 'end',
+      horizontal: true,
+    },
+  },
+  xaxis: {
+    categories: categories,
+    labels: {
+      show: true,
+      style: {
+        colors: theme === 'dark' ? '#ffffff' : '#000000',
+        fontSize: '12px',
+        fontFamily: 'Arial, sans-serif',
       },
     },
-    yaxis: {
-      axisTicks: {
-        show: true,
-      },
-      axisBorder: {
-        show: true,
+    title: {
+      text: dataprops.untuk,
+      style: {
         color: theme === 'dark' ? '#ffffff' : '#000000',
       },
-      labels: {
-        style: {
-          colors: theme === 'dark' ? '#ffffff' : '#000000',
-        },
-      },
-      title: {
-        text: 'Regional',
-        style: {
-          color: theme === 'dark' ? '#ffffff' : '#000000',
-        },
+    },
+  },
+  yaxis: {
+    axisTicks: {
+      show: true,
+    },
+    axisBorder: {
+      show: true,
+      color: theme === 'dark' ? '#ffffff' : '#000000',
+    },
+    labels: {
+      style: {
+        colors: theme === 'dark' ? '#ffffff' : '#000000',
       },
     },
-    tooltip: {
-      shared: true,
-      intersect: false,
-      x: {
-        show: true,
-        formatter: (val) => `${val}`, // Display x-axis value
-      },
-      y: {
-        formatter: (val, { series, seriesIndex }) => {
-          const seriesName = series[seriesIndex]?.name || 'Tidak Diketahui'
-          return `${val} `
-        },
+    title: {
+      text: 'Regional',
+      style: {
+        color: theme === 'dark' ? '#ffffff' : '#000000',
       },
     },
-    fill: {
-      type: 'gradient',
-      gradient: {
-        shade: 'dark',
-        type: 'horizontal',
-        shadeIntensity: 0.5,
-        gradientToColors: ['#ABE5A1'],
-        inverseColors: true,
-        opacityFrom: 1,
-        opacityTo: 1,
-        stops: [0, 80],
+  },
+  tooltip: {
+    shared: true,
+    intersect: false,
+    x: {
+      show: true,
+      formatter: (val) => `${val}`, // Display x-axis value
+    },
+    y: {
+      formatter: (val, { series, seriesIndex }) => {
+        const seriesName = series[seriesIndex]?.name || 'Tidak Diketahui'
+        return `${val} `
       },
     },
-    legend: {
-      horizontalAlign: 'center',
-      offsetX: 40,
+  },
+  fill: {
+    type: 'gradient',
+    gradient: {
+      shade: 'dark',
+      type: 'horizontal',
+      shadeIntensity: 0.5,
+      gradientToColors: ['#ABE5A1'],
+      inverseColors: true,
+      opacityFrom: 1,
+      opacityTo: 1,
+      stops: [0, 80],
     },
-  }
+  },
+  legend: {
+    horizontalAlign: 'center',
+    offsetX: 40,
+  },
+}
 
-  const series = [
-    {
-      name: 'Total:',
-      type: 'bar',
-      data: datas.map((item) => item.filter),
-      color: '#00b0ff',
-    },
-  ]
+const series = [
+  {
+    name: 'Total:',
+    type: 'bar',
+    data: datas.map((item) => item.filter),
+    color: '#00b0ff',
+  },
+]
 
-  return (
-    <div id='chart'>
-      <style>{`
+return (
+  <div id='chart'>
+    <style>{`
         .apexcharts-menu {
           background-color: ${theme == 'dark' ? "#333" : "#fff"} !important;
           color: ${theme == 'dark' ? "#fff" : "#000"} !important;
@@ -330,17 +333,17 @@ export const StockAnalysisChart = ({
         }
       `}</style>
 
-      <h2 className=' text-xl font-semibold text-center'>
-        {dataprops.untuk} {dataprops.title}
-      </h2>
+    <h2 className=' text-xl font-semibold text-center'>
+      {dataprops.untuk} {dataprops.title}
+    </h2>
 
-      <ReactApexChart
-        options={options}
-        series={series}
-        type='bar'
-        height={368}
-      />
+    <ReactApexChart
+      options={options}
+      series={series}
+      type='bar'
+      height={368}
+    />
 
-    </div>
-  )
+  </div>
+)
 }

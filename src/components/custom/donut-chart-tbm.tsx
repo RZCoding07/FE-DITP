@@ -56,7 +56,6 @@ const DonutChartTbm = ({
         .map(value => (value == null ? 0 : value));  // Ganti null atau undefined dengan 0, tetap pertahankan 0 yang ada
       }
     
-      console.log(series);
     } else {
       if (dataprops.ctg == 'tbm1') {
         series = [
