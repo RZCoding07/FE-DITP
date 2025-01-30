@@ -9,9 +9,7 @@ const DonutChartTbm = ({
     dataprops: any
   }) => {
 
-
-  // console.log(dataprops)
-  // Data untuk donut chart
+  let rpc = dataprops.rpc.value
   let series: any = []
 
   if (dataprops.title === 'Keseluruhan TBM') {
@@ -55,7 +53,12 @@ const DonutChartTbm = ({
         ]
         .map(value => (value == null ? 0 : value));  // Ganti null atau undefined dengan 0, tetap pertahankan 0 yang ada
       }
+
+      if (dataprops.ctg !== 'tbm-all' && rpc !== 'all') {
+        series = [dataprops.dataDnt.emas, dataprops.dataDnt.hijau, dataprops.dataDnt.merah, dataprops.dataDnt.hitam] // Nilai untuk Emas Hijau, Merah, dan Hitam
+      }
     
+
     } else {
       if (dataprops.ctg == 'tbm1') {
         series = [
@@ -89,6 +92,10 @@ const DonutChartTbm = ({
           dataprops.tbm4LuasByColor.black
         ]
         .map(value => (value == null ? 0 : value));  // Ganti null atau undefined dengan 0, tetap pertahankan 0 yang ada
+      }
+   
+      if (dataprops.ctg !== 'tbm-all' && rpc !== 'all') {
+        series = [dataprops.dataLuasDnt.emas, dataprops.dataLuasDnt.hijau, dataprops.dataLuasDnt.merah, dataprops.dataLuasDnt.hitam] // Nilai untuk Emas Hijau, Merah, dan Hitam
       }
     }
     

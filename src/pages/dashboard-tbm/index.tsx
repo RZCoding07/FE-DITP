@@ -125,10 +125,10 @@ export default function Dashboard() {
   })
 
   const [colorDataLuasDonat, setColorDataLuasDonat] = useState({
-    emas: 0,
-    hijau: 0,
-    merah: 0,
-    hitam: 0,
+    emas: '',
+    hijau: '',
+    merah: '',
+    hitam: ''
   })
 
   useEffect(() => {
@@ -715,7 +715,7 @@ export default function Dashboard() {
 
 
   const distinctKebunByRPC = useMemo(() => {
-    if (rpcValue !== 'all' && selectedCard.name === 'Keseluruhan TBM') {
+    if (rpcValue !== 'all') {
       return scores.filter((score) => {
         const key = Object.keys(score)[0];
         return score[key].regional === rpcValue;
@@ -748,52 +748,83 @@ export default function Dashboard() {
     });
   }, [distinctCategories, distinctKebunByRPC]);
 
-  const countByColor = useMemo(() => {
-    return (color: string) => distinctKebunByRPC.filter(item => item[Object.keys(item)[0]].colorCategory === color).length;
-  }, [distinctKebunByRPC]);
-
-  const sumLuasByColor = useMemo(() => {
-    return (color: any) => {
-      return distinctKebunByRPC
-        .filter(item => item[Object.keys(item)[0]].colorCategory === color)
-        .reduce((acc, curr) => acc + curr[Object.keys(curr)[0]].luas, 0)
-        .toFixed(2);
-    };
-  }, [distinctKebunByRPC]);
-
 
 
   useEffect(() => {
     if (rpcValue !== 'all') {
-      if (selectedCard.name === 'Keseluruhan TBM') {
-        handleEventClick({
-          name: 'Keseluruhan TBM',
-          value: 4,
-          color: '',
-          categories: distinctCategories,
-          countBlok,
-          sumLuasBlok,
-          selectedCategory: rpcValue
-        });
-      }
+      console.log('selectedCard', selectedCard)
 
       if (selectedCard.val < 4) {
-        const distinctByTbm = scores.filter(score => Object.keys(score)[0] === `tbm${selectedCard.val + 1}`);
+        const distinctByTbm = scores.filter(score => Object.keys(score)[0] === selectedCard.ctg);
         const distinctByRegional = distinctByTbm.filter(score => score[Object.keys(score)[0]].regional === rpcValue);
+        const countByColor = (color: string) => {
+          const distincKebunByReg = distinctByRegional.map(item => item[Object.keys(item)[0]].kebun);
+          // countby colot and distinct kebun
+          let sumColor: { [key: string]: number } = {};
+          let sumLuas: { [key: string]: number } = {};
+          sumColor[color] = 0;
+          sumLuas[color] = 0;
+          let data = [...new Set(distincKebunByReg)].map(kebun => {
+            // Filter for items matching the current kebun and color
+            const filteredItems = distinctByRegional.filter(item => item[Object.keys(item)[0]].kebun === kebun && item[Object.keys(item)[0]].colorCategory === color);
 
+            // Ensure sumColor and sumLuas are updated correctly
+            const colorCount = filteredItems.length;
+            const luasSum = filteredItems.reduce((acc, curr) => acc + curr[Object.keys(curr)[0]].luas, 0);
+
+            sumColor[color] += colorCount;
+            sumLuas[color] += luasSum;
+
+            return {
+              category: kebun,
+              sumColor: sumColor[color],  // This should now safely return the correct value
+              sumLuas: sumLuas[color].toFixed(2),  // Ensure it's a fixed-point number
+              filterBlok: distinctByRegional.filter(item => item[Object.keys(item)[0]].kebun === kebun && item[Object.keys(item)[0]].colorCategory === color).length,
+              filterLuas: distinctByRegional.filter(item => item[Object.keys(item)[0]].kebun === kebun && item[Object.keys(item)[0]].colorCategory === color).reduce((acc, curr) => acc + curr[Object.keys(curr)[0]].luas, 0).toFixed(2),
+            };
+          });
+          return data;
+        };
+
+
+        const sumLuasByColor = (color: any) => {
+          return distinctKebunByRPC
+            .filter(item => item[Object.keys(item)[0]].colorCategory === color)
+            .reduce((acc, curr) => acc + curr[Object.keys(curr)[0]].luas, 0)
+            .toFixed(2);
+        };
+
+        const emasSumColor = countByColor('gold') ?? [];
+        const hijauSumColor = countByColor('green') ?? [];
+        const merahSumColor = countByColor('red') ?? [];
+        const hitamSumColor = countByColor('black') ?? [];
+
+        // Menggunakan optional chaining
+        const emasSumColorLuas = emasSumColor?.[emasSumColor.length - 1]?.sumLuas ?? 0;
+        const hijauSumColorLuas = hijauSumColor?.[hijauSumColor.length - 1]?.sumLuas ?? 0;
+        const merahSumColorLuas = merahSumColor?.[merahSumColor.length - 1]?.sumLuas ?? 0;
+        const hitamSumColorLuas = hitamSumColor?.[hitamSumColor.length - 1]?.sumLuas ?? 0;
+
+        // get sumColor last index with default 0
+        const emasSumColorLast = emasSumColor?.[emasSumColor.length - 1]?.sumColor ?? 0;
+        const hijauSumColorLast = hijauSumColor?.[hijauSumColor.length - 1]?.sumColor ?? 0;
+        const merahSumColorLast = merahSumColor?.[merahSumColor.length - 1]?.sumColor ?? 0;
+        const hitamSumColorLast = hitamSumColor?.[hitamSumColor.length - 1]?.sumColor ?? 0;
+        
         setColorDataDonat({
-          emas: countByColor('gold'),
-          hijau: countByColor('green'),
-          merah: countByColor('red'),
-          hitam: countByColor('black')
+          emas: emasSumColorLast,
+          hijau: hijauSumColorLast,
+          merah: merahSumColorLast,
+          hitam: hitamSumColorLast,
         });
 
         setColorDataLuasDonat({
-          emas: sumLuasByColor('gold'),
-          hijau: sumLuasByColor('green'),
-          merah: sumLuasByColor('red'),
-          hitam: sumLuasByColor('black')
+          emas: emasSumColorLuas,
+          hijau: hijauSumColorLuas,
+          merah: merahSumColorLuas,
+          hitam: hitamSumColorLuas,
         });
+
 
         const distinctCategories = [...new Set(distinctByRegional.map(item => item[Object.keys(item)[0]].kebun))];
 
@@ -813,8 +844,7 @@ export default function Dashboard() {
         const name = selectedCard.val === 3 ? 'TBM > 3' : `TBM ${selectedCard.val + 1}`;
 
         setIsTbm(false);
-        
-        console.log('selectedCard', selectedCard)
+
 
         handleEventClick({
           name,
@@ -837,7 +867,7 @@ export default function Dashboard() {
         setIsKebun(false);
       }
     }
-  }, [rpcValue, selectedCard, scores, distinctCategories, countBlok, sumLuasBlok, countByColor, sumLuasByColor]);
+  }, [rpcValue, selectedCard, scores, distinctCategories, countBlok, sumLuasBlok]);
 
 
   const getDataScoreAll = (tbm: string) => {
@@ -888,7 +918,6 @@ export default function Dashboard() {
 
 
 
-    console.log('data', data)
     // Create the worksheet
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
@@ -1184,8 +1213,11 @@ export default function Dashboard() {
                         <DonutChartTbm
                           dataprops={{
                             tbmData,
-                            data: isTbm ? colorData : colorDataDonat,
+                            rpc: watch('rpc'),
+                            data: colorData,
                             dataLuas: colorDataLuas,
+                            dataDnt: colorDataDonat,
+                            dataLuasDnt: colorDataLuasDonat,
                             tbm1ColorCount,
                             tbm2ColorCount,
                             tbm3ColorCount,
@@ -1207,8 +1239,11 @@ export default function Dashboard() {
                           <STbm
                             dataProps={{
                               tbmData,
-                              data: colorData,
+                              rpc: watch('rpc'),
+                              data: colorData,  
                               dataLuas: colorDataLuas,
+                              dataDnt: colorDataDonat,
+                              dataLuasDnt: colorDataLuasDonat,
                               score: scores,
                               tbm1ColorCount,
                               tbm2ColorCount,
