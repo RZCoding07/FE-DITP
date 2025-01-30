@@ -585,7 +585,7 @@ export default function Dashboard() {
 
   const handleResetClick = () => {
     {
-      setSelectedCard({ type: '', name: 'Keseluruhan TBM', circular: '', ctg: 'tbm-all', val: 0 })
+      setSelectedCard({ type: '', name: 'Keseluruhan TBM', circular: '', ctg: 'tbm-all', val: 4 })
       setSelectedEvent(null)
       setIsKebun(false)
       setValue('rpc', { value: 'all', label: 'Semua RPC' })
@@ -813,6 +813,8 @@ export default function Dashboard() {
         const name = selectedCard.val === 3 ? 'TBM > 3' : `TBM ${selectedCard.val + 1}`;
 
         setIsTbm(false);
+        
+        console.log('selectedCard', selectedCard)
 
         handleEventClick({
           name,
