@@ -190,12 +190,12 @@ export const StockAnalysisChart = ({
       return parseFloat(item.luas_ha || '0') + acc
     }, 0)
   }
-  return Math.round(sum)
+  return sum.toFixed(2)
 }
 
 const options: ApexOptions = {
   chart: {
-    height: 350,
+    height: 426,
     type: 'bar', // Change to 'bar' for horizontal bars
     stacked: false,
     events: {
@@ -271,6 +271,7 @@ const options: ApexOptions = {
     },
   },
   tooltip: {
+    enabled: false,
     shared: true,
     intersect: false,
     x: {
@@ -341,7 +342,7 @@ return (
       options={options}
       series={series}
       type='bar'
-      height={368}
+      height={426}
     />
 
   </div>

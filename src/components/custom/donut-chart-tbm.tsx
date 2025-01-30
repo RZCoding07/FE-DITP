@@ -138,7 +138,7 @@ const DonutChartTbm = ({
         options={options}
         series={series}
         type='donut'
-        height={210}
+        height={270}
       />
 
     </>

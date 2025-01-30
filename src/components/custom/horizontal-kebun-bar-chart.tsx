@@ -22,10 +22,13 @@ export const StockAnalysisChartKebun = ({
 
   const options: ApexOptions = {
     chart: {
-      height: 350,
+      height: 426,
       type: 'bar', // Change to 'bar' for horizontal bars
       stacked: false,
+      
     },
+
+    
 
     dataLabels: {
       enabled: true,
@@ -79,7 +82,8 @@ export const StockAnalysisChartKebun = ({
       },
     },
     tooltip: {
-      shared: true,
+    enabled: false,
+      shared: false,
       intersect: false,
       x: {
         show: true,
@@ -142,14 +146,14 @@ export const StockAnalysisChartKebun = ({
       `}</style>
 
 
-      <h2 className='text-center text-xl -mb-10 font-semibold mb-0 pb-0'>
+      <h2 className='text-center text-xl -mb-10 font-semibold pb-0'>
         {dataprops.untuk} Kebun {dataprops.category} - ( {dataprops.title} )
       </h2>
       <ReactApexChart
         options={options}
         series={series}
         type='bar'
-        height='345px'
+        height='435px'
       />
 
     </div>
