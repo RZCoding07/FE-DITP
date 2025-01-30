@@ -95,7 +95,12 @@ const DonutChartTbm = ({
       }
    
       if (dataprops.ctg !== 'tbm-all' && rpc !== 'all') {
-        series = [dataprops.dataLuasDnt.emas, dataprops.dataLuasDnt.hijau, dataprops.dataLuasDnt.merah, dataprops.dataLuasDnt.hitam] // Nilai untuk Emas Hijau, Merah, dan Hitam
+        series = [
+          Number(dataprops.dataLuasDnt.emas),
+          Number(dataprops.dataLuasDnt.hijau),
+          Number(dataprops.dataLuasDnt.merah),
+          Number(dataprops.dataLuasDnt.hitam)
+        ];
       }
     }
     
