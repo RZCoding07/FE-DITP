@@ -108,7 +108,6 @@ export default function PicaTbm() {
             </div>
           </CardHeader>
           <CardContent>
-            <StockAnalysisChartBar />
             <Tabs
               orientation='vertical'
               defaultValue='grafik'
