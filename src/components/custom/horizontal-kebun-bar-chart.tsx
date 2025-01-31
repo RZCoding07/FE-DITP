@@ -20,6 +20,7 @@ export const StockAnalysisChartKebun = ({
 
   datas = dataprops.dataset
 
+
   const options: ApexOptions = {
     chart: {
       height: 426,

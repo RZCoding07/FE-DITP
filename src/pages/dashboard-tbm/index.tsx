@@ -565,8 +565,11 @@ export default function Dashboard() {
     ctg: 'tbm-all',
     circular: '',
     val: 4,
-
   })
+
+  const [selectedCardTbm, setSelectedCardTbm] = useState<any | null>(null)
+
+
   const [selectedEvent, setSelectedEvent] = useState<any | null>(null)
 
   const handleCardClick = (cardData: any) => {
@@ -574,6 +577,11 @@ export default function Dashboard() {
     setSelectedCard(cardData) // Simpan parameter atau lakukan tindakan lainnya
     setValue('rpc', { value: 'all', label: 'Semua RPC' })
     setIsKebun(false)
+  }
+
+  const handleCardTbmClick = (cardData: any) => {
+    console.log(cardData)
+    setIsKebun(true)
   }
 
   const handleEventClick = (eventData: any) => {
@@ -749,6 +757,18 @@ export default function Dashboard() {
   }, [distinctCategories, distinctKebunByRPC]);
 
 
+  const [emasColorCountKebun , setEmasColorCountKebun] = useState<any>({});
+  const [hijauColorCountKebun , setHijauColorCountKebun] = useState<any>({});
+  const [merahColorCountKebun , setMerahColorCountKebun] = useState<any>({});
+  const [hitamColorCountKebun , setHitamColorCountKebun] = useState<any>({});
+
+
+  const [emasLuasByColorKebun , setEmasLuasByColorKebun] = useState<any>({});
+  const [hijauLuasByColorKebun , setHijauLuasByColorKebun] = useState<any>({});
+  const [merahLuasByColorKebun , setMerahLuasByColorKebun] = useState<any>({});
+  const [hitamLuasByColorKebun , setHitamLuasByColorKebun] = useState<any>({}); 
+
+
 
   useEffect(() => {
     if (rpcValue !== 'all') {
@@ -759,22 +779,16 @@ export default function Dashboard() {
         const distinctByRegional = distinctByTbm.filter(score => score[Object.keys(score)[0]].regional === rpcValue);
         const countByColor = (color: string) => {
           const distincKebunByReg = distinctByRegional.map(item => item[Object.keys(item)[0]].kebun);
-          // countby colot and distinct kebun
           let sumColor: { [key: string]: number } = {};
           let sumLuas: { [key: string]: number } = {};
           sumColor[color] = 0;
           sumLuas[color] = 0;
           let data = [...new Set(distincKebunByReg)].map(kebun => {
-            // Filter for items matching the current kebun and color
             const filteredItems = distinctByRegional.filter(item => item[Object.keys(item)[0]].kebun === kebun && item[Object.keys(item)[0]].colorCategory === color);
-
-            // Ensure sumColor and sumLuas are updated correctly
             const colorCount = filteredItems.length;
             const luasSum = filteredItems.reduce((acc, curr) => acc + curr[Object.keys(curr)[0]].luas, 0);
-
             sumColor[color] += colorCount;
             sumLuas[color] += luasSum;
-
             return {
               category: kebun,
               sumColor: sumColor[color],  // This should now safely return the correct value
@@ -798,6 +812,11 @@ export default function Dashboard() {
         const hijauSumColor = countByColor('green') ?? [];
         const merahSumColor = countByColor('red') ?? [];
         const hitamSumColor = countByColor('black') ?? [];
+
+        setEmasColorCountKebun(emasSumColor);
+        setHijauColorCountKebun(hijauSumColor);
+        setMerahColorCountKebun(merahSumColor);
+        setHitamColorCountKebun(hitamSumColor);
 
         // Menggunakan optional chaining
         const emasSumColorLuas = emasSumColor?.[emasSumColor.length - 1]?.sumLuas ?? 0;
@@ -1261,7 +1280,7 @@ export default function Dashboard() {
                                 tahun: watch('tahun'),
                               },
                             }}
-                            onCardClick={handleCardClick}
+                            onCardTbmClick={handleCardTbmClick}
                           />
                         </div>
                       </div>

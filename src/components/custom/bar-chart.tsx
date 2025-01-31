@@ -113,13 +113,13 @@ const StockAnalysisChartBar = ({
       name: 'Blok Hitam',
       type: 'column',
       color: 'rgba(15, 23, 42, 0.95)',
-      data : [1, 0, 0, 0, 0, 0, 0, 0, 0]
+      data : [1, 2, 2, 1, 2, 2, 2, 3, 2]
     },
     {
       name: 'Blok Merah',
       type: 'column',
       color: '#DC143C',
-      data : [0, 0, 0, 0, 0, 0, 0, 0, 0]
+      data : [2, 3, 3, 2, 3, 1, 1, 2, 1]
     },
   ];
 

@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/custom/button'
 
-export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClick: (data: any) => void }) => {
+export const Summary = ({ dataProps, onCardTbmClick }: { dataProps: any; onCardTbmClick: (data: any) => void }) => {
   const tahunValue = dataProps?.dataTbm?.tahun?.value
   const rpc = dataProps?.rpc?.value
   let data: any = []
@@ -68,6 +68,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       data = [
         {
           show: true,
+          isColorTbm: true,
           name: 'Emas',
           progress:
             dataProps.tbm1ColorCount.gold == null
@@ -86,6 +87,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         },
         {
           show: true,
+          isColorTbm: true,
           name: 'Hijau',
           progress: dataProps.tbm1ColorCount.green == null ? 0 : dataProps.tbm1ColorCount.green,
           progressLuas: dataProps.tbm1LuasByColor.green == null ? 0 : dataProps.tbm1LuasByColor.green.toFixed(2),
@@ -97,6 +99,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         },
         {
           show: true,
+          isColorTbm: true,
           name: 'Merah',
           progress: dataProps.tbm1ColorCount.red == null ? 0 : dataProps.tbm1ColorCount.red,
           progressLuas: dataProps.tbm1LuasByColor.red == null ? 0 : dataProps.tbm1LuasByColor.red.toFixed(2),
@@ -108,6 +111,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         },
         {
           show: true,
+          isColorTbm: true,
           name: 'Hitam',
           progress: dataProps.tbm1ColorCount.black == null ? 0 : dataProps.tbm1ColorCount.black,
           progressLuas: dataProps.tbm1LuasByColor.black == null ? 0 : dataProps.tbm1LuasByColor.black.toFixed(2),
@@ -122,6 +126,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       data = [
         {
           show: true,
+          isColorTbm: true,
           name: 'Emas',
           progress: dataProps.tbm2ColorCount.gold == null ? 0 : dataProps.tbm2ColorCount.gold,
           progressLuas: dataProps.tbm2LuasByColor.gold == null ? 0 : dataProps.tbm2LuasByColor.gold.toFixed(2),
@@ -133,6 +138,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         },
         {
           show: true,
+          isColorTbm: true,
           name: 'Hijau',
           progress: dataProps.tbm2ColorCount.green == null ? 0 : dataProps.tbm2ColorCount.green,
           progressLuas: dataProps.tbm2LuasByColor.green == null ? 0 : dataProps.tbm2LuasByColor.green.toFixed(2),
@@ -144,6 +150,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         },
         {
           show: true,
+          isColorTbm: true,
           name: 'Merah',
           progress: dataProps.tbm2ColorCount.red == null ? 0 : dataProps.tbm2ColorCount.red,
           progressLuas: dataProps.tbm2LuasByColor.red == null ? 0 : dataProps.tbm2LuasByColor.red.toFixed(2),
@@ -155,6 +162,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         },
         {
           show: true,
+          isColorTbm: true,
           name: 'Hitam',
           progress: dataProps.tbm2ColorCount.black == null ? 0 : dataProps.tbm2ColorCount.black,
           progressLuas: dataProps.tbm2LuasByColor.black == null ? 0 : dataProps.tbm2LuasByColor.black.toFixed(2),
@@ -169,6 +177,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       data = [
         {
           show: true,
+          isColorTbm: true,
           name: 'Emas',
           progress: dataProps.tbm3ColorCount.gold == null ? 0 : dataProps.tbm3ColorCount.gold,
           progressLuas: dataProps.tbm3LuasByColor.gold == null ? 0 : dataProps.tbm3LuasByColor.gold.toFixed(2),
@@ -180,6 +189,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         },
         {
           show: true,
+          isColorTbm: true,
           name: 'Hijau',
           progress: dataProps.tbm3ColorCount.green == null ? 0 : dataProps.tbm3ColorCount.green,
           progressLuas: dataProps.tbm3LuasByColor.green == null ? 0 : dataProps.tbm3LuasByColor.green.toFixed(2),
@@ -191,6 +201,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         },
         {
           show: true,
+          isColorTbm: true,
           name: 'Merah',
           progress: dataProps.tbm3ColorCount.red == null ? 0 : dataProps.tbm3ColorCount.red,
           progressLuas: dataProps.tbm3LuasByColor.red == null ? 0 : dataProps.tbm3LuasByColor.red.toFixed(2),
@@ -202,6 +213,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         },
         {
           show: true,
+          isColorTbm: true,
           name: 'Hitam',
           progress: dataProps.tbm3ColorCount.black == null ? 0 : dataProps.tbm3ColorCount.black,
           progressLuas: dataProps.tbm3LuasByColor.black == null ? 0 : dataProps.tbm3LuasByColor.black.toFixed(2),
@@ -216,6 +228,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       data = [
         {
           show: true,
+          isColorTbm: true,
           name: 'Emas',
           progress: dataProps.tbm4ColorCount.gold == null ? 0 : dataProps.tbm4ColorCount.gold,
           progressLuas: dataProps.tbm4LuasByColor.gold == null ? 0 : dataProps.tbm4LuasByColor.gold.toFixed(2),
@@ -227,6 +240,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         },
         {
           show: true,
+          isColorTbm: true,
           name: 'Hijau',
           progress: dataProps.tbm4ColorCount.green == null ? 0 : dataProps.tbm4ColorCount.green,
           progressLuas: dataProps.tbm4LuasByColor.green == null ? 0 : dataProps.tbm4LuasByColor.green.toFixed(2),
@@ -238,6 +252,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         },
         {
           show: true,
+          isColorTbm: true,
           name: 'Merah',
           progress: dataProps.tbm4ColorCount.red == null ? 0 : dataProps.tbm4ColorCount.red,
           progressLuas: dataProps.tbm4LuasByColor.red == null ? 0 : dataProps.tbm4LuasByColor.red.toFixed(2),
@@ -249,6 +264,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         },
         {
           show: true,
+          isColorTbm: true,
           name: 'Hitam',
           progress: dataProps.tbm4ColorCount.black == null ? 0 : dataProps.tbm4ColorCount.black,
           progressLuas: dataProps.tbm4LuasByColor.black == null ? 0 : dataProps.tbm4LuasByColor.black.toFixed(2),
@@ -267,6 +283,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       data = [
         {
           show: true,
+          isColorTbm: true,
           name: 'Emas',
           val: 0,
 
@@ -286,6 +303,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
 
         {
           show: true,
+          isColorTbm: true,
           name: 'Hijau',
           val: 1,
           progress: dataProps.dataDnt.hijau == null ? 0 : dataProps.dataDnt.hijau.toLocaleString('id-ID'),
@@ -297,6 +315,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         },
         {
           show: true,
+          isColorTbm: true,
           name: 'Merah',
           progress: dataProps.dataDnt.merah == null ? 0 : dataProps.dataDnt.merah.toLocaleString('id-ID'),
           progressLuas: dataProps.dataLuasDnt.merah == null ? 0 : dataProps.dataLuasDnt.merah.toLocaleString('id-ID'),
@@ -308,6 +327,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
         },
         {
           show: true,
+          isColorTbm: true,
           name: 'Hitam',
           val: 3,
           progress: dataProps.dataDnt.hitam == null ? 0 : dataProps.dataDnt.hitam.toLocaleString('id-ID'),
@@ -331,7 +351,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
             <Card
               key={i}
               className='py-1 shadow-md dark:from-slate-900 dark:via-slate-950 dark:to-transparent border dark:hover:border-cyan-500 hover:shadow-cyan-500'
-              onClick={() => onCardClick(item)} // Kirim data ke parent saat card di-klik
+              onClick={() => onCardTbmClick(item)} // Kirim data ke parent saat card di-klik
               style={{
                 background: `linear-gradient(135deg, ${item.color} 55%, ${item.color}29 45%)`,
                 borderColor: item.color,
