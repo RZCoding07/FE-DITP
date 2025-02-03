@@ -21,6 +21,7 @@ import { customStyles } from '@/styles/select-styles'
 import { StockAnalysisChart } from '@/components/custom/horizontal-bar-chart'
 import StockAnalysisChartArea from '@/components/custom/area-chart'
 import { StockAnalysisChartKebun } from '@/components/custom/horizontal-kebun-bar-chart'
+import { StockAnalysisChartKebunColor } from '@/components/custom/horizontal-kebun-bar-chart-color'
 import StockAnalysisChartBar from '@/components/custom/bar-chart'
 import DonutChartTbm from '@/components/custom/donut-chart-tbm'
 import DonutChart from '@/components/custom/donut-chart'
@@ -562,6 +563,8 @@ export default function Dashboard() {
 
   const [selectedCardTbm, setSelectedCardTbm] = useState<any | null>(null)
 
+  const [colorSummaryTbm, setColorSummaryTbm] = useState<any | null>(null)
+
 
   const [selectedEvent, setSelectedEvent] = useState<any | null>(null)
 
@@ -572,9 +575,12 @@ export default function Dashboard() {
     setIsKebun(false)
   }
 
+  const [isColorKebun, setisColorKebun] = useState<boolean>(false)
+
   const handleCardTbmClick = (cardData: any) => {
-    console.log(cardData)
     setIsKebun(true)
+    setisColorKebun(true)
+    setColorSummaryTbm(cardData.circular)
   }
 
   const handleEventClick = (eventData: any) => {
@@ -765,7 +771,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (rpcValue !== 'all') {
-      console.log('selectedCard', selectedCard)
 
       if (selectedCard.val < 4) {
         const distinctByTbm = scores.filter(score => Object.keys(score)[0] === selectedCard.ctg);
@@ -805,11 +810,12 @@ export default function Dashboard() {
         const hijauSumColor = countByColor('green') ?? [];
         const merahSumColor = countByColor('red') ?? [];
         const hitamSumColor = countByColor('black') ?? [];
-
         setEmasColorCountKebun(emasSumColor);
         setHijauColorCountKebun(hijauSumColor);
         setMerahColorCountKebun(merahSumColor);
         setHitamColorCountKebun(hitamSumColor);
+
+
 
         // Menggunakan optional chaining
         const emasSumColorLuas = emasSumColor?.[emasSumColor.length - 1]?.sumLuas ?? 0;
@@ -1362,45 +1368,89 @@ export default function Dashboard() {
                               <>
 
                                 {blok && blok.value === 'luasan' && (
-                                  <StockAnalysisChartKebun
-                                    dataprops={{
-                                      rpc,
-                                      kebun,
-                                      afd,
-                                      datasets: tbmRes,
-                                      score: scores,
-                                      dataset: selectedEvent.sumLuasBlok,
-                                      untuk: 'Total Luasan',
-                                      categories: selectedEvent.categories,
-                                      title: selectedEvent.name,
-                                      color: selectedEvent.color,
-                                      val: selectedCard.val,
-                                      category: selectedEvent.selectedCategory,
-                                    }}
-                                    onEventClick={handleEventClick}
-                                  />
+                                  <>
+                                    <StockAnalysisChartKebun
+                                      dataprops={{
+                                        rpc,
+                                        kebun,
+                                        afd,
+                                        datasets: tbmRes,
+                                        score: scores,
+                                        dataset: selectedEvent.sumLuasBlok,
+                                        untuk: 'Total Luasan',
+                                        categories: selectedEvent.categories,
+                                        title: selectedEvent.name,
+                                        color: selectedEvent.color,
+                                        val: selectedCard.val,
+                                        category: selectedEvent.selectedCategory,
+                                      }}
+                                      onEventClick={handleEventClick}
+                                    />
+                                    <StockAnalysisChartKebunColor
+                                      dataprops={{
+                                        rpc,
+                                        kebun,
+                                        afd,
+                                        blok,
+                                        datasets: tbmRes,
+                                        score: scores,
+                                        dataset: emasColorCountKebun,
+                                        untuk: 'Total Luasan',
+                                        categories: selectedEvent.categories,
+                                        title: selectedEvent.name,
+                                        color: selectedEvent.color,
+                                        val: selectedCard.val,
+                                        category: selectedEvent.selectedCategory,
+                                      }}
+                                      onEventClick={handleEventClick}
+                                    />
+                                  </>
                                 )}
 
-                                {blok && blok.value === 'blok' && (
+                                {blok && blok.value === 'blok' && isColorKebun == false && (
+                                    <StockAnalysisChartKebun
+                                      dataprops={{
+                                        rpc,
+                                        kebun,
+                                        afd,
+                                        datasets: tbmRes,
+                                        score: scores,
+                                        dataset: selectedEvent.countBlok,
+                                        categories: selectedEvent.categories,
+                                        untuk: 'Total Blok',
+                                        title: selectedEvent.name,
+                                        color: selectedEvent.color,
+                                        val: selectedCard.val,
+                                        category: selectedEvent.selectedCategory,
+                                      }}
+                                      onEventClick={handleEventClick}
+                                    />
 
-                                  <StockAnalysisChartKebun
+                                )}
+
+
+                                {blok && blok.value === 'blok' && isColorKebun == true && (
+                                  <StockAnalysisChartKebunColor
                                     dataprops={{
                                       rpc,
                                       kebun,
                                       afd,
+                                      blok,
                                       datasets: tbmRes,
                                       score: scores,
-                                      dataset: selectedEvent.countBlok,
-                                      categories: selectedEvent.categories,
+                                      color: colorSummaryTbm,
+                                      dataset: colorSummaryTbm == 'gold' ? emasColorCountKebun : colorSummaryTbm == 'green' ? hijauColorCountKebun : colorSummaryTbm == 'red' ? merahColorCountKebun : hitamColorCountKebun,
                                       untuk: 'Total Blok',
+                                      categories: selectedEvent.categories,
                                       title: selectedEvent.name,
-                                      color: selectedEvent.color,
                                       val: selectedCard.val,
                                       category: selectedEvent.selectedCategory,
                                     }}
                                     onEventClick={handleEventClick}
-                                  />
-                                )}
+                                  />)}
+
+
+
                               </>
 
                             )}
