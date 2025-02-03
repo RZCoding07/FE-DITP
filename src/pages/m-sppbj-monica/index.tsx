@@ -76,11 +76,11 @@ export default function Awal() {
               Here&apos;s a list of Paket Pekerjaan in the system!
             </p>
           </div>
-          <div className='ml-auto flex space-x-2'>
+          {/* <div className='ml-auto flex space-x-2'>
             <Link to='/upload-paket-pekerjaan-monica'>
               <Button>Upload Data</Button>
             </Link>
-          </div>
+          </div> */}
         </div>
 
         <div className='flex-1 bg-slate-50 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
@@ -111,11 +111,11 @@ export default function Awal() {
               Here&apos;s a list of Monitoring SPPBJ in the system!
             </p>
           </div>
-          <div className='ml-auto flex space-x-2'>
+          {/* <div className='ml-auto flex space-x-2'>
             <Link to='/upload-sppbj-monica'>
               <Button>Upload Data</Button>
             </Link>
-          </div>
+          </div> */}
         </div>
 
         <div className='flex-1 bg-slate-50 overflow-auto rounded-lg bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>
