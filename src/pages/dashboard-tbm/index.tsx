@@ -266,15 +266,8 @@ export default function Dashboard() {
         for (let i = 1; i < 5; i++) {
           const tahunTanam = tahun.value - i
           const response = await fetchVegetativeProc({
-            input_filtered_by: 'Blok',
-            input_regional: null,
-            input_kebun: null,
-            input_afdeling: null,
-            input_blok: null,
-            input_bulan: bulan.value,
-            input_tahun: tahun.value,
-            input_tahun_tanam: tahunTanam,
             input_tbm: 'tbm' + i,
+            input_tahun_tanam: tahunTanam,
           })
 
           setTbmRes((prev) => [...prev, Object.values(response.data)])
@@ -509,55 +502,55 @@ export default function Dashboard() {
     }
   }, [bulan, tahun])
 
-  useEffect(() => {
-    if (rpc) {
-      const fetchKebunData = async () => {
-        try {
-          const response = await fetchKebun({
-            rpc: rpc.value,
-          })
+  // useEffect(() => {
+  //   if (rpc) {
+  //     const fetchKebunData = async () => {
+  //       try {
+  //         const response = await fetchKebun({
+  //           rpc: rpc.value,
+  //         })
 
-          const kebun = response.map((item: any) => ({
-            value: item.kebun,
-            label: item.kebun,
-          }))
+  //         const kebun = response.map((item: any) => ({
+  //           value: item.kebun,
+  //           label: item.kebun,
+  //         }))
 
-          setKebunOptions(kebun)
-          setValue('kebun', null)
-          setValue('afd', null)
-        } catch (error) {
-          console.error('Error fetching kebun:', error)
-        }
-      }
+  //         setKebunOptions(kebun)
+  //         setValue('kebun', null)
+  //         setValue('afd', null)
+  //       } catch (error) {
+  //         console.error('Error fetching kebun:', error)
+  //       }
+  //     }
 
-      fetchKebunData()
-    }
-  }, [rpc])
+  //     fetchKebunData()
+  //   }
+  // }, [rpc])
 
-  useEffect(() => {
-    if (kebun) {
-      const fetchAfdData = async () => {
-        try {
-          const response = await fetchAfd({
-            rpc: rpc.value,
-            kebun: kebun.value,
-          })
+  // useEffect(() => {
+  //   if (kebun) {
+  //     const fetchAfdData = async () => {
+  //       try {
+  //         const response = await fetchAfd({
+  //           rpc: rpc.value,
+  //           kebun: kebun.value,
+  //         })
 
-          const afd = response.map((item: any) => ({
-            value: item.afdeling,
-            label: item.afdeling,
-          }))
+  //         const afd = response.map((item: any) => ({
+  //           value: item.afdeling,
+  //           label: item.afdeling,
+  //         }))
 
-          setAfdOptions(afd)
-          setValue('afd', null)
-        } catch (error) {
-          console.error('Error fetching afd:', error)
-        }
-      }
+  //         setAfdOptions(afd)
+  //         setValue('afd', null)
+  //       } catch (error) {
+  //         console.error('Error fetching afd:', error)
+  //       }
+  //     }
 
-      fetchAfdData()
-    }
-  }, [kebun])
+  //     fetchAfdData()
+  //   }
+  // }, [kebun])
 
   const [selectedCard, setSelectedCard] = useState({
     type: 'all',
@@ -757,16 +750,16 @@ export default function Dashboard() {
   }, [distinctCategories, distinctKebunByRPC]);
 
 
-  const [emasColorCountKebun , setEmasColorCountKebun] = useState<any>({});
-  const [hijauColorCountKebun , setHijauColorCountKebun] = useState<any>({});
-  const [merahColorCountKebun , setMerahColorCountKebun] = useState<any>({});
-  const [hitamColorCountKebun , setHitamColorCountKebun] = useState<any>({});
+  const [emasColorCountKebun, setEmasColorCountKebun] = useState<any>({});
+  const [hijauColorCountKebun, setHijauColorCountKebun] = useState<any>({});
+  const [merahColorCountKebun, setMerahColorCountKebun] = useState<any>({});
+  const [hitamColorCountKebun, setHitamColorCountKebun] = useState<any>({});
 
 
-  const [emasLuasByColorKebun , setEmasLuasByColorKebun] = useState<any>({});
-  const [hijauLuasByColorKebun , setHijauLuasByColorKebun] = useState<any>({});
-  const [merahLuasByColorKebun , setMerahLuasByColorKebun] = useState<any>({});
-  const [hitamLuasByColorKebun , setHitamLuasByColorKebun] = useState<any>({}); 
+  const [emasLuasByColorKebun, setEmasLuasByColorKebun] = useState<any>({});
+  const [hijauLuasByColorKebun, setHijauLuasByColorKebun] = useState<any>({});
+  const [merahLuasByColorKebun, setMerahLuasByColorKebun] = useState<any>({});
+  const [hitamLuasByColorKebun, setHitamLuasByColorKebun] = useState<any>({});
 
 
 
@@ -829,7 +822,7 @@ export default function Dashboard() {
         const hijauSumColorLast = hijauSumColor?.[hijauSumColor.length - 1]?.sumColor ?? 0;
         const merahSumColorLast = merahSumColor?.[merahSumColor.length - 1]?.sumColor ?? 0;
         const hitamSumColorLast = hitamSumColor?.[hitamSumColor.length - 1]?.sumColor ?? 0;
-        
+
         setColorDataDonat({
           emas: emasSumColorLast,
           hijau: hijauSumColorLast,
@@ -899,6 +892,30 @@ export default function Dashboard() {
       return filteredScores;
     }
     return null; // Jika tidak ada data yang sesuai
+  }
+
+  const handleRpcChange = (selectedOption: any) => {
+    const fetchKebunData = async () => {
+      try {
+        const response = await fetchKebun({
+          rpc: rpc.value,
+        })
+
+        const kebun = response.map((item: any) => ({
+          value: item.kebun,
+          label: item.kebun,
+        }))
+
+        setKebunOptions(kebun)
+        setValue('kebun', null)
+        setValue('afd', null)
+      } catch (error) {
+        console.error('Error fetching kebun:', error)
+      }
+    }
+
+    fetchKebunData()
+
   }
 
 
@@ -1134,9 +1151,14 @@ export default function Dashboard() {
                           placeholder='Pilih RPC'
                           isSearchable
                           options={rpcOptions}
+                          onChange={(selectedOption) => {
+                            field.onChange(selectedOption); // Update form value
+                            handleRpcChange(selectedOption); // Custom handler function
+                          }}
                         />
                       )}
                     />
+
                     <Controller
                       name='kebun'
                       control={control}
@@ -1259,7 +1281,7 @@ export default function Dashboard() {
                             dataProps={{
                               tbmData,
                               rpc: watch('rpc'),
-                              data: colorData,  
+                              data: colorData,
                               dataLuas: colorDataLuas,
                               dataDnt: colorDataDonat,
                               dataLuasDnt: colorDataLuasDonat,
