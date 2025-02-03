@@ -179,9 +179,9 @@ export const columns: ColumnDef<Data>[] = [
     cell: ({ row }) => <span>{row.getValue('user_id')}</span>,
   },
 
-  {
-    accessorKey: 'actions',
-    header: 'Actions',
-    cell: ({ row }) => <DataTableRowActions row={row} />,
-  },
+  // {
+  //   accessorKey: 'actions',
+  //   header: 'Actions',
+  //   cell: ({ row }) => <DataTableRowActions row={row} />,
+  // },
 ]
