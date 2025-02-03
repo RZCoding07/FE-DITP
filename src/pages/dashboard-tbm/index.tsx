@@ -924,6 +924,12 @@ export default function Dashboard() {
 
   }
 
+  const [isColorGraphVisible, setIsColorGraphVisible] = useState(true);
+
+  const handleHideColorGraph = () => {
+    setisColorKebun(false); // Hide the color graph
+    setIsColorGraphVisible((prev) => !prev); // Toggle the visibility
+  };
 
   const handleDownload = () => {
     // Menampilkan toast loading
@@ -1367,7 +1373,7 @@ export default function Dashboard() {
                             {selectedEvent && isKebun && (
                               <>
 
-                                {blok && blok.value === 'luasan' && (
+                                {blok && blok.value === 'luasan' && isColorKebun == false && (
                                   <>
                                     <StockAnalysisChartKebun
                                       dataprops={{
@@ -1386,7 +1392,14 @@ export default function Dashboard() {
                                       }}
                                       onEventClick={handleEventClick}
                                     />
+
+                                  </>
+                                )}
+                                {blok && blok.value === 'luasan' && isColorKebun == true && (
+                                  <>
                                     <StockAnalysisChartKebunColor
+                                         isColorGraphVisible={isColorGraphVisible}  // Passing visibility prop
+                                         onHideColorGraph={handleHideColorGraph}  // Passing toggle function
                                       dataprops={{
                                         rpc,
                                         kebun,
@@ -1394,11 +1407,11 @@ export default function Dashboard() {
                                         blok,
                                         datasets: tbmRes,
                                         score: scores,
-                                        dataset: emasColorCountKebun,
+                                        color: colorSummaryTbm,
+                                        dataset: colorSummaryTbm == 'gold' ? emasColorCountKebun : colorSummaryTbm == 'green' ? hijauColorCountKebun : colorSummaryTbm == 'red' ? merahColorCountKebun : hitamColorCountKebun,
                                         untuk: 'Total Luasan',
                                         categories: selectedEvent.categories,
                                         title: selectedEvent.name,
-                                        color: selectedEvent.color,
                                         val: selectedCard.val,
                                         category: selectedEvent.selectedCategory,
                                       }}
@@ -1408,29 +1421,31 @@ export default function Dashboard() {
                                 )}
 
                                 {blok && blok.value === 'blok' && isColorKebun == false && (
-                                    <StockAnalysisChartKebun
-                                      dataprops={{
-                                        rpc,
-                                        kebun,
-                                        afd,
-                                        datasets: tbmRes,
-                                        score: scores,
-                                        dataset: selectedEvent.countBlok,
-                                        categories: selectedEvent.categories,
-                                        untuk: 'Total Blok',
-                                        title: selectedEvent.name,
-                                        color: selectedEvent.color,
-                                        val: selectedCard.val,
-                                        category: selectedEvent.selectedCategory,
-                                      }}
-                                      onEventClick={handleEventClick}
-                                    />
+                                  <StockAnalysisChartKebun
+                                    dataprops={{
+                                      rpc,
+                                      kebun,
+                                      afd,
+                                      datasets: tbmRes,
+                                      score: scores,
+                                      dataset: selectedEvent.countBlok,
+                                      categories: selectedEvent.categories,
+                                      untuk: 'Total Blok',
+                                      title: selectedEvent.name,
+                                      color: selectedEvent.color,
+                                      val: selectedCard.val,
+                                      category: selectedEvent.selectedCategory,
+                                    }}
+                                    onEventClick={handleEventClick}
+                                  />
 
                                 )}
 
 
                                 {blok && blok.value === 'blok' && isColorKebun == true && (
                                   <StockAnalysisChartKebunColor
+                                  isColorGraphVisible={isColorGraphVisible}  // Passing visibility prop
+                                  onHideColorGraph={handleHideColorGraph}  // Passing toggle function
                                     dataprops={{
                                       rpc,
                                       kebun,
