@@ -21,10 +21,11 @@ const Layout = ({ className, fixed = false, ...props }: LayoutProps) => {
     const onScroll = () => setOffset(div.scrollTop)
 
     // clean up code
-    div.removeEventListener('scroll', onScroll)
     div.addEventListener('scroll', onScroll, { passive: true })
+    
+    // Clean up scroll event listener when component unmounts
     return () => div.removeEventListener('scroll', onScroll)
-  }, [])
+  }, []) // Empty dependency array to run only once on mount
 
   return (
     <LayoutContext.Provider value={{ offset, fixed }}>
@@ -47,9 +48,8 @@ interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   sticky?: boolean
 }
 
-const Header = React.forwardRef<HTMLDivElement, HeaderProps>(
+const Header = React.forwardRef<HTMLDivElement, HeaderProps>( 
   ({ className, sticky, ...props }, ref) => {
-    // Check if Layout.Header is used within Layout
     const contextVal = React.useContext(LayoutContext)
     if (contextVal === null) {
       throw new Error(
@@ -75,11 +75,7 @@ const Header = React.forwardRef<HTMLDivElement, HeaderProps>(
 )
 Header.displayName = 'Header'
 
-const Body = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
-  // Check if Layout.Body is used within Layout
+const Body = React.forwardRef< HTMLDivElement, React.HTMLAttributes<HTMLDivElement> >(({ className, ...props }, ref) => {
   const contextVal = React.useContext(LayoutContext)
   if (contextVal === null) {
     throw new Error(`Layout.Body must be used within ${Layout.displayName}.`)
@@ -87,7 +83,6 @@ const Body = React.forwardRef<
 
   return (
     <div className="relative min-h-screen sm:min-h-[120vh] md:min-h-[140vh] lg:min-h-[160vh] xl:min-h-[180vh]">
-      {/* Blurred background */}
       <div
         className={cn(
           'absolute opacity-50 inset-0 bg-gray-50 bg-[url("/bginvestasi.jpeg")] bg-cover bg-center  dark:bg-gradient dark:from-slate-950 dark:to-slate-900 ',
@@ -98,7 +93,6 @@ const Body = React.forwardRef<
         }}
       />
       
-      {/* Content */}
       <div
         ref={ref}
         data-layout='body'
@@ -118,5 +112,3 @@ Layout.Header = Header
 Layout.Body = Body
 
 export { Layout }
-
-

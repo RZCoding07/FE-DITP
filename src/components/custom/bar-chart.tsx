@@ -12,6 +12,31 @@ const StockAnalysisChartBar: React.FC<StockAnalysisChartBarProps> = ({ dataProps
   const [theme, setTheme] = useState<string>(cookie.get("theme") || "light")
 
   const rpcOptions = useMemo(() => ["RPC1", "RPC2", "RPC3", "RPC4", "RPC5", "RPC6", "RPC7", "RPC2N2", "RPC2N14"], [])
+  useMemo(() => {
+    console.log("Theme changed to", theme)
+  }, [theme])
+
+  const resultRed = useMemo(() => rpcOptions.map((rpc) => dataProps.countRedBlock[rpc] || 0), [dataProps.countRedBlock])
+  const resultBlack = useMemo(() => rpcOptions.map((rpc) => dataProps.countBlackBlock[rpc] || 0), [dataProps.countBlackBlock])
+
+  const resultRedTbm1 = useMemo(() => rpcOptions.map((rpc) => dataProps.countRedBlockTbm1[rpc] || 0), [dataProps.countRedBlockTbm1])
+  const resultBlackTbm1 = useMemo(() => rpcOptions.map((rpc) => dataProps.countBlackBlockTbm1[rpc] || 0), [dataProps.countBlackBlockTbm1])
+
+  const resultRedTbm2 = useMemo(() => rpcOptions.map((rpc) => dataProps.countRedBlockTbm2[rpc] || 0), [dataProps.countRedBlockTbm2])
+  const resultBlackTbm2 = useMemo(() => rpcOptions.map((rpc) => dataProps.countBlackBlockTbm2[rpc] || 0), [dataProps.countBlackBlockTbm2])
+
+  const resultRedTbm3 = useMemo(() => rpcOptions.map((rpc) => dataProps.countRedBlockTbm3[rpc] || 0), [dataProps.countRedBlockTbm3])
+  const resultBlackTbm3 = useMemo(() => rpcOptions.map((rpc) => dataProps.countBlackBlockTbm3[rpc] || 0), [dataProps.countBlackBlockTbm3])
+
+  const resultRedTbm4 = useMemo(() => rpcOptions.map((rpc) => dataProps.countRedBlockTbm4[rpc] || 0), [dataProps.countRedBlockTbm4])
+  const resultBlackTbm4 = useMemo(() => rpcOptions.map((rpc) => dataProps.countBlackBlockTbm4[rpc] || 0), [dataProps.countBlackBlockTbm4])
+
+
+
+  // console.log("resultBLack", resultBlack)
+
+
+  // console dataProps
 
   useEffect(() => {
     const handleThemeChange = () => {
@@ -19,6 +44,8 @@ const StockAnalysisChartBar: React.FC<StockAnalysisChartBarProps> = ({ dataProps
     }
 
     window.addEventListener("themeChange", handleThemeChange)
+
+    console.log("Theme changed to", theme)
 
     return () => {
       window.removeEventListener("themeChange", handleThemeChange)
@@ -73,7 +100,7 @@ const StockAnalysisChartBar: React.FC<StockAnalysisChartBarProps> = ({ dataProps
       dataLabels: {
         enabled: true,
         offsetY: -5,
-        formatter: (val: number) => `${val.toFixed(2)} Ha`,
+        formatter: (val: number) => `${val.toFixed(0)} Blok`,
       },
       stroke: { width: [1, 1, 4] },
       fill: { type: "solid" },
@@ -88,27 +115,30 @@ const StockAnalysisChartBar: React.FC<StockAnalysisChartBarProps> = ({ dataProps
   const series = useMemo(
     () => [
       {
-        name: "Blok Hitam",
+        name: "Red Block",
         type: "column",
-        color: "rgba(15, 23, 42, 0.95)",
-        data: [1, 2, 2, 1, 2, 2, 2, 3, 2],
+        data: dataProps.ctg === 'tbm-all' ? resultRed : dataProps.ctg === 'tbm1' ? resultRedTbm1 : dataProps.ctg === 'tbm2' ? resultRedTbm2 : dataProps.ctg === 'tbm3' ? resultRedTbm3 : dataProps.ctg === 'tbm4' ? resultRedTbm4 : resultRed,
+        color: "#DC143C",
+
       },
       {
-        name: "Blok Merah",
+        name: "Black Block",
         type: "column",
-        color: "#DC143C",
-        data: [2, 3, 3, 2, 3, 1, 1, 2, 1],
+        data: dataProps.ctg === 'tbm-all' ? resultBlack : dataProps.ctg === 'tbm1' ? resultBlackTbm1 : dataProps.ctg === 'tbm2' ? resultBlackTbm2 : dataProps.ctg === 'tbm3' ? resultBlackTbm3 : dataProps.ctg === 'tbm4' ? resultBlackTbm4 : resultBlack,
+        color: "rgba(15, 23, 42, 0.95)",
+
       },
     ],
-    [],
+    [resultRed, resultBlack, resultRedTbm1, resultBlackTbm1, resultRedTbm2, resultBlackTbm2, resultRedTbm3, resultBlackTbm3, resultRedTbm4, resultBlackTbm4, dataProps.ctg],
   )
+
 
   return (
     <>
       <style>{`
         .apexcharts-tooltip {
           background: #f3f3f3;
-          color: orange;
+          color: rgba(0, 0, 0, 0.87);
         }
       `}</style>
       <div id="chart">
