@@ -1772,7 +1772,7 @@ function getScoreJumlahPelepah(age: any, frondCount: any) {
 
   if (frondCount >= threshold.score100) {
     return 100
-  } else if (frondCount >= threshold.score90) {
+  } else if (frondCount < threshold.score100) {
     return 90
   } else if (frondCount >= threshold.score80) {
     return 80
