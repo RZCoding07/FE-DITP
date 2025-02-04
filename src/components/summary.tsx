@@ -1,10 +1,22 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/custom/button';
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+
+import PalmOilTable from './custom/palm-oil-table';
 
 export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClick: (data: any) => void }) => {
   const tahunValue = dataProps?.dataTbm?.tahun?.value;
-
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   // State untuk menyimpan id kartu yang diklik
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const [selectedTbm, setSelectedTbm] = useState<number | null>(null); // Untuk TBM terpisah
@@ -162,9 +174,42 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
 
   return (
     <>
-      <h2 className='font-semibold mb-1 -mt-5'>
-        Luas TBM Total : {totalLuasFormat} HA
-      </h2>
+      <div className='flex justify-start items-center space-x-4 pb-2 -mt-7'>
+        <h2 className='font-semibold'>
+          Luas TBM Total : {totalLuasFormat} HA
+        </h2>
+        {/* <Button
+          variant={'secondary'}
+          className='flex items-center rounded-full '
+        >
+          <img width="20" height="20" src="https://img.icons8.com/stickers/50/visible.png" alt="visible" />
+          <span className='ml-2'> Standard Vegetatif</span>
+        </Button> */}
+
+        <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+          <DrawerTrigger asChild>
+            <Button variant={"secondary"} className="flex items-center rounded-full">
+              <img width="20" height="20" src="https://img.icons8.com/stickers/50/visible.png" alt="visible" />
+              <span className="ml-2"> Standard Vegetatif</span>
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent className='h-[94vh] 8overflow-y-auto'>
+            <DrawerHeader>
+              <DrawerTitle>Standard Vegetatif</DrawerTitle>
+              <DrawerDescription>Informasi tentang standard vegetatif.</DrawerDescription>
+            </DrawerHeader>
+            <div className="p-4">
+              {/* Add your content for the Standard Vegetatif drawer here */}
+            <PalmOilTable />
+            </div>
+            <DrawerFooter>
+              <DrawerClose asChild>
+                <Button variant="outline">Close</Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      </div>
       <div className='grid gap-4 lg:grid-cols-4 2lg:grid-cols-4'>
         {data.map((item, i) =>
           item.show ? (

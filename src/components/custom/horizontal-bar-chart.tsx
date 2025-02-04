@@ -1,324 +1,163 @@
-import React, { useState, useEffect } from 'react'
-import ReactApexChart from 'react-apexcharts'
-import { ApexOptions } from 'apexcharts'
-import cookie from 'js-cookie'
-import { Card, CardContent } from '@/components/ui/card'
+import React, { useState, useMemo, useCallback } from "react"
+import ReactApexChart from "react-apexcharts"
+import type { ApexOptions } from "apexcharts"
+import cookie from "js-cookie"
+import { useChartData } from "@/hooks/use-chart-data"
+import {
+  distinctKebunWhereFilterByRegional,
+  sumBlokByDistinctKebun,
+  sumLuasBlokByDistinctKebun,
+} from "@/utils/chartHelper"
 
-export const StockAnalysisChart = ({
-  dataprops,
-  onEventClick,
-}: {
+interface StockAnalysisChartProps {
   dataprops: any
   onEventClick: (data: any) => void
-}) => {
-  const handleChartClick = (selectedCategory: string, distinctKebun: any[], countBlok: any[], sumLuasBlok: any[]) => {
-    const eventData = {
-      name: dataprops.title,
-      value: dataprops.val,
-      color: dataprops.color,
-      categories: distinctKebun, // Pass distinctKeb
-      countBlok,     // Pass countBlok to the parent
-      sumLuasBlok,   // Pass sumLuasBlok to the parent
-      selectedCategory,  // Pass the selected category to the parent
-    }
-    onEventClick(eventData)
-  }
+}
 
-  const theme = cookie.get('theme') || 'light'
-
-
-  const [categories, setCategories] = useState<string[]>([
-    'RPC1',
-    'RPC2',
-    'RPC3',
-    'RPC4',
-    'RPC5',
-    'RPC6',
-    'RPC7',
-    'RPC2N2',
-    'RPC2N14',
-  ])
-
+export const StockAnalysisChart: React.FC<StockAnalysisChartProps> = React.memo(({ dataprops, onEventClick }) => {
   const [isKebun, setIsKebun] = useState<boolean>(false)
+  const theme = cookie.get("theme") || "light"
 
-  let dataset = dataprops.dataset[dataprops.val]
+  const categories = useMemo(() => ["RPC1", "RPC2", "RPC3", "RPC4", "RPC5", "RPC6", "RPC7", "RPC2N2", "RPC2N14"], [])
 
-  let score = dataprops.score
+  const chartData = useChartData(dataprops, categories)
 
+  const handleChartClick = useCallback(
+    (selectedCategory: string) => {
+      setIsKebun(true)
+      const distinctKebun = distinctKebunWhereFilterByRegional(dataprops.dataset[dataprops.val], selectedCategory)
 
-  let dataValueOfAllTBM = score.map((item: any) => {
-    return Object.values(item)[0]
-  }
+      const countBlok = distinctKebun.map((kebun: any) => ({
+        category: kebun,
+        filter: sumBlokByDistinctKebun(dataprops.dataset[dataprops.val], selectedCategory, kebun),
+      }))
+
+      const sumLuasBlok = distinctKebun.map((kebun: any) => ({
+        category: kebun,
+        filter: sumLuasBlokByDistinctKebun(
+          dataprops.dataset[dataprops.val],
+          selectedCategory,
+          kebun,
+          dataprops.val !== 4,
+        ),
+      }))
+
+      const eventData = {
+        name: dataprops.title,
+        value: dataprops.val,
+        color: dataprops.color,
+        categories: distinctKebun,
+        countBlok,
+        sumLuasBlok,
+        selectedCategory,
+      }
+      onEventClick(eventData)
+    },
+    [dataprops, onEventClick],
   )
 
-  if (dataprops.title == 'Keseluruhan TBM') {
-    dataset = dataValueOfAllTBM
-
-  }
-
-  const countColorBlocks = (data: any, regional: string) => {
-    const tbmKeys = ['tbm1', 'tbm2', 'tbm3', 'tbm4']
-    return data.reduce((count: number, item: any) => {
-      return tbmKeys.some(
-        (key) =>
-          item[key] &&
-          item[key].regional === regional &&
-          item[key].colorCategory === dataprops.color
-      )
-        ? count + 1
-        : count
-    }, 0)
-  }
-
-  const sumColorLuas = (data: any, regional: string) => {
-    const tbmKeys = ['tbm1', 'tbm2', 'tbm3', 'tbm4']
-    const total = data.reduce((sum: number, item: any) => {
-      return tbmKeys.reduce((innerSum: number, key) => {
-        return item[key] &&
-          item[key].regional === regional &&
-          item[key].colorCategory === dataprops.color
-          ? innerSum + parseFloat(item[key].luas || '0')
-          : innerSum
-      }, sum)
-    }, 0)
-
-    return Math.round(total)
-  }
-
-  let datas: any[] = []
-
-  if (dataprops.untuk === 'Total Blok') {
-    if (dataprops.color === 'all') {
-      datas = categories.map((category) => {
-        const filter = dataset.filter(
-          (data: any) => data.regional === category
-        ).length
-        return { category, filter }
-      })
-    }
-    else {
-      const dataColor = score.filter((score: any) => {
-        return (
-          (Object.values(score)[0] as any).colorCategory === dataprops.color
-        )
-      })
-
-      datas = categories.map((category) => {
-        const filter = countColorBlocks(dataColor, category)
-        return { category, filter }
-      })
-    }
-
-    if (dataprops.title === 'Keseluruhan TBM') {
-
-      datas = categories.map((category) => {
-        const filter = dataset.filter(
-          (data: any) => data.regional === category
-        ).length
-        return { category, filter }
-      })
-    }
-  } else if (dataprops.untuk === 'Total Luasan') {
-    if (dataprops.color === 'all') {
-      datas = categories.map((category) => {
-        const filter = dataset.reduce((sum: number, item: any) => {
-          return item.regional === category
-            ? sum + parseFloat(item.luas_ha || '0')
-            : sum
-        }, 0)
-        const roundedFilter = Math.round(filter)
-
-        return { category, filter: roundedFilter }
-      })
-    } else {
-      const dataColor = score.filter((score: any) => {
-        return (
-          (Object.values(score)[0] as any).colorCategory === dataprops.color
-        )
-      })
-
-      datas = categories.map((category) => {
-        const filter = sumColorLuas(dataColor, category)
-        return { category, filter }
-      })
-    }
-
-    if (dataprops.title === 'Keseluruhan TBM') {
-      datas = categories.map((category) => {
-        const filter = dataset.reduce((sum: number, item: any) => {
-          return item.regional === category
-            ? sum + parseFloat(item.luas || '0')
-            : sum
-        }, 0)
-        const roundedFilter = Math.round(filter)
-
-        return { category, filter: roundedFilter }
-      })
-    }
-  }
-
-  const filter_by_regional = (data: any, regional: string) => {
-    return data.filter((item: any) => item.regional === regional)
-  }
-
-  const filter_by_regional_and_kebun = (data: any, regional: string, kebun: string) => {
-    return data.filter((item: any) => item.regional === regional && item.kebun === kebun)
-  }
-
-  const distinctKebunWhereFilterByRegional = (data: any, regional: string) => {
-    const getRegional = filter_by_regional(data, regional)
-    const kebun = getRegional.reduce((acc: any, item: any) => {
-      return item.kebun ? acc.concat(item.kebun) : acc
-    }, [])
-    return [...new Set(kebun)]
-  }
-
-  const sumBlokByDistinctKebun = (data: any, regional: string, kebun: string) => {
-    const getRegional = filter_by_regional_and_kebun(data, regional, kebun)
-    return getRegional.length
-  }
-
-  const sumLuasBlokByDistinctKebun = (data: any, regional: string, kebun: string) => {
-    const getRegional = filter_by_regional_and_kebun(data, regional, kebun)
-  let sum = 0
-  if (dataprops.val == 4) {
-    sum = getRegional.reduce((acc: number, item: any) => {
-      return parseFloat(item.luas || '0') + acc
-    }, 0)
-  } else {
-    sum = getRegional.reduce((acc: number, item: any) => {
-      return parseFloat(item.luas_ha || '0') + acc
-    }, 0)
-  }
-  return sum.toFixed(2)
-}
-
-const options: ApexOptions = {
-  chart: {
-    height: 426,
-    type: 'bar', // Change to 'bar' for horizontal bars
-    stacked: false,
-    events: {
-      dataPointSelection: (event, chartContext, { dataPointIndex }) => {
-        const selectedCategory = categories[dataPointIndex]
-        setIsKebun(true)
-        const distinctKebun = distinctKebunWhereFilterByRegional(dataset, selectedCategory)
-
-        const countBlok = distinctKebun.map((kebun: any) => {
-          return { category: kebun, filter: sumBlokByDistinctKebun(dataset, selectedCategory, kebun) }
-        })
-
-        const sumLuasBlok = distinctKebun.map((kebun: any) => {
-          return { category: kebun, filter: sumLuasBlokByDistinctKebun(dataset, selectedCategory, kebun) }
-        })        // console.log('selectedCategory', selectedCategory)
-
-
-        handleChartClick(selectedCategory, distinctKebun, countBlok, sumLuasBlok)
+  const options: ApexOptions = useMemo(
+    () => ({
+      chart: {
+        height: 426,
+        type: "bar",
+        stacked: false,
+        events: {
+          dataPointSelection: (event, chartContext, { dataPointIndex }) => {
+            handleChartClick(categories[dataPointIndex])
+          },
+        },
       },
-    },
+      dataLabels: {
+        enabled: true,
+        offsetX: 5,
+      },
+      stroke: {
+        width: [1],
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 4,
+          borderRadiusApplication: "end",
+          horizontal: true,
+        },
+      },
+      xaxis: {
+        categories: categories,
+        labels: {
+          style: {
+            colors: theme === "dark" ? "#ffffff" : "#000000",
+            fontSize: "12px",
+            fontFamily: "Arial, sans-serif",
+          },
+        },
+        title: {
+          text: dataprops.untuk,
+          style: {
+            color: theme === "dark" ? "#ffffff" : "#000000",
+          },
+        },
+      },
+      yaxis: {
+        axisTicks: { show: true },
+        axisBorder: {
+          show: true,
+          color: theme === "dark" ? "#ffffff" : "#000000",
+        },
+        labels: {
+          style: {
+            colors: theme === "dark" ? "#ffffff" : "#000000",
+          },
+        },
+        title: {
+          text: "Regional",
+          style: {
+            color: theme === "dark" ? "#ffffff" : "#000000",
+          },
+        },
+      },
+      tooltip: {
+        enabled: false
+      },
+      fill: {
+        type: "gradient",
+        gradient: {
+          shade: "dark",
+          type: "horizontal",
+          shadeIntensity: 0.5,
+          gradientToColors: ["#ABE5A1"],
+          inverseColors: true,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 80],
+        },
+      },
+      legend: {
+        horizontalAlign: "center",
+        offsetX: 40,
+      },
+    }),
+    [categories, dataprops.untuk, theme, handleChartClick],
+  )
 
-  },
+  const series = useMemo(
+    () => [
+      {
+        name: "Total:",
+        type: "bar",
+        data: chartData.map((item) => item.filter),
+        color: "#00b0ff",
+      },
+    ],
+    [chartData],
+  )
 
-  dataLabels: {
-    enabled: true,
-    offsetX: 5, // Adjust label position for horizontal bars
-  },
-  stroke: {
-    width: [1], // Single series, so only one dat
-  },
-  plotOptions: {
-    bar: {
-      borderRadius: 4,
-      borderRadiusApplication: 'end',
-      horizontal: true,
-    },
-  },
-  xaxis: {
-    categories: categories,
-    labels: {
-      show: true,
-      style: {
-        colors: theme === 'dark' ? '#ffffff' : '#000000',
-        fontSize: '12px',
-        fontFamily: 'Arial, sans-serif',
-      },
-    },
-    title: {
-      text: dataprops.untuk,
-      style: {
-        color: theme === 'dark' ? '#ffffff' : '#000000',
-      },
-    },
-  },
-  yaxis: {
-    axisTicks: {
-      show: true,
-    },
-    axisBorder: {
-      show: true,
-      color: theme === 'dark' ? '#ffffff' : '#000000',
-    },
-    labels: {
-      style: {
-        colors: theme === 'dark' ? '#ffffff' : '#000000',
-      },
-    },
-    title: {
-      text: 'Regional',
-      style: {
-        color: theme === 'dark' ? '#ffffff' : '#000000',
-      },
-    },
-  },
-  tooltip: {
-    enabled: false,
-    shared: true,
-    intersect: false,
-    x: {
-      show: true,
-      formatter: (val) => `${val}`, // Display x-axis value
-    },
-    y: {
-      formatter: (val, { series, seriesIndex }) => {
-        const seriesName = series[seriesIndex]?.name || 'Tidak Diketahui'
-        return `${val} `
-      },
-    },
-  },
-  fill: {
-    type: 'gradient',
-    gradient: {
-      shade: 'dark',
-      type: 'horizontal',
-      shadeIntensity: 0.5,
-      gradientToColors: ['#ABE5A1'],
-      inverseColors: true,
-      opacityFrom: 1,
-      opacityTo: 1,
-      stops: [0, 80],
-    },
-  },
-  legend: {
-    horizontalAlign: 'center',
-    offsetX: 40,
-  },
-}
-
-const series = [
-  {
-    name: 'Total:',
-    type: 'bar',
-    data: datas.map((item) => item.filter),
-    color: '#00b0ff',
-  },
-]
-
-return (
-  <div id='chart'>
-    <style>{`
+  return (
+    <div id="chart">
+      <style>{`
         .apexcharts-menu {
-          background-color: ${theme == 'dark' ? "#333" : "#fff"} !important;
-          color: ${theme == 'dark' ? "#fff" : "#000"} !important;
+          background-color: ${theme === "dark" ? "#333" : "#fff"} !important;
+          color: ${theme === "dark" ? "#fff" : "#000"} !important;
           border-radius: 8px;
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
@@ -326,25 +165,22 @@ return (
           padding: 10px 15px;
           font-size: 14px;
           cursor: pointer;
-          color: ${theme == 'dark' ? "#fff" : "#000"} !important;
+          color: ${theme === "dark" ? "#fff" : "#000"} !important;
         }
         .apexcharts-menu-item:hover {
-          background-color: ${theme == 'dark' ? "#555" : "#f0f0f0"} !important;
-          color: ${theme == 'dark' ? "#ffcc00" : "#007BFF"} !important;
+          background-color: ${theme === "dark" ? "#555" : "#f0f0f0"} !important;
+          color: ${theme === "dark" ? "#ffcc00" : "#007BFF"} !important;
         }
       `}</style>
 
-    <h2 className=' text-xl font-semibold text-center'>
-      {dataprops.untuk} {dataprops.title}
-    </h2>
+      <h2 className="text-xl font-semibold text-center">
+        {dataprops.untuk} {dataprops.title}
+      </h2>
 
-    <ReactApexChart
-      options={options}
-      series={series}
-      type='bar'
-      height={426}
-    />
+      <ReactApexChart options={options} series={series} type="bar" height={426} />
+    </div>
+  )
+})
 
-  </div>
-)
-}
+export default StockAnalysisChart
+

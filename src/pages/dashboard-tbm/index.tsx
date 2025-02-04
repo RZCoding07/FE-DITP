@@ -103,7 +103,7 @@ export default function Dashboard() {
   const [tbmRes, setTbmRes] = useState<any[]>([])
   const [isKebun, setIsKebun] = useState<boolean>(false)
   const [isTbm, setIsTbm] = useState<boolean>(true)
-
+  const [regionalBlackBlockCount, setRegionalBlackBlockCount] = useState<any>({})
   const [colorData, setColorData] = useState({
     emas: 0,
     hijau: 0,
@@ -265,95 +265,77 @@ export default function Dashboard() {
         })
 
         for (let i = 1; i < 5; i++) {
-          const tahunTanam = tahun.value - i
+          const tahunTanam = tahun.value - i;
           const response = await fetchVegetativeProc({
             input_tbm: 'tbm' + i,
             input_tahun_tanam: tahunTanam,
-          })
+          });
 
-          setTbmRes((prev) => [...prev, Object.values(response.data)])
+          setTbmRes((prev) => [...prev, Object.values(response.data)]);
+
+          const regionalBlackBlockCount: { [key: string]: number } = {};
 
           const newScores = Object.values(response.data).map((item: any) => {
-            //  console length response.data
-            // console.log('response.data',  Object.values(response.data).length)
-            let age = bulan.value * i
+            let age = bulan.value * i;
             if (age > 36) {
-              age = 36
+              age = 36;
             }
-            const blok = item.blok
+            const blok = item.blok;
             const scoreLingkarBatang =
-              getScoreLingkarBatang(age, parseFloat(item.lingkar_batang_cm)) *
-              0.4
+              getScoreLingkarBatang(age, parseFloat(item.lingkar_batang_cm)) * 0.4;
             const scoreJumlahPelepah =
-              getScoreJumlahPelepah(age, parseFloat(item.jumlah_pelepah_bh)) *
-              0.2
+              getScoreJumlahPelepah(age, parseFloat(item.jumlah_pelepah_bh)) * 0.2;
 
             const scoreTinggiBatang =
-              getScoreTinggiTanaman(age, parseFloat(item.tinggi_tanaman_cm)) *
-              0.1
+              getScoreTinggiTanaman(age, parseFloat(item.tinggi_tanaman_cm)) * 0.1;
 
             const scoreKerapatanPokok =
               getScoreKerapatanPokok(
                 age,
                 parseFloat(item.jumlah_pokok_awal_tanam),
                 parseFloat(item.jumlah_pokok_sekarang)
-              ) * 0.3
-
+              ) * 0.3;
 
             const totalSeleksian =
               scoreLingkarBatang +
               scoreJumlahPelepah +
               scoreTinggiBatang +
-              scoreKerapatanPokok
+              scoreKerapatanPokok;
 
-            let colorCategory = ''
+            let colorCategory = '';
 
             if (totalSeleksian <= 80) {
-              colorCategory = 'black'
+              colorCategory = 'black';
+              // Jika colorCategory adalah black, hitung berdasarkan regional
+              const regional = item.regional;
+              if (regionalBlackBlockCount[regional]) {
+                regionalBlackBlockCount[regional] += 1;
+              } else {
+                regionalBlackBlockCount[regional] = 1;
+              }
             } else if (totalSeleksian > 80 && totalSeleksian <= 89) {
-              colorCategory = 'red'
+              colorCategory = 'red';
             } else if (totalSeleksian > 89 && totalSeleksian <= 96) {
-              colorCategory = 'green'
+              colorCategory = 'green';
             } else if (totalSeleksian > 96) {
-              colorCategory = 'gold'
-            } else {
-              colorCategory = ''
+              colorCategory = 'gold';
             }
 
-            let luas = parseFloat(item.luas_ha)
-            let regional = item.regional
-            let kebun = item.kebun
-            let lingkar = parseFloat(item.lingkar_batang_cm)
-            let tinggi = parseFloat(item.tinggi_tanaman_cm)
-            let jumPelepah = parseFloat(item.jumlah_pelepah_bh)
+            const luas = parseFloat(item.luas_ha);
+            const regional = item.regional;
+            const kebun = item.kebun;
+            const lingkar = parseFloat(item.lingkar_batang_cm);
+            const tinggi = parseFloat(item.tinggi_tanaman_cm);
+            const jumPelepah = parseFloat(item.jumlah_pelepah_bh);
 
-            if (scoreLingkarBatang === 0 || scoreJumlahPelepah === 0 || scoreTinggiBatang === 0 || scoreKerapatanPokok === 0 || totalSeleksian === 0 || colorCategory === '' || luas === 0) {
-              console.log('Data dengan score 0:', {
-                age,
-                blok,
-                lingkar,
-                scoreLingkarBatang,
-                scoreJumlahPelepah,
-                tinggi,
-                scoreTinggiBatang,
-                scoreKerapatanPokok,
-                totalSeleksian,
-                colorCategory,
-                luas,
-                jumPelepah
-              });
-            }
-
-            let afdeling = item.afdeling
-
-
+            // Menyimpan data ke state
             setScores((prev) => [
               ...prev,
               {
                 [`tbm${i}`]: {
                   regional,
                   kebun,
-                  afdeling,
+                  afdeling: item.afdeling,
                   blok,
                   scoreLingkarBatang,
                   scoreJumlahPelepah,
@@ -362,38 +344,28 @@ export default function Dashboard() {
                   totalSeleksian,
                   colorCategory,
                   luas,
-                  jumPelepah
+                  jumPelepah,
                 },
               },
-            ])
+            ]);
 
+            // Set color data untuk hitam, merah, hijau, emas
             setColorData((prev) => ({
               ...prev,
               hitam: totalSeleksian <= 80 ? prev.hitam + 1 : prev.hitam,
-              merah:
-                totalSeleksian > 80 && totalSeleksian <= 89
-                  ? prev.merah + 1
-                  : prev.merah,
-              hijau:
-                totalSeleksian > 89 && totalSeleksian <= 96
-                  ? prev.hijau + 1
-                  : prev.hijau,
+              merah: totalSeleksian > 80 && totalSeleksian <= 89 ? prev.merah + 1 : prev.merah,
+              hijau: totalSeleksian > 89 && totalSeleksian <= 96 ? prev.hijau + 1 : prev.hijau,
               emas: totalSeleksian > 96 ? prev.emas + 1 : prev.emas,
-            }))
+            }));
 
+            // Set color data luas per kategori
             setColorDataLuas((prev) => ({
               ...prev,
               hitam: totalSeleksian <= 80 ? prev.hitam + luas : prev.hitam,
-              merah:
-                totalSeleksian > 80 && totalSeleksian <= 89
-                  ? prev.merah + luas
-                  : prev.merah,
-              hijau:
-                totalSeleksian > 89 && totalSeleksian <= 96
-                  ? prev.hijau + luas
-                  : prev.hijau,
+              merah: totalSeleksian > 80 && totalSeleksian <= 89 ? prev.merah + luas : prev.merah,
+              hijau: totalSeleksian > 89 && totalSeleksian <= 96 ? prev.hijau + luas : prev.hijau,
               emas: totalSeleksian > 96 ? prev.emas + luas : prev.emas,
-            }))
+            }));
 
             return {
               [`tbm${i}`]: {
@@ -407,55 +379,49 @@ export default function Dashboard() {
                 colorCategory,
                 luas,
               },
-            }
-          })
+            };
+          });
 
+          // Rekap jumlah blok hitam per regional
+          setRegionalBlackBlockCount((prev: any) => ({
+            ...prev,
+            [`tbm${i}`]: regionalBlackBlockCount,
+          }));
 
-
+          // Menghitung total luas dan pokok untuk rekap
           const totalLuasHa: number = Object.values(response.data).reduce(
             (acc: number, curr: any) => acc + parseFloat(curr.luas_ha),
             0
-          )
+          );
 
-          const totalPokokSekarang: number = Object.values(
-            response.data
-          ).reduce(
-            (acc: number, curr: any) =>
-              acc + parseFloat(curr.jumlah_pokok_sekarang),
+          const totalPokokSekarang: number = Object.values(response.data).reduce(
+            (acc: number, curr: any) => acc + parseFloat(curr.jumlah_pokok_sekarang),
             0
-          )
+          );
 
-          const totalCalJumlahPelepah: number = Object.values(
-            response.data
-          ).reduce(
-            (acc: number, curr: any) =>
-              acc + parseFloat(curr.cal_jumlah_pelepah),
+          const totalCalJumlahPelepah: number = Object.values(response.data).reduce(
+            (acc: number, curr: any) => acc + parseFloat(curr.cal_jumlah_pelepah),
             0
-          )
+          );
 
-          const totalCalLingkarBatang: number = Object.values(
-            response.data
-          ).reduce(
-            (acc: number, curr: any) =>
-              acc + parseFloat(curr.cal_lingkar_batang),
+          const totalCalLingkarBatang: number = Object.values(response.data).reduce(
+            (acc: number, curr: any) => acc + parseFloat(curr.cal_lingkar_batang),
             0
-          )
+          );
 
-          tbmResults[`tbm${i as 1 | 2 | 3 | 4}`] = totalLuasHa
+          tbmResults[`tbm${i as 1 | 2 | 3 | 4}`] = totalLuasHa;
 
-          pokokSekarangResults[`tbm${i as 1 | 2 | 3 | 4}`] = totalPokokSekarang
+          pokokSekarangResults[`tbm${i as 1 | 2 | 3 | 4}`] = totalPokokSekarang;
 
-          calJumlahPelepahResults[`tbm${i as 1 | 2 | 3 | 4}`] =
-            totalCalJumlahPelepah
+          calJumlahPelepahResults[`tbm${i as 1 | 2 | 3 | 4}`] = totalCalJumlahPelepah;
 
-          calLingkarBatangResults[`tbm${i as 1 | 2 | 3 | 4}`] =
-            totalCalLingkarBatang
+          calLingkarBatangResults[`tbm${i as 1 | 2 | 3 | 4}`] = totalCalLingkarBatang;
 
           avgPelepahResults[`tbm${i as 1 | 2 | 3 | 4}`] =
-            totalCalJumlahPelepah / totalPokokSekarang
+            totalCalJumlahPelepah / totalPokokSekarang;
 
           avgLingkarBatangResults[`tbm${i as 1 | 2 | 3 | 4}`] =
-            totalCalLingkarBatang / totalPokokSekarang
+            totalCalLingkarBatang / totalPokokSekarang;
 
           if (i < 4) {
             scoreJumlahPelepahResults[`tbm${i as 1 | 2 | 3}`] = {
@@ -469,7 +435,7 @@ export default function Dashboard() {
                 (item: any) => item[`tbm${i}`].scoreJumlahPelepah === 80
               ).length,
               total: newScores.length,
-            }
+            };
 
             scoreLingkarBatangResults[`tbm${i as 1 | 2 | 3}`] = {
               score100: newScores.filter(
@@ -482,10 +448,10 @@ export default function Dashboard() {
                 (item: any) => item[`tbm${i}`].scoreLingkarBatang === 80
               ).length,
               total: newScores.length,
-            }
+            };
           }
-
         }
+
         setTbmData(tbmResults)
         setTbmDataScorePelepahBlok(scoreJumlahPelepahResults)
         setTbmDataScoreLingkarBlok(scoreLingkarBatangResults)
@@ -564,7 +530,6 @@ export default function Dashboard() {
   const [selectedCardTbm, setSelectedCardTbm] = useState<any | null>(null)
 
   const [colorSummaryTbm, setColorSummaryTbm] = useState<any | null>(null)
-
 
   const [selectedEvent, setSelectedEvent] = useState<any | null>(null)
 
@@ -1143,6 +1108,7 @@ export default function Dashboard() {
             {selectedCard.type !== 'color' && (
 
               <>
+
                 <div className="grid sm:grid-cols-1 lg:grid-cols-[53%_47%] mt-5">
                   <h2 className='text-2xl font-bold mt-3'>
                     PICA Cluster {selectedCard.name} {' '}
@@ -1265,7 +1231,6 @@ export default function Dashboard() {
                         </div>
                         <DonutChartTbm
                           dataprops={{
-                            tbmData,
                             rpc: watch('rpc'),
                             data: colorData,
                             dataLuas: colorDataLuas,
@@ -1280,13 +1245,9 @@ export default function Dashboard() {
                             tbm3LuasByColor,
                             tbm4LuasByColor,
                             blok: blok ? blok.value : 'blok',
-                            score: scores,
                             ctg: selectedCard.ctg,
                             title: selectedCard.name,
-                            dataTbm: {
-                              ...tbmData,
-                              tahun: watch('tahun'),
-                            },
+                      
                           }} />
                         <div>
                           <STbm
@@ -1398,8 +1359,8 @@ export default function Dashboard() {
                                 {blok && blok.value === 'luasan' && isColorKebun == true && (
                                   <>
                                     <StockAnalysisChartKebunColor
-                                         isColorGraphVisible={isColorGraphVisible}  // Passing visibility prop
-                                         onHideColorGraph={handleHideColorGraph}  // Passing toggle function
+                                      isColorGraphVisible={isColorGraphVisible}  // Passing visibility prop
+                                      onHideColorGraph={handleHideColorGraph}  // Passing toggle function
                                       dataprops={{
                                         rpc,
                                         kebun,
@@ -1444,8 +1405,8 @@ export default function Dashboard() {
 
                                 {blok && blok.value === 'blok' && isColorKebun == true && (
                                   <StockAnalysisChartKebunColor
-                                  isColorGraphVisible={isColorGraphVisible}  // Passing visibility prop
-                                  onHideColorGraph={handleHideColorGraph}  // Passing toggle function
+                                    isColorGraphVisible={isColorGraphVisible}  // Passing visibility prop
+                                    onHideColorGraph={handleHideColorGraph}  // Passing toggle function
                                     dataprops={{
                                       rpc,
                                       kebun,
@@ -1476,26 +1437,47 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
+                <div className="grid">
+                  <div className='items-center justify-center align-middle'>
+                    <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                      <div className='w-full items-center align-middle'>
+                        <div className='flex justify-between'>
+                          <h2 className='text-xl font-semibold'>
+                            Result Problem Identification & Corrective Action {selectedCard.name}
+                          </h2>
 
+                        </div>
+                      </div>
+                      <hr className='my-3 border-cyan-400' />
 
-                <DataPicaCluster
-                  control={control}
-                  rpc={rpc}
-                  kebun={kebun}
-                  afd={afd}
-                  blok={blok}
-                  name={selectedCard.name}
-                  ctg={selectedCard.ctg}
-                  selectedCard={selectedCard}
-                  bulan={bulan}
-                  tahun={tahun}
-                  rpcOptions={rpcOptions}
-                  kebunOptions={kebunOptions}
-                  afdOptions={afdOptions}
-                  tbmDataScorePelepahBlok={tbmDataScorePelepahBlok}
-                  tbmDataScoreLingkarBlok={tbmDataScoreLingkarBlok}
-                  scores={scores}
-                />
+                      <div className='items-center justify-center align-middle mr-4'>
+                        <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-3 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-cyan-700 dark:to-cyan-600'>
+                          <div className='flex justify-between align-middle items-center'>
+                            <h2 className='text-xl font-semibold'>
+                              Total {blok.label} Merah Hitam {name}
+                            </h2>
+
+                          </div>
+                          <hr className='my-2 mt-4 border-cyan-400' />
+
+                          <div className='mt-5 grid lg:grid-cols-1 sm:grid-cols-1'>
+                            {selectedCard.ctg === 'tbm-all' && (
+                              <StockAnalysisChartBar
+                                dataProps={
+                                  {
+                                    rpc,
+                                  }
+                                }
+                                onCardClick={handleCardClick}
+                              />
+
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
 
               </>
@@ -1603,121 +1585,6 @@ function WelcomeBanner() {
   )
 }
 
-function DataPicaCluster({
-  control,
-  rpc,
-  kebun,
-  afd,
-  blok,
-  name,
-  ctg,
-  selectedCard,
-  bulan,
-  tahun,
-  rpcOptions,
-  kebunOptions,
-  afdOptions,
-  tbmDataScorePelepahBlok,
-  tbmDataScoreLingkarBlok,
-  scores,
-}: {
-  control: any
-  rpc: any
-  kebun: any
-  afd: any
-  blok: any
-  ctg: any
-  selectedCard: any
-  name: string
-  bulan: any
-  tahun: any
-  rpcOptions: any[]
-  kebunOptions: any[]
-  afdOptions: any[]
-  tbmDataScorePelepahBlok: {
-    tbm1: {
-      score100: number
-      score90: number
-      score80: number
-      total: number
-    }
-    tbm2: {
-      score100: number
-      score90: number
-      score80: number
-      total: number
-    }
-    tbm3: {
-      score100: number
-      score90: number
-      score80: number
-      total: number
-    }
-  }
-  tbmDataScoreLingkarBlok: {
-    tbm1: {
-      score100: number
-      score90: number
-      score80: number
-      total: number
-    }
-    tbm2: {
-      score100: number
-      score90: number
-      score80: number
-      total: number
-    }
-    tbm3: {
-      score100: number
-      score90: number
-      score80: number
-      total: number
-    }
-  }
-  scores: any[]
-}) {
-  return (
-    <>
-
-      <div className="grid">
-        <div className='items-center justify-center align-middle'>
-          <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-            <div className='w-full items-center align-middle'>
-              <div className='flex justify-between'>
-                <h2 className='text-xl font-semibold'>
-                  Result Problem Identification & Corrective Action {name}
-                </h2>
-
-              </div>
-            </div>
-            <hr className='my-3 border-cyan-400' />
-
-            <div className='items-center justify-center align-middle mr-4'>
-              <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-3 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-cyan-700 dark:to-cyan-600'>
-                <div className='flex justify-between align-middle items-center'>
-                  <h2 className='text-xl font-semibold'>
-                    Total {blok.label} Merah Hitam {name}
-                  </h2>
-
-                </div>
-                <hr className='my-2 mt-4 border-cyan-400' />
-
-                <div className='mt-5 grid lg:grid-cols-1 sm:grid-cols-1'>
-                  <StockAnalysisChartBar
-                    dataprops={{
-                      scores,
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </>
-  )
-}
 
 function getScoreLingkarBatang(age: any, value: any) {
   // Input validation
