@@ -174,6 +174,16 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
 
   return (
     <>
+    <style>{`
+    [data-vaul-drawer][data-vaul-drawer-direction=bottom]::after {
+    content: none; /* Menonaktifkan pseudo-elemen */
+    height: 0 !important; /* Menonaktifkan tingginya */
+    left: initial !important; /* Reset posisi kiri */
+    top: initial !important; /* Reset posisi atas */
+    right: initial !important; /* Reset posisi kanan */
+    bottom: initial !important; /* Reset posisi bawah */
+}
+    `}</style>
       <div className='flex justify-start items-center space-x-4 pb-2 -mt-7'>
         <h2 className='font-semibold'>
           Luas TBM Total : {totalLuasFormat} HA
@@ -193,7 +203,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
               <span className="ml-2"> Standard Vegetatif</span>
             </Button>
           </DrawerTrigger>
-          <DrawerContent className='h-[94vh] 8overflow-y-auto'>
+          <DrawerContent className='overflow-y-auto h-[92vh]'>
             <DrawerHeader>
               <DrawerTitle>Standard Vegetatif</DrawerTitle>
               <DrawerDescription>Informasi tentang standard vegetatif.</DrawerDescription>

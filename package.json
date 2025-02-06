@@ -51,6 +51,7 @@
     "highcharts-react-official": "^3.2.1",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
+    "katex": "^0.16.21",
     "lottie-react": "^2.4.0",
     "lucide-react": "^0.454.0",
     "papaparse": "^5.4.1",
