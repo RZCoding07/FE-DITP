@@ -33,11 +33,12 @@ const Layout = ({ className, fixed = false, ...props }: LayoutProps) => {
         ref={divRef}
         data-layout='layout'
         className={cn(
-          'h-full overflow-auto',
+          'overflow-auto',
           fixed && 'flex flex-col',
           className
         )}
         {...props}
+        style={{height: '100%'}}
       />
     </LayoutContext.Provider>
   )
@@ -97,7 +98,7 @@ const Body = React.forwardRef< HTMLDivElement, React.HTMLAttributes<HTMLDivEleme
         ref={ref}
         data-layout='body'
         className={cn(
-          'relative z-10 min-h-screen p-6 px-4 py-6 md:overflow-hidden md:px-8',
+          'relative z-10 min-h-screen p-6 px-4 py-6 md:overflow-hidden md:px-8 h-full',
           contextVal && contextVal.fixed && 'flex-1',
           className
         )}

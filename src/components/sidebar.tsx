@@ -36,11 +36,9 @@ export default function Sidebar({
   return (
     <aside
       className={cn(
-        `fixed left-0 right-0 top-0 z-50 w-full border-r-2 border-r-muted transition-[width] md:bottom-0 md:right-auto md:h-svh ${isCollapsed ? 'md:w-14' : 'md:w-64'}`,
+        `fixed left-0 right-0 top-0 z-50 w-full border-r-2 border-r-muted transition-[width] md:bottom-0 md:right-auto ${isCollapsed ? 'md:w-14' : 'md:w-64'}`,
         className
       )}
-
-      style={{ height: '100%' }}
     >
       {/* Overlay in mobile */}
       <div
@@ -49,6 +47,7 @@ export default function Sidebar({
       />
 
       <Layout fixed className={navOpened ? 'h-svh' : ''}>
+        {/* Header */}
         {/* Header */}
         <Layout.Header
           sticky
@@ -81,15 +80,13 @@ export default function Sidebar({
         {/* Navigation links */}
         <Nav
           id='sidebar-menu'
-          className={`z-40 h-full flex-1 overflow-auto ${navOpened ? '' : ' py-0 md:py-2'}`}
+          className={`z-40 h-full flex-1 overflow-auto ${navOpened ? 'max-h-screen' : 'max-h-0 py-0 md:max-h-full md:py-2'}`}
           closeNav={() => setNavOpened(false)}
           isCollapsed={isCollapsed}
           links={getSideLinks(app_type)}
-          style={{ scrollbarWidth: 'thin', 
-
-            height: '100%',
-          }}
+          style={{ transition: 'max-height 0.5s ease',  scrollbarWidth: 'thin' }}
         />
+
 
         {/* Scrollbar width toggle button */}
         <Button
@@ -104,21 +101,12 @@ export default function Sidebar({
           />
         </Button>
         <style>{`
-           /* CSS Manual */
-.hide-sm {
-  display: none;
-}
 
-
-
-@media (min-width: 1280px) {
-  .hide-sm {
-    display: flex; /* Menampilkan elemen pada layar ukuran xl dan lebih besar */
-  }
-}
   `}</style>
         {/* Footer */}
-        <div data-sidebar='footer' className='flex flex-col gap-2 p-2 mt-auto mb-5'>
+        <div data-sidebar='footer' className='flex flex-col gap-2 p-2 ' style={{
+          transform: 'translateY(0px)',
+        }}>
           <div className={`flex ml-1 items-center ${!isCollapsed ? 'gap-2' : ''}`}>
             <img src='ptpn4.png' alt='logo' className='hide-sm' style={{ width: '35px' }} />
             <div
