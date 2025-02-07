@@ -933,7 +933,7 @@ const handleRpcChange = (selectedOption: any) => {
   const fetchKebunData = async () => {
     try {
       const response = await fetchKebun({
-        rpc: rpc.value,
+        rpc: selectedOption.value,
       })
 
       const kebun = response.map((item: any) => ({
@@ -1212,6 +1212,7 @@ return (
                         placeholder='Pilih Kebun'
                         isSearchable
                         options={kebunOptions}
+                        
                       />
                     )}
                   />
