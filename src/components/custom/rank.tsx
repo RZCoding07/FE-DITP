@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react'
 import ReactApexChart from 'react-apexcharts'
 import { ApexOptions } from 'apexcharts'
@@ -16,6 +17,7 @@ export const StockAnalysisChartKebun = ({
 
   let datas: any[] = []
   datas = dataprops.dataset
+
 
   const options: ApexOptions = {
     chart: {
@@ -144,7 +146,7 @@ export const StockAnalysisChartKebun = ({
 
 
       <h2 className='text-center text-xl -mb-10 font-semibold pb-0'>
-        {dataprops.untuk} Kebun {dataprops.category} - ( {dataprops.title} )
+       Rank Infra 
       </h2>
       <ReactApexChart
         options={options}

@@ -42,6 +42,7 @@ import {
   Typography,
 } from '@mui/material'
 import { text } from 'stream/consumers'
+import axios from 'axios'
 
 export default function Dashboard() {
   const user = cookie.get('user')
@@ -79,6 +80,48 @@ export default function Dashboard() {
   const [countBlackBlockTbm2, setCountBlackBlockTbm2] = useState(0)
   const [countBlackBlockTbm3, setCountBlackBlockTbm3] = useState(0)
   const [countBlackBlockTbm4, setCountBlackBlockTbm4] = useState(0)
+
+  function parseCSV(csvText: any) {
+    const rows = csvText.split(/\r?\n/); // Split CSV text into rows, handling '\r' characters
+    const headers = rows[0].split(','); // Extract headers (assumes the first row is the header row)
+    const data = []; // Initialize an array to store parsed data
+    for (let i = 1; i < rows.length; i++) {
+      const rowData = rows[i].split(','); // Split the row, handling '\r' characters
+      const rowObject: any = {}; // Initialize an object to store the row data
+      for (let j = 0; j < headers.length; j++) {
+        rowObject[headers[j]] = rowData[j];
+      }
+      data.push(rowObject);
+    }
+    return data;
+  }
+
+  const [csvData, setCsvData] = useState<any[]>([]);
+
+  const fetchCSVData = () => {
+    const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQatfiYnfz9TDz1kkDoe14EBWzlQriPJcfc4RxTUDgd74AfqAL4biT6amQPqq-MeG0MRhv7_forWrP7/pub?output=csv'; // Replace with your Google Sheets CSV file URL
+    axios.get(csvUrl)
+      .then((response) => {
+        const parsedCsvData = parseCSV(response.data);
+        setCsvData(parsedCsvData);
+        console.log(parsedCsvData);
+      })
+      .catch((error) => {
+        // Handle errors
+      });
+  }
+
+
+  useEffect(() => {
+    fetchCSVData();
+
+  }, []);
+
+  useEffect(() => {
+    console.log('csvData', csvData)
+  }
+    , [csvData])
+
 
   const [selectedRpc, setSelectedRpc] = useState('all')
   const [selectedKebun, setSelectedKebun] = useState('')
@@ -324,7 +367,7 @@ export default function Dashboard() {
 
             let colorCategory = '';
 
-            if (totalSeleksian <= 80) {
+            if (totalSeleksian < 80) {
               colorCategory = 'black';
               // Jika colorCategory adalah black, hitung berdasarkan regional
               const regional = item.regional;
@@ -333,11 +376,11 @@ export default function Dashboard() {
               } else {
                 regionalBlackBlockCount[regional] = 1;
               }
-            } else if (totalSeleksian > 80 && totalSeleksian <= 89) {
+            } else if (totalSeleksian >= 80 && totalSeleksian < 90) {
               colorCategory = 'red';
-            } else if (totalSeleksian > 89 && totalSeleksian <= 96) {
+            } else if (totalSeleksian >= 90 && totalSeleksian < 97) {
               colorCategory = 'green';
-            } else if (totalSeleksian > 96) {
+            } else if (totalSeleksian >= 97) {
               colorCategory = 'gold';
             }
 
@@ -698,7 +741,7 @@ export default function Dashboard() {
       , tbm2DataRegional);
 
     // buat tbm3Data rekap per regional
-    let tbm3DataRegional = 
+    let tbm3DataRegional =
       tbm3Data.reduce((acc: any, x: any) => {
         if (!acc[x.regional]) {
           acc[x.regional] = [];
@@ -717,14 +760,14 @@ export default function Dashboard() {
       , tbm3DataRegional);
 
     // buat tbm4Data rekap per regional
-    let tbm4DataRegional = 
+    let tbm4DataRegional =
       tbm4Data.reduce((acc: any, x: any) => {
-      if (!acc[x.regional]) {
-        acc[x.regional] = [];
-      }
-      acc[x.regional].push(x);
-      return acc;
-    }, {});
+        if (!acc[x.regional]) {
+          acc[x.regional] = [];
+        }
+        acc[x.regional].push(x);
+        return acc;
+      }, {});
 
     tbm4DataRegional = rpcOpt.reduce((acc: any, x: any) => {
       // Jika tidak ada data untuk regional tertentu, isi dengan array 0 item
@@ -741,7 +784,7 @@ export default function Dashboard() {
     setTbm3DataRegional(tbm3DataRegional);
     setTbm4DataRegional(tbm4DataRegional);
 
-    
+
   }, [selectedCard, scores])
 
   const rpcValue = watch('rpc')?.value
@@ -1675,7 +1718,7 @@ export default function Dashboard() {
                               }
                               onCardClick={handleCardClick}
                             />
-
+{/* <KuadranChart /> */}
                           </div>
                         </div>
                       </div>
