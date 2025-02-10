@@ -14,9 +14,12 @@ import {
 
 import PalmOilTable from './custom/palm-oil-table';
 
+import StackedBarChart from './custom/stacked-bar-chart';
+
 export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClick: (data: any) => void }) => {
   const tahunValue = dataProps?.dataTbm?.tahun?.value;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [isDrawerOpenB, setIsDrawerOpenB] = useState(false)
   // State untuk menyimpan id kartu yang diklik
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const [selectedTbm, setSelectedTbm] = useState<number | null>(null); // Untuk TBM terpisah
@@ -185,9 +188,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
 }
     `}</style>
       <div className='flex justify-start items-center space-x-4 pb-2 -mt-7'>
-        <h2 className='font-semibold'>
-          Luas TBM Total : {totalLuasFormat} HA
-        </h2>
+  
         {/* <Button
           variant={'secondary'}
           className='flex items-center rounded-full '
@@ -196,6 +197,31 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
           <span className='ml-2'> Standard Vegetatif</span>
         </Button> */}
 
+        <Drawer open={isDrawerOpenB} onOpenChange={setIsDrawerOpenB}>
+          <DrawerTrigger asChild>
+          <h2 className='font-semibold underline underline-offset-4 underline-thickness-2'>
+          Luas TBM Total : {totalLuasFormat} HA
+        </h2>
+          </DrawerTrigger>
+          <DrawerContent className='overflow-y-auto h-[92vh]'>
+            <DrawerHeader>
+              <DrawerTitle>Rekapitulasi Blok TBM Per Regional</DrawerTitle>
+              <DrawerDescription>Informasi Grafik Rekapitulasi Blok TBM Per Regional.</DrawerDescription>
+            </DrawerHeader>
+            <div className="p-4">
+              {/* Add your content for the Standard Vegetatif drawer here */}
+              <StackedBarChart 
+              dataProps={dataProps}
+                
+              />
+            </div>
+            <DrawerFooter>
+              <DrawerClose asChild>
+                <Button variant="outline">Close</Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
         <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
           <DrawerTrigger asChild>
             <Button variant={"secondary"} className="flex items-center rounded-full">
