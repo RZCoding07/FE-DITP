@@ -188,15 +188,6 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
 }
     `}</style>
       <div className='flex justify-start items-center space-x-4 pb-2 -mt-7'>
-  
-        {/* <Button
-          variant={'secondary'}
-          className='flex items-center rounded-full '
-        >
-          <img width="20" height="20" src="https://img.icons8.com/stickers/50/visible.png" alt="visible" />
-          <span className='ml-2'> Standard Vegetatif</span>
-        </Button> */}
-
         <Drawer open={isDrawerOpenB} onOpenChange={setIsDrawerOpenB}>
           <DrawerTrigger asChild>
           <h2 className='font-semibold underline underline-offset-4 underline-thickness-2'>
@@ -212,7 +203,6 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
               {/* Add your content for the Standard Vegetatif drawer here */}
               <StackedBarChart 
               dataProps={dataProps}
-                
               />
             </div>
             <DrawerFooter>

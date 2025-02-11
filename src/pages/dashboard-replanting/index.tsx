@@ -1,8 +1,11 @@
+import { useState, useEffect } from 'react'
+import Papa from 'papaparse'
 import { Layout } from '@/components/custom/layout'
 import { Button } from '@/components/custom/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Search } from '@/components/search'
 import ThemeSwitch from '@/components/theme-switch'
+import { Progress } from "@/components/ui/progress"
 import { TopNav } from '@/components/top-nav'
 import { UserNav } from '@/components/user-nav'
 import { FcDoughnutChart } from 'react-icons/fc'
@@ -137,6 +140,52 @@ export default function Dashboard() {
       color: 'text-black',
     },
   ]
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetch(
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXTlsseLkShodSUOy-i7l7t03FF68IcucYTYEJmny_lhaODbCQqZZDTEd5dDZfhImykjCwetxwIlXS/pub?gid=2025566438&single=true&output=csv"
+    )
+      .then((response) => response.text())
+      .then((csv) => {
+        Papa.parse(csv, {
+          header: false,  // Tidak mengatur header
+          skipEmptyLines: true,
+          complete: (result: any) => {
+            const filteredData = result.data.slice(1); // Menghilangkan baris pertama
+            console.log(filteredData);
+
+
+            const data = filteredData.map((item: any) => {
+              return {
+                regional: item[1],
+                kebun: item[2],
+                status: item[3],
+                rkap: item[4],
+                luasBerkontrak: item[5],
+                "-": item[6],
+
+                luasLandClearing: item[8],
+                "B": item[9],
+                realisasiTanam: item[11],
+                "D": item[12],
+              };
+            });
+
+            setData(data);
+
+          },
+        });
+      });
+  }, []);
+
+  const getBarColor = (value: number) => {
+    if (value > 93) return "#34a853"; // Hijau
+    if (value > 70) return "#46bdc6"; // Biru
+    if (value > 50) return "#fbbc04"; // Kuning
+    return "#ea4335"; // Merah
+  };
 
   return (
     <Layout>
@@ -659,17 +708,74 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight'>
-          <img
-            className='mr-2'
-            width='28'
-            height='28'
-            src='https://img.icons8.com/fluency/48/positive-dynamic.png'
-            alt='positive-dynamic'
-          />
-          Realisasi Tanam Perkebun
-        </h1>
-        <div className='grid lg:grid-cols-[70%_30%]'></div>
+
+
+        <div className='grid lg:grid-cols-1'>
+          <Card className='mt-5 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+            <div className='grid gap-6 p-4 md:grid-cols-1'>
+              <div className='space-y-4'>
+                <div className='flex items-center gap-2 text-lg font-medium'>
+                  <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight'>
+                    <img
+                      className='mr-2'
+                      width='28'
+                      height='28'
+                      src='https://img.icons8.com/fluency/48/positive-dynamic.png'
+                      alt='positive-dynamic'
+                    />
+                    Realisasi Tanam Perkebun
+                  </h1>
+                </div>
+
+
+                {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
+                <div className="p-4 pt-0">
+                  <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
+                    <table className="border-collapse border w-full mt-4">
+                      {/* <thead>
+          <tr>
+            {data.length > 0 &&
+              Object.keys(data[0]).map((key, index) => (
+                <th key={index} className="border p-2">{key}</th>
+              ))}
+          </tr>
+        </thead> */}
+                      <tbody>
+                        {data.map((row, rowIndex) => (
+                          <tr key={rowIndex} id={rowIndex + ""}>
+                            {Object.values(row).map((value: any, colIndex) =>
+                            (
+                              colIndex === 5 || colIndex === 7 || colIndex === 9 ? (
+                                <td id={colIndex + ""} key={colIndex} className="border p-2">
+                                  {!isNaN(parseFloat(value)) ? (
+                                    <>
+                                      <p className='text-right font-semibold'>{parseInt(value)} %</p>
+                                      <Progress value={parseFloat(value)} bgColor={getBarColor(parseFloat(value))} />
+
+                                    </>
+                                  ) : (
+                                    value
+                                  )}
+
+                                </td>
+
+
+                              ) : (
+                                <td id={colIndex + ""} key={colIndex} className="border p-2">{value}</td>
+                              )
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </Card>
+        </div>
       </Layout.Body>
     </Layout>
   )
