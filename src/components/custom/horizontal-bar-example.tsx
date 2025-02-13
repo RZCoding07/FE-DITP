@@ -14,6 +14,7 @@ export const StockAnalysisChart = ({
   const handleChartClick = (selectedCategory: string, distinctKebun: any[], countBlok: any[], sumLuasBlok: any[]) => {
     const eventData = {
       name: dataprops.title,
+      allData: dataprops.dataset[dataprops.val],
       value: dataprops.val,
       color: dataprops.color,
       categories: distinctKebun, // Pass distinctKeb

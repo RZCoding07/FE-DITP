@@ -31,18 +31,8 @@ import * as XLSX from 'xlsx-js-style'
 import toast from 'react-hot-toast'
 import StackedBarChart from '@/components/custom/stacked-bar-chart'
 import { FaEyeDropper, FaRecycle, FaSync } from 'react-icons/fa'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Typography,
-} from '@mui/material'
-import { text } from 'stream/consumers'
-import axios from 'axios'
+import { regionalKebunData } from '@/data/regional-kebun'
+import { kebunAfdBlok } from '@/data/kebun-afd-blok'
 
 export default function Dashboard() {
   const user = cookie.get('user')
@@ -96,33 +86,6 @@ export default function Dashboard() {
     return data;
   }
 
-  const [csvData, setCsvData] = useState<any[]>([]);
-
-  const fetchCSVData = () => {
-    const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQatfiYnfz9TDz1kkDoe14EBWzlQriPJcfc4RxTUDgd74AfqAL4biT6amQPqq-MeG0MRhv7_forWrP7/pub?output=csv'; // Replace with your Google Sheets CSV file URL
-    axios.get(csvUrl)
-      .then((response) => {
-        const parsedCsvData = parseCSV(response.data);
-        setCsvData(parsedCsvData);
-        console.log(parsedCsvData);
-      })
-      .catch((error) => {
-        // Handle errors
-      });
-  }
-
-
-  useEffect(() => {
-    fetchCSVData();
-
-  }, []);
-
-  useEffect(() => {
-    console.log('csvData', csvData)
-  }
-    , [csvData])
-
-
   const [selectedRpc, setSelectedRpc] = useState('all')
   const [selectedKebun, setSelectedKebun] = useState('')
   const [selectedAfd, setSelectedAfd] = useState('')
@@ -159,11 +122,12 @@ export default function Dashboard() {
     { value: 'RPC2N14', label: 'RPC2N14' },
   ]
 
-  const [kebunOptions, setKebunOptions] = useState([])
-  const [afdOptions, setAfdOptions] = useState([])
+  const [kebunOptions, setKebunOptions] = useState<{ value: string; label: string }[]>([])
+  const [afdOptions, setAfdOptions] = useState<{ value: string; label: string }[]>([])
   const [scores, setScores] = useState<any[]>([])
   const [tbmRes, setTbmRes] = useState<any[]>([])
   const [isKebun, setIsKebun] = useState<boolean>(false)
+  const [isAfd, setIsAfd] = useState<boolean>(false)
   const [isTbm, setIsTbm] = useState<boolean>(true)
   const [regionalBlackBlockCount, setRegionalBlackBlockCount] = useState<any>({})
   const [colorData, setColorData] = useState({
@@ -552,7 +516,10 @@ export default function Dashboard() {
     // console.log('tbmRes', tbmRes)
     setSelectedCard(cardData) // Simpan parameter atau lakukan tindakan lainnya
     setValue('rpc', { value: 'all', label: 'Semua RPC' })
+    setValue('kebun', null)
+    setValue('afd', null)
     setIsKebun(false)
+    setIsAfd(false)
   }
 
   const [isColorKebun, setisColorKebun] = useState<boolean>(false)
@@ -569,6 +536,397 @@ export default function Dashboard() {
     setValue('rpc', rpcOptions.find((item) => item.value === eventData.selectedCategory) || { value: '', label: '' })
     setIsKebun(true)
   }
+
+  [
+    {
+      "regional": "RPC1",
+      "kebun": "1KGM"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KSA"
+    },
+    {
+      "regional": "RPC2N2",
+      "kebun": "TDM"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2SKO"
+    },
+    {
+      "regional": "RPC4",
+      "kebun": "4DRL"
+    },
+    {
+      "regional": "RPC3",
+      "kebun": "3KLD"
+    },
+    {
+      "regional": "RPC5",
+      "kebun": "5KRB"
+    },
+    {
+      "regional": "RPC6",
+      "kebun": "Kebun Tualang Sawit"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2PAB"
+    },
+    {
+      "regional": "RPC4",
+      "kebun": "4BKC"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "KTR"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KDH"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KLJ"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2PDM"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KSK"
+    },
+    {
+      "regional": "RPC4",
+      "kebun": "4SSL"
+    },
+    {
+      "regional": "RPC5",
+      "kebun": "5KTJ"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2PUR"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KSG"
+    },
+    {
+      "regional": "RPC4",
+      "kebun": "4RDU"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2MEP"
+    },
+    {
+      "regional": "RPC5",
+      "kebun": "5KPR"
+    },
+    {
+      "regional": "RPC5",
+      "kebun": "5KBY"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KAM"
+    },
+    {
+      "regional": "RPC3",
+      "kebun": "3KBE"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2TON"
+    },
+    {
+      "regional": "RPC5",
+      "kebun": "5KSD"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KTR"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2ABA"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2LAR"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2OSA"
+    },
+    {
+      "regional": "RPC2N2",
+      "kebun": "TANDEM"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2BAJ"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2DOS"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2BAL"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2DOI"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KSP"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KDP"
+    },
+    {
+      "regional": "RPC2N14",
+      "kebun": "LUWU I"
+    },
+    {
+      "regional": "RPC6",
+      "kebun": "Kebun Baru"
+    },
+    {
+      "regional": "RPC5",
+      "kebun": "5KGS"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KPM"
+    },
+    {
+      "regional": "RPC3",
+      "kebun": "3KTE"
+    },
+    {
+      "regional": "RPC2N2",
+      "kebun": "ATG"
+    },
+    {
+      "regional": "RPC5",
+      "kebun": "5KPD"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KBB"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2GUB"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KBU"
+    },
+    {
+      "regional": "RPC3",
+      "kebun": "3KA2"
+    },
+    {
+      "regional": "RPC5",
+      "kebun": "5KDS"
+    },
+    {
+      "regional": "RPC3",
+      "kebun": "3KSN"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KRB"
+    },
+    {
+      "regional": "RPC5",
+      "kebun": "5KGM"
+    },
+    {
+      "regional": "RPC2N2",
+      "kebun": "MELATI"
+    },
+    {
+      "regional": "RPC3",
+      "kebun": "3KTN"
+    },
+    {
+      "regional": "RPC6",
+      "kebun": "Kebun Lama"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KHP"
+    },
+    {
+      "regional": "RPC2N14",
+      "kebun": "LUWU II"
+    },
+    {
+      "regional": "RPC3",
+      "kebun": "3KSP"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2TIN"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2ADO"
+    },
+    {
+      "regional": "RPC5",
+      "kebun": "5KNG"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2MAT"
+    },
+    {
+      "regional": "RPC6",
+      "kebun": "Kebun Julok R. Utara"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KSU"
+    },
+    {
+      "regional": "RPC7",
+      "kebun": "SULI"
+    },
+    {
+      "regional": "RPC2N2",
+      "kebun": "SWH"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2BAP"
+    },
+    {
+      "regional": "RPC2N2",
+      "kebun": "SWS"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KRP"
+    },
+    {
+      "regional": "RPC5",
+      "kebun": "5KTB"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2TIM"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2TIU"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KBN"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2BUL"
+    },
+    {
+      "regional": "RPC2N2",
+      "kebun": "PTK"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KMS"
+    },
+    {
+      "regional": "RPC3",
+      "kebun": "3KSS"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2AJA"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2MAR"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KSD"
+    },
+    {
+      "regional": "RPC5",
+      "kebun": "5KLK"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KGP"
+    },
+    {
+      "regional": "RPC2N14",
+      "kebun": "Maroangin"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KAS"
+    },
+    {
+      "regional": "RPC2N2",
+      "kebun": "LMU MGR"
+    },
+    {
+      "regional": "RPC7",
+      "kebun": "BEKA"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KGR"
+    },
+    {
+      "regional": "RPC2",
+      "kebun": "2ULU"
+    },
+    {
+      "regional": "RPC4",
+      "kebun": "4BKK"
+    },
+    {
+      "regional": "RPC4",
+      "kebun": "4BUN"
+    },
+    {
+      "regional": "RPC2N2",
+      "kebun": "TGP"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KAN"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KSL"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KHG"
+    },
+    {
+      "regional": "RPC6",
+      "kebun": "Kebun Cot Girek"
+    },
+    {
+      "regional": "RPC1",
+      "kebun": "1KMM"
+    }
+  ]
 
   const handleResetClick = () => {
     {
@@ -1035,6 +1393,7 @@ export default function Dashboard() {
           value: selectedCard.val,
           color: selectedCard.circular,
           categories: distinctCategories,
+          allData: tbmRes[selectedCard.val],
           countBlok,
           sumLuasBlok,
           selectedCategory: rpcValue
@@ -1067,51 +1426,85 @@ export default function Dashboard() {
   }
 
   const handleRpcChange = (selectedOption: any) => {
-    setSelectedRpc(selectedOption.value)
-    const fetchKebunData = async () => {
-      try {
-        const response = await fetchKebun({
-          rpc: selectedOption.value,
-        })
+    setSelectedRpc(selectedOption.value);
+    const selectedRegional = regionalKebunData.regionals.find(
+      (regional) => regional.name === selectedOption.value
+    );
+    setValue('kebun', null);
+    setKebunOptions(
+      selectedRegional ? selectedRegional.kebuns.map((kebun) => ({ value: kebun, label: kebun })) : []
+    );
+  };
+  
 
-        const kebun = response.map((item: any) => ({
-          value: item.kebun,
-          label: item.kebun,
-        }))
-
-        setKebunOptions(kebun)
-        setValue('kebun', null)
-        setValue('afd', null)
-      } catch (error) {
-        console.error('Error fetching kebun:', error)
-      }
-    }
-
-    fetchKebunData()
-
-  }
+  const [countAfdBlok, setCountAfdBlok] = useState<any[]>([])
+  const [sumLuasAfdBlok, setSumLuasAfdBlok] = useState<any[]>([])
 
   const handleKebunChange = (selectedOption: any) => {
-    const fetchAfdelingData = async () => {
-      try {
-        const response = await fetchAfd({
-          rpc: selectedRpc,
-          kebun: selectedOption.value,
-        })
+     setSelectedKebun(selectedOption)
+     const getAfdelingByKebun = (kebun: string) => {
+      const afdelingSet = new Set(
+        kebunAfdBlok.filter(item => item.kebun === kebun).map(item => item.afdeling)
+      );
+      return Array.from(afdelingSet);
+    };
+    
 
-        const afdeling = response.map((item: any) => ({
-          value: item.afdeling,
-          label: item.afdeling,
-        }))
+    setSelectedKebun(selectedOption);
 
-        setAfdOptions(afdeling)
-        setValue('afd', null)
-      } catch (error) {
-        console.error('Error fetching afdeling:', error)
-      }
-    }
+    const availableAfdeling = getAfdelingByKebun(selectedOption.value);
 
-    fetchAfdelingData()
+    const afdelingOptions = availableAfdeling.map(afd => ({ value: afd, label: afd }));
+
+    setValue('afd', null);
+
+    setAfdOptions(afdelingOptions);
+
+    const tbmResults = tbmRes[selectedCard.val]
+
+    const hasilBanyak = tbmResults.filter((item: { kebun: any }) => item.kebun === selectedOption.value)
+
+    // distinc afdeling
+    const distinctAfd = [...new Set(hasilBanyak.map((item: any) => item.afdeling))];
+
+    // count afdeling blok
+    const countAfd = distinctAfd.map((category: any) => {
+      return {
+        category: category,
+        filter: hasilBanyak.filter((item: any) => item.afdeling === category).length
+      };
+    });
+
+
+    setSelectedEvent({
+      name: selectedOption.label,
+      value: selectedOption.value,
+      color: selectedCard.circular,
+      categories: distinctAfd,
+      allData: tbmResults,
+      countBlok: countAfd,
+      selectedCategory: selectedRpc
+    });
+
+    const sumLuasAfd = distinctAfd.map((category: any) => {
+      return {
+        category: category,
+        filter: hasilBanyak
+          .filter((item: any) => item.afdeling === category)
+          .reduce((acc: number, curr: any) => {
+            const luas = parseFloat(curr.luas_ha) || 0; // Pastikan hanya angka valid yang dijumlahkan
+            return acc + luas;
+          }, 0)
+          .toFixed(2)
+      };
+    });
+    
+
+
+    setCountAfdBlok(countAfd);
+    setSumLuasAfdBlok(sumLuasAfd);
+
+
   }
 
   const [isColorGraphVisible, setIsColorGraphVisible] = useState(true);
@@ -1524,7 +1917,7 @@ export default function Dashboard() {
                         <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
                           <div className="grid lg:grid-cols-1">
 
-                            {isKebun === false && (
+                            {isKebun === false && isAfd == false && (
                               <>
                                 {blok && blok.value === 'blok' && (
                                   <StockAnalysisChart
@@ -1665,6 +2058,106 @@ export default function Dashboard() {
 
                             )}
 
+                            {isKebun == false && isAfd == true && (
+                              <>
+
+                                {blok && blok.value === 'luasan' && isColorKebun == false && (
+                                  <>
+                                    <StockAnalysisChartKebun
+                                      dataprops={{
+                                        rpc,
+                                        kebun,
+                                        afd,
+                                        datasets: tbmRes,
+                                        score: scores,
+                                        dataset: sumLuasAfdBlok,
+                                        untuk: 'Total Luasan',
+                                        categories: selectedEvent.categories,
+                                        title: selectedEvent.name,
+                                        color: selectedEvent.color,
+                                        val: selectedCard.val,
+                                        category: selectedEvent.selectedCategory,
+                                      }}
+                                      onEventClick={handleEventClick}
+                                    />
+
+                                  </>
+                                )}
+                                {blok && blok.value === 'luasan' && isColorKebun == true && (
+                                  <>
+                                    <StockAnalysisChartKebunColor
+                                      isColorGraphVisible={isColorGraphVisible}  // Passing visibility prop
+                                      onHideColorGraph={handleHideColorGraph}  // Passing toggle function
+                                      dataprops={{
+                                        rpc,
+                                        kebun,
+                                        afd,
+                                        blok,
+                                        datasets: tbmRes,
+                                        score: scores,
+                                        color: colorSummaryTbm,
+                                        dataset: colorSummaryTbm == 'gold' ? emasColorCountKebun : colorSummaryTbm == 'green' ? hijauColorCountKebun : colorSummaryTbm == 'red' ? merahColorCountKebun : hitamColorCountKebun,
+                                        untuk: 'Total Luasan',
+                                        categories: selectedEvent.categories,
+                                        title: selectedEvent.name,
+                                        val: selectedCard.val,
+                                        category: selectedEvent.selectedCategory,
+                                      }}
+                                      onEventClick={handleEventClick}
+                                    />
+                                  </>
+                                )}
+
+                                {blok && blok.value === 'blok' && isColorKebun == false && (
+                                  <StockAnalysisChartKebun
+                                    dataprops={{
+                                      rpc,
+                                      kebun,
+                                      afd,
+                                      datasets: tbmRes,
+                                      score: scores,
+                                      dataset: countAfdBlok,
+                                      categories: selectedEvent.categories,
+                                      untuk: 'Total Blok',
+                                      title: selectedEvent.name,
+                                      color: selectedEvent.color,
+                                      val: selectedCard.val,
+                                      category: selectedEvent.selectedCategory,
+                                    }}
+                                    onEventClick={handleEventClick}
+                                  />
+
+                                )}
+
+
+                                {blok && blok.value === 'blok' && isColorKebun == true && (
+                                  <StockAnalysisChartKebunColor
+                                    isColorGraphVisible={isColorGraphVisible}  // Passing visibility prop
+                                    onHideColorGraph={handleHideColorGraph}  // Passing toggle function
+                                    dataprops={{
+                                      rpc,
+                                      kebun,
+                                      afd,
+                                      blok,
+                                      datasets: tbmRes,
+                                      score: scores,
+                                      color: colorSummaryTbm,
+                                      dataset: colorSummaryTbm == 'gold' ? emasColorCountKebun : colorSummaryTbm == 'green' ? hijauColorCountKebun : colorSummaryTbm == 'red' ? merahColorCountKebun : hitamColorCountKebun,
+                                      untuk: 'Total Blok',
+                                      categories: selectedEvent.categories,
+                                      title: selectedEvent.name,
+                                      val: selectedCard.val,
+                                      category: selectedEvent.selectedCategory,
+                                    }}
+                                    onEventClick={handleEventClick}
+                                  />)}
+
+
+
+                              </>
+
+                            )}
+
                           </div>
                         </div>
                       </div>
@@ -1718,7 +2211,7 @@ export default function Dashboard() {
                               }
                               onCardClick={handleCardClick}
                             />
-{/* <KuadranChart /> */}
+                            {/* <KuadranChart /> */}
                           </div>
                         </div>
                       </div>

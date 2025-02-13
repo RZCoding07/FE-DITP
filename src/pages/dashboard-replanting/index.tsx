@@ -461,7 +461,7 @@ export default function Dashboard() {
                           111
                         </TableCell>
                         <TableCell className='p-1'>2,824.61</TableCell>
-                        <TableCell className='bg-red-100 p-1 text-black'>
+                        <TableCell className='bg-red-100 p-1 text-black'>https://drive.google.com/open?id=1l_iyXSNeyJsbZvU3q5Tvq2_e1iREMEvj&usp=chrome_ntp
                           104
                         </TableCell>
                         <TableCell className='bg-red-100 p-1 text-black'>
@@ -732,14 +732,7 @@ export default function Dashboard() {
                 <div className="p-4 pt-0">
                   <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
                     <table className="border-collapse border w-full mt-4">
-                      {/* <thead>
-          <tr>
-            {data.length > 0 &&
-              Object.keys(data[0]).map((key, index) => (
-                <th key={index} className="border p-2">{key}</th>
-              ))}
-          </tr>
-        </thead> */}
+  
                       <tbody>
                         {data.map((row, rowIndex) => (
                           <tr key={rowIndex} id={rowIndex + ""}>

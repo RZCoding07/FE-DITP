@@ -65,6 +65,13 @@ export default function PicaTbm() {
     { value: 'RPC2N14', label: 'RPC2N14' },
   ]
 
+  const tbmopt = [
+    { value: 'tbm1', label: 'TBM 1' },
+    { value: 'tbm2', label: 'TBM 2' },
+    { value: 'tbm3', label: 'TBM 3' },
+    { value: 'tbm4', label: 'TBM > 3' },
+  ]
+
   const fetchInvesAwal = async () => {
     setLoading(true)
     const tahun = new Date().getFullYear()
@@ -99,7 +106,77 @@ export default function PicaTbm() {
       <Layout.Body>
         <Card>
           <CardHeader>
-            <CardTitle>Monitoring Problem Idendification</CardTitle>
+            <CardTitle>
+              <div className="items-baseline flex justify-between">
+                <h2 className='text-xl font-semibold'>
+                  Monitoring Problem Idendification
+
+                </h2>
+                <div className='-ml-5 flex '>
+                  <h2 className='text-lg mt-1 ml-5 mr-2'>Pilih Tahun : </h2>
+                  <Controller
+                    name='blok'
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        styles={customStyles}
+                        placeholder='Pilih Blok / Luasan'
+                        isSearchable
+                        defaultValue={{ value: 'blok', label: 'Blok' }}
+
+                        options={[
+                          { value: 'blok', label: 'Blok' },
+                          { value: 'luasan', label: 'Luasan' },
+                        ]}
+                        {...field}
+                      />
+                    )}
+                  />
+                  <h2 className='text-lg mt-1 ml-5 mr-2'>Pilih Bulan : </h2>
+                  <Controller
+                    name='blok'
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        styles={customStyles}
+                        placeholder='Pilih Blok / Luasan'
+                        isSearchable
+                        defaultValue={{ value: 'blok', label: 'Blok' }}
+
+                        options={[
+                          { value: 'blok', label: 'Blok' },
+                          { value: 'luasan', label: 'Luasan' },
+                        ]}
+                        {...field}
+                      />
+                    )}
+                  />
+
+<h2 className='text-lg mt-1 ml-5 mr-2'>Sortir berdasarkan : </h2>
+                  <Controller
+                    name='blok'
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        styles={customStyles}
+                        placeholder='Pilih Blok / Luasan'
+                        isSearchable
+                        defaultValue={{ value: 'blok', label: 'Blok' }}
+
+                        options={[
+                          { value: 'blok', label: 'Blok' },
+                          { value: 'luasan', label: 'Luasan' },
+                        ]}
+                        {...field}
+                      />
+                    )}
+                  />
+
+                </div>
+              </div>
+
+
+            </CardTitle>
             <div className='flex items-center justify-between'>
               <p className='text-muted-foreground'>
                 PICA (Problem Identification & Corrective Action) Investasi
@@ -108,6 +185,24 @@ export default function PicaTbm() {
             </div>
           </CardHeader>
           <CardContent>
+
+            <div className='items-center justify-center align-middle mr-1 pb-5'>
+              <div className='rounded-lg border border-cyan-500 bg-white p-3 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-cyan-700 dark:to-cyan-600'>
+                <div className='flex justify-between align-middle items-center'>
+                  <h2 className='text-xl font-semibold'>
+                    Total Merah dan Hitam Keseluruhan TBM
+                  </h2>
+
+                </div>
+                <hr className='my-2 mt-4 border-cyan-400' />
+
+                <div className='mt-5 grid lg:grid-cols-1 sm:grid-cols-1'>
+
+                  {/* <KuadranChart /> */}
+                </div>
+              </div>
+            </div>
+
             <Tabs
               orientation='vertical'
               defaultValue='grafik'
@@ -126,8 +221,8 @@ export default function PicaTbm() {
                 <TabsContent key={rpc.value} value={rpc.value}>
                   <div className='flex items-center justify-between'>
                     <h2 className='text-xl font-semibold flex align-middle items-center'>
-                    <img width="30" height="30" src="https://img.icons8.com/stickers/30/problem-solving.png" alt="problem-solving"/>
-                   &nbsp;    Data Masalah PICA {rpc.label}
+                      <img width="30" height="30" src="https://img.icons8.com/stickers/30/problem-solving.png" alt="problem-solving" />
+                      &nbsp;    Data Masalah PICA {rpc.label}
                     </h2>
                     <div className='flex items-center space-x-2'>
                       <button className='flex items-center rounded-md bg-cyan-600 px-2 py-1 text-white'>
@@ -176,7 +271,7 @@ export default function PicaTbm() {
                     ) : (
                       <DataTable data={awal} columns={columns} />
                     )}
-                    
+
 
                   </div>
                 </TabsContent>

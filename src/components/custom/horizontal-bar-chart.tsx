@@ -42,14 +42,18 @@ export const StockAnalysisChart: React.FC<StockAnalysisChartProps> = React.memo(
         ),
       }))
 
+      const allData = dataprops.dataset[dataprops.val]
+
       const eventData = {
         name: dataprops.title,
         value: dataprops.val,
         color: dataprops.color,
+        allData,
         categories: distinctKebun,
         countBlok,
         sumLuasBlok,
         selectedCategory,
+        // allData: dataprops.dataset[dataprops.val]
       }
       onEventClick(eventData)
     },
