@@ -373,6 +373,12 @@ let allRouter = [
     }),
   },
   {
+    path: 'upload-data-bibitan',
+    lazy: async () => ({
+      Component: (await import('@/pages/upload-data-bibitan')).default,
+    }),
+  },
+  {
     path: 'create-uraian-pekerjaan-replanting',
     lazy: async () => ({
       Component: (await import('@/pages/create-uraian-pekerjaan-replanting')).default,

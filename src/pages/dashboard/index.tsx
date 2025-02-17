@@ -69,7 +69,7 @@ const customStyles = {
 };
 
 import { IconPdf } from '@tabler/icons-react'
-import { StokAwal } from './components/stokAwal'
+import DonutChart from '@/components/custom/bibitan-donut-chart'
 
 export default function Dashboard() {
   const user = cookie.get('user')
@@ -117,16 +117,30 @@ export default function Dashboard() {
 
   const defaultValueTahun = tahun.find((item) => item.value === currentYear.toString());
 
-  const fetchStokAwal = async (tahun: number, bulan: number) => {
+  const [hasilSeleksi , setHasilSeleksi] = useState([])
+
+
+  const apiUrl = import.meta.env.VITE_API_NURSERY
+
+  const fetchSeleksiAkhirBibit = async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/stok-awal-bibit?tahun=${tahun}&bulan=${bulan}`
+        `${apiUrl}/pie-chart-bibitan-regional`
       )
       const data = response.data
+
+      setHasilSeleksi(data)
+
+      console.log(data)
+
     } catch (error) {
       console.error(error)
     }
   }
+
+  useEffect(() => {
+    fetchSeleksiAkhirBibit()
+  }, [])
 
   return (
     <Layout>
@@ -179,7 +193,7 @@ export default function Dashboard() {
           <div className='w-full overflow-x-auto pb-2'>
             <TabsList>
               <TabsTrigger value='overview'>Stok Bibit</TabsTrigger>
-              <TabsTrigger value='analytics'>Delivery Kecambah</TabsTrigger>
+              {/* <TabsTrigger value='analytics'>Delivery Kecambah</TabsTrigger> */}
               <TabsTrigger value='reports'>Kalender</TabsTrigger>
             </TabsList>
           </div>
@@ -255,20 +269,13 @@ export default function Dashboard() {
               </div>
               <TabsContent value='grafik'>
                 <div className='grid grid-cols-1 gap-4 lg:grid-cols-3'>
+      
                   <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 bg-white'>
                     <CardHeader>
-                      <CardTitle>Stok Awal Bibit</CardTitle>
+                      <CardTitle>Stok Bibit</CardTitle>
                     </CardHeader>
                     <CardContent className='pl-2'>
-                      <StokAwal bulan='9' tahun='2024' />
-                    </CardContent>
-                  </Card>
-                  <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 bg-white'>
-                    <CardHeader>
-                      <CardTitle>Hasil Seleksi Bibit</CardTitle>
-                    </CardHeader>
-                    <CardContent className='pl-2'>
-                      <Overview />
+                      <DonutChart dataprops={{ data: hasilSeleksi }} />
                     </CardContent>
                   </Card>
                   <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 bg-white'>

@@ -87,7 +87,7 @@ export default function Dashboard() {
   }
 
   const [selectedRpc, setSelectedRpc] = useState('all')
-  const [selectedKebun, setSelectedKebun] = useState('')
+  const [selectedKebun, setSelectedKebun] = useState({ value: '', label: '' })
   const [selectedAfd, setSelectedAfd] = useState('')
 
   const [tbmData, setTbmData] = useState({
@@ -288,7 +288,7 @@ export default function Dashboard() {
         }
 
         const loader = toast.loading(`Memuat data untuk Keseluruhan TBM...`, {
-          duration: 2000,
+          duration: 20000,
         })
 
         for (let i = 1; i < 5; i++) {
@@ -536,397 +536,6 @@ export default function Dashboard() {
     setValue('rpc', rpcOptions.find((item) => item.value === eventData.selectedCategory) || { value: '', label: '' })
     setIsKebun(true)
   }
-
-  [
-    {
-      "regional": "RPC1",
-      "kebun": "1KGM"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KSA"
-    },
-    {
-      "regional": "RPC2N2",
-      "kebun": "TDM"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2SKO"
-    },
-    {
-      "regional": "RPC4",
-      "kebun": "4DRL"
-    },
-    {
-      "regional": "RPC3",
-      "kebun": "3KLD"
-    },
-    {
-      "regional": "RPC5",
-      "kebun": "5KRB"
-    },
-    {
-      "regional": "RPC6",
-      "kebun": "Kebun Tualang Sawit"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2PAB"
-    },
-    {
-      "regional": "RPC4",
-      "kebun": "4BKC"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "KTR"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KDH"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KLJ"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2PDM"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KSK"
-    },
-    {
-      "regional": "RPC4",
-      "kebun": "4SSL"
-    },
-    {
-      "regional": "RPC5",
-      "kebun": "5KTJ"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2PUR"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KSG"
-    },
-    {
-      "regional": "RPC4",
-      "kebun": "4RDU"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2MEP"
-    },
-    {
-      "regional": "RPC5",
-      "kebun": "5KPR"
-    },
-    {
-      "regional": "RPC5",
-      "kebun": "5KBY"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KAM"
-    },
-    {
-      "regional": "RPC3",
-      "kebun": "3KBE"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2TON"
-    },
-    {
-      "regional": "RPC5",
-      "kebun": "5KSD"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KTR"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2ABA"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2LAR"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2OSA"
-    },
-    {
-      "regional": "RPC2N2",
-      "kebun": "TANDEM"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2BAJ"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2DOS"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2BAL"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2DOI"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KSP"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KDP"
-    },
-    {
-      "regional": "RPC2N14",
-      "kebun": "LUWU I"
-    },
-    {
-      "regional": "RPC6",
-      "kebun": "Kebun Baru"
-    },
-    {
-      "regional": "RPC5",
-      "kebun": "5KGS"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KPM"
-    },
-    {
-      "regional": "RPC3",
-      "kebun": "3KTE"
-    },
-    {
-      "regional": "RPC2N2",
-      "kebun": "ATG"
-    },
-    {
-      "regional": "RPC5",
-      "kebun": "5KPD"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KBB"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2GUB"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KBU"
-    },
-    {
-      "regional": "RPC3",
-      "kebun": "3KA2"
-    },
-    {
-      "regional": "RPC5",
-      "kebun": "5KDS"
-    },
-    {
-      "regional": "RPC3",
-      "kebun": "3KSN"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KRB"
-    },
-    {
-      "regional": "RPC5",
-      "kebun": "5KGM"
-    },
-    {
-      "regional": "RPC2N2",
-      "kebun": "MELATI"
-    },
-    {
-      "regional": "RPC3",
-      "kebun": "3KTN"
-    },
-    {
-      "regional": "RPC6",
-      "kebun": "Kebun Lama"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KHP"
-    },
-    {
-      "regional": "RPC2N14",
-      "kebun": "LUWU II"
-    },
-    {
-      "regional": "RPC3",
-      "kebun": "3KSP"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2TIN"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2ADO"
-    },
-    {
-      "regional": "RPC5",
-      "kebun": "5KNG"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2MAT"
-    },
-    {
-      "regional": "RPC6",
-      "kebun": "Kebun Julok R. Utara"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KSU"
-    },
-    {
-      "regional": "RPC7",
-      "kebun": "SULI"
-    },
-    {
-      "regional": "RPC2N2",
-      "kebun": "SWH"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2BAP"
-    },
-    {
-      "regional": "RPC2N2",
-      "kebun": "SWS"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KRP"
-    },
-    {
-      "regional": "RPC5",
-      "kebun": "5KTB"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2TIM"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2TIU"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KBN"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2BUL"
-    },
-    {
-      "regional": "RPC2N2",
-      "kebun": "PTK"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KMS"
-    },
-    {
-      "regional": "RPC3",
-      "kebun": "3KSS"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2AJA"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2MAR"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KSD"
-    },
-    {
-      "regional": "RPC5",
-      "kebun": "5KLK"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KGP"
-    },
-    {
-      "regional": "RPC2N14",
-      "kebun": "Maroangin"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KAS"
-    },
-    {
-      "regional": "RPC2N2",
-      "kebun": "LMU MGR"
-    },
-    {
-      "regional": "RPC7",
-      "kebun": "BEKA"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KGR"
-    },
-    {
-      "regional": "RPC2",
-      "kebun": "2ULU"
-    },
-    {
-      "regional": "RPC4",
-      "kebun": "4BKK"
-    },
-    {
-      "regional": "RPC4",
-      "kebun": "4BUN"
-    },
-    {
-      "regional": "RPC2N2",
-      "kebun": "TGP"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KAN"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KSL"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KHG"
-    },
-    {
-      "regional": "RPC6",
-      "kebun": "Kebun Cot Girek"
-    },
-    {
-      "regional": "RPC1",
-      "kebun": "1KMM"
-    }
-  ]
 
   const handleResetClick = () => {
     {
@@ -1435,29 +1044,25 @@ export default function Dashboard() {
       selectedRegional ? selectedRegional.kebuns.map((kebun) => ({ value: kebun, label: kebun })) : []
     );
   };
-  
+
 
   const [countAfdBlok, setCountAfdBlok] = useState<any[]>([])
   const [sumLuasAfdBlok, setSumLuasAfdBlok] = useState<any[]>([])
 
   const handleKebunChange = (selectedOption: any) => {
-     setSelectedKebun(selectedOption)
-     const getAfdelingByKebun = (kebun: string) => {
+    setSelectedKebun(selectedOption)
+    const getAfdelingByKebun = (kebun: string) => {
       const afdelingSet = new Set(
         kebunAfdBlok.filter(item => item.kebun === kebun).map(item => item.afdeling)
       );
       return Array.from(afdelingSet);
     };
-    
 
     setSelectedKebun(selectedOption);
 
     const availableAfdeling = getAfdelingByKebun(selectedOption.value);
-
     const afdelingOptions = availableAfdeling.map(afd => ({ value: afd, label: afd }));
-
     setValue('afd', null);
-
     setAfdOptions(afdelingOptions);
 
     const tbmResults = tbmRes[selectedCard.val]
@@ -1498,13 +1103,71 @@ export default function Dashboard() {
           .toFixed(2)
       };
     });
-    
+
 
 
     setCountAfdBlok(countAfd);
     setSumLuasAfdBlok(sumLuasAfd);
 
 
+  }
+
+
+  const handleAfdChange = (selectedOption: any) => {
+    setSelectedAfd(selectedOption)
+    const tbmResults = tbmRes[selectedCard.val]
+    
+    const rpc = selectedRpc
+    const kebun = selectedKebun.value
+
+    const hasilBanyak = tbmResults.filter((item: any) => item.regional === rpc && item.kebun === kebun && item.afdeling === selectedOption.value)
+    const distinctBlok = [...new Set(hasilBanyak.map((item: any) => item.blok))];
+    const countBlok = distinctBlok.map((category: any) => {
+      return {
+        category: category,
+        filter: hasilBanyak.filter((item: any) => item.blok === category).length
+      };
+    });
+
+    const sumLuasBlok = distinctBlok.map((category: any) => {
+      return {
+        category: category,
+        filter: hasilBanyak
+          .filter((item: any) => item.blok === category)
+          .reduce((acc: number, curr: any) => {
+            const luas = parseFloat(curr.luas_ha) || 0; // Pastikan hanya angka valid yang dijumlahkan
+            return acc + luas;
+          }, 0)
+          .toFixed(2)
+      };
+    });
+
+    setSelectedEvent({
+      name: selectedOption.label,
+      value: selectedOption.value,
+      color: selectedCard.circular,
+      categories: distinctBlok,
+      allData: tbmResults,
+      countBlok: countBlok,
+      sumLuasBlok: sumLuasBlok,
+      selectedCategory: selectedRpc
+    });
+
+    const sumLuasAfd = distinctBlok.map((category: any) => {
+      return {
+        category: category,
+        filter: hasilBanyak
+          .filter((item: any) => item.blok === category)
+          .reduce((acc: number, curr: any) => {
+            const luas = parseFloat(curr.luas_ha) || 0; // Pastikan hanya angka valid yang dijumlahkan
+            return acc + luas;
+          }, 0)
+          .toFixed(2)
+      };
+    } );
+
+    setCountAfdBlok(countBlok);
+    setSumLuasAfdBlok(sumLuasBlok);
   }
 
   const [isColorGraphVisible, setIsColorGraphVisible] = useState(true);
@@ -1789,6 +1452,11 @@ export default function Dashboard() {
                           placeholder='Pilih Afdeling'
                           isSearchable
                           options={afdOptions}
+                          onChange={(selectedOption) => {
+                            field.onChange(selectedOption); // Update form value
+                            handleAfdChange(selectedOption); // Custom handler function]
+                          }
+                          }
                         />
                       )}
                     />
@@ -2209,7 +1877,6 @@ export default function Dashboard() {
                                   countRedBlockTbm4,
                                 }
                               }
-                              onCardClick={handleCardClick}
                             />
                             {/* <KuadranChart /> */}
                           </div>

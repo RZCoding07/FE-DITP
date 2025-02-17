@@ -5,31 +5,33 @@ import cookie from "js-cookie"
 
 interface StockAnalysisChartBarProps {
   dataProps: any
-  onCardClick: (data: any) => void
 }
 
-const StockAnalysisChartBar: React.FC<StockAnalysisChartBarProps> = ({ dataProps, onCardClick }) => {
+const StockAnalysisChartBar: React.FC<StockAnalysisChartBarProps> = ({ dataProps }) => {
   const [theme, setTheme] = useState<string>(cookie.get("theme") || "light")
 
   const rpcOptions = useMemo(() => ["RPC1", "RPC2", "RPC3", "RPC4", "RPC5", "RPC6", "RPC7", "RPC2N2", "RPC2N14"], [])
+
   useMemo(() => {
     console.log("Theme changed to", theme)
   }, [theme])
 
-  const resultRed = useMemo(() => rpcOptions.map((rpc) => dataProps.countRedBlock[rpc] || 0), [dataProps.countRedBlock])
-  const resultBlack = useMemo(() => rpcOptions.map((rpc) => dataProps.countBlackBlock[rpc] || 0), [dataProps.countBlackBlock])
 
-  const resultRedTbm1 = useMemo(() => rpcOptions.map((rpc) => dataProps.countRedBlockTbm1[rpc] || 0), [dataProps.countRedBlockTbm1])
-  const resultBlackTbm1 = useMemo(() => rpcOptions.map((rpc) => dataProps.countBlackBlockTbm1[rpc] || 0), [dataProps.countBlackBlockTbm1])
 
-  const resultRedTbm2 = useMemo(() => rpcOptions.map((rpc) => dataProps.countRedBlockTbm2[rpc] || 0), [dataProps.countRedBlockTbm2])
-  const resultBlackTbm2 = useMemo(() => rpcOptions.map((rpc) => dataProps.countBlackBlockTbm2[rpc] || 0), [dataProps.countBlackBlockTbm2])
+const resultRed = useMemo(() => rpcOptions.map((rpc) => dataProps?.countRedBlock?.[rpc] || 0), [dataProps?.countRedBlock])
+const resultBlack = useMemo(() => rpcOptions.map((rpc) => dataProps?.countBlackBlock?.[rpc] || 0), [dataProps?.countBlackBlock])
+const resultRedTbm1 = useMemo(() => rpcOptions.map((rpc) => dataProps?.countRedBlockTbm1?.[rpc] || 0), [dataProps?.countRedBlockTbm1])
+const resultBlackTbm1 = useMemo(() => rpcOptions.map((rpc) => dataProps?.countBlackBlockTbm1?.[rpc] || 0), [dataProps?.countBlackBlockTbm1])
 
-  const resultRedTbm3 = useMemo(() => rpcOptions.map((rpc) => dataProps.countRedBlockTbm3[rpc] || 0), [dataProps.countRedBlockTbm3])
-  const resultBlackTbm3 = useMemo(() => rpcOptions.map((rpc) => dataProps.countBlackBlockTbm3[rpc] || 0), [dataProps.countBlackBlockTbm3])
+const resultRedTbm2 = useMemo(() => rpcOptions.map((rpc) => dataProps?.countRedBlockTbm2?.[rpc] || 0), [dataProps?.countRedBlockTbm2])
+const resultBlackTbm2 = useMemo(() => rpcOptions.map((rpc) => dataProps?.countBlackBlockTbm2?.[rpc] || 0), [dataProps?.countBlackBlockTbm2])
 
-  const resultRedTbm4 = useMemo(() => rpcOptions.map((rpc) => dataProps.countRedBlockTbm4[rpc] || 0), [dataProps.countRedBlockTbm4])
-  const resultBlackTbm4 = useMemo(() => rpcOptions.map((rpc) => dataProps.countBlackBlockTbm4[rpc] || 0), [dataProps.countBlackBlockTbm4])
+const resultRedTbm3 = useMemo(() => rpcOptions.map((rpc) => dataProps?.countRedBlockTbm3?.[rpc] || 0), [dataProps?.countRedBlockTbm3])
+const resultBlackTbm3 = useMemo(() => rpcOptions.map((rpc) => dataProps?.countBlackBlockTbm3?.[rpc] || 0), [dataProps?.countBlackBlockTbm3])
+
+const resultRedTbm4 = useMemo(() => rpcOptions.map((rpc) => dataProps?.countRedBlockTbm4?.[rpc] || 0), [dataProps?.countRedBlockTbm4])
+const resultBlackTbm4 = useMemo(() => rpcOptions.map((rpc) => dataProps?.countBlackBlockTbm4?.[rpc] || 0), [dataProps?.countBlackBlockTbm4])
+
 
 
 
