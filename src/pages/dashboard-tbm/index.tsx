@@ -1080,17 +1080,7 @@ export default function Dashboard() {
       };
     });
 
-
-    setSelectedEvent({
-      name: selectedOption.label,
-      value: selectedOption.value,
-      color: selectedCard.circular,
-      categories: distinctAfd,
-      allData: tbmResults,
-      countBlok: countAfd,
-      selectedCategory: selectedRpc
-    });
-
+    // sum luas afdeling blok
     const sumLuasAfd = distinctAfd.map((category: any) => {
       return {
         category: category,
@@ -1105,6 +1095,16 @@ export default function Dashboard() {
     });
 
 
+    setSelectedEvent({
+      name: selectedOption.label,
+      value: selectedOption.value,
+      color: selectedCard.circular,
+      categories: distinctAfd,
+      allData: tbmResults,
+      countBlok: countAfd,
+      sumLuasBlok: sumLuasAfd,
+      selectedCategory: selectedRpc
+    });
 
     setCountAfdBlok(countAfd);
     setSumLuasAfdBlok(sumLuasAfd);
@@ -1153,21 +1153,8 @@ export default function Dashboard() {
       selectedCategory: selectedRpc
     });
 
-    const sumLuasAfd = distinctBlok.map((category: any) => {
-      return {
-        category: category,
-        filter: hasilBanyak
-          .filter((item: any) => item.blok === category)
-          .reduce((acc: number, curr: any) => {
-            const luas = parseFloat(curr.luas_ha) || 0; // Pastikan hanya angka valid yang dijumlahkan
-            return acc + luas;
-          }, 0)
-          .toFixed(2)
-      };
-    } );
-
     setCountAfdBlok(countBlok);
-    setSumLuasAfdBlok(sumLuasBlok);
+    setSumLuasAfdBlok(sumLuasBlok)
   }
 
   const [isColorGraphVisible, setIsColorGraphVisible] = useState(true);
