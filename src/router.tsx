@@ -266,6 +266,18 @@ let immatureRouter = [
     }),
   },
   {
+    path: 'serapan-biaya',
+    lazy: async () => ({
+      Component: (await import('./pages/serapan-biaya')).default,
+    }),
+  },
+  {
+    path: 'kuadran-grafik',
+    lazy: async () => ({
+      Component: (await import('./pages/kuadran-grafik')).default,
+    }),
+  },
+  {
     path: 'data-pi',
     lazy: async () => ({
       Component: (await import('./pages/data-pi')).default,

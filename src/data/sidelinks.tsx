@@ -285,31 +285,38 @@ export const immatureSideLinks: SideLink[] = [
     ),
   },
   {
-    title: 'Luas Areal Statement',
-    href: '/luas-areal',
+    title: 'Serapan Biaya',
+    href: '/serapan-biaya',
     icon: (
-<img width="20" height="20" src="https://img.icons8.com/avantgarde/20/map.png" alt="map"/>
+      <img width="20" height="20" src="https://img.icons8.com/avantgarde/20/map.png" alt="map" />
     ),
   },
   {
     title: 'Pengukuran Vegetatif',
     href: '/data-vegetatif',
     icon: (
-<img width="20" height="20" src="https://img.icons8.com/avantgarde/20/lipids.png" alt="lipids"/>
+      <img width="20" height="20" src="https://img.icons8.com/avantgarde/20/lipids.png" alt="lipids" />
+    ),
+  },
+  {
+    title: 'Kuadran Grafik',
+    href: '/kuadran-grafik',
+    icon: (
+      <img width="20" height="20" src="https://img.icons8.com/external-icongeek26-flat-icongeek26/20/external-chart-data-analytics-icongeek26-flat-icongeek26.png" alt="external-chart-data-analytics-icongeek26-flat-icongeek26" />
     ),
   },
   {
     title: 'Monitoring PICA TBM',
     href: '/pica-tbm',
     icon: (
-<img width="20" height="20" src="https://img.icons8.com/arcade/20/system-task.png" alt="system-task"/>
+      <img width="20" height="20" src="https://img.icons8.com/arcade/20/system-task.png" alt="system-task" />
     ),
   },
   {
     title: 'Master Data PI',
     href: '/data-pi',
     icon: (
-<img width="20" height="20" src="https://img.icons8.com/fluency/20/data-configuration.png" alt="data-configuration"/>
+      <img width="20" height="20" src="https://img.icons8.com/fluency/20/data-configuration.png" alt="data-configuration" />
     ),
   },
 

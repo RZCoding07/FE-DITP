@@ -20,7 +20,7 @@ export const useDashboardForm = () => {
       rpc: { value: 'all', label: 'Semua RPC' },
       kebun: null,
       afd: null,
-      blok: { value: 'blok', label: 'Blok' },
+      blok: { value: 'luasan', label: 'Luasan' },
       tahun: null,
       bulan: null,
     },

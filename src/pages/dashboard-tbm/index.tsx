@@ -25,7 +25,7 @@ import { StockAnalysisChartKebunColor } from '@/components/custom/horizontal-keb
 import StockAnalysisChartBar from '@/components/custom/bar-chart'
 import DonutChartTbm from '@/components/custom/donut-chart-tbm'
 import DonutChart from '@/components/custom/donut-chart'
-import KuadranChart from '@/components/custom/kuadran'
+import { ScatterChart } from '@/components/custom/kuadran'
 import { Summary as STbm } from '@/components/summarytbm'
 import * as XLSX from 'xlsx-js-style'
 import toast from 'react-hot-toast'
@@ -125,6 +125,7 @@ export default function Dashboard() {
   const [kebunOptions, setKebunOptions] = useState<{ value: string; label: string }[]>([])
   const [afdOptions, setAfdOptions] = useState<{ value: string; label: string }[]>([])
   const [scores, setScores] = useState<any[]>([])
+  const [scoresKebun, setScoresKebun] = useState<any[]>([])
   const [tbmRes, setTbmRes] = useState<any[]>([])
   const [isKebun, setIsKebun] = useState<boolean>(false)
   const [isAfd, setIsAfd] = useState<boolean>(false)
@@ -166,6 +167,7 @@ export default function Dashboard() {
         // Reset all values to zero
         setTbmRes([]);  // reset tbmRes array
         setScores([]);  // reset scores array
+        setScoresKebun([]);  // reset scoresKebun array
         setColorData({
           hitam: 0,
           merah: 0,
@@ -408,6 +410,73 @@ export default function Dashboard() {
               },
             };
           });
+
+          const newScoresPerKebun: { [key: string]: { regional: string; kebun: string; totalSeleksiKebun: number; totalLuas: number } } = {}
+
+          Object.values(response.data).forEach((item: any) => {
+            let age = bulan.value * i;
+            if (age > 36) {
+              age = 36;
+            }
+            const kebun = item.kebun;
+            const regional = item.regional;
+            const luas = parseFloat(item.luas_ha);
+
+            const scoreLingkarBatang =
+              getScoreLingkarBatang(age, parseFloat(item.lingkar_batang_cm)) * 0.4;
+            const scoreJumlahPelepah =
+              getScoreJumlahPelepah(age, parseFloat(item.jumlah_pelepah_bh)) * 0.2;
+            const scoreTinggiBatang =
+              getScoreTinggiTanaman(age, parseFloat(item.tinggi_tanaman_cm)) * 0.1;
+            const scoreKerapatanPokok =
+              getScoreKerapatanPokok(
+                age,
+                parseFloat(item.jumlah_pokok_awal_tanam),
+                parseFloat(item.jumlah_pokok_sekarang)
+              ) * 0.3;
+
+            const totalSeleksian =
+              scoreLingkarBatang +
+              scoreJumlahPelepah +
+              scoreTinggiBatang +
+              scoreKerapatanPokok;
+
+            if (!newScoresPerKebun[kebun]) {
+              newScoresPerKebun[kebun] = {
+                regional,
+                kebun,
+                totalSeleksiKebun: 0,
+                totalLuas: 0,
+              };
+            }
+
+
+            // Total seleksi dihitung berdasarkan luas (tertimbang)
+            newScoresPerKebun[kebun].totalSeleksiKebun += totalSeleksian * luas;
+            newScoresPerKebun[kebun].totalLuas += luas;
+          });
+
+          // Hitung rata-rata tertimbang total seleksi per kebun
+          Object.keys(newScoresPerKebun).forEach((kebun) => {
+            if (newScoresPerKebun[kebun].totalLuas > 0) {
+              newScoresPerKebun[kebun].totalSeleksiKebun /= newScoresPerKebun[kebun].totalLuas;
+            }
+
+            setScoresKebun((prev) => [
+              ...prev,
+              {
+                [`tbm${i}`]: {
+                  regional: newScoresPerKebun[kebun].regional,
+                  kebun,
+                  totalSeleksiKebun: newScoresPerKebun[kebun].totalSeleksiKebun,
+                },
+              },
+
+            ]);
+          });
+
+          console.log(newScoresPerKebun);
+
 
           // Rekap jumlah blok hitam per regional
           setRegionalBlackBlockCount((prev: any) => ({
@@ -1116,7 +1185,7 @@ export default function Dashboard() {
   const handleAfdChange = (selectedOption: any) => {
     setSelectedAfd(selectedOption)
     const tbmResults = tbmRes[selectedCard.val]
-    
+
     const rpc = selectedRpc
     const kebun = selectedKebun.value
 
@@ -1155,6 +1224,8 @@ export default function Dashboard() {
 
     setCountAfdBlok(countBlok);
     setSumLuasAfdBlok(sumLuasBlok)
+
+    setValue('blok', { value: 'luasan', label: 'Luasan' })
   }
 
   const [isColorGraphVisible, setIsColorGraphVisible] = useState(true);
@@ -1163,22 +1234,25 @@ export default function Dashboard() {
     setisColorKebun(false); // Hide the color graph
     setIsColorGraphVisible((prev) => !prev); // Toggle the visibility
   };
-
   const handleDownload = () => {
     // Menampilkan toast loading
     const loadingToast = toast.loading('Downloading... Please wait!', {
       position: 'top-right',
     });
-
-    // Menyusun data dalam format array yang bisa digunakan untuk XLSX
-    const headers = ["Jenis TBM", "Regional", "Kebun", "Afdeling", "Blok", "Luasan", "Jumlah Pelepah", "Score Lingkar Batang", "Score Jumlah Pelepah", "Score Tinggi Batang", "Score Kerapatan Pokok", "Total Seleksian", "Kategori Warna"];
-
-    // Mengonversi data menjadi array 2D
+  
+    // Header untuk sheet pertama (Detail Seleksi)
+    const headers = [
+      "Jenis TBM", "Regional", "Kebun", "Afdeling", "Blok", "Luasan", 
+      "Jumlah Pelepah", "Score Lingkar Batang", "Score Jumlah Pelepah", 
+      "Score Tinggi Batang", "Score Kerapatan Pokok", "Total Seleksian", "Kategori Warna"
+    ];
+  
+    // Konversi data dari scores
     const data = scores.map((item) => {
       let key = Object.keys(item)[0];
       const data = item[key];
       if (key === 'tbm4') {
-        key = 'TBM > 3'
+        key = 'TBM > 3';
       }
       return [
         key.toUpperCase(),
@@ -1196,77 +1270,85 @@ export default function Dashboard() {
         data.colorCategory,
       ];
     });
-
-
-
-    // Create the worksheet
+  
+    // Header untuk sheet kedua (Summary Kebun)
+    const headersKebun = ["Jenis TBM", "Regional", "Kebun", "Total Seleksi Kebun"];
+  
+    // Konversi data dari scoresKebun
+    const dataKebun = scoresKebun.map((item) => {
+      let key = Object.keys(item)[0];
+      const data = item[key];
+      return [
+        key.toUpperCase(),
+        data.regional,
+        data.kebun,
+        data.totalSeleksiKebun,
+      ];
+    });
+  
+    // Buat workbook baru
     const wb = XLSX.utils.book_new();
+  
+    // Buat worksheet pertama (Detail Seleksi)
     const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
-
-    // Styling the header
+  
+    // Warna header
     const headerStyle = {
-      fill: {
-        fgColor: { rgb: "10CCAD" }, // Background color for header
-      },
-      font: {
-        color: { rgb: "FFFFFF" }, // White font for header
-        bold: true,
-      },
+      fill: { fgColor: { rgb: "10CCAD" } }, // Background hijau
+      font: { color: { rgb: "FFFFFF" }, bold: true }, // Font putih bold
     };
-
-    // Apply header styles (for the first row)
-    ws['A1'].s = headerStyle;
-    ws['B1'].s = headerStyle;
-    ws['C1'].s = headerStyle;
-    ws['D1'].s = headerStyle;
-    ws['E1'].s = headerStyle;
-    ws['F1'].s = headerStyle;
-    ws['G1'].s = headerStyle;
-    ws['H1'].s = headerStyle;
-    ws['I1'].s = headerStyle;
-    ws['J1'].s = headerStyle;
-    ws['K1'].s = headerStyle;
-    ws['L1'].s = headerStyle;
-    ws['M1'].s = headerStyle;
-
-    // Custom background color for "Kategori Warna"
+  
+    // Warna untuk kategori
     const colorMapping: any = {
       'gold': 'FFA500',
       'green': '00a300',
       'red': 'FF0000',
       'black': '000000'
     };
-
-    // Apply background color for "Kategori Warna" column (column K, index 10)
+  
+    // Apply warna header
+    headers.forEach((_, colIndex) => {
+      const cellRef = XLSX.utils.encode_cell({ r: 0, c: colIndex });
+      if (!ws[cellRef]) ws[cellRef] = {};
+      ws[cellRef].s = headerStyle;
+    });
+  
+    // Apply warna untuk "Kategori Warna" (Kolom ke-12, Index 12)
     data.forEach((row, rowIndex) => {
-      const color = row[12]?.toLowerCase(); // Access the Kategori Warna value (column 10)
+      const color = row[12]?.toLowerCase();
       if (colorMapping[color]) {
-        const cellRef = XLSX.utils.encode_cell({ r: rowIndex + 1, c: 12 }); // Row index is +1 because of header
-        ws[cellRef] = ws[cellRef] || {}; // Ensure the cell exists
+        const cellRef = XLSX.utils.encode_cell({ r: rowIndex + 1, c: 12 }); // +1 karena header di index 0
+        ws[cellRef] = ws[cellRef] || {};
         ws[cellRef].s = {
-          fill: {
-            fgColor: { rgb: colorMapping[color] }, // Set background color
-          },
-          font: {
-            color: { rgb: "FFFFFF" }, // White font for header
-            bold: true,
-          },
+          fill: { fgColor: { rgb: colorMapping[color] } },
+          font: { color: { rgb: "FFFFFF" }, bold: true },
         };
       }
     });
-
-    // Append the worksheet to the workbook
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-
-    // Menyimpan file excel
-    XLSX.writeFile(wb, `Hasil Seleksi TBM Bulan ${bulan.label} Tahun ${tahun.label}.xlsx`);
-
-    // Menutup toast loading dan menampilkan toast selesai
-    toast.loading('Downloading... Please wait!', {
-      id: loadingToast,
-      duration: 2000,
+  
+    // Tambahkan sheet pertama
+    XLSX.utils.book_append_sheet(wb, ws, 'Detail Seleksi');
+  
+    // Buat worksheet kedua (Summary Kebun) tanpa warna
+    const wsKebun = XLSX.utils.aoa_to_sheet([headersKebun, ...dataKebun]);
+  
+    // Apply warna header untuk sheet kedua
+    headersKebun.forEach((_, colIndex) => {
+      const cellRef = XLSX.utils.encode_cell({ r: 0, c: colIndex });
+      if (!wsKebun[cellRef]) wsKebun[cellRef] = {};
+      wsKebun[cellRef].s = headerStyle;
     });
+  
+    // Tambahkan sheet kedua
+    XLSX.utils.book_append_sheet(wb, wsKebun, 'Summary Kebun');
+  
+    // Simpan file Excel
+    XLSX.writeFile(wb, `Hasil Seleksi TBM Bulan ${bulan.label} Tahun ${tahun.label}.xlsx`);
+  
+    // Update toast
+    toast.success('Download complete!', { id: loadingToast });
   };
+  
 
 
   return (
@@ -1865,6 +1947,9 @@ export default function Dashboard() {
                                 }
                               }
                             />
+                            {/* <KuadranChart /> */}
+                          </div>
+                          <div className='mt-5 grid lg:grid-cols-1 sm:grid-cols-1'>
                             {/* <KuadranChart /> */}
                           </div>
                         </div>
