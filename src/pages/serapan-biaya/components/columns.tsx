@@ -1,23 +1,80 @@
-export interface Vegetatif {
-  id: string
-  regional: string
-  kebun: string
-  afdeling: string
-  blok: string
-  tahun_tanam: string
-  varietas: string
-  luas_ha: string
-  jumlah_pokok_awal_tanam: string
-  jumlah_pokok_sekarang: string
-  tinggi_tanaman_cm: string
-  jumlah_pelepah_bh: string
-  panjang_rachis_cm: string
-  lebar_petiola_cm: string
-  tebal_petiola_cm: string
-  jad_1_sisi: string
-  rerata_panjang_anak_daun: string
-  rerata_lebar_anak_daun: string
-  lingkar_batang_cm: string
-  tahun: number
-  bulan: number
+import { ColumnDef } from '@tanstack/react-table';
+import { DataTableColumnHeader } from './data-table-column-header';
+
+interface SerapanBiaya {
+  id: number;
+  regional: string;
+  kebun: string;
+  luas: number;
+  real_sd: number;
+  rkap_sd: number;
+  persen_serapan: number;
+  rp_ha: number;
+  nilai_vegetatif: number;
 }
+
+export const columns: ColumnDef<SerapanBiaya>[] = [
+  {
+    id: 'number',
+    header: 'No.',
+    cell: ({ row }) => <span>{row.index + 1}</span>,
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: 'regional',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Regional' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('regional')}</span>,
+  },
+  {
+    accessorKey: 'kebun',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Kebun' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('kebun')}</span>,
+  },
+  {
+    accessorKey: 'luas',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Luas' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('luas')}</span>,
+  },
+  {
+    accessorKey: 'real_sd',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Real SD' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('real_sd')}</span>,
+  },
+  {
+    accessorKey: 'rkap_sd',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='RKAP SD' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('rkap_sd')}</span>,
+  },
+  {
+    accessorKey: 'persen_serapan',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Persen Serapan' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('persen_serapan')}</span>,
+  },
+  {
+    accessorKey: 'rp_ha',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='RP/HA' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('rp_ha')}</span>,
+  },
+  {
+    accessorKey: 'nilai_vegetatif',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Nilai Vegetatif' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('nilai_vegetatif')}</span>,
+  },
+];

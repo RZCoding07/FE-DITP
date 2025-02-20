@@ -125,6 +125,7 @@ export default function Dashboard() {
   const [kebunOptions, setKebunOptions] = useState<{ value: string; label: string }[]>([])
   const [afdOptions, setAfdOptions] = useState<{ value: string; label: string }[]>([])
   const [scores, setScores] = useState<any[]>([])
+  const [scoresRegional, setScoresRegional]= useState<any[]>([])
   const [scoresKebun, setScoresKebun] = useState<any[]>([])
   const [tbmRes, setTbmRes] = useState<any[]>([])
   const [isKebun, setIsKebun] = useState<boolean>(false)
@@ -475,7 +476,66 @@ export default function Dashboard() {
             ]);
           });
 
-          console.log(newScoresPerKebun);
+          
+          const newScoresRegional: { [key: string]: { regional: string; totalSeleksiRegional: number; totalLuas: number } } = {}
+
+          Object.values(response.data).forEach((item: any) => {
+            let age = bulan.value * i;
+            if (age > 36) {
+              age = 36;
+            }
+            const regional = item.regional;
+            const luas = parseFloat(item.luas_ha);
+
+            const scoreLingkarBatang =
+              getScoreLingkarBatang(age, parseFloat(item.lingkar_batang_cm)) * 0.4;
+            const scoreJumlahPelepah =
+              getScoreJumlahPelepah(age, parseFloat(item.jumlah_pelepah_bh)) * 0.2;
+            const scoreTinggiBatang =
+              getScoreTinggiTanaman(age, parseFloat(item.tinggi_tanaman_cm)) * 0.1;
+            const scoreKerapatanPokok =
+              getScoreKerapatanPokok(
+                age,
+                parseFloat(item.jumlah_pokok_awal_tanam),
+                parseFloat(item.jumlah_pokok_sekarang)
+              ) * 0.3;
+
+            const totalSeleksian =
+              scoreLingkarBatang +
+              scoreJumlahPelepah +
+              scoreTinggiBatang +
+              scoreKerapatanPokok;
+
+            if (!newScoresRegional[regional]) {
+              newScoresRegional[regional] = {
+                regional,
+                totalSeleksiRegional: 0,
+                totalLuas: 0,
+              };
+            }
+
+            // Total seleksi dihitung berdasarkan luas (tertimbang)
+            newScoresRegional[regional].totalSeleksiRegional += totalSeleksian * luas;
+            newScoresRegional[regional].totalLuas += luas;
+          });
+
+          // Hitung rata-rata tertimbang total seleksi per regional
+          Object.keys(newScoresRegional).forEach((regional) => {
+            if (newScoresRegional[regional].totalLuas > 0) {
+              newScoresRegional[regional].totalSeleksiRegional /= newScoresRegional[regional].totalLuas;
+            }
+
+            setScoresRegional((prev) => [
+              ...prev,
+              {
+                [`tbm${i}`]: {
+                  regional,
+                  totalSeleksiRegional: newScoresRegional[regional].totalSeleksiRegional,
+                },
+              },
+            ]);
+          });
+
 
 
           // Rekap jumlah blok hitam per regional
@@ -1340,8 +1400,37 @@ export default function Dashboard() {
     });
   
     // Tambahkan sheet kedua
-    XLSX.utils.book_append_sheet(wb, wsKebun, 'Summary Kebun');
-  
+    XLSX.utils.book_append_sheet(wb, wsKebun, 'Rekap per Kebun');
+
+
+    // regional
+
+    const headersRegional = ["Jenis TBM", "Regional", "Total Seleksi Regional"];
+
+    // Konversi data dari scoresRegional
+    const dataRegional = scoresRegional.map((item) => {
+      let key = Object.keys(item)[0];
+      const data = item[key];
+      return [
+        key.toUpperCase(),
+        data.regional,
+        data.totalSeleksiRegional,
+      ];
+    });
+
+    // Buat worksheet ketiga (Summary Regional) tanpa warna
+    const wsRegional = XLSX.utils.aoa_to_sheet([headersRegional, ...dataRegional]);
+
+    // Apply warna header untuk sheet ketiga
+    headersRegional.forEach((_, colIndex) => {
+      const cellRef = XLSX.utils.encode_cell({ r: 0, c: colIndex });
+      if (!wsRegional[cellRef]) wsRegional[cellRef] = {};
+      wsRegional[cellRef].s = headerStyle;
+    });
+
+    // Tambahkan sheet ketiga
+    XLSX.utils.book_append_sheet(wb, wsRegional, 'Rekap per Regional');
+
     // Simpan file Excel
     XLSX.writeFile(wb, `Hasil Seleksi TBM Bulan ${bulan.label} Tahun ${tahun.label}.xlsx`);
   
@@ -1596,6 +1685,7 @@ export default function Dashboard() {
                         <DonutChartTbm
                           dataprops={{
                             rpc: watch('rpc'),
+                            kebun: kebun,
                             data: colorData,
                             dataLuas: colorDataLuas,
                             dataDnt: colorDataDonat,

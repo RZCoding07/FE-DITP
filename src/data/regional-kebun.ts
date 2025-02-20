@@ -2,7 +2,7 @@ export const regionalKebunData = {
     "regionals": [
       {
         "name": "RPC1",
-        "kebuns": ["1KGM", "1KSA", "KTR", "1KDH", "1KLJ", "1KSK", "1KSG", "1KAM", "1KTR", "1KSP", "1KDP", "1KPM", "1KBB", "1KBU", "1KRB", "1KHP", "1KSU", "1KRP", "1KBN", "1KMS", "1KSD", "1KGP", "1KAS", "1KGR", "1KAN", "1KSL", "1KHG", "1KMM"]
+        "kebuns": ["1KGM", "1KSA", "1KDH", "1KLJ", "1KSK", "1KSG", "1KAM", "1KTR", "1KSP", "1KDP", "1KPM", "1KBB", "1KBU", "1KRB", "1KHP", "1KSU", "1KRP", "1KBN", "1KMS", "1KSD", "1KGP", "1KAS", "1KGR", "1KAN", "1KSL", "1KHG", "1KMM"]
       },
       {
         "name": "RPC2",
@@ -37,4 +37,5 @@ export const regionalKebunData = {
         "kebuns": ["SULI", "BEKA"]
       }
     ]
+
   }

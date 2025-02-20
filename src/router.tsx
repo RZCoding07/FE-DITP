@@ -296,6 +296,12 @@ let immatureRouter = [
     }),
   },
   {
+    path : 'upload-serapan-biaya',
+    lazy: async () => ({
+      Component: (await import('./pages/upload-serapan-biaya')).default,
+    }),
+  },
+  {
     path: 'create-uraian-pekerjaan-immature',
     lazy: async () => ({
       Component: (await import('@/pages/create-uraian-pekerjaan-immature'))

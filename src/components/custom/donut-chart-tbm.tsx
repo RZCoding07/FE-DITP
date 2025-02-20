@@ -5,6 +5,7 @@ import type { ApexOptions } from "apexcharts"
 interface DonutChartTbmProps {
   dataprops: {
     rpc: { value: string }
+    kebun: { value: string }
     title: string
     blok: string
     ctg: string
@@ -24,7 +25,7 @@ interface DonutChartTbmProps {
 }
 
 const DonutChartTbm: React.FC<DonutChartTbmProps> = React.memo(({ dataprops }) => {
-  const { rpc, title, blok, ctg } = dataprops
+  const { rpc, kebun,  title, blok, ctg } = dataprops
 
   const series = useMemo(() => {
     let result: number[] = []

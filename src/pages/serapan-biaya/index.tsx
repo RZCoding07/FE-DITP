@@ -4,7 +4,7 @@ import { Search } from '@/components/search'
 import ThemeSwitch from '@/components/theme-switch'
 import { UserNav } from '@/components/user-nav'
 import { DataTable } from './components/data-table'
-import { columns } from './components/columns.1'
+import { columns } from './components/columns'
 import { Button } from '@/components/custom/button'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
@@ -26,7 +26,7 @@ const [Awal, setAwal] = useState([])
     setLoading(true)
     const tahun = new Date().getFullYear()
     try {
-      const response = await axios.get(`${apiUrl}/why`, {})
+      const response = await axios.get(`${apiUrl}/serapan-biaya`, {})
       setAwal(response.data)
     } catch (error: any) {
       console.error('Error fetching Awal:', error)
@@ -65,7 +65,7 @@ const [Awal, setAwal] = useState([])
           </div>
           {/* {(account_type === 'HO PalmCo' || account_type === 'Superadmin' ) && ( */}
           <div className='ml-auto flex space-x-2'>
-            <Link to='/upload-problem-identification'>
+            <Link to='/upload-serapan-biaya'>
               <Button>Upload Data</Button>
             </Link>
           </div>

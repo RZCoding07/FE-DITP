@@ -17,42 +17,24 @@ interface Point {
 
 const areas = [
   // Green quadrant (top-right) - Kuadran Hijau 
-  { xRange: [90, 100], yRange: [100, 140], color: "rgba(255, 255, 0, 0.7)" },
+  { xRange: [90, 100], yRange: [60, 100], color: "rgba(255, 255, 0, 0.7)" },
 
   // Yellow quadrant (bottom-right) - Kuadran Kuning
-  { xRange: [90, 100], yRange: [0, 100], color: "rgba(144, 238, 144, 0.7)" },
+  { xRange: [90, 100], yRange: [-100, 60], color: "rgba(144, 238, 144, 0.7)" },
 
   // Orange quadrant (top-left) - Kuadran Orange
-  { xRange: [87, 90], yRange: [100, 140], color: "rgba(255, 99, 71, 0.7)" },
+  { xRange: [80, 90], yRange: [60, 100], color: "rgba(255, 99, 71, 0.7)" },
 
   // Black quadrant (bottom-left) - Kuadran Hitam (awal)
-  { xRange: [87, 90], yRange: [0, 100], color: "rgba(0, 0, 0, 0.7)" },
-
-
+  { xRange: [80, 90], yRange: [-100, 60], color: "rgba(0, 0, 0, 0.7)" },
 ];
 
-
 const ScatterChart = () => {
-// random data
   const data = [
     { pica: 90, cashcost: 100, kebun: "Kebun 1", bulan: "Januari", tahun: 2021, kode_kebun: "K1" },
     { pica: 95, cashcost: 80, kebun: "Kebun 2", bulan: "Februari", tahun: 2021, kode_kebun: "K2" },
-    {
-      pica: 87,
-      cashcost: 50,
-      kebun: "Kebun 3",
-      bulan: "Maret",
-      tahun: 2021,
-      kode_kebun: "K3",
-    },
-    {
-      pica: 88,
-      cashcost: 130,
-      kebun: "Kebun 4",
-      bulan: "April",
-      tahun: 2021,
-      kode_kebun: "K4",
-    },
+    { pica: 80, cashcost: 50, kebun: "Kebun 3", bulan: "Maret", tahun: 2021, kode_kebun: "K3" },
+    { pica: 88, cashcost: 130, kebun: "Kebun 4", bulan: "April", tahun: 2021, kode_kebun: "K4" },
   ]
 
   const [modalData, setModalData] = useState<any>(null)
@@ -64,14 +46,12 @@ const ScatterChart = () => {
       zoomType: "xy",
       animation: true,
       backgroundColor: "transparent",
-
       events: {
         render() {
           const chart = this as any
           const xAxis = chart.xAxis[0]
           const yAxis = chart.yAxis[0]
 
-          
           if (chart.customShapes) {
             chart.customShapes.forEach((shape: any) => shape.destroy())
           }
@@ -85,8 +65,6 @@ const ScatterChart = () => {
             const x2 = xAxis.toPixels(xMax)
             const y1 = yAxis.toPixels(yMax)
             const y2 = yAxis.toPixels(yMin)
-
-            console
 
             const rect = chart.renderer
               .rect(x1, y1, x2 - x1, y2 - y1, 0)
@@ -104,7 +82,7 @@ const ScatterChart = () => {
     title: {
       text: "KUADRAN PICA KESELURUHAN TBM",
       style: {
-        color: "#FFFFFF", // Changed to white
+        color: "#FFFFFF",
         fontSize: "18px",
         fontWeight: "bold",
       },
@@ -116,51 +94,76 @@ const ScatterChart = () => {
       title: {
         text: "Nilai Vegetatif",
         style: {
-          color: "#FFFFFF", // Changed to white
+          color: "#FFFFFF",
         },
       },
-      min: 87,
+      min: 80,
       max: 100,
       tickInterval: 1,
       labels: {
         style: {
-          color: "#FFFFFF", // Changed to white
+          color: "#FFFFFF",
         },
       },
-      lineColor: "#FFFFFF", // Changed to white
-      gridLineColor: "#FFFFFF", // Changed to white
+      lineColor: "#FFFFFF",
+      gridLineColor: "#FFFFFF",
+      plotLines: [{
+        color: '#FFFFFF', // Warna garis
+        width: 1, // Lebar garis
+        value: 0, // Posisi garis di sumbu x
+        zIndex: 5 // Z-index untuk memastikan garis di atas elemen lain
+      }]
     },
     yAxis: {
       title: {
         text: "Serapan Biaya (%)",
         style: {
-          color: "#FFFFFF", // Changed to white
+          color: "#FFFFFF",
         },
       },
-      min: 0,
-      max: 140,
+      min: -100,
+      max: 100,
       tickInterval: 10,
       labels: {
         formatter: function (this: { value: number }): string {
-          const x = Highcharts.numberFormat(this.value - 40, 0, ",", ".")
-          console.log(x)
-          if((this.value -40) === -10) {
+          const x = Highcharts.numberFormat(this.value - 20, 0, ",", ".")
+          if((this.value) === -10) {
             return "110"
-          } else if((this.value -40) === -20) {
+          } else if((this.value) === -20) {
             return "120"
-          } else if((this.value -40) === -30) {
+          } else if((this.value) === -30) {
             return "130"
-          } else if((this.value -40) === -40) {
+          } else if((this.value) === -40) {
             return "140"
+          } else if((this.value) === -50) {
+            return "150"
+          } else if((this.value) === -60) {
+            return "160"
+          } else if((this.value) === -70) {
+            return "170"
+          } else if((this.value) === -80) {
+            return "180"
+          } else if((this.value) === -90) {
+            return "190"
+          } else if((this.value) === -100) {
+            return "200"
           }
-          return Highcharts.numberFormat(Math.abs(this.value -40), 0, ",", ".")
+    
+          return Highcharts.numberFormat(Math.abs(this.value), 0, ",", ".")
+          // return `${Math.abs(this.value)}`
         },
         style: {
-          color: "#FFFFFF", // Changed to white
+          color: "#FFFFFF",
         },
       },
-      lineColor: "#FFFFFF", // Changed to white
-      gridLineColor: "#FFFFFF", // Changed to white
+      lineColor: "transparent",
+      gridLineColor: "transparent",
+      plotLines: [{
+        color: 'red', // Warna garis
+        width: 1, // Lebar garis
+        value: 0, // Posisi garis di sumbu y
+        zIndex: 5 // Z-index untuk memastikan garis di atas elemen lain
+      }]
     },
     legend: {
       layout: "horizontal",
@@ -170,10 +173,10 @@ const ScatterChart = () => {
       backgroundColor: "transparent",
       borderWidth: 0,
       itemStyle: {
-        color: "#FFFFFF", // Changed to white
+        color: "#FFFFFF",
       },
       itemHoverStyle: {
-        color: "#D1D5DB", // Changed to a light gray
+        color: "#D1D5DB",
       },
     },
     plotOptions: {
@@ -183,7 +186,7 @@ const ScatterChart = () => {
           states: {
             hover: {
               enabled: true,
-              lineColor: "rgb(200,200,200)", // Changed to a lighter color
+              lineColor: "rgb(200,200,200)",
             },
           },
         },
@@ -197,19 +200,19 @@ const ScatterChart = () => {
           pointFormatter: function (this: Highcharts.Point): string {
             const xValue = this.x !== undefined ? this.x : "N/A"
             const yValue = this.y !== undefined ? Math.floor(Number.parseFloat(this.y.toString())) : "N/A"
-            return `Nilai Vegetatif: ${xValue}<br>Serapan Biaya: ${Highcharts.numberFormat(Math.abs(yValue as number - 100), 0, ",", ".")}%`
+            return `Nilai Vegetatif: ${xValue}<br>Serapan Biaya: ${Highcharts.numberFormat(Math.abs(yValue as number), 0, ",", ".")}%`
           },
         },
         dataLabels: {
           enabled: true,
           formatter: function (this: { point: Point }) {
             const point = this.point as Point
-            return point.kebun
+            return `${point.kebun}`
           },
           style: {
             fontSize: "9px",
             fontWeight: "bold",
-            color: "#FFFFFF", // Changed to white
+            color: "#FFFFFF",
           },
           verticalAlign: "bottom",
           align: "center",
@@ -239,7 +242,7 @@ const ScatterChart = () => {
       {
         type: "scatter",
         name: "PICA TBM I",
-        color: "#FFFFFF", // Changed to white dots for better visibility on dark background
+        color: "#FFFFFF",
         data: data.map((item) => ({
           x: Number.parseFloat(item.pica.toString()),
           y: Number.parseFloat(item.cashcost.toString()),
@@ -254,8 +257,6 @@ const ScatterChart = () => {
 
   return (
     <div className="p-4 rounded-lg">
-      {" "}
-      {/* Changed background color to match chart */}
       <div id="chart" className="chart-container">
         <HighchartsReact
           highcharts={Highcharts}
@@ -266,6 +267,5 @@ const ScatterChart = () => {
     </div>
   )
 }
-
 
 export default ScatterChart
