@@ -15,36 +15,46 @@ interface Point {
   cashcost: number
 }
 
-interface ScatterProps {
-  data?: Array<Point>
-  height?: number
-  dataKeyXName: string
-  dataKeyYName: string
-}
-
-
-
 const areas = [
-  // Green quadrant (top-right) - Kuadran Hijau
-  { xRange: [90, 100], yRange: [60, 120], color: "rgba(255, 255, 0, 0.7)" },
+  // Green quadrant (top-right) - Kuadran Hijau 
+  { xRange: [90, 100], yRange: [100, 140], color: "rgba(255, 255, 0, 0.7)" },
 
   // Yellow quadrant (bottom-right) - Kuadran Kuning
-  { xRange: [90, 100], yRange: [0, 60], color: "rgba(144, 238, 144, 0.7)" },
+  { xRange: [90, 100], yRange: [0, 100], color: "rgba(144, 238, 144, 0.7)" },
 
   // Orange quadrant (top-left) - Kuadran Orange
-  { xRange: [87, 90], yRange: [60, 120], color: "rgba(255, 99, 71, 0.7)" },
+  { xRange: [87, 90], yRange: [100, 140], color: "rgba(255, 99, 71, 0.7)" },
 
   // Black quadrant (bottom-left) - Kuadran Hitam (awal)
-  { xRange: [87, 90], yRange: [0, 60], color: "rgba(0, 0, 0, 0.7)" },
+  { xRange: [87, 90], yRange: [0, 100], color: "rgba(0, 0, 0, 0.7)" },
 
-  // Black quadrant (top-left) - Kuadran Hitam (tambahan)
-  { xRange: [87, 90], yRange: [120, 160], color: "rgba(0, 0, 0, 0.7)" }, 
 
-  {  xRange: [90, 100], yRange: [120, 160], color: "rgba(144, 238, 144, 0.7)" }, 
 ];
 
 
-export const ScatterChart = ({ data = [], height = 800, dataKeyXName, dataKeyYName }: ScatterProps) => {
+const ScatterChart = () => {
+// random data
+  const data = [
+    { pica: 90, cashcost: 100, kebun: "Kebun 1", bulan: "Januari", tahun: 2021, kode_kebun: "K1" },
+    { pica: 95, cashcost: 80, kebun: "Kebun 2", bulan: "Februari", tahun: 2021, kode_kebun: "K2" },
+    {
+      pica: 87,
+      cashcost: 50,
+      kebun: "Kebun 3",
+      bulan: "Maret",
+      tahun: 2021,
+      kode_kebun: "K3",
+    },
+    {
+      pica: 88,
+      cashcost: 130,
+      kebun: "Kebun 4",
+      bulan: "April",
+      tahun: 2021,
+      kode_kebun: "K4",
+    },
+  ]
+
   const [modalData, setModalData] = useState<any>(null)
   const [showModal, setShowModal] = useState<boolean>(false)
 
@@ -61,6 +71,7 @@ export const ScatterChart = ({ data = [], height = 800, dataKeyXName, dataKeyYNa
           const xAxis = chart.xAxis[0]
           const yAxis = chart.yAxis[0]
 
+          
           if (chart.customShapes) {
             chart.customShapes.forEach((shape: any) => shape.destroy())
           }
@@ -74,6 +85,8 @@ export const ScatterChart = ({ data = [], height = 800, dataKeyXName, dataKeyYNa
             const x2 = xAxis.toPixels(xMax)
             const y1 = yAxis.toPixels(yMax)
             const y2 = yAxis.toPixels(yMin)
+
+            console
 
             const rect = chart.renderer
               .rect(x1, y1, x2 - x1, y2 - y1, 0)
@@ -125,11 +138,22 @@ export const ScatterChart = ({ data = [], height = 800, dataKeyXName, dataKeyYNa
         },
       },
       min: 0,
-      max: 160,
-      tickInterval: 20,
+      max: 140,
+      tickInterval: 10,
       labels: {
         formatter: function (this: { value: number }): string {
-          return Highcharts.numberFormat(this.value, 0, ",", ".")
+          const x = Highcharts.numberFormat(this.value - 40, 0, ",", ".")
+          console.log(x)
+          if((this.value -40) === -10) {
+            return "110"
+          } else if((this.value -40) === -20) {
+            return "120"
+          } else if((this.value -40) === -30) {
+            return "130"
+          } else if((this.value -40) === -40) {
+            return "140"
+          }
+          return Highcharts.numberFormat(Math.abs(this.value -40), 0, ",", ".")
         },
         style: {
           color: "#FFFFFF", // Changed to white
@@ -173,7 +197,7 @@ export const ScatterChart = ({ data = [], height = 800, dataKeyXName, dataKeyYNa
           pointFormatter: function (this: Highcharts.Point): string {
             const xValue = this.x !== undefined ? this.x : "N/A"
             const yValue = this.y !== undefined ? Math.floor(Number.parseFloat(this.y.toString())) : "N/A"
-            return `Nilai Vegetatif: ${xValue}<br>Serapan Biaya: ${Highcharts.numberFormat(yValue as number, 0, ",", ".")}%`
+            return `Nilai Vegetatif: ${xValue}<br>Serapan Biaya: ${Highcharts.numberFormat(Math.abs(yValue as number - 100), 0, ",", ".")}%`
           },
         },
         dataLabels: {
@@ -236,10 +260,12 @@ export const ScatterChart = ({ data = [], height = 800, dataKeyXName, dataKeyYNa
         <HighchartsReact
           highcharts={Highcharts}
           options={options}
-          containerProps={{ style: { height: `${height}px`, width: "100%" } }}
+          containerProps={{ style: { height: `800px`, width: "100%" } }}
         />
       </div>
     </div>
   )
 }
 
+
+export default ScatterChart

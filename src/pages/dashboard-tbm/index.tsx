@@ -25,7 +25,7 @@ import { StockAnalysisChartKebunColor } from '@/components/custom/horizontal-keb
 import StockAnalysisChartBar from '@/components/custom/bar-chart'
 import DonutChartTbm from '@/components/custom/donut-chart-tbm'
 import DonutChart from '@/components/custom/donut-chart'
-import { ScatterChart } from '@/components/custom/kuadran'
+import  ScatterChart  from '@/components/custom/kuadran'
 import { Summary as STbm } from '@/components/summarytbm'
 import * as XLSX from 'xlsx-js-style'
 import toast from 'react-hot-toast'

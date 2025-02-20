@@ -26,7 +26,7 @@ import { SelectOption } from '@/utils/types'
 import { MONTH_NAMES } from '@/utils/constants'
 import { fetchDistinctYears } from '@/utils/api_immature'
 import { fetchVegetativeProc } from '@/utils/api_immature'
-import { ScatterChart } from '@/components/custom/kuadran'
+import ScatterChart from '@/components/custom/kuadran'
 
 
 export default function PicaTbm() {
@@ -894,7 +894,7 @@ export default function PicaTbm() {
 
             <div className='items-center justify-center align-middle mr-1 pb-5'>
               <div className='rounded-lg border border-cyan-500 bg-white p-3 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-cyan-700 dark:to-cyan-600'>
-            <ScatterChart dataKeyXName='' dataKeyYName='' data={[]} />
+            <ScatterChart />
               </div>
             </div>
 
