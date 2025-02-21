@@ -10,7 +10,12 @@ interface SerapanBiaya {
   rkap_sd: number;
   persen_serapan: number;
   rp_ha: number;
-  nilai_vegetatif: number;
+  bulan: string;
+  tahun: number;
+}
+
+function formatNumber(number: number) {
+  return new Intl.NumberFormat('id-ID').format(number);
 }
 
 export const columns: ColumnDef<SerapanBiaya>[] = [
@@ -47,14 +52,14 @@ export const columns: ColumnDef<SerapanBiaya>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Real SD' />
     ),
-    cell: ({ row }) => <span>{row.getValue('real_sd')}</span>,
+    cell: ({ row }) => <span>{formatNumber(row.getValue('real_sd'))}</span>,
   },
   {
     accessorKey: 'rkap_sd',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='RKAP SD' />
     ),
-    cell: ({ row }) => <span>{row.getValue('rkap_sd')}</span>,
+    cell: ({ row }) => <span>{formatNumber(row.getValue('rkap_sd'))}</span>,
   },
   {
     accessorKey: 'persen_serapan',
@@ -68,13 +73,21 @@ export const columns: ColumnDef<SerapanBiaya>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='RP/HA' />
     ),
-    cell: ({ row }) => <span>{row.getValue('rp_ha')}</span>,
+    cell: ({ row }) => <span>{formatNumber(row.getValue('rp_ha'))}</span>,
   },
   {
-    accessorKey: 'nilai_vegetatif',
+    accessorKey: 'bulan',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Nilai Vegetatif' />
+      <DataTableColumnHeader column={column} title='Bulan' />
     ),
-    cell: ({ row }) => <span>{row.getValue('nilai_vegetatif')}</span>,
+    cell: ({ row }) => <span>{row.getValue('bulan')}</span>,
   },
+  {
+    accessorKey: 'tahun',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Tahun' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('tahun')}</span>,
+  },
+
 ];

@@ -29,7 +29,8 @@ export default function UploadUser() {
     rkap_sd: number;
     persen_serapan: number;
     rp_ha: number;
-    nilai_vegetatif: number;
+    bulan: string;
+    tahun: number;
   }
   const [mappedData, setMappedData] = useState<SerapanBiaya[]>([])
   const [values, setValues] = useState<any[]>([])
@@ -128,7 +129,8 @@ export default function UploadUser() {
             rkap_sd: value[5],
             persen_serapan: value[6],
             rp_ha: value[7],
-            nilai_vegetatif: value[8]
+            bulan: value[8],
+            tahun: value[9]
           }
         })
 
@@ -145,7 +147,7 @@ export default function UploadUser() {
   const handleUploadUsers = async () => {
     setIsLoadingUpload(true)
 
-    const apiUrl = import.meta.env.VITE_API_MASTER as string
+    const apiUrl = import.meta.env.VITE_API_IMMATURE as string
     const loginData = cookie.get('token')
     const tokenData = JSON.parse(loginData || '{}')
 
