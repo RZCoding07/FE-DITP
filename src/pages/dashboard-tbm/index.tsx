@@ -33,6 +33,7 @@ import StackedBarChart from '@/components/custom/stacked-bar-chart'
 import { FaEyeDropper, FaRecycle, FaSync } from 'react-icons/fa'
 import { regionalKebunData } from '@/data/regional-kebun'
 import { kebunAfdBlok } from '@/data/kebun-afd-blok'
+import { fetchSerapanBiaya } from '@/utils/api_immature'
 
 export default function Dashboard() {
   const user = cookie.get('user')
@@ -133,31 +134,31 @@ export default function Dashboard() {
   const [isTbm, setIsTbm] = useState<boolean>(true)
   const [regionalBlackBlockCount, setRegionalBlackBlockCount] = useState<any>({})
   const [colorData, setColorData] = useState({
-    emas: 0,
-    hijau: 0,
-    merah: 0,
-    hitam: 0,
+    gold: 0,
+    green: 0,
+    red: 0,
+    black: 0,
   })
 
   const [colorDataLuas, setColorDataLuas] = useState({
-    emas: 0,
-    hijau: 0,
-    merah: 0,
-    hitam: 0,
+    gold: 0,
+    green: 0,
+    red: 0,
+    black: 0,
   })
 
   const [colorDataDonat, setColorDataDonat] = useState({
-    emas: 0,
-    hijau: 0,
-    merah: 0,
-    hitam: 0,
+    gold: 0,
+    green: 0,
+    red: 0,
+    black: 0,
   })
 
   const [colorDataLuasDonat, setColorDataLuasDonat] = useState({
-    emas: '',
-    hijau: '',
-    merah: '',
-    hitam: ''
+    gold: '',
+    green: '',
+    red: '',
+    black: ''
   })
 
 
@@ -170,16 +171,16 @@ export default function Dashboard() {
         setScores([]);  // reset scores array
         setScoresKebun([]);  // reset scoresKebun array
         setColorData({
-          hitam: 0,
-          merah: 0,
-          hijau: 0,
-          emas: 0,
+          black: 0,
+          red: 0,
+          green: 0,
+          gold: 0,
         });  // reset colorData
         setColorDataLuas({
-          hitam: 0,
-          merah: 0,
-          hijau: 0,
-          emas: 0,
+          black: 0,
+          red: 0,
+          green: 0,
+          gold: 0,
         });  // reset colorDataLuas
         setTbmData({
           tbm1: 0,
@@ -298,8 +299,13 @@ export default function Dashboard() {
           const tahunTanam = tahun.value - i;
           const response = await fetchVegetativeProc({
             input_tbm: 'tbm' + i,
-            input_tahun_tanam: tahunTanam,
+            input_tahun_tanam: tahunTanam.toString(),
+            input_bulan: parseInt(bulan.value),
+            input_tahun: parseInt(tahun.value), 
           });
+
+          console.log('response.data',i, response.data);
+
 
           setTbmRes((prev) => [...prev, Object.values(response.data)]);
 
@@ -379,23 +385,23 @@ export default function Dashboard() {
               },
             ]);
 
-            // Set color data untuk hitam, merah, hijau, emas
-            setColorData((prev) => ({
-              ...prev,
-              hitam: totalSeleksian <= 80 ? prev.hitam + 1 : prev.hitam,
-              merah: totalSeleksian > 80 && totalSeleksian <= 89 ? prev.merah + 1 : prev.merah,
-              hijau: totalSeleksian > 89 && totalSeleksian <= 96 ? prev.hijau + 1 : prev.hijau,
-              emas: totalSeleksian > 96 ? prev.emas + 1 : prev.emas,
-            }));
+            // // Set color data untuk hitam, merah, hijau, emas
+            // setColorData((prev) => ({
+            //   ...prev,
+            //   black: totalSeleksian <= 80 ? prev.black + 1 : prev.black,
+            //   red: totalSeleksian > 80 && totalSeleksian <= 89 ? prev.red + 1 : prev.red,
+            //   green: totalSeleksian > 89 && totalSeleksian <= 96 ? prev.green + 1 : prev.green,
+            //   gold: totalSeleksian > 96 ? prev.gold + 1 : prev.gold,
+            // }));
 
-            // Set color data luas per kategori
-            setColorDataLuas((prev) => ({
-              ...prev,
-              hitam: totalSeleksian <= 80 ? prev.hitam + luas : prev.hitam,
-              merah: totalSeleksian > 80 && totalSeleksian <= 89 ? prev.merah + luas : prev.merah,
-              hijau: totalSeleksian > 89 && totalSeleksian <= 96 ? prev.hijau + luas : prev.hijau,
-              emas: totalSeleksian > 96 ? prev.emas + luas : prev.emas,
-            }));
+            // // Set color data luas per kategori
+            // setColorDataLuas((prev) => ({
+            //   ...prev,
+            //   black: totalSeleksian <= 80 ? prev.black + luas : prev.black,
+            //   red: totalSeleksian > 80 && totalSeleksian <= 89 ? prev.red + luas : prev.red,
+            //   green: totalSeleksian > 89 && totalSeleksian <= 96 ? prev.green + luas : prev.green,
+            //   gold: totalSeleksian > 96 ? prev.gold + luas : prev.gold,
+            // }));
 
             return {
               [`tbm${i}`]: {
@@ -469,7 +475,9 @@ export default function Dashboard() {
                 [`tbm${i}`]: {
                   regional: newScoresPerKebun[kebun].regional,
                   kebun,
+                  luas : newScoresPerKebun[kebun].totalLuas,
                   totalSeleksiKebun: newScoresPerKebun[kebun].totalSeleksiKebun,
+                  colorCategory: newScoresPerKebun[kebun].totalSeleksiKebun <= 80 ? 'black' : newScoresPerKebun[kebun].totalSeleksiKebun <= 89 ? 'red' : newScoresPerKebun[kebun].totalSeleksiKebun <= 96 ? 'green' : 'gold',
                 },
               },
 
@@ -619,13 +627,69 @@ export default function Dashboard() {
         console.error('Error fetching data:', error)
       }
     }
-
     if (bulan && tahun) {
       fetchProcVegetatifDefault()
     }
   }, [bulan, tahun])
 
 
+  useEffect(() => {
+    const data = scores.map((item) => {
+      let key = Object.keys(item)[0];
+      const data = item[key];
+      if (key === 'tbm4') {
+        key = 'TBM > 3';
+      }
+      return [
+        key.toUpperCase(),
+        data.regional,
+        data.kebun,
+        data.afdeling,
+        data.blok,
+        data.luas,
+        data.jumPelepah,
+        data.scoreLingkarBatang,
+        data.scoreJumlahPelepah,
+        data.scoreTinggiBatang,
+        data.scoreKerapatanPokok,
+        data.totalSeleksian,
+        data.colorCategory,
+      ];
+    });
+    
+    // Inisialisasi objek colorData
+    const colorData = data.reduce((acc:any, item:any) => {
+      const colorCategory = item[12]; // Ambil colorCategory dari data
+      if (colorCategory in acc) {
+        acc[colorCategory] += 1; // Tambahkan 1 jika kategori warna sudah ada
+      } else {
+        acc[colorCategory] = 1; // Inisialisasi jika kategori warna belum ada
+      }
+      return acc;
+    }, { black: 0, red: 0, green: 0, gold: 0 });
+
+
+    // emas = gold, hijau = green, merah = red, hitam = black
+
+    // Inisialisasi objek colorDataLuas
+    const colorDataLuas = data.reduce((acc:any, item:any) => {
+      const colorCategory = item[12]; // Ambil colorCategory dari data
+      const luas = item[5]; // Ambil luas dari data
+      if (colorCategory in acc) {
+        acc[colorCategory] += luas; // Tambahkan luas jika kategori warna sudah ada
+      } else {
+        acc[colorCategory] = luas; // Inisialisasi jika kategori warna belum ada
+      }
+      return acc;
+    }, { black: 0, red: 0, green: 0, gold: 0 });
+
+    // Set state colorData
+
+    setColorDataLuas(colorDataLuas);
+    setColorData(colorData);
+  }, [scores])
+
+  
 
   const [selectedCard, setSelectedCard] = useState({
     type: 'all',
@@ -1091,18 +1155,20 @@ export default function Dashboard() {
         const merahSumColorLast = merahSumColor?.[merahSumColor.length - 1]?.sumColor ?? 0;
         const hitamSumColorLast = hitamSumColor?.[hitamSumColor.length - 1]?.sumColor ?? 0;
 
+        
+
         setColorDataDonat({
-          emas: emasSumColorLast,
-          hijau: hijauSumColorLast,
-          merah: merahSumColorLast,
-          hitam: hitamSumColorLast,
+          gold: emasSumColorLast,
+          green: hijauSumColorLast,
+          red: merahSumColorLast,
+          black: hitamSumColorLast,
         });
 
         setColorDataLuasDonat({
-          emas: emasSumColorLuas,
-          hijau: hijauSumColorLuas,
-          merah: merahSumColorLuas,
-          hitam: hitamSumColorLuas,
+          gold: emasSumColorLuas,
+          green: hijauSumColorLuas,
+          red: merahSumColorLuas,
+          black: hitamSumColorLuas,
         });
 
 
@@ -1332,8 +1398,8 @@ export default function Dashboard() {
     });
   
     // Header untuk sheet kedua (Summary Kebun)
-    const headersKebun = ["Jenis TBM", "Regional", "Kebun", "Total Seleksi Kebun"];
-  
+    const headersKebun = ["Jenis TBM", "Regional", "Kebun", "Luas", "Total Seleksi Kebun", "Color Category"];
+   
     // Konversi data dari scoresKebun
     const dataKebun = scoresKebun.map((item) => {
       let key = Object.keys(item)[0];
@@ -1342,9 +1408,14 @@ export default function Dashboard() {
         key.toUpperCase(),
         data.regional,
         data.kebun,
+        data.luas,
         data.totalSeleksiKebun,
+        data.colorCategory,
       ];
     });
+
+
+
   
     // Buat workbook baru
     const wb = XLSX.utils.book_new();
@@ -1398,6 +1469,21 @@ export default function Dashboard() {
       if (!wsKebun[cellRef]) wsKebun[cellRef] = {};
       wsKebun[cellRef].s = headerStyle;
     });
+
+
+    dataKebun.forEach((row, rowIndex) => {
+      const color = row[5]?.toLowerCase();
+      if (colorMapping[color]) {
+        const cellRef = XLSX.utils.encode_cell({ r: rowIndex + 1, c: 5 }); // +1 karena header di index 0
+      wsKebun[cellRef] = wsKebun[cellRef] || {};
+        wsKebun[cellRef].s = {
+          fill: { fgColor: { rgb: colorMapping[color] } },
+          font: { color: { rgb: "FFFFFF" }, bold: true },
+        };
+      }
+    });
+  
+
   
     // Tambahkan sheet kedua
     XLSX.utils.book_append_sheet(wb, wsKebun, 'Rekap per Kebun');

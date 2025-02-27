@@ -1,73 +1,1055 @@
-
- 
-
- const datasets = [
 {
-  "1": 21,
-  "2": 22.74,
-  "3": 24.48,
-  "4": 26.22,
-  "5": 27.96,
-  "6": 29.7,
-  "7": 36.37,
-  "8": 43.03,
-  "9": 49.7,
-  "10": 56.37,
-  "11": 63.03,
-  "12": 69.7,
-  "13": 74.2,
-  "14": 78.7,
-  "15": 83.2,
-  "16": 87.7,
-  "17": 92.2,
-  "18": 96.7,
-  "19": 102.95,
-  "20": 109.2,
-  "21": 115.45,
-  "22": 121.7,
-  "23": 127.95,
-  "24": 134.2,
-  "25": 139.67,
-  "26": 145.13,
-  "27": 150.6,
-  "28": 156.07,
-  "29": 161.53,
-  "30": 167
-},
-{"1":21,"2":23.2,"3":25.4,"4":27.6,"5":29.8,"6":32,"7":37.33,"8":42.67,"9":48,"10":53.33,"11":58.67,"12":64,"13":69.82,"14":75.63,"15":81.45,"16":87.27,"17":93.08,"18":98.9,"19":104.62,"20":110.33,"21":116.05,"22":121.77,"23":127.48,"24":133.2,"25":139.83,"26":146.47,"27":153.1,"28":159.73,"29":166.37,"30":173},
-{"1":21,"2":24.02,"3":27.04,"4":30.06,"5":33.08,"6":36.1,"7":41.07,"8":46.03,"9":51,"10":55.97,"11":60.93,"12":65.9,"13":70.82,"14":75.73,"15":80.65,"16":85.57,"17":90.48,"18":95.4,"19":101.92,"20":108.43,"21":114.95,"22":121.47,"23":127.98,"24":134.5,"25":139.42,"26":144.33,"27":149.25,"28":154.17,"29":159.08,"30":164},
-{"1":21,"2":24.02,"3":27.04,"4":30.06,"5":33.08,"6":36.1,"7":41.07,"8":46.03,"9":51,"10":55.97,"11":60.93,"12":65.9,"13":70.82,"14":75.73,"15":80.65,"16":85.57,"17":90.48,"18":95.4,"19":101.92,"20":108.43,"21":114.95,"22":121.47,"23":127.98,"24":134.5,"25":139.42,"26":144.33,"27":149.25,"28":154.17,"29":159.08,"30":164},
-{"1":21,"2":22.74,"3":24.48,"4":26.22,"5":27.96,"6":29.7,"7":36.37,"8":43.03,"9":49.7,"10":56.37,"11":63.03,"12":69.7,"13":74.2,"14":78.7,"15":83.2,"16":87.7,"17":92.2,"18":96.7,"19":102.95,"20":109.2,"21":115.45,"22":121.7,"23":127.95,"24":134.2,"25":139.67,"26":145.13,"27":150.6,"28":156.07,"29":161.53,"30":167}
-];
-
-const minMaxValues = {};
-
-for (let i = 1; i <= 30; i++) {
-  const values = datasets.map(dataset => dataset[i]);
-  minMaxValues[i] = {
-    min: Math.min(...values),
-    max: Math.max(...values)
-  };
+    "5KTB": {
+        "regional": "RPC5",
+        "kebun": "5KTB",
+        "totalSeleksiKebun": 44336.45,
+        "totalLuas": 495.95000000000005
+    },
+    "5KDS": {
+        "regional": "RPC5",
+        "kebun": "5KDS",
+        "totalSeleksiKebun": 97744.56144938464,
+        "totalLuas": 1119.4600000000003
+    },
+    "5KGM": {
+        "regional": "RPC5",
+        "kebun": "5KGM",
+        "totalSeleksiKebun": 4042.4400000000005,
+        "totalLuas": 45.72
+    },
+    "5KGS": {
+        "regional": "RPC5",
+        "kebun": "5KGS",
+        "totalSeleksiKebun": 22905.239999999994,
+        "totalLuas": 254.38000000000002
+    },
+    "5KNG": {
+        "regional": "RPC5",
+        "kebun": "5KNG",
+        "totalSeleksiKebun": 30183.850000000002,
+        "totalLuas": 331.34999999999997
+    },
+    "Kebun Lama": {
+        "regional": "RPC6",
+        "kebun": "Kebun Lama",
+        "totalSeleksiKebun": 47693.440000000024,
+        "totalLuas": 540.94
+    },
+    "Kebun Tualang Sawit": {
+        "regional": "RPC6",
+        "kebun": "Kebun Tualang Sawit",
+        "totalSeleksiKebun": 1419,
+        "totalLuas": 16.5
+    },
+    "Kebun Cot Girek": {
+        "regional": "RPC6",
+        "kebun": "Kebun Cot Girek",
+        "totalSeleksiKebun": 14245.400000000001,
+        "totalLuas": 163.5
+    },
+    "SULI": {
+        "regional": "RPC7",
+        "kebun": "SULI",
+        "totalSeleksiKebun": 170458.40000000008,
+        "totalLuas": 1848.6199999999994
+    },
+    "BEKA": {
+        "regional": "RPC7",
+        "kebun": "BEKA",
+        "totalSeleksiKebun": 68897.63,
+        "totalLuas": 790.0200000000001
+    },
+    "TGP": {
+        "regional": "RPC2N2",
+        "kebun": "TGP",
+        "totalSeleksiKebun": 64111.00000000001,
+        "totalLuas": 641.1099999999999
+    },
+    "LMU MGR": {
+        "regional": "RPC2N2",
+        "kebun": "LMU MGR",
+        "totalSeleksiKebun": 6403,
+        "totalLuas": 64.03
+    },
+    "TANDEM": {
+        "regional": "RPC2N2",
+        "kebun": "TANDEM",
+        "totalSeleksiKebun": 32997.64,
+        "totalLuas": 358.67
+    },
+    "1KGP": {
+        "regional": "RPC1",
+        "kebun": "1KGP",
+        "totalSeleksiKebun": 59287.04000000001,
+        "totalLuas": 674.0000000000002
+    },
+    "4BUN": {
+        "regional": "RPC4",
+        "kebun": "4BUN",
+        "totalSeleksiKebun": 1760.3700000000001,
+        "totalLuas": 20
+    },
+    "4RDU": {
+        "regional": "RPC4",
+        "kebun": "4RDU",
+        "totalSeleksiKebun": 58241.799999999996,
+        "totalLuas": 658.0000000000001
+    },
+    "2ABA": {
+        "regional": "RPC2",
+        "kebun": "2ABA",
+        "totalSeleksiKebun": 46278.99999999999,
+        "totalLuas": 536
+    },
+    "2AJA": {
+        "regional": "RPC2",
+        "kebun": "2AJA",
+        "totalSeleksiKebun": 12493.427201601642,
+        "totalLuas": 125
+    },
+    "2ULU": {
+        "regional": "RPC2",
+        "kebun": "2ULU",
+        "totalSeleksiKebun": 20160,
+        "totalLuas": 224
+    },
+    "1KSA": {
+        "regional": "RPC1",
+        "kebun": "1KSA",
+        "totalSeleksiKebun": 53417.96000000001,
+        "totalLuas": 578.3500000000001
+    },
+    "3KSN": {
+        "regional": "RPC3",
+        "kebun": "3KSN",
+        "totalSeleksiKebun": 7250.630000000001,
+        "totalLuas": 76.93
+    },
+    "3KSS": {
+        "regional": "RPC3",
+        "kebun": "3KSS",
+        "totalSeleksiKebun": 59353.030000000035,
+        "totalLuas": 597.8900000000001
+    },
+    "MELATI": {
+        "regional": "RPC2N2",
+        "kebun": "MELATI",
+        "totalSeleksiKebun": 23210,
+        "totalLuas": 232.09999999999997
+    },
+    "SWH": {
+        "regional": "RPC2N2",
+        "kebun": "SWH",
+        "totalSeleksiKebun": 47366.560000000005,
+        "totalLuas": 504.8399999999999
+    },
+    "ATG": {
+        "regional": "RPC2N2",
+        "kebun": "ATG",
+        "totalSeleksiKebun": 14209.119999999999,
+        "totalLuas": 150.95000000000002
+    },
+    "5KPR": {
+        "regional": "RPC5",
+        "kebun": "5KPR",
+        "totalSeleksiKebun": 5376.34,
+        "totalLuas": 60.28
+    },
+    "1KGR": {
+        "regional": "RPC1",
+        "kebun": "1KGR",
+        "totalSeleksiKebun": 25477.45000000001,
+        "totalLuas": 265.04999999999995
+    },
+    "1KHG": {
+        "regional": "RPC1",
+        "kebun": "1KHG",
+        "totalSeleksiKebun": 77623.044202451,
+        "totalLuas": 868.6500000000001
+    },
+    "1KHP": {
+        "regional": "RPC1",
+        "kebun": "1KHP",
+        "totalSeleksiKebun": 26823.199999999997,
+        "totalLuas": 295.55
+    },
+    "1KLJ": {
+        "regional": "RPC1",
+        "kebun": "1KLJ",
+        "totalSeleksiKebun": 37507.15000000001,
+        "totalLuas": 411.33000000000004
+    },
+    "1KMM": {
+        "regional": "RPC1",
+        "kebun": "1KMM",
+        "totalSeleksiKebun": 30245.509999999987,
+        "totalLuas": 314.53999999999996
+    },
+    "1KPM": {
+        "regional": "RPC1",
+        "kebun": "1KPM",
+        "totalSeleksiKebun": 30256.94999999999,
+        "totalLuas": 342.00000000000006
+    },
+    "1KRB": {
+        "regional": "RPC1",
+        "kebun": "1KRB",
+        "totalSeleksiKebun": 5270.799999999999,
+        "totalLuas": 57.4
+    },
+    "1KRP": {
+        "regional": "RPC1",
+        "kebun": "1KRP",
+        "totalSeleksiKebun": 55297.80000000001,
+        "totalLuas": 610.9899999999998
+    },
+    "1KAM": {
+        "regional": "RPC1",
+        "kebun": "1KAM",
+        "totalSeleksiKebun": 55771.60000000002,
+        "totalLuas": 626.7999999999998
+    },
+    "1KAN": {
+        "regional": "RPC1",
+        "kebun": "1KAN",
+        "totalSeleksiKebun": 41962.700000000004,
+        "totalLuas": 460.40000000000003
+    },
+    "1KAS": {
+        "regional": "RPC1",
+        "kebun": "1KAS",
+        "totalSeleksiKebun": 21068.26,
+        "totalLuas": 237.26000000000002
+    },
+    "1KBB": {
+        "regional": "RPC1",
+        "kebun": "1KBB",
+        "totalSeleksiKebun": 12132.900000000001,
+        "totalLuas": 139.74999999999997
+    },
+    "1KBU": {
+        "regional": "RPC1",
+        "kebun": "1KBU",
+        "totalSeleksiKebun": 21905.000000000015,
+        "totalLuas": 221.7
+    },
+    "1KDH": {
+        "regional": "RPC1",
+        "kebun": "1KDH",
+        "totalSeleksiKebun": 52281.399999999994,
+        "totalLuas": 604
+    },
+    "1KGM": {
+        "regional": "RPC1",
+        "kebun": "1KGM",
+        "totalSeleksiKebun": 34514.73000000002,
+        "totalLuas": 366.86999999999995
+    },
+    "1KSG": {
+        "regional": "RPC1",
+        "kebun": "1KSG",
+        "totalSeleksiKebun": 12912.79999999999,
+        "totalLuas": 140.80000000000007
+    },
+    "1KSL": {
+        "regional": "RPC1",
+        "kebun": "1KSL",
+        "totalSeleksiKebun": 96681.17999999996,
+        "totalLuas": 1095.1499999999999
+    },
+    "1KSD": {
+        "regional": "RPC1",
+        "kebun": "1KSD",
+        "totalSeleksiKebun": 3065.999999999999,
+        "totalLuas": 34.38
+    },
+    "1KSK": {
+        "regional": "RPC1",
+        "kebun": "1KSK",
+        "totalSeleksiKebun": 72979.76,
+        "totalLuas": 830.1200000000001
+    },
+    "1KSP": {
+        "regional": "RPC1",
+        "kebun": "1KSP",
+        "totalSeleksiKebun": 51465.09,
+        "totalLuas": 556.75
+    },
+    "1KBN": {
+        "regional": "RPC1",
+        "kebun": "1KBN",
+        "totalSeleksiKebun": 30026.399999999998,
+        "totalLuas": 308.04999999999995
+    },
+    "1KMS": {
+        "regional": "RPC1",
+        "kebun": "1KMS",
+        "totalSeleksiKebun": 29967.18999999998,
+        "totalLuas": 329.1
+    },
+    "2MAT": {
+        "regional": "RPC2",
+        "kebun": "2MAT",
+        "totalSeleksiKebun": 59749.13376867167,
+        "totalLuas": 605
+    },
+    "2TON": {
+        "regional": "RPC2",
+        "kebun": "2TON",
+        "totalSeleksiKebun": 8892.05250743873,
+        "totalLuas": 89
+    },
+    "2BAL": {
+        "regional": "RPC2",
+        "kebun": "2BAL",
+        "totalSeleksiKebun": 82432,
+        "totalLuas": 896
+    },
+    "2GUB": {
+        "regional": "RPC2",
+        "kebun": "2GUB",
+        "totalSeleksiKebun": 43391.99999999999,
+        "totalLuas": 472
+    },
+    "2BUL": {
+        "regional": "RPC2",
+        "kebun": "2BUL",
+        "totalSeleksiKebun": 61517.174386990395,
+        "totalLuas": 653
+    },
+    "2DOI": {
+        "regional": "RPC2",
+        "kebun": "2DOI",
+        "totalSeleksiKebun": 60796.236406299045,
+        "totalLuas": 633
+    },
+    "2LAR": {
+        "regional": "RPC2",
+        "kebun": "2LAR",
+        "totalSeleksiKebun": 26700,
+        "totalLuas": 267
+    },
+    "2ADO": {
+        "regional": "RPC2",
+        "kebun": "2ADO",
+        "totalSeleksiKebun": 8126.999999999999,
+        "totalLuas": 82
+    },
+    "2PAB": {
+        "regional": "RPC2",
+        "kebun": "2PAB",
+        "totalSeleksiKebun": 7300,
+        "totalLuas": 73
+    },
+    "2PDM": {
+        "regional": "RPC2",
+        "kebun": "2PDM",
+        "totalSeleksiKebun": 54906,
+        "totalLuas": 595
+    },
+    "3KA2": {
+        "regional": "RPC3",
+        "kebun": "3KA2",
+        "totalSeleksiKebun": 49386.20999999999,
+        "totalLuas": 535.59
+    },
+    "3KTE": {
+        "regional": "RPC3",
+        "kebun": "3KTE",
+        "totalSeleksiKebun": 31627.91999999999,
+        "totalLuas": 329.66
+    },
+    "3KLD": {
+        "regional": "RPC3",
+        "kebun": "3KLD",
+        "totalSeleksiKebun": 42569.13,
+        "totalLuas": 457.45
+    },
+    "3KBE": {
+        "regional": "RPC3",
+        "kebun": "3KBE",
+        "totalSeleksiKebun": 3521.7799999999997,
+        "totalLuas": 37.040000000000006
+    },
+    "4SSL": {
+        "regional": "RPC4",
+        "kebun": "4SSL",
+        "totalSeleksiKebun": 52188.00000000001,
+        "totalLuas": 566
+    },
+    "4DRL": {
+        "regional": "RPC4",
+        "kebun": "4DRL",
+        "totalSeleksiKebun": 37184.80000000001,
+        "totalLuas": 419.6
+    },
+    "4BKK": {
+        "regional": "RPC4",
+        "kebun": "4BKK",
+        "totalSeleksiKebun": 30256.800000000003,
+        "totalLuas": 342.38
+    }
 }
 
-console.log(minMaxValues);
+{
+    "4SSL": {
+        "regional": "RPC4",
+        "kebun": "4SSL",
+        "totalSeleksiKebun": 51219.00000000001,
+        "totalLuas": 564
+    },
+    "5KTB": {
+        "regional": "RPC5",
+        "kebun": "5KTB",
+        "totalSeleksiKebun": 58156.82000000003,
+        "totalLuas": 655.7299999999999
+    },
+    "1KMM": {
+        "regional": "RPC1",
+        "kebun": "1KMM",
+        "totalSeleksiKebun": 47373.39856363121,
+        "totalLuas": 506.48000000000013
+    },
+    "5KNG": {
+        "regional": "RPC5",
+        "kebun": "5KNG",
+        "totalSeleksiKebun": 10727.1,
+        "totalLuas": 119.19000000000001
+    },
+    "5KRB": {
+        "regional": "RPC5",
+        "kebun": "5KRB",
+        "totalSeleksiKebun": 1791.1800000000003,
+        "totalLuas": 20.380000000000003
+    },
+    "5KDS": {
+        "regional": "RPC5",
+        "kebun": "5KDS",
+        "totalSeleksiKebun": 108791.43942709565,
+        "totalLuas": 1223.5900000000001
+    },
+    "Kebun Baru": {
+        "regional": "RPC6",
+        "kebun": "Kebun Baru",
+        "totalSeleksiKebun": 38847.399999999994,
+        "totalLuas": 432
+    },
+    "Kebun Cot Girek": {
+        "regional": "RPC6",
+        "kebun": "Kebun Cot Girek",
+        "totalSeleksiKebun": 21263.159999999993,
+        "totalLuas": 243.46000000000004
+    },
+    "Maroangin": {
+        "regional": "RPC2N14",
+        "kebun": "Maroangin",
+        "totalSeleksiKebun": 1067.3999999999999,
+        "totalLuas": 12
+    },
+    "2DOI": {
+        "regional": "RPC2",
+        "kebun": "2DOI",
+        "totalSeleksiKebun": 71040.75702029574,
+        "totalLuas": 711
+    },
+    "2LAR": {
+        "regional": "RPC2",
+        "kebun": "2LAR",
+        "totalSeleksiKebun": 91217.99999999999,
+        "totalLuas": 915
+    },
+    "2MAT": {
+        "regional": "RPC2",
+        "kebun": "2MAT",
+        "totalSeleksiKebun": 47203.70549226378,
+        "totalLuas": 488
+    },
+    "3KSP": {
+        "regional": "RPC3",
+        "kebun": "3KSP",
+        "totalSeleksiKebun": 9846.52,
+        "totalLuas": 101.05
+    },
+    "1KSP": {
+        "regional": "RPC1",
+        "kebun": "1KSP",
+        "totalSeleksiKebun": 37975.28000000001,
+        "totalLuas": 388.92999999999995
+    },
+    "4DRL": {
+        "regional": "RPC4",
+        "kebun": "4DRL",
+        "totalSeleksiKebun": 49615.99999999999,
+        "totalLuas": 561
+    },
+    "2MEP": {
+        "regional": "RPC2",
+        "kebun": "2MEP",
+        "totalSeleksiKebun": 46527.99999999999,
+        "totalLuas": 478
+    },
+    "1KRP": {
+        "regional": "RPC1",
+        "kebun": "1KRP",
+        "totalSeleksiKebun": 8026.899999999999,
+        "totalLuas": 81.88
+    },
+    "5KGS": {
+        "regional": "RPC5",
+        "kebun": "5KGS",
+        "totalSeleksiKebun": 16670.62,
+        "totalLuas": 192.17000000000002
+    },
+    "3KSS": {
+        "regional": "RPC3",
+        "kebun": "3KSS",
+        "totalSeleksiKebun": 30160,
+        "totalLuas": 301.64
+    },
+    "1KLJ": {
+        "regional": "RPC1",
+        "kebun": "1KLJ",
+        "totalSeleksiKebun": 17710.319999999992,
+        "totalLuas": 184.70000000000005
+    },
+    "1KTR": {
+        "regional": "RPC1",
+        "kebun": "1KTR",
+        "totalSeleksiKebun": 9195.999999999998,
+        "totalLuas": 104.50000000000001
+    },
+    "1KBN": {
+        "regional": "RPC1",
+        "kebun": "1KBN",
+        "totalSeleksiKebun": 7953.4,
+        "totalLuas": 86.45
+    },
+    "1KHP": {
+        "regional": "RPC1",
+        "kebun": "1KHP",
+        "totalSeleksiKebun": 7564.200000000001,
+        "totalLuas": 79.94999999999999
+    },
+    "3KLD": {
+        "regional": "RPC3",
+        "kebun": "3KLD",
+        "totalSeleksiKebun": 55223.27,
+        "totalLuas": 579.39
+    },
+    "5KGM": {
+        "regional": "RPC5",
+        "kebun": "5KGM",
+        "totalSeleksiKebun": 4429.039999999999,
+        "totalLuas": 50.00000000000001
+    },
+    "1KSA": {
+        "regional": "RPC1",
+        "kebun": "1KSA",
+        "totalSeleksiKebun": 13068.680000000004,
+        "totalLuas": 138.04999999999998
+    },
+    "1KDP": {
+        "regional": "RPC1",
+        "kebun": "1KDP",
+        "totalSeleksiKebun": 13759.999999999998,
+        "totalLuas": 137.65
+    },
+    "2ABA": {
+        "regional": "RPC2",
+        "kebun": "2ABA",
+        "totalSeleksiKebun": 19399.000000000004,
+        "totalLuas": 207
+    },
+    "2BAL": {
+        "regional": "RPC2",
+        "kebun": "2BAL",
+        "totalSeleksiKebun": 52626,
+        "totalLuas": 550
+    },
+    "3KTN": {
+        "regional": "RPC3",
+        "kebun": "3KTN",
+        "totalSeleksiKebun": 1446.48,
+        "totalLuas": 16
+    },
+    "5KLK": {
+        "regional": "RPC5",
+        "kebun": "5KLK",
+        "totalSeleksiKebun": 16895.392053713487,
+        "totalLuas": 207.06999999999996
+    },
+    "5KBY": {
+        "regional": "RPC5",
+        "kebun": "5KBY",
+        "totalSeleksiKebun": 10740.539999999999,
+        "totalLuas": 124.88999999999999
+    },
+    "5KTJ": {
+        "regional": "RPC5",
+        "kebun": "5KTJ",
+        "totalSeleksiKebun": 1742.5510489510489,
+        "totalLuas": 19.59
+    },
+    "2MAR": {
+        "regional": "RPC2",
+        "kebun": "2MAR",
+        "totalSeleksiKebun": 23235.158469445974,
+        "totalLuas": 238
+    },
+    "2PUR": {
+        "regional": "RPC2",
+        "kebun": "2PUR",
+        "totalSeleksiKebun": 9298.739156806072,
+        "totalLuas": 93
+    },
+    "2TON": {
+        "regional": "RPC2",
+        "kebun": "2TON",
+        "totalSeleksiKebun": 34955.308856816904,
+        "totalLuas": 384
+    },
+    "3KTE": {
+        "regional": "RPC3",
+        "kebun": "3KTE",
+        "totalSeleksiKebun": 58321.36999999998,
+        "totalLuas": 615.74
+    },
+    "2DOS": {
+        "regional": "RPC2",
+        "kebun": "2DOS",
+        "totalSeleksiKebun": 13139.930232558138,
+        "totalLuas": 133
+    },
+    "2ADO": {
+        "regional": "RPC2",
+        "kebun": "2ADO",
+        "totalSeleksiKebun": 58600,
+        "totalLuas": 586
+    },
+    "4BKC": {
+        "regional": "RPC4",
+        "kebun": "4BKC",
+        "totalSeleksiKebun": 3047.8,
+        "totalLuas": 31.1
+    },
+    "SWH": {
+        "regional": "RPC2N2",
+        "kebun": "SWH",
+        "totalSeleksiKebun": 24419.079999999994,
+        "totalLuas": 254.71000000000004
+    },
+    "ATG": {
+        "regional": "RPC2N2",
+        "kebun": "ATG",
+        "totalSeleksiKebun": 14017.699999999999,
+        "totalLuas": 142.34
+    },
+    "TGP": {
+        "regional": "RPC2N2",
+        "kebun": "TGP",
+        "totalSeleksiKebun": 7320,
+        "totalLuas": 73.2
+    },
+    "2BUL": {
+        "regional": "RPC2",
+        "kebun": "2BUL",
+        "totalSeleksiKebun": 45947.37883222721,
+        "totalLuas": 518
+    },
+    "2TIN": {
+        "regional": "RPC2",
+        "kebun": "2TIN",
+        "totalSeleksiKebun": 33671.99999999999,
+        "totalLuas": 350
+    },
+    "2BAJ": {
+        "regional": "RPC2",
+        "kebun": "2BAJ",
+        "totalSeleksiKebun": 15188,
+        "totalLuas": 153
+    },
+    "2ULU": {
+        "regional": "RPC2",
+        "kebun": "2ULU",
+        "totalSeleksiKebun": 23104,
+        "totalLuas": 256
+    }
+}
 
+{
+    "5KTB": {
+        "regional": "RPC5",
+        "kebun": "5KTB",
+        "totalSeleksiKebun": 21274,
+        "totalLuas": 244
+    },
+    "5KNG": {
+        "regional": "RPC5",
+        "kebun": "5KNG",
+        "totalSeleksiKebun": 19143.6,
+        "totalLuas": 222.6
+    },
+    "1KRP": {
+        "regional": "RPC1",
+        "kebun": "1KRP",
+        "totalSeleksiKebun": 61087.36000000002,
+        "totalLuas": 633.44
+    },
+    "1KDP": {
+        "regional": "RPC1",
+        "kebun": "1KDP",
+        "totalSeleksiKebun": 62670.74,
+        "totalLuas": 676.3499999999999
+    },
+    "Kebun Cot Girek": {
+        "regional": "RPC6",
+        "kebun": "Kebun Cot Girek",
+        "totalSeleksiKebun": 29611.199999999997,
+        "totalLuas": 338.09999999999997
+    },
+    "5KDS": {
+        "regional": "RPC5",
+        "kebun": "5KDS",
+        "totalSeleksiKebun": 53511.67908104689,
+        "totalLuas": 621.9999999999999
+    },
+    "5KRB": {
+        "regional": "RPC5",
+        "kebun": "5KRB",
+        "totalSeleksiKebun": 8508.960000000001,
+        "totalLuas": 94.19999999999999
+    },
+    "5KSD": {
+        "regional": "RPC5",
+        "kebun": "5KSD",
+        "totalSeleksiKebun": 31836.919999999995,
+        "totalLuas": 353.7200000000001
+    },
+    "2TON": {
+        "regional": "RPC2",
+        "kebun": "2TON",
+        "totalSeleksiKebun": 9468.28652450713,
+        "totalLuas": 97
+    },
+    "2ABA": {
+        "regional": "RPC2",
+        "kebun": "2ABA",
+        "totalSeleksiKebun": 54200,
+        "totalLuas": 542
+    },
+    "1KSA": {
+        "regional": "RPC1",
+        "kebun": "1KSA",
+        "totalSeleksiKebun": 15185.8,
+        "totalLuas": 153.29999999999998
+    },
+    "1KBB": {
+        "regional": "RPC1",
+        "kebun": "1KBB",
+        "totalSeleksiKebun": 13912.599999999997,
+        "totalLuas": 152.20000000000002
+    },
+    "Kebun Baru": {
+        "regional": "RPC6",
+        "kebun": "Kebun Baru",
+        "totalSeleksiKebun": 17980.899999999998,
+        "totalLuas": 205.20000000000002
+    },
+    "5KGM": {
+        "regional": "RPC5",
+        "kebun": "5KGM",
+        "totalSeleksiKebun": 3717.389999999999,
+        "totalLuas": 40.04
+    },
+    "Kebun Lama": {
+        "regional": "RPC6",
+        "kebun": "Kebun Lama",
+        "totalSeleksiKebun": 11736.7,
+        "totalLuas": 130.5
+    },
+    "1KTR": {
+        "regional": "RPC1",
+        "kebun": "1KTR",
+        "totalSeleksiKebun": 13757.925547224851,
+        "totalLuas": 139.29999999999998
+    },
+    "1KSP": {
+        "regional": "RPC1",
+        "kebun": "1KSP",
+        "totalSeleksiKebun": 18161.300000000007,
+        "totalLuas": 198.14999999999998
+    },
+    "2ADO": {
+        "regional": "RPC2",
+        "kebun": "2ADO",
+        "totalSeleksiKebun": 81400,
+        "totalLuas": 814
+    },
+    "1KSU": {
+        "regional": "RPC1",
+        "kebun": "1KSU",
+        "totalSeleksiKebun": 38135.92,
+        "totalLuas": 387.15000000000003
+    },
+    "5KGS": {
+        "regional": "RPC5",
+        "kebun": "5KGS",
+        "totalSeleksiKebun": 4770,
+        "totalLuas": 53
+    },
+    "5KTJ": {
+        "regional": "RPC5",
+        "kebun": "5KTJ",
+        "totalSeleksiKebun": 2156.4,
+        "totalLuas": 23.96
+    },
+    "1KSL": {
+        "regional": "RPC1",
+        "kebun": "1KSL",
+        "totalSeleksiKebun": 19179.999999999996,
+        "totalLuas": 191.80000000000004
+    },
+    "1KBN": {
+        "regional": "RPC1",
+        "kebun": "1KBN",
+        "totalSeleksiKebun": 22000.59058140102,
+        "totalLuas": 220.79999999999995
+    },
+    "1KAN": {
+        "regional": "RPC1",
+        "kebun": "1KAN",
+        "totalSeleksiKebun": 10632,
+        "totalLuas": 106.32
+    },
+    "SWS": {
+        "regional": "RPC2N2",
+        "kebun": "SWS",
+        "totalSeleksiKebun": 117290.81899563315,
+        "totalLuas": 1202.01
+    },
+    "2BAJ": {
+        "regional": "RPC2",
+        "kebun": "2BAJ",
+        "totalSeleksiKebun": 34121,
+        "totalLuas": 353
+    },
+    "2MAT": {
+        "regional": "RPC2",
+        "kebun": "2MAT",
+        "totalSeleksiKebun": 51210.5631807782,
+        "totalLuas": 516
+    },
+    "2OSA": {
+        "regional": "RPC2",
+        "kebun": "2OSA",
+        "totalSeleksiKebun": 19111,
+        "totalLuas": 205
+    },
+    "2PUR": {
+        "regional": "RPC2",
+        "kebun": "2PUR",
+        "totalSeleksiKebun": 16780,
+        "totalLuas": 171
+    },
+    "2DOS": {
+        "regional": "RPC2",
+        "kebun": "2DOS",
+        "totalSeleksiKebun": 28221.3146086764,
+        "totalLuas": 290
+    },
+    "2TIN": {
+        "regional": "RPC2",
+        "kebun": "2TIN",
+        "totalSeleksiKebun": 16206,
+        "totalLuas": 168
+    },
+    "TGP": {
+        "regional": "RPC2N2",
+        "kebun": "TGP",
+        "totalSeleksiKebun": 47525.16,
+        "totalLuas": 477.1399999999999
+    },
+    "SWH": {
+        "regional": "RPC2N2",
+        "kebun": "SWH",
+        "totalSeleksiKebun": 21180.199999999997,
+        "totalLuas": 231.53000000000003
+    },
+    "3KSS": {
+        "regional": "RPC3",
+        "kebun": "3KSS",
+        "totalSeleksiKebun": 36275.00000000001,
+        "totalLuas": 362.74999999999994
+    },
+    "1KLJ": {
+        "regional": "RPC1",
+        "kebun": "1KLJ",
+        "totalSeleksiKebun": 26167.95,
+        "totalLuas": 262.25
+    },
+    "TANDEM": {
+        "regional": "RPC2N2",
+        "kebun": "TANDEM",
+        "totalSeleksiKebun": 2198.1019277565038,
+        "totalLuas": 22.310000000000002
+    },
+    "Kebun Julok R. Utara": {
+        "regional": "RPC6",
+        "kebun": "Kebun Julok R. Utara",
+        "totalSeleksiKebun": 703.2,
+        "totalLuas": 8
+    },
+    "2BUL": {
+        "regional": "RPC2",
+        "kebun": "2BUL",
+        "totalSeleksiKebun": 35683.61780462249,
+        "totalLuas": 374
+    },
+    "2PAB": {
+        "regional": "RPC2",
+        "kebun": "2PAB",
+        "totalSeleksiKebun": 11760,
+        "totalLuas": 120
+    },
+    "1KSG": {
+        "regional": "RPC1",
+        "kebun": "1KSG",
+        "totalSeleksiKebun": 8627.119999999999,
+        "totalLuas": 87.75
+    },
+    "2SKO": {
+        "regional": "RPC2",
+        "kebun": "2SKO",
+        "totalSeleksiKebun": 32235.394689929417,
+        "totalLuas": 361
+    },
+    "PTK": {
+        "regional": "RPC2N2",
+        "kebun": "PTK",
+        "totalSeleksiKebun": 658,
+        "totalLuas": 7
+    },
+    "2LAR": {
+        "regional": "RPC2",
+        "kebun": "2LAR",
+        "totalSeleksiKebun": 51491.79294129506,
+        "totalLuas": 545
+    },
+    "2MEP": {
+        "regional": "RPC2",
+        "kebun": "2MEP",
+        "totalSeleksiKebun": 11610,
+        "totalLuas": 129
+    },
+    "2BAL": {
+        "regional": "RPC2",
+        "kebun": "2BAL",
+        "totalSeleksiKebun": 29300,
+        "totalLuas": 293
+    },
+    "2AJA": {
+        "regional": "RPC2",
+        "kebun": "2AJA",
+        "totalSeleksiKebun": 10602.619680130118,
+        "totalLuas": 113
+    },
+    "2DOI": {
+        "regional": "RPC2",
+        "kebun": "2DOI",
+        "totalSeleksiKebun": 14563.682382604795,
+        "totalLuas": 146
+    },
+    "2TIU": {
+        "regional": "RPC2",
+        "kebun": "2TIU",
+        "totalSeleksiKebun": 12970.703125544886,
+        "totalLuas": 138
+    }
+}
 
-  const [colorData, setColorData] = useState({
-    emas: 0,
-    hijau: 0,
-    merah: 0,
-    hitam: 0,
-  })
-
-
-
-            
-              setColorData((prev) => ({
-                ...prev,
-                hitam: totalSeleksian <= 80 ? prev.hitam + 1 : prev.hitam,
-                merah: totalSeleksian > 80 && totalSeleksian <= 89 ? prev.merah + 1 : prev.merah,
-                hijau: totalSeleksian > 89 && totalSeleksian <= 96 ? prev.hijau + 1 : prev.hijau,
-                emas: totalSeleksian > 96 ? prev.emas + 1 : prev.emas,
-              }));
-              
+{
+    "5KGM": {
+        "regional": "RPC5",
+        "kebun": "5KGM",
+        "totalSeleksiKebun": 9377.020000000002,
+        "totalLuas": 105.18999999999998
+    },
+    "5KGS": {
+        "regional": "RPC5",
+        "kebun": "5KGS",
+        "totalSeleksiKebun": 2936.7000000000003,
+        "totalLuas": 32.63
+    },
+    "5KNG": {
+        "regional": "RPC5",
+        "kebun": "5KNG",
+        "totalSeleksiKebun": 35697.170000000006,
+        "totalLuas": 404.39
+    },
+    "5KTB": {
+        "regional": "RPC5",
+        "kebun": "5KTB",
+        "totalSeleksiKebun": 45349.61999999999,
+        "totalLuas": 520.6700000000001
+    },
+    "5KRB": {
+        "regional": "RPC5",
+        "kebun": "5KRB",
+        "totalSeleksiKebun": 12740,
+        "totalLuas": 130
+    },
+    "5KDS": {
+        "regional": "RPC5",
+        "kebun": "5KDS",
+        "totalSeleksiKebun": 43736.92000000001,
+        "totalLuas": 487.66999999999985
+    },
+    "5KSD": {
+        "regional": "RPC5",
+        "kebun": "5KSD",
+        "totalSeleksiKebun": 12792.449999999999,
+        "totalLuas": 138.46
+    },
+    "5KPD": {
+        "regional": "RPC5",
+        "kebun": "5KPD",
+        "totalSeleksiKebun": 12758.700000000003,
+        "totalLuas": 146.51
+    },
+    "LUWU I": {
+        "regional": "RPC2N14",
+        "kebun": "LUWU I",
+        "totalSeleksiKebun": 35779.668182419045,
+        "totalLuas": 407.9
+    },
+    "LUWU II": {
+        "regional": "RPC2N14",
+        "kebun": "LUWU II",
+        "totalSeleksiKebun": 3305.0029449279714,
+        "totalLuas": 36
+    },
+    "2BAJ": {
+        "regional": "RPC2",
+        "kebun": "2BAJ",
+        "totalSeleksiKebun": 2934,
+        "totalLuas": 33
+    },
+    "2TIM": {
+        "regional": "RPC2",
+        "kebun": "2TIM",
+        "totalSeleksiKebun": 12420,
+        "totalLuas": 135
+    },
+    "2BAP": {
+        "regional": "RPC2",
+        "kebun": "2BAP",
+        "totalSeleksiKebun": 7688,
+        "totalLuas": 86
+    },
+    "2OSA": {
+        "regional": "RPC2",
+        "kebun": "2OSA",
+        "totalSeleksiKebun": 1470,
+        "totalLuas": 15
+    }
+}

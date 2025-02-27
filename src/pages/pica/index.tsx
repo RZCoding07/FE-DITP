@@ -478,6 +478,8 @@ export default function PicaTbm() {
           const response = await fetchVegetativeProc({
             input_tbm: 'tbm' + i,
             input_tahun_tanam: tahunTanam,
+            input_bulan: bulan.value,
+            input_tahun: tahun.value
           });
 
           setTbmRes((prev) => [...prev, Object.values(response.data)]);
@@ -557,24 +559,6 @@ export default function PicaTbm() {
                 },
               },
             ]);
-
-            // Set color data untuk hitam, merah, hijau, emas
-            setColorData((prev) => ({
-              ...prev,
-              hitam: totalSeleksian <= 80 ? prev.hitam + 1 : prev.hitam,
-              merah: totalSeleksian > 80 && totalSeleksian <= 89 ? prev.merah + 1 : prev.merah,
-              hijau: totalSeleksian > 89 && totalSeleksian <= 96 ? prev.hijau + 1 : prev.hijau,
-              emas: totalSeleksian > 96 ? prev.emas + 1 : prev.emas,
-            }));
-
-            // Set color data luas per kategori
-            setColorDataLuas((prev) => ({
-              ...prev,
-              hitam: totalSeleksian <= 80 ? prev.hitam + luas : prev.hitam,
-              merah: totalSeleksian > 80 && totalSeleksian <= 89 ? prev.merah + luas : prev.merah,
-              hijau: totalSeleksian > 89 && totalSeleksian <= 96 ? prev.hijau + luas : prev.hijau,
-              emas: totalSeleksian > 96 ? prev.emas + luas : prev.emas,
-            }));
 
             return {
               [`tbm${i}`]: {

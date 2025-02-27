@@ -11,30 +11,31 @@ interface Point {
   bulan: string
   kode_kebun: string
   tahun: number
-  pica: number
-  cashcost: number
+  vegetatif: number
+  serapanBiaya: number
 }
 
 const areas = [
-  // Green quadrant (top-right) - Kuadran Hijau 
   { xRange: [90, 100], yRange: [60, 100], color: "rgba(255, 255, 0, 0.7)" },
-
-  // Yellow quadrant (bottom-right) - Kuadran Kuning
   { xRange: [90, 100], yRange: [-100, 60], color: "rgba(144, 238, 144, 0.7)" },
-
-  // Orange quadrant (top-left) - Kuadran Orange
   { xRange: [80, 90], yRange: [60, 100], color: "rgba(255, 99, 71, 0.7)" },
-
-  // Black quadrant (bottom-left) - Kuadran Hitam (awal)
   { xRange: [80, 90], yRange: [-100, 60], color: "rgba(0, 0, 0, 0.7)" },
 ];
 
-const ScatterChart = () => {
+const ScatterChart  = ({
+  dataprops }: {
+    dataprops: any
+  }) => {
+
+    
+
+
+
   const data = [
-    { pica: 90, cashcost: 100, kebun: "Kebun 1", bulan: "Januari", tahun: 2021, kode_kebun: "K1" },
-    { pica: 95, cashcost: 80, kebun: "Kebun 2", bulan: "Februari", tahun: 2021, kode_kebun: "K2" },
-    { pica: 80, cashcost: 50, kebun: "Kebun 3", bulan: "Maret", tahun: 2021, kode_kebun: "K3" },
-    { pica: 88, cashcost: 130, kebun: "Kebun 4", bulan: "April", tahun: 2021, kode_kebun: "K4" },
+    { vegetatif: 90, serapanBiaya: 100, kebun: "Kebun 1", bulan: "Januari", tahun: 2021, kode_kebun: "K1" },
+    { vegetatif: 95, serapanBiaya: 80, kebun: "Kebun 2", bulan: "Februari", tahun: 2021, kode_kebun: "K2" },
+    { vegetatif: 80, serapanBiaya: 50, kebun: "Kebun 3", bulan: "Maret", tahun: 2021, kode_kebun: "K3" },
+    { vegetatif: 88, serapanBiaya: 130, kebun: "Kebun 4", bulan: "April", tahun: 2021, kode_kebun: "K4" },
   ]
 
   const [modalData, setModalData] = useState<any>(null)
@@ -111,7 +112,7 @@ const ScatterChart = () => {
         color: '#FFFFFF', // Warna garis
         width: 1, // Lebar garis
         value: 0, // Posisi garis di sumbu x
-        zIndex: 5 // Z-index untuk memastikan garis di atas elemen lain
+        zIndex: 5 // Z-index untuk memastikan garis di atas elemen la```````````````````````in
       }]
     },
     yAxis: {
@@ -225,8 +226,8 @@ const ScatterChart = () => {
             click: function (this: Highcharts.Point) {
               const point = this as any
               setModalData({
-                pica: point.x,
-                cashcost: point.y,
+                vegetatif: point.x,
+                serapanBiaya: point.y,
                 kebun: point.kebun,
                 bulan: point.bulan,
                 tahun: point.tahun,
@@ -241,15 +242,11 @@ const ScatterChart = () => {
     series: [
       {
         type: "scatter",
-        name: "PICA TBM I",
+        name: "vegetatif TBM I",
         color: "#FFFFFF",
         data: data.map((item) => ({
-          x: Number.parseFloat(item.pica.toString()),
-          y: Number.parseFloat(item.cashcost.toString()),
-          kebun: item.kebun,
-          bulan: item.bulan,
-          tahun: item.tahun,
-          kode_kebun: item.kode_kebun,
+          x: Number.parseFloat(item.vegetatif.toString()),
+          y: Number.parseFloat(item.serapanBiaya.toString()),
         })),
       },
     ],

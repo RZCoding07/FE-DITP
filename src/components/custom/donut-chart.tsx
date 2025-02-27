@@ -10,7 +10,7 @@ const DonutChart = ({
   }) => {
 
   // Data untuk donut chart
-  const series = [dataprops.data.emas, dataprops.data.hijau, dataprops.data.merah, dataprops.data.hitam] // Nilai untuk Emas Hijau, Merah, dan Hitam
+  const series = [dataprops.data.gold, dataprops.data.gold, dataprops.data.red, dataprops.data.black] // Nilai untuk Emas Hijau, Merah, dan Hitam
   const options: ApexOptions = {
     chart: {
       type: 'donut',

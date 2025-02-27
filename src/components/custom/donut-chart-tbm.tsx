@@ -33,8 +33,8 @@ const DonutChartTbm: React.FC<DonutChartTbmProps> = React.memo(({ dataprops }) =
     if (title === "Keseluruhan TBM") {
       result =
         blok === "blok"
-          ? [dataprops.data.emas, dataprops.data.hijau, dataprops.data.merah, dataprops.data.hitam]
-          : [dataprops.dataLuas.emas, dataprops.dataLuas.hijau, dataprops.dataLuas.merah, dataprops.dataLuas.hitam]
+          ? [dataprops.data.gold, dataprops.data.green, dataprops.data.red, dataprops.data.black]
+          : [dataprops.dataLuas.gold, dataprops.dataLuas.green, dataprops.dataLuas.red, dataprops.dataLuas.black]
     } else {
       if (blok === "blok") {
         const colorCounts = {
@@ -49,7 +49,7 @@ const DonutChartTbm: React.FC<DonutChartTbmProps> = React.memo(({ dataprops }) =
         }
 
         if (ctg !== "tbm-all" && rpc.value !== "all") {
-          result = [dataprops.dataDnt.emas, dataprops.dataDnt.hijau, dataprops.dataDnt.merah, dataprops.dataDnt.hitam]
+          result = [dataprops.dataDnt.gold, dataprops.dataDnt.green, dataprops.dataDnt.red, dataprops.dataDnt.black]
         }
       } else {
         const luasByColor = {
@@ -64,7 +64,7 @@ const DonutChartTbm: React.FC<DonutChartTbmProps> = React.memo(({ dataprops }) =
         }
 
         if (ctg !== "tbm-all" && rpc.value !== "all") {
-          result = ["emas", "hijau", "merah", "hitam"].map((color) => Number(dataprops.dataLuasDnt[color]))
+          result = ["gold", "green", "red", "black"].map((color) => Number(dataprops.dataLuasDnt[color]))
         }
       }
     }

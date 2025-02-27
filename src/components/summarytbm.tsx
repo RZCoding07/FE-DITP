@@ -7,6 +7,8 @@ export const Summary = ({ dataProps, onCardTbmClick }: { dataProps: any; onCardT
   const rpc = dataProps?.rpc?.value
   let data: any = []
 
+  console.log(dataProps.data)
+
   if (dataProps.title === 'Keseluruhan TBM') {
     data = [
       {
@@ -15,13 +17,13 @@ export const Summary = ({ dataProps, onCardTbmClick }: { dataProps: any; onCardT
         val: 0,
 
         progress:
-          dataProps.data.emas == null
+          dataProps.data.gold == null
             ? 0
-            : dataProps.data.emas.toLocaleString('id-ID'),
+            : dataProps.data.gold.toLocaleString('id-ID'),
         progressLuas:
-          dataProps.data.emas == null
+          dataProps.data.gold == null
             ? 0
-            : dataProps.dataLuas.emas.toLocaleString('id-ID'),
+            : dataProps.dataLuas.gold.toLocaleString('id-ID'),
         circular: 'gold',
         image: '/2.png',
         color: '#FFA500',
@@ -32,8 +34,8 @@ export const Summary = ({ dataProps, onCardTbmClick }: { dataProps: any; onCardT
         show: true,
         name: 'Hijau',
         val: 1,
-        progress: dataProps.data.hijau == null ? 0 : dataProps.data.hijau.toLocaleString('id-ID'),
-        progressLuas: dataProps.dataLuas.hijau == null ? 0 : dataProps.dataLuas.hijau.toLocaleString('id-ID'),
+        progress: dataProps.data.green == null ? 0 : dataProps.data.green.toLocaleString('id-ID'),
+        progressLuas: dataProps.dataLuas.green == null ? 0 : dataProps.dataLuas.green.toLocaleString('id-ID'),
 
         circular: 'green',
         image: '/2.png',
@@ -43,8 +45,8 @@ export const Summary = ({ dataProps, onCardTbmClick }: { dataProps: any; onCardT
       {
         show: true,
         name: 'Merah',
-        progress: dataProps.data.merah == null ? 0 : dataProps.data.merah.toLocaleString('id-ID'),
-        progressLuas: dataProps.dataLuas.merah == null ? 0 : dataProps.dataLuas.merah.toLocaleString('id-ID'),
+        progress: dataProps.data.red == null ? 0 : dataProps.data.red.toLocaleString('id-ID'),
+        progressLuas: dataProps.dataLuas.red == null ? 0 : dataProps.dataLuas.red.toLocaleString('id-ID'),
         val: 2,
         circular: 'red',
         image: '/2.png',
@@ -55,8 +57,8 @@ export const Summary = ({ dataProps, onCardTbmClick }: { dataProps: any; onCardT
         show: true,
         name: 'Hitam',
         val: 3,
-        progress: dataProps.data.hitam == null ? 0 : dataProps.data.hitam.toLocaleString('id-ID'),
-        progressLuas: dataProps.data.hitam == null ? 0 : dataProps.dataLuas.hitam.toLocaleString('id-ID'),
+        progress: dataProps.data.black == null ? 0 : dataProps.data.black.toLocaleString('id-ID'),
+        progressLuas: dataProps.data.black == null ? 0 : dataProps.dataLuas.black.toLocaleString('id-ID'),
         circular: 'black',
         image: '/2.png',
         color: '#000000',
@@ -288,13 +290,13 @@ export const Summary = ({ dataProps, onCardTbmClick }: { dataProps: any; onCardT
           val: 0,
 
           progress:
-            dataProps.dataDnt.emas == null
+            dataProps.dataDnt.gold == null
               ? 0
-              : dataProps.dataDnt.emas.toLocaleString('id-ID'),
+              : dataProps.dataDnt.gold.toLocaleString('id-ID'),
           progressLuas:
-            dataProps.dataDnt.emas == null
+            dataProps.dataDnt.gold == null
               ? 0
-              : dataProps.dataLuasDnt.emas.toLocaleString('id-ID'),
+              : dataProps.dataLuasDnt.gold.toLocaleString('id-ID'),
           circular: 'gold',
           image: '/2.png',
           color: '#FFA500',
@@ -306,8 +308,8 @@ export const Summary = ({ dataProps, onCardTbmClick }: { dataProps: any; onCardT
           isColorTbm: true,
           name: 'Hijau',
           val: 1,
-          progress: dataProps.dataDnt.hijau == null ? 0 : dataProps.dataDnt.hijau.toLocaleString('id-ID'),
-          progressLuas: dataProps.dataLuasDnt.hijau == null ? 0 : dataProps.dataLuasDnt.hijau.toLocaleString('id-ID'),
+          progress: dataProps.dataDnt.green == null ? 0 : dataProps.dataDnt.green.toLocaleString('id-ID'),
+          progressLuas: dataProps.dataLuasDnt.green == null ? 0 : dataProps.dataLuasDnt.green.toLocaleString('id-ID'),
           circular: 'green',
           image: '/2.png',
           color: '#00a300',
@@ -317,8 +319,8 @@ export const Summary = ({ dataProps, onCardTbmClick }: { dataProps: any; onCardT
           show: true,
           isColorTbm: true,
           name: 'Merah',
-          progress: dataProps.dataDnt.merah == null ? 0 : dataProps.dataDnt.merah.toLocaleString('id-ID'),
-          progressLuas: dataProps.dataLuasDnt.merah == null ? 0 : dataProps.dataLuasDnt.merah.toLocaleString('id-ID'),
+          progress: dataProps.dataDnt.red == null ? 0 : dataProps.dataDnt.red.toLocaleString('id-ID'),
+          progressLuas: dataProps.dataLuasDnt.red == null ? 0 : dataProps.dataLuasDnt.red.toLocaleString('id-ID'),
           val: 2,
           circular: 'red',
           image: '/2.png',
@@ -330,8 +332,8 @@ export const Summary = ({ dataProps, onCardTbmClick }: { dataProps: any; onCardT
           isColorTbm: true,
           name: 'Hitam',
           val: 3,
-          progress: dataProps.dataDnt.hitam == null ? 0 : dataProps.dataDnt.hitam.toLocaleString('id-ID'),
-          progressLuas: dataProps.dataDnt.hitam == null ? 0 : dataProps.dataLuasDnt.hitam.toLocaleString('id-ID'),
+          progress: dataProps.dataDnt.black == null ? 0 : dataProps.dataDnt.black.toLocaleString('id-ID'),
+          progressLuas: dataProps.dataDnt.black == null ? 0 : dataProps.dataLuasDnt.black.toLocaleString('id-ID'),
           circular: 'black',
           image: '/2.png',
           color: '#000000',
