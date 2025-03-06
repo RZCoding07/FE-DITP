@@ -40,15 +40,12 @@ export default function Sidebar({
         className
       )}
     >
-      {/* Overlay in mobile */}
       <div
         onClick={() => setNavOpened(false)}
         className={`absolute inset-0 transition-[opacity] delay-100 duration-700 ${navOpened ? 'h-svh opacity-50' : 'h-0 opacity-0'} w-full bg-black md:hidden`}
       />
 
       <Layout fixed className={navOpened ? 'h-svh' : ''}>
-        {/* Header */}
-        {/* Header */}
         <Layout.Header
           sticky
           className='z-50 flex justify-between px-4 py-3 shadow-sm md:px-4'
@@ -62,8 +59,6 @@ export default function Sidebar({
               <span className='ml-2 text-xs'>Operasional PalmCo</span>
             </div>
           </div>
-
-          {/* Toggle Button in mobile */}
           <Button
             variant='ghost'
             size='icon'
@@ -84,7 +79,7 @@ export default function Sidebar({
           closeNav={() => setNavOpened(false)}
           isCollapsed={isCollapsed}
           links={getSideLinks(app_type)}
-          style={{ transition: 'max-height 0.5s ease',  scrollbarWidth: 'thin' }}
+          style={{ transition: 'max-height 0.5s ease', scrollbarWidth: 'thin' }}
         />
 
 
@@ -104,7 +99,7 @@ export default function Sidebar({
 
   `}</style>
         {/* Footer */}
-        <div data-sidebar='footer' className='flex flex-col gap-2 p-2 ' style={{
+        <div data-sidebar='footer' className='flex flex-col gap-2 p-2 bg-white dark:bg-slate-950' style={{
           transform: 'translateY(0px)',
         }}>
           <div className={`flex ml-1 items-center ${!isCollapsed ? 'gap-2' : ''}`}>

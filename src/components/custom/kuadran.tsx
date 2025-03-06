@@ -15,31 +15,141 @@ interface Point {
   serapanBiaya: number
 }
 
+interface DataSerapanBiaya {
+  kebun: string
+  total_real_sd: number
+  total_rkap_sd: number
+  persen_serapan: string
+  total_luas: number
+  total_rp_ha: number
+}
+
+interface ScoreKebunTBM {
+  regional: string
+  kebun: string
+  totalSeleksiKebun: number
+  totalLuas: number
+  weightedTotalSeleksi: number
+}
+
+interface ScatterChartProps {
+  dataprops: {
+    dataSerapanBiaya: DataSerapanBiaya[]
+    scoresKebunTBM: ScoreKebunTBM[]
+    regions: any
+    tbm: any
+    scoresKebun: any
+  }
+}
+
 const areas = [
   { xRange: [90, 100], yRange: [60, 100], color: "rgba(255, 255, 0, 0.7)" },
   { xRange: [90, 100], yRange: [-100, 60], color: "rgba(144, 238, 144, 0.7)" },
   { xRange: [80, 90], yRange: [60, 100], color: "rgba(255, 99, 71, 0.7)" },
   { xRange: [80, 90], yRange: [-100, 60], color: "rgba(0, 0, 0, 0.7)" },
-];
+]
 
-const ScatterChart  = ({
-  dataprops }: {
-    dataprops: any
-  }) => {
-
-    
-
-
-
-  const data = [
-    { vegetatif: 90, serapanBiaya: 100, kebun: "Kebun 1", bulan: "Januari", tahun: 2021, kode_kebun: "K1" },
-    { vegetatif: 95, serapanBiaya: 80, kebun: "Kebun 2", bulan: "Februari", tahun: 2021, kode_kebun: "K2" },
-    { vegetatif: 80, serapanBiaya: 50, kebun: "Kebun 3", bulan: "Maret", tahun: 2021, kode_kebun: "K3" },
-    { vegetatif: 88, serapanBiaya: 130, kebun: "Kebun 4", bulan: "April", tahun: 2021, kode_kebun: "K4" },
-  ]
-
+const ScatterChart = ({ dataprops }: ScatterChartProps) => {
   const [modalData, setModalData] = useState<any>(null)
   const [showModal, setShowModal] = useState<boolean>(false)
+
+
+
+
+  // Function to merge objects based on kebun property
+  const mergeDataByKebun = () => {
+    if (
+      !dataprops?.dataSerapanBiaya ||
+      !dataprops?.scoresKebunTBM ||
+      !Array.isArray(dataprops.dataSerapanBiaya) ||
+      !Array.isArray(dataprops.scoresKebunTBM)
+    ) {
+      console.error("Invalid data structure", dataprops)
+      return []
+    }
+
+    const { dataSerapanBiaya, scoresKebunTBM, regions } = dataprops
+
+    const mergedData = []
+
+    if (dataprops.tbm === undefined || dataprops.tbm.value === "keseluruhan-tbm") {
+      for (const serapan of dataSerapanBiaya) {
+        const matchingScore = scoresKebunTBM.find((score) => score.kebun === serapan.kebun)
+
+        if (matchingScore) {
+          // Convert persen_serapan to number
+          const serapanBiaya = Number.parseFloat(serapan.persen_serapan)
+          // Use totalSeleksiKebun as vegetatif value
+          const vegetatif = matchingScore.totalSeleksiKebun
+
+          if (!isNaN(serapanBiaya) && !isNaN(vegetatif)) {
+            mergedData.push({
+              vegetatif,
+              serapanBiaya: serapanBiaya > 100 ? -(serapanBiaya - 100) : serapanBiaya,
+              region: matchingScore.regional,
+              kebun: serapan.kebun,
+              bulan: "Current", // Default value since it's not in the data
+              tahun: new Date().getFullYear(), // Current year as default
+              kode_kebun: serapan.kebun,
+            })
+          }
+        }
+      }
+    } else {
+      const tbm = dataprops.tbm.value
+      if (dataprops.scoresKebun !== undefined) {
+        const scoresKebun = dataprops.scoresKebun
+        let z: any = []
+        scoresKebun.filter((x: any) => {
+          if (Object.keys(x).includes(tbm)) {
+            z.push(Object.values(x)[0])
+          }
+        })
+
+        for (const serapan of dataSerapanBiaya) {
+          const matchingScore = z.find((score: any) => score.kebun === serapan.kebun)
+
+          if (matchingScore) {
+            // Convert persen_serapan to number
+            const serapanBiaya = Number.parseFloat(serapan.persen_serapan)
+            // Use totalSeleksiKebun as vegetatif value
+            const vegetatif = matchingScore.totalSeleksiKebun
+
+            if (!isNaN(serapanBiaya) && !isNaN(vegetatif)) {
+              mergedData.push({
+                vegetatif,
+                serapanBiaya: serapanBiaya > 100 ? -(serapanBiaya - 100) : serapanBiaya,
+                region: matchingScore.regional,
+                kebun: serapan.kebun,
+                bulan: "Current", // Default value since it's not in the data
+                tahun: new Date().getFullYear(), // Current year as default
+                kode_kebun: serapan.kebun,
+              })
+            }
+          }
+          }
+
+      }
+
+    }
+
+
+    if (regions !== undefined && regions !== null) {
+      const region = regions.value
+      return mergedData.filter((item) => item.region === region)
+    }
+
+    if (mergedData.length === 0) {
+      console.warn("No matching data found, using sample data")
+      return [
+
+      ]
+    }
+
+    return mergedData
+  }
+
+  const chartData = mergeDataByKebun()
 
   const options = {
     chart: {
@@ -108,12 +218,14 @@ const ScatterChart  = ({
       },
       lineColor: "#FFFFFF",
       gridLineColor: "#FFFFFF",
-      plotLines: [{
-        color: '#FFFFFF', // Warna garis
-        width: 1, // Lebar garis
-        value: 0, // Posisi garis di sumbu x
-        zIndex: 5 // Z-index untuk memastikan garis di atas elemen la```````````````````````in
-      }]
+      plotLines: [
+        {
+          color: "#FFFFFF",
+          width: 1,
+          value: 0,
+          zIndex: 5,
+        },
+      ],
     },
     yAxis: {
       title: {
@@ -127,31 +239,18 @@ const ScatterChart  = ({
       tickInterval: 10,
       labels: {
         formatter: function (this: { value: number }): string {
-          const x = Highcharts.numberFormat(this.value - 20, 0, ",", ".")
-          if((this.value) === -10) {
-            return "110"
-          } else if((this.value) === -20) {
-            return "120"
-          } else if((this.value) === -30) {
-            return "130"
-          } else if((this.value) === -40) {
-            return "140"
-          } else if((this.value) === -50) {
-            return "150"
-          } else if((this.value) === -60) {
-            return "160"
-          } else if((this.value) === -70) {
-            return "170"
-          } else if((this.value) === -80) {
-            return "180"
-          } else if((this.value) === -90) {
-            return "190"
-          } else if((this.value) === -100) {
-            return "200"
-          }
-    
+          if (this.value === -10) return "110"
+          if (this.value === -20) return "120"
+          if (this.value === -30) return "130"
+          if (this.value === -40) return "140"
+          if (this.value === -50) return "150"
+          if (this.value === -60) return "160"
+          if (this.value === -70) return "170"
+          if (this.value === -80) return "180"
+          if (this.value === -90) return "190"
+          if (this.value === -100) return "200"
+
           return Highcharts.numberFormat(Math.abs(this.value), 0, ",", ".")
-          // return `${Math.abs(this.value)}`
         },
         style: {
           color: "#FFFFFF",
@@ -159,12 +258,14 @@ const ScatterChart  = ({
       },
       lineColor: "transparent",
       gridLineColor: "transparent",
-      plotLines: [{
-        color: 'red', // Warna garis
-        width: 1, // Lebar garis
-        value: 0, // Posisi garis di sumbu y
-        zIndex: 5 // Z-index untuk memastikan garis di atas elemen lain
-      }]
+      plotLines: [
+        {
+          color: "red",
+          width: 1,
+          value: 0,
+          zIndex: 5,
+        },
+      ],
     },
     legend: {
       layout: "horizontal",
@@ -198,10 +299,11 @@ const ScatterChart  = ({
         },
         tooltip: {
           headerFormat: "<b>{series.name}</b><br>",
-          pointFormatter: function (this: Highcharts.Point): string {
+          pointFormatter: function (this: Highcharts.Point & Point): string {
             const xValue = this.x !== undefined ? this.x : "N/A"
             const yValue = this.y !== undefined ? Math.floor(Number.parseFloat(this.y.toString())) : "N/A"
-            return `Nilai Vegetatif: ${xValue}<br>Serapan Biaya: ${Highcharts.numberFormat(Math.abs(yValue as number), 0, ",", ".")}%`
+            return `<strong>Kebun: ${this.kebun}</strong><br>Nilai Vegetatif: ${xValue}<br>Serapan Biaya: 
+            ${this.y < 0 ? `${Math.abs(Number(yValue)) + 100}%` : `${yValue}%`}`
           },
         },
         dataLabels: {
@@ -211,7 +313,7 @@ const ScatterChart  = ({
             return `${point.kebun}`
           },
           style: {
-            fontSize: "9px",
+            fontSize: "11px",
             fontWeight: "bold",
             color: "#FFFFFF",
           },
@@ -242,11 +344,16 @@ const ScatterChart  = ({
     series: [
       {
         type: "scatter",
-        name: "vegetatif TBM I",
+        name: "",
         color: "#FFFFFF",
-        data: data.map((item) => ({
+        showInLegend: false,
+        data: chartData.map((item) => ({
           x: Number.parseFloat(item.vegetatif.toString()),
           y: Number.parseFloat(item.serapanBiaya.toString()),
+          kebun: item.kebun,
+          bulan: item.bulan,
+          tahun: item.tahun,
+          kode_kebun: item.kode_kebun,
         })),
       },
     ],
@@ -261,8 +368,41 @@ const ScatterChart  = ({
           containerProps={{ style: { height: `800px`, width: "100%" } }}
         />
       </div>
+
+      {showModal && modalData && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-lg max-w-md w-full">
+            <h3 className="text-lg font-bold mb-4">Detail Kebun: {modalData.kebun}</h3>
+            <div className="space-y-2">
+              <p>
+                <span className="font-medium">Nilai Vegetatif:</span> {modalData.vegetatif}
+              </p>
+              <p>
+                <span className="font-medium">Serapan Biaya:</span>{" "}
+                {Highcharts.numberFormat(Math.abs(modalData.serapanBiaya) + 100, 0, ",", ".")} %
+              </p>
+              <p>
+                <span className="font-medium">Bulan:</span> {modalData.bulan}
+              </p>
+              <p>
+                <span className="font-medium">Tahun:</span> {modalData.tahun}
+              </p>
+              <p>
+                <span className="font-medium">Kode Kebun:</span> {modalData.kode_kebun}
+              </p>
+            </div>
+            <button
+              onClick={() => setShowModal(false)}
+              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Tutup
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
 
 export default ScatterChart
+

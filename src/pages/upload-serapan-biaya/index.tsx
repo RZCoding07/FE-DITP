@@ -31,6 +31,7 @@ export default function UploadUser() {
     rp_ha: number;
     bulan: string;
     tahun: number;
+    tbm: string;
   }
   const [mappedData, setMappedData] = useState<SerapanBiaya[]>([])
   const [values, setValues] = useState<any[]>([])
@@ -130,7 +131,8 @@ export default function UploadUser() {
             persen_serapan: value[6],
             rp_ha: value[7],
             bulan: value[8],
-            tahun: value[9]
+            tahun: value[9],
+            tbm: value[10]
           }
         })
 

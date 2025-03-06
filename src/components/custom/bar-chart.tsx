@@ -119,14 +119,14 @@ const resultBlackTbm4 = useMemo(() => rpcOptions.map((rpc) => dataProps?.countBl
       {
         name: "Red Block",
         type: "column",
-        data: dataProps.ctg === 'tbm-all' ? resultRed : dataProps.ctg === 'tbm1' ? resultRedTbm1 : dataProps.ctg === 'tbm2' ? resultRedTbm2 : dataProps.ctg === 'tbm3' ? resultRedTbm3 : dataProps.ctg === 'tbm4' ? resultRedTbm4 : resultRed,
+        data: dataProps.ctg === 'keseluruhan-tbm' ? resultRed : dataProps.ctg === 'tbm1' ? resultRedTbm1 : dataProps.ctg === 'tbm2' ? resultRedTbm2 : dataProps.ctg === 'tbm3' ? resultRedTbm3 : dataProps.ctg === 'tbm4' ? resultRedTbm4 : resultRed,
         color: "#DC143C",
 
       },
       {
         name: "Black Block",
         type: "column",
-        data: dataProps.ctg === 'tbm-all' ? resultBlack : dataProps.ctg === 'tbm1' ? resultBlackTbm1 : dataProps.ctg === 'tbm2' ? resultBlackTbm2 : dataProps.ctg === 'tbm3' ? resultBlackTbm3 : dataProps.ctg === 'tbm4' ? resultBlackTbm4 : resultBlack,
+        data: dataProps.ctg === 'keseluruhan-tbm' ? resultBlack : dataProps.ctg === 'tbm1' ? resultBlackTbm1 : dataProps.ctg === 'tbm2' ? resultBlackTbm2 : dataProps.ctg === 'tbm3' ? resultBlackTbm3 : dataProps.ctg === 'tbm4' ? resultBlackTbm4 : resultBlack,
         color: "rgba(15, 23, 42, 0.95)",
 
       },

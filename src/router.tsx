@@ -8,6 +8,7 @@ import { redirect } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import cookie from 'js-cookie'
 import { JSX } from 'react/jsx-runtime'
+import Preloader from '@/components/custom/preloader'; // Import komponen Preloader
 
 const user = cookie.get('user')
 const app_type = user ? JSON.parse(user).app_type : ''
@@ -282,6 +283,9 @@ let immatureRouter = [
     lazy: async () => ({
       Component: (await import('./pages/data-pi')).default,
     }),
+    loader: async () => {
+      return <Preloader />
+    }
   },
   {
     path : 'upload-pengukuran-vegetatif',

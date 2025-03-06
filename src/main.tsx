@@ -7,6 +7,7 @@ import router from '@/router'
 import 'primereact/resources/themes/lara-light-cyan/theme.css'
 import { PrimeReactProvider } from 'primereact/api'
 import '@/index.css'
+
 // if user app_type nya monica maka gunakan monicaRouter
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

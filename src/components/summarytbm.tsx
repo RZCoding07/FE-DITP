@@ -7,7 +7,6 @@ export const Summary = ({ dataProps, onCardTbmClick }: { dataProps: any; onCardT
   const rpc = dataProps?.rpc?.value
   let data: any = []
 
-  console.log(dataProps.data)
 
   if (dataProps.title === 'Keseluruhan TBM') {
     data = [

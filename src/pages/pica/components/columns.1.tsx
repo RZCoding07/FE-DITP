@@ -5,40 +5,8 @@ import { Button } from '@/components/custom/button'
 import { Link } from 'react-router-dom'
 import { FaPencilAlt } from 'react-icons/fa'
 
-// regional: string
-// kebun: string
-// afdeling: string
-// blok: string
-// tahun_tanam: string
-// varietas: string
-// luas_ha: string
-// jumlah_pokok_awal_tanam: string
-// jumlah_pokok_sekarang: string
-// tinggi_tanaman_cm: string
-// jumlah_pelepah_bh: string
-// panjang_rachis_cm: string
-// lebar_petiola_cm: string
-// tebal_petiola_cm: string
-// jad_1_sisi: string
-// rerata_panjang_anak_daun: string
-// rerata_lebar_anak_daun: string
-// lingkar_batang_cm: string
-
 export const columns: ColumnDef<Vegetatif>[] = [
-  {
-    accessorKey: 'aksi',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Aksi' />
-    ),
-    cell: ({ row }) => 
-    <div className='flex space-x-2'>
-      <Link to={`/data-vegetatif/${row.original.id}/edit`}>
-        <Button size='sm' variant='default'>
-          IDENTIFIKASI MASALAH
-        </Button>
-      </Link>
-    </div>,
-  },
+
   {
     accessorKey: 'regional',
     header: ({ column }) => (
@@ -67,184 +35,104 @@ export const columns: ColumnDef<Vegetatif>[] = [
     ),
     cell: ({ row }) => <span>{row.getValue('blok')}</span>,
   },
+  
   {
-    accessorKey: 'tahun_tanam',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Tahun Tanam' />
-    ),
-    cell: ({ row }) => <span>{row.getValue('tahun_tanam')}</span>,
-  },
-  {
-    accessorKey: 'varietas',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Varietas' />
-    ),
-    cell: ({ row }) => <span>{row.getValue('varietas')}</span>,
-  },
-  {
-    accessorKey: 'luas_ha',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Luas (Ha)' />
-    ),
-    cell: ({ row }) => <span>{row.getValue('luas_ha')}</span>,
-  },
-  {
-    accessorKey: 'jumlah_pokok_awal_tanam',
+    accessorKey: 'luas',
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title='Jumlah Pokok Awal Tanam (pkk)'
+        title='Luas (Ha)'
       />
     ),
     cell: ({ row }) => (
-      <span>{row.getValue('jumlah_pokok_awal_tanam')}</span>
+      <span>{row.getValue('luas')}</span>
     ),
   },
   {
-    accessorKey: 'jumlah_pokok_sekarang',
+    accessorKey: 'tahunTanam',
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title='Jumlah Pokok Sekarang (pkk)'
+        title='Tahun Tanam'
       />
     ),
     cell: ({ row }) => (
-      
-      <span>{row.getValue('jumlah_pokok_sekarang')}</span>
+      <span>{row.getValue('tahunTanam')}</span>
     ),
-},
-{
-    accessorKey: 'tinggi_tanaman_cm',
+  },
+
+  {
+    accessorKey: 'scoreJumlahPelepah',
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title='Tinggi Tanaman (cm)'
-      />
+      <DataTableColumnHeader column={column} title='Nilai Jumlah Pelepah' />
     ),
-    cell: ({ row }) => (
-      <span>{row.getValue('tinggi_tanaman_cm')}</span>
-    ),
+    cell: ({ row }) => <span>{row.getValue('scoreJumlahPelepah')}</span>,
   },
   {
-    accessorKey: 'jumlah_pelepah_bh',
+    accessorKey: 'scoreKerapatanPokok',
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title='Jumlah Pelepah (Bh)'
-      />
+      <DataTableColumnHeader column={column} title='Nilai Kerapatan Pokok' />
     ),
-    cell: ({ row }) => (
-      <span>{row.getValue('jumlah_pelepah_bh')}</span>
-    ),
+    cell: ({ row }) => <span>{(row.getValue('scoreKerapatanPokok') as number).toFixed(2)}</span>,
   },
   {
-    accessorKey: 'panjang_rachis_cm',
+    accessorKey: 'scoreLingkarBatang',
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title='Panjang Rachis (cm)'
-      />
+      <DataTableColumnHeader column={column} title='Nilai Lingkar Batang' />
     ),
-    cell: ({ row }) => (
-      <span>{row.getValue('panjang_rachis_cm')}</span>
+    cell: ({ row }) => <span>{row.getValue('scoreLingkarBatang')}</span>,
+  },
+
+  {
+    accessorKey: 'scoreTinggiBatang',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Nilai Tinggi Batang' />
     ),
+    cell: ({ row }) => <span>{row.getValue('scoreTinggiBatang')}</span>,
   },
   {
-    accessorKey: 'lebar_petiola_cm',
+    accessorKey: 'totalSeleksian',
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title='Lebar Petiola (cm)'
-      />
+      <DataTableColumnHeader column={column} title='Nilai Vegetatif' />
     ),
-    cell: ({ row }) => (
-      <span>{row.getValue('lebar_petiola_cm')}</span>
-    ),
+    cell: ({ row }) => <span>{(row.getValue('totalSeleksian') as number).toFixed(2)}</span>,
   },
   {
-    accessorKey: 'tebal_petiola_cm',
+    accessorKey: 'colorCategory',
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title='Tebal Petiola (cm)'
-      />
+      <DataTableColumnHeader column={column} title='Kategori Warna' />
     ),
-    cell: ({ row }) => (
-      <span>{row.getValue('tebal_petiola_cm')}</span>
-    ),
+    cell: ({ row }) =>  {
+      const color = row.getValue('colorCategory') as string
+      return (
+        <Button
+          size='sm'
+          variant='default'
+          className={` text-white`}
+          style={{
+            backgroundColor: color === 'red' ? '#DC143C' : 'rgba(15, 23, 42, 0.95)',
+          }}
+        >
+          {color === 'red' ? 'MERAH' : 'HITAM'}
+        </Button>
+      )
+    },
+    
   },
   {
-    accessorKey: 'jad_1_sisi',
+    accessorKey: 'aksi',
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title='Jad 1 Sisi'
-      />
+      <DataTableColumnHeader column={column} title='Aksi' />
     ),
-    cell: ({ row }) => (
-      <span>{row.getValue('jad_1_sisi')}</span>
-    ),
+    cell: ({ row }) => 
+    <div className='flex space-x-2'>
+      <Link to={`/data-vegetatif/${row.original.id}`}>
+        <Button size='sm' variant='default'>
+          <FaPencilAlt /> &nbsp; IDENTIFIKASI MASALAH
+        </Button>
+      </Link>
+    </div>,
   },
-  {
-    accessorKey: 'rerata_panjang_anak_daun',
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title='
-Rerata Panjang Anak Daun'
-      />
-    ),
-    cell: ({ row }) => (
-      <span>{row.getValue('rerata_panjang_anak_daun')}</span>
-    ),
-  },
-  {
-    accessorKey: 'rerata_lebar_anak_daun',
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title='Rerata Lebar Anak Daun'
-      />
-    ),
-    cell: ({ row }) => (
-      <span>{row.getValue('rerata_lebar_anak_daun')}</span>
-    ),
-  },
-  {
-    accessorKey: 'lingkar_batang_cm',
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title='Lingkar Batang (cm)'
-      />
-    ),
-    cell: ({ row }) => (
-      <span>{row.getValue('lingkar_batang_cm')}</span>
-    ),
-  },
-{
-    accessorKey: 'tahun',
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title='Tahun'
-      />
-    ),
-    cell: ({ row }) => (
-      <span>{row.getValue('tahun')}</span>
-    ),
-  },
-  {
-    accessorKey: 'bulan',
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title='Bulan'
-      />
-    ),
-    cell: ({ row }) => (
-      <span>{row.getValue('bulan')}</span>
-    ),
-  },
+  
 
 ]

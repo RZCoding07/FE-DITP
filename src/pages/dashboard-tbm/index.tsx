@@ -385,24 +385,6 @@ export default function Dashboard() {
               },
             ]);
 
-            // // Set color data untuk hitam, merah, hijau, emas
-            // setColorData((prev) => ({
-            //   ...prev,
-            //   black: totalSeleksian <= 80 ? prev.black + 1 : prev.black,
-            //   red: totalSeleksian > 80 && totalSeleksian <= 89 ? prev.red + 1 : prev.red,
-            //   green: totalSeleksian > 89 && totalSeleksian <= 96 ? prev.green + 1 : prev.green,
-            //   gold: totalSeleksian > 96 ? prev.gold + 1 : prev.gold,
-            // }));
-
-            // // Set color data luas per kategori
-            // setColorDataLuas((prev) => ({
-            //   ...prev,
-            //   black: totalSeleksian <= 80 ? prev.black + luas : prev.black,
-            //   red: totalSeleksian > 80 && totalSeleksian <= 89 ? prev.red + luas : prev.red,
-            //   green: totalSeleksian > 89 && totalSeleksian <= 96 ? prev.green + luas : prev.green,
-            //   gold: totalSeleksian > 96 ? prev.gold + luas : prev.gold,
-            // }));
-
             return {
               [`tbm${i}`]: {
                 regional,
@@ -484,7 +466,6 @@ export default function Dashboard() {
             ]);
           });
 
-          
           const newScoresRegional: { [key: string]: { regional: string; totalSeleksiRegional: number; totalLuas: number } } = {}
 
           Object.values(response.data).forEach((item: any) => {
@@ -1209,7 +1190,8 @@ export default function Dashboard() {
       setIsTbm(true);
 
       if (selectedCard.name === 'Keseluruhan TBM') {
-        handleResetClick();
+        // handleResetClick();
+        
       } else {
         setIsKebun(false);
       }
