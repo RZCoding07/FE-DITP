@@ -324,7 +324,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
                   <img
                     width='64'
                     height='64'
-                    src='https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-oil-oil-gas-flaticons-flat-flat-icons.png'
+                    src='/tbm.png'
                     alt='external-oil-oil-gas-flaticons-flat-flat-icons'
                   />
                 </div>
