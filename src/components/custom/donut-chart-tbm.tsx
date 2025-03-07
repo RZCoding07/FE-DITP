@@ -25,7 +25,7 @@ interface DonutChartTbmProps {
 }
 
 const DonutChartTbm: React.FC<DonutChartTbmProps> = React.memo(({ dataprops }) => {
-  const { rpc, kebun,  title, blok, ctg } = dataprops
+  const { rpc, kebun, title, blok, ctg } = dataprops
 
   const series = useMemo(() => {
     let result: number[] = []
@@ -88,6 +88,9 @@ const DonutChartTbm: React.FC<DonutChartTbmProps> = React.memo(({ dataprops }) =
       dataLabels: {
         enabled: true,
         formatter: (val: number) => `${Math.round(val)}%`,
+        style: {
+          colors: ['#fff'],
+        },
       },
       fill: {
         type: "gradient",
@@ -107,12 +110,35 @@ const DonutChartTbm: React.FC<DonutChartTbmProps> = React.memo(({ dataprops }) =
           },
         },
       ],
+      plotOptions: {
+        pie: {
+          donut: {
+            size: '65%',
+          }
+        }
+      }
     }),
-    [],
+    []
   )
 
-  return <ReactApexChart options={options} series={series} type="donut" height={270} />
+  return (
+    <div style={{ position: 'relative', width: '100%', height: '270px' }}>
+      <ReactApexChart options={options} series={series} type="donut" height={270} />
+      <img
+        src="/images/1.png" // Replace with your image URL
+        alt="Center Image"
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '42%',
+          transform: 'translate(-50%, -50%)',
+          width: '90px', // Adjust size as needed
+          height: '90px', // Adjust size as needed
+          zIndex: 10,
+        }}
+      />
+    </div>
+  )
 })
 
 export default DonutChartTbm
-

@@ -212,7 +212,7 @@ export default function UploadUser() {
       <Layout.Body>
         <Card>
           <CardHeader>
-            <CardTitle>Upload Data Problem Idendification</CardTitle>
+            <CardTitle>Upload Data Problem Identification</CardTitle>
             <div className='flex items-center justify-between'>
               <p className='text-muted-foreground'>
                 Upload file .csv atau .xlsx untuk menambahkan data Problem Identification

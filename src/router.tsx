@@ -288,6 +288,15 @@ let immatureRouter = [
     }
   },
   {
+    path: 'hasil-pengukuran-vegetatif',
+    lazy: async () => ({
+      Component: (await import('./pages/hasil-pengukuran-vegetatif')).default,
+    }),
+    loader: async () => {
+      return <Preloader />
+    }
+  },
+  {
     path : 'upload-pengukuran-vegetatif',
     lazy: async () => ({
       Component: (await import('./pages/upload-pengukuran-vegetatif')).default,

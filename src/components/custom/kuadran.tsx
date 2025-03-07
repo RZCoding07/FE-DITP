@@ -43,10 +43,16 @@ interface ScatterChartProps {
 }
 
 const areas = [
-  { xRange: [90, 100], yRange: [60, 100], color: "rgba(255, 255, 0, 0.7)" },
-  { xRange: [90, 100], yRange: [-100, 60], color: "rgba(144, 238, 144, 0.7)" },
-  { xRange: [80, 90], yRange: [60, 100], color: "rgba(255, 99, 71, 0.7)" },
-  { xRange: [80, 90], yRange: [-100, 60], color: "rgba(0, 0, 0, 0.7)" },
+  // { xRange: [90, 100], yRange: [60, 100], color: "rgba(255, 255, 0, 0.7)" },
+  { xRange: [90, 100], yRange: [60, 200], color: "rgba(255, 255, 0, 0.7)" },
+  // { xRange: [90, 100], yRange: [-100, 60], color: "rgba(144, 238, 144, 0.7)" },
+  { xRange: [90, 100], yRange: [0, 60], color: "rgba(144, 238, 144, 0.7)" },
+  // { xRange: [80, 90], yRange: [60, 100], color: "rgba(255, 99, 71, 0.7)" },
+  // { xRange: [80, 90], yRange: [-100, 60], color: "rgba(0, 0, 0, 0.7)" },
+  { xRange: [80, 90], yRange: [0, 60], color: "rgba(0, 0, 0, 0.7)" },
+  // { xRange: [80, 90], yRange: [60, 100], color: "rgba(255, 99, 71, 0.7)" },
+  { xRange: [80, 90], yRange: [60, 200], color: "rgba(255, 99, 71, 0.7)" },
+  { xRange: [80, 90], yRange: [100, 60], color: "rgba(0, 0, 0, 0.7)" },
 ]
 
 const ScatterChart = ({ dataprops }: ScatterChartProps) => {
@@ -85,7 +91,8 @@ const ScatterChart = ({ dataprops }: ScatterChartProps) => {
           if (!isNaN(serapanBiaya) && !isNaN(vegetatif)) {
             mergedData.push({
               vegetatif,
-              serapanBiaya: serapanBiaya > 100 ? -(serapanBiaya - 100) : serapanBiaya,
+              // serapanBiaya: serapanBiaya > 100 ? -(serapanBiaya - 100) : serapanBiaya,
+              serapanBiaya: serapanBiaya,
               region: matchingScore.regional,
               kebun: serapan.kebun,
               bulan: "Current", // Default value since it's not in the data
@@ -234,21 +241,23 @@ const ScatterChart = ({ dataprops }: ScatterChartProps) => {
           color: "#FFFFFF",
         },
       },
-      min: -100,
-      max: 100,
+      // min: -100,
+      // max: 100,
+      min: 0,
+      max: 200,
       tickInterval: 10,
       labels: {
         formatter: function (this: { value: number }): string {
-          if (this.value === -10) return "110"
-          if (this.value === -20) return "120"
-          if (this.value === -30) return "130"
-          if (this.value === -40) return "140"
-          if (this.value === -50) return "150"
-          if (this.value === -60) return "160"
-          if (this.value === -70) return "170"
-          if (this.value === -80) return "180"
-          if (this.value === -90) return "190"
-          if (this.value === -100) return "200"
+          // if (this.value === -10) return "110"
+          // if (this.value === -20) return "120"
+          // if (this.value === -30) return "130"
+          // if (this.value === -40) return "140"
+          // if (this.value === -50) return "150"
+          // if (this.value === -60) return "160"
+          // if (this.value === -70) return "170"
+          // if (this.value === -80) return "180"
+          // if (this.value === -90) return "190"
+          // if (this.value === -100) return "200"
 
           return Highcharts.numberFormat(Math.abs(this.value), 0, ",", ".")
         },
@@ -379,7 +388,7 @@ const ScatterChart = ({ dataprops }: ScatterChartProps) => {
               </p>
               <p>
                 <span className="font-medium">Serapan Biaya:</span>{" "}
-                {Highcharts.numberFormat(Math.abs(modalData.serapanBiaya) + 100, 0, ",", ".")} %
+                {Highcharts.numberFormat(Math.abs(modalData.serapanBiaya), 0, ",", ".")} %
               </p>
               <p>
                 <span className="font-medium">Bulan:</span> {modalData.bulan}

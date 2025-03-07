@@ -810,7 +810,7 @@ export default function PicaTbm() {
             <CardTitle>
               <div className="items-baseline flex justify-between">
                 <h2 className='text-xl font-semibold'>
-                  Kuadran Grafik PICA (Problem Idendification & Corrective Action)
+                  Kuadran Grafik PICA (Problem Identification & Corrective Action)
                 </h2>
 
                 <div className='-ml-5 flex gap-4'>
@@ -857,7 +857,7 @@ export default function PicaTbm() {
                     )}
                   />
 
-                  <h2 className='text-lg mt-1 ml-5 mr-2'>Sortir berdasarkan : </h2>
+                  <h2 className='text-lg mt-1 ml-5 mr-2'>Sort by : </h2>
                   <Controller
                     name='tbm'
                     control={control}

@@ -1620,10 +1620,10 @@ export default function Dashboard() {
 
               <>
 
-                <div className="grid sm:grid-cols-1 lg:grid-cols-[53%_47%] mt-5">
+                <div className="grid sm:grid-cols-1 lg:grid-cols-[50%_50%] mt-5">
                   <h2 className='text-2xl font-bold mt-3'>
-                    PICA Cluster {selectedCard.name} {' '}
-                    {rpc ? ' - ' + rpc.label : ''} {kebun ? ' - ' + kebun.label : ''}{' '}
+                    PICA Cluster {selectedCard.name} {' '} <br/>
+                    {rpc ? '' + rpc.label : ''} {kebun ? ' - ' + kebun.label : ''}{' '}
                     {afd ? ' - ' + afd.label : ''}
                     <strong>
                       &nbsp; (  {bulan ? bulan.label : ''} {tahun ? tahun.label : ''} )
@@ -1703,7 +1703,7 @@ export default function Dashboard() {
 
                     <div className='-ml-5 flex'>
 
-                      <h2 className='text-lg mt-1 ml-5 mr-2'>Sortir berdasarkan : </h2>
+                      <h2 className='text-lg mt-1 ml-5 mr-2'>Sort by : </h2>
                       <Controller
                         name='blok'
                         control={control}

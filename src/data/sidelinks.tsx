@@ -299,6 +299,13 @@ export const immatureSideLinks: SideLink[] = [
     ),
   },
   {
+    title: 'Hasil Pengukuran Vegetatif',
+    href: '/hasil-pengukuran-vegetatif',
+    icon: (
+      <img width="20" height="20" src="https://img.icons8.com/avantgarde/20/lipids.png" alt="lipids" />
+    ),
+  },
+  {
     title: 'Kuadran Grafik',
     href: '/kuadran-grafik',
     icon: (
