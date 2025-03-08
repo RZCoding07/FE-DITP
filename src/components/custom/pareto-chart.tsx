@@ -129,7 +129,7 @@ export default function ParetoChart() {
             </ComposedChart>
           </ResponsiveContainer>
         </ChartContainer>
-        <h2 className="text-center -mt-10">Problem Categories</h2>
+        <h2 className="text-center -mt-10 text-md">Problem Categories</h2>
 </CardContent>
     </Card>
   )
