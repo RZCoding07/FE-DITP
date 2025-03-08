@@ -305,16 +305,7 @@ export default function Awal() {
         let bulanValue = bulan.value
         let tahunValue = tahun.value
 
-        // if (bulanValue >= 1 && bulanValue <= 4) {
-        //   bulanValue = 12
-        //   tahunValue = tahunValue - 1
-        // } else if (bulanValue > 4 && bulanValue <= 8) {
-        //   bulanValue = 4
-        // } else if (bulanValue > 8 && bulanValue <= 12) {
-        //   bulanValue = 8
-        // }
-
-        for (let i = 1; i <5; i++) {
+        for (let i = 1; i < 4; i++) {
           const tahunTanam = tahunValue - i;
           const response = await fetchVegetativeProc({
             input_tbm: 'tbm' + i,

@@ -11,26 +11,15 @@ interface DataItem {
   realVsPlan: any
 }
 
-const SCurveChart: FC = () => {
+const SCurveChart  = ({
+    dataprops }: {
+      dataprops: any
+    }) => {
   const theme = cookie.get("theme") || "light"
   const labelColor = theme === "dark" ? "#fff" : "#333"
   const titleColor = labelColor
 
-  const data: DataItem[] = [
-    { month: "JAN", plan: 3.63, real: 2.05, realVsPlan: 56.51 },
-    { month: "FEB", plan: 8.36, real: 4.99, realVsPlan: 59.66 },
-    { month: "MAR", plan: 14.37, real: 5.59, realVsPlan: 38.89 },
-    { month: "APR", plan: 26.15, real: null, realVsPlan: null },
-    { month: "MEI", plan: 44.43, real: null, realVsPlan: null },
-    { month: "JUN", plan: 63.95, real: null, realVsPlan: null },
-    { month: "JUL", plan: 78.69, real: null, realVsPlan: null },
-    { month: "AGU", plan: 88.17, real: null, realVsPlan: null },
-    { month: "SEP", plan: 93.9, real: null, realVsPlan: null },
-    { month: "OKT", plan: 95.63, real: null, realVsPlan: null },
-    { month: "NOV", plan: 97.76, real: null, realVsPlan: null },
-    { month: "DES", plan: 100.0, real: null, realVsPlan: null },
-  ]
-
+  const data: DataItem[] = dataprops.data
   // Custom label renderer for plan values
   const renderPlanValueLabel = (props: any) => {
     const { x, y, value } = props
@@ -67,7 +56,7 @@ const SCurveChart: FC = () => {
       </p>
 
       <div className="p-4 bg-transparent rounded-lg shadow-md">
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={400}>
           <LineChart data={data} margin={{ top: 30, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
@@ -120,9 +109,9 @@ const SCurveChart: FC = () => {
       <table className="min-w-full border-collapse border border-gray-300">
         <thead>
           <tr>
-            <th className="border border-gray-300 px-4 py-2 bg-green-600 text-white">S.D BULAN</th>
+            <th className="border border-gray-300 px-2 py-2 bg-green-600 text-white">S.D BULAN</th>
             {data.map((item) => (
-              <th key={item.month} className="border border-gray-300 px-4 py-2 bg-green-600 text-white">
+              <th key={item.month} className="border border-gray-300 px-2 py-2 bg-green-600 text-white">
                 {item.month}
               </th>
             ))}
@@ -130,31 +119,31 @@ const SCurveChart: FC = () => {
         </thead>
         <tbody>
           <tr>
-            <td className="border border-gray-300 px-4 py-2 font-medium" style={{ color: titleColor }}>
+            <td className="border border-gray-300 px-2 py-2 font-medium" style={{ color: titleColor }}>
               Plan s.d (%)
             </td>
             {data.map((item) => (
-              <td key={item.month} className="border border-gray-300 px-4 py-2 text-center">
+              <td key={item.month} className="border border-gray-300 px-2 py-2 text-center">
                 {item.plan}
               </td>
             ))}
           </tr>
           <tr>
-            <td className="border border-gray-300 px-4 py-2 font-medium" style={{ color: titleColor }}>
+            <td className="border border-gray-300 px-2 py-2 font-medium" style={{ color: titleColor }}>
             Actual s.d (%)
             </td>
             {data.map((item) => (
-              <td key={item.month} className={`border border-gray-300 px-4 py-2 text-center`}>
+              <td key={item.month} className={`border border-gray-300 px-2 py-2 text-center`}>
                 {item.real !== null ? item.real : "-"}
               </td>
             ))}
           </tr>
           <tr>
-            <td className="border border-gray-300 px-4 py-2 font-medium" style={{ color: titleColor }}>
+            <td className="border border-gray-300 px-2 py-2 font-medium" style={{ color: titleColor }}>
             Target Attainment (%)
             </td>
             {data.map((item) => (
-              <td key={item.month} className={`border border-gray-300 text-white px-4 py-2 text-center ${getColor(item.realVsPlan, item.plan)}`}>
+              <td key={item.month} className={`border border-gray-300 text-white px-2 py-2 text-center ${getColor(item.realVsPlan, item.plan)}`}>
                 {item.realVsPlan !== null ? item.realVsPlan : "-"}
               </td>
             ))}

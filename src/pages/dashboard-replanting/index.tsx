@@ -149,7 +149,8 @@ export default function Dashboard() {
 
   const [plan, setPlan] = useState<number[]>([]);
   const [actual, setActual] = useState<number[]>([]);
-  const [res, setRes] = useState([]);
+
+  const [res, setRes] = useState<{ month: string; plan: any; real: any; realVsPlan: any; }[]>([]);
 
   const [dataTableRegion, setDataTableRegion] = useState([]);
 
@@ -201,10 +202,26 @@ export default function Dashboard() {
           header: false,  // Tidak mengatur header
           skipEmptyLines: true,
           complete: (result: any) => {
+            const months = [
+              "JAN", "FEB", "MAR", "APR", "MEI", "JUN",
+              "JUL", "AGU", "SEP", "OKT", "NOV", "DES"
+            ];
+
             const filteredData = result.data.slice(1); // Menghilangkan baris pertama
-            // console.log(filteredData[47])
-            // console.log(filteredData[48])
-            // console.log(filteredData[49])
+
+            const planCurve = filteredData[47].slice(2, 14);
+            const actualCurve = filteredData[48].slice(2, 14);
+            const realVsPlanCurve = filteredData[49].slice(2, 14);
+
+            const data = months.map((month, index) => ({
+              month,
+              plan: planCurve[index] ?? null,
+              real: actualCurve[index] ?? null,
+              realVsPlan: realVsPlanCurve[index] ?? null
+            }));
+
+            setRes(data);
+
           },
         });
       });
@@ -217,7 +234,7 @@ export default function Dashboard() {
     const csv = await response.text();
     return csv;
   };
-  
+
   const parseCSV = (csv: string) => {
     return new Promise((resolve) => {
       Papa.parse(csv, {
@@ -229,7 +246,7 @@ export default function Dashboard() {
       });
     });
   };
-  
+
   const cleanData = (data: any[][]) => {
     return data.map((row) =>
       row.map((cell, index) => {
@@ -240,18 +257,18 @@ export default function Dashboard() {
       })
     );
   };
-  
+
   const filterData = (data: any[][]) => {
     return data.filter((row) => row.every((cell) => cell !== null));
   };
-  
+
   const processDataReal = (data: any[][]) => {
     return data
       .filter((row) => row[1] === "Real s.d (%)")
       .map((row) => row.slice(2, 14));
   };
-  
-  
+
+
   const processDataPlan = (data: any[][]) => {
     return data
       .filter((row) => row[1] === "Plan s.d (%)")
@@ -261,17 +278,17 @@ export default function Dashboard() {
 
   const parseData = (data: string[][], month: number) => {
     return data.map((row) => {
-      const value:any = row[month]
-      if(isNaN(value)) return 0
+      const value: any = row[month]
+      if (isNaN(value)) return 0
       return parseFloat(value)
     })
   }
-  
+
   const useProcessedData = () => {
     useEffect(() => {
       const processCSV = async () => {
         const csv = await fetchData();
-        const parsedData:any = await parseCSV(csv);
+        const parsedData: any = await parseCSV(csv);
         const cleanedData = cleanData(parsedData);
         const filteredData = filterData(cleanedData);
         const processedDataReal = processDataReal(filteredData);
@@ -281,13 +298,13 @@ export default function Dashboard() {
         setActual(real);
         setPlan(plan);
       };
-  
+
       processCSV();
     }, []);
   };
 
   useProcessedData();
-  
+
   const getBarColor = (value: number) => {
     if (value > 93) return "#34a853"; // Hijau
     if (value > 70) return "#46bdc6"; // Biru
@@ -892,7 +909,7 @@ export default function Dashboard() {
 
           </TabsContent>
           <TabsContent value='reports' className='space-y-4'>
-            <div className='grid lg:grid-cols-[70%_30%] gap-2'>
+            <div className='grid lg:grid-cols-[65%_35%] gap-2'>
               <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
                 <div className='grid gap-6 p-4 md:grid-cols-1'>
                   <div className='space-y-4'>
@@ -913,7 +930,9 @@ export default function Dashboard() {
                     {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
                     <div className="p-4 pt-0">
                       <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
-                        <SCurveChart />
+                        <SCurveChart 
+                        dataprops = {{ data:res}}
+                        />
                       </div>
 
                     </div>
@@ -941,7 +960,7 @@ export default function Dashboard() {
                     {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
                     <div className="p-4 pt-0">
                       <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
-                        <HighchartsRegionalAttainment 
+                        <HighchartsRegionalAttainment
                           dataprops={
                             {
                               actual: actual,
