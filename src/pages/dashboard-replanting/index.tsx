@@ -228,6 +228,23 @@ export default function Dashboard() {
       });
   }, []);
 
+  useEffect(() => {
+    fetch(
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIWBq09iOV27VVAV1tELjYEqomRRdYdukJO5QyVkulTxuB8AwY9HZgnonkd_KfgNyKFPZRe3F-e-Sn/pub?gid=224467245&single=true&output=csv"
+    )
+      .then((response) => response.text())
+      .then((csv) => {
+        Papa.parse(csv, {
+          header: false,  // Tidak mengatur header
+          skipEmptyLines: true,
+          complete: (result: any) => {
+            console.log(result.data);
+
+          },
+        });
+      });
+  }, []);
+
   const fetchData = async () => {
     const response = await fetch(
       "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIWBq09iOV27VVAV1tELjYEqomRRdYdukJO5QyVkulTxuB8AwY9HZgnonkd_KfgNyKFPZRe3F-e-Sn/pub?gid=1184057315&single=true&output=csv"

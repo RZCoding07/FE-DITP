@@ -1,6 +1,6 @@
 "use client"
 
-import { Bar, CartesianGrid, ComposedChart, Legend, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { Bar, CartesianGrid, ComposedChart, Legend, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, ZAxis } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
 
@@ -27,11 +27,8 @@ export default function ParetoChart() {
     { name: "Operasional", value: 0 },
   ]
 
-  // Process data for Pareto chart
-  // Filter out entries with value 0
   const filteredData = rawData.filter(item => item.value > 0);
 
-  // Process data for Pareto chart
   const paretoData = calculateParetoData(filteredData);
 
   return (
@@ -53,23 +50,36 @@ export default function ParetoChart() {
           }}
           className="h-[400px] w-full"
         >
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={paretoData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="name" angle={0} tick={{ fontSize: 12 }} interval={0} tickMargin={10} />
+          <ResponsiveContainer width="100%" height="100%"
+                style={{ fontSize: 15, fontFamily:'Inter var, sans-serif' }}
+          
+          >
+            <ComposedChart data={paretoData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                style={{ fontSize: 15, fontFamily:'Inter var, sans-serif' }}
+            
+            >
+              <CartesianGrid strokeDasharray="3 3" vertical={false}
+                style={{ fontSize: 15, fontFamily:'Inter var, sans-serif' }}
+              
+              />
+              <XAxis dataKey="name" angle={0} tick={{ fontSize: 15 }} interval={0} tickMargin={10} />
               <YAxis
                 yAxisId="left"
                 orientation="left"
                 tickFormatter={(value) => value.toLocaleString()}
                 domain={[0, "dataMax + 500"]}
+                style={{ fontSize: 14, fontFamily:'Inter var, sans-serif' }}
                 label={{ value: "Effect (HA)", angle: -90, position: "insideLeft", style: { textAnchor: "middle" } }}
               />
+          
               <YAxis
                 yAxisId="right"
                 orientation="right"
                 tickFormatter={(value) => `${value.toFixed(2)}%`}
                 domain={[0, 100]}
-                label={{ value: "%", angle: 90, position: "insideRight", style: { textAnchor: "middle" } }}
+                style={{ fontSize: 14, fontFamily:'Inter var, sans-serif' }}
+
+                label={{ value: "Percentage %", angle: 90, position: "insideRight", style: { textAnchor: "middle" } }}
               />
               <Tooltip
                 content={
@@ -97,7 +107,7 @@ export default function ParetoChart() {
                   position: "top",
                   formatter: (value:any) => (value > 0 ? value.toLocaleString() : ""),
                   fill: "#43A047",
-                  fontSize: 12,
+                  fontSize: 15,
                 }}
               />
               <Line
@@ -113,12 +123,13 @@ export default function ParetoChart() {
                   position: "top",
                   formatter: (value:any) => `${value.toFixed(2)}%`,
                   fill: "hsl(var(--chart-2))",
-                  fontSize: 12,
+                  fontSize: 15,
                 }}
               />
             </ComposedChart>
           </ResponsiveContainer>
         </ChartContainer>
+        <h2 className="text-center -mt-10">Problem Categories</h2>
 </CardContent>
     </Card>
   )
