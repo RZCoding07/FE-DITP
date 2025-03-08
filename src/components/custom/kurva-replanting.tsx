@@ -45,7 +45,7 @@ const SCurveChart  = ({
     const percentage = value ;
     if (percentage < 75) return "bg-red-400"; // Merah jika < 60%
     if (percentage <= 90) return "bg-yellow-100"; // Kuning jika 61-90%
-    return "bg-green-100"; // Hijau jika > 90%
+    if (percentage <= 100) return "bg-green-400"; // Hijau jika 91-100%
   };
   
   return (
