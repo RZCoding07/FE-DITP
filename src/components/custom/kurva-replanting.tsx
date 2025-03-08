@@ -19,7 +19,7 @@ const SCurveChart: FC = () => {
   const data: DataItem[] = [
     { month: "JAN", plan: 3.63, real: 2.05, realVsPlan: 56.51 },
     { month: "FEB", plan: 8.36, real: 4.99, realVsPlan: 59.66 },
-    { month: "MAR", plan: 14.37, real: null, realVsPlan: null },
+    { month: "MAR", plan: 14.37, real: 5.59, realVsPlan: 38.89 },
     { month: "APR", plan: 26.15, real: null, realVsPlan: null },
     { month: "MEI", plan: 44.43, real: null, realVsPlan: null },
     { month: "JUN", plan: 63.95, real: null, realVsPlan: null },
@@ -67,7 +67,7 @@ const SCurveChart: FC = () => {
       </p>
 
       <div className="p-4 bg-transparent rounded-lg shadow-md">
-        <ResponsiveContainer width="100%" height={500}>
+        <ResponsiveContainer width="100%" height={300}>
           <LineChart data={data} margin={{ top: 30, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
