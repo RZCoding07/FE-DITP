@@ -28,7 +28,11 @@ export default function ParetoChart() {
   ]
 
   // Process data for Pareto chart
-  const paretoData = calculateParetoData(rawData)
+  // Filter out entries with value 0
+  const filteredData = rawData.filter(item => item.value > 0);
+
+  // Process data for Pareto chart
+  const paretoData = calculateParetoData(filteredData);
 
   return (
     <Card className="w-full">
