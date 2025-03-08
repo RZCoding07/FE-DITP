@@ -12,7 +12,8 @@ const HighchartsRegionalAttainment = ({
 
   const options: Highcharts.Options = {
     chart: {
-      type: 'bar', // Ubah dari 'column' ke 'bar'
+      type: 'bar',
+      height: 500, // Atur tinggi chart di sini (misalnya 500px)
     },
     title: {
       text: '',
@@ -51,40 +52,52 @@ const HighchartsRegionalAttainment = ({
       shared: true,
     },
     plotOptions: {
-      bar: { // Ubah dari 'column' ke 'bar'
+      bar: {
         grouping: false,
         shadow: false,
         borderWidth: 0,
+        pointWidth: 20, // Atur ketebalan bar di sini (misalnya 20px)
+        dataLabels: {
+          enabled: true, // Aktifkan data labels
+          format: '{y}%', // Format teks yang ditampilkan (misalnya, nilai y dengan simbol %)
+          align: 'right', // Posisi teks (kanan)
+          inside: false, // Tampilkan di luar bar
+          color: '#000000', // Warna teks
+          style: {
+            fontWeight: 'bold', // Tebalkan teks
+          },
+        },
       },
     },
     series:
      [ 
-    {
-      type: 'bar', // Ubah dari 'column' ke 'bar'
-      name: 'Actual s.d (%)',
-      color:"#43A047",
-      data: dataprops.actual,
-      tooltip: {
-        valuePrefix: '',
-        valueSuffix: '%',
+      {
+        type: 'bar',
+        name: 'Plan s.d (%)',
+        color: "#ff7f00",
+        data: dataprops.plan,
+        tooltip: {
+          valuePrefix: '',
+          valueSuffix: '%',
+        },
+        pointPadding: 0.1,
+        pointPlacement: 0.1,
+        yAxis: 1,
       },
-      pointPadding: 0.3,
-      pointPlacement: 0.2,
-      yAxis: 1,
-    }, 
-    {
-      type: 'bar', // Ubah dari 'column' ke 'bar'
-      name: 'Plan s.d (%)',
-      color:"#ff7f00",
-      data: dataprops.plan,
-      tooltip: {
-        valuePrefix: '',
-        valueSuffix: '%',
+      {
+        type: 'bar',
+        name: 'Actual s.d (%)',
+        color: "#43A047",
+        data: dataprops.actual,
+        tooltip: {
+          valuePrefix: '',
+          valueSuffix: '%',
+        },
+        pointPadding: 0.3,
+        pointPlacement: 0.3,
+        yAxis: 1,
       },
-      pointPadding: 0.4,
-      pointPlacement: 0.2,
-      yAxis: 1,
-    }],
+    ],
     credits: {
         enabled: false, // Disable watermark
       },
