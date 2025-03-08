@@ -11,6 +11,7 @@ import { UserNav } from '@/components/user-nav'
 import { FcDoughnutChart } from 'react-icons/fc'
 import { IconPlant } from '@tabler/icons-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import HighchartsRegionalAttainment from '@/components/custom/regional-attaintment'
 import axios from 'axios'
 import {
   Table,
@@ -146,9 +147,11 @@ export default function Dashboard() {
   const [data, setData] = useState([]);
 
 
-  const [plan, setPlan] = useState([]);
-  const [actual, setActual] = useState([]);
+  const [plan, setPlan] = useState<number[]>([]);
+  const [actual, setActual] = useState<number[]>([]);
   const [res, setRes] = useState([]);
+
+  const [dataTableRegion, setDataTableRegion] = useState([]);
 
 
   useEffect(() => {
@@ -162,7 +165,7 @@ export default function Dashboard() {
           skipEmptyLines: true,
           complete: (result: any) => {
             const filteredData = result.data.slice(1); // Menghilangkan baris pertama
-            console.log(filteredData);
+            // console.log(filteredData);
 
 
             const data = filteredData.map((item: any) => {
@@ -199,17 +202,92 @@ export default function Dashboard() {
           skipEmptyLines: true,
           complete: (result: any) => {
             const filteredData = result.data.slice(1); // Menghilangkan baris pertama
-            console.log(filteredData[47])
-            console.log(filteredData[48])
-            console.log(filteredData[49])
-
-
-
+            // console.log(filteredData[47])
+            // console.log(filteredData[48])
+            // console.log(filteredData[49])
           },
         });
       });
   }, []);
 
+  const fetchData = async () => {
+    const response = await fetch(
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIWBq09iOV27VVAV1tELjYEqomRRdYdukJO5QyVkulTxuB8AwY9HZgnonkd_KfgNyKFPZRe3F-e-Sn/pub?gid=1184057315&single=true&output=csv"
+    );
+    const csv = await response.text();
+    return csv;
+  };
+  
+  const parseCSV = (csv: string) => {
+    return new Promise((resolve) => {
+      Papa.parse(csv, {
+        header: false,
+        skipEmptyLines: true,
+        complete: (result: any) => {
+          resolve(result.data);
+        },
+      });
+    });
+  };
+  
+  const cleanData = (data: any[][]) => {
+    return data.map((row) =>
+      row.map((cell, index) => {
+        if (index === 0 && cell === "") return "a";
+        if (cell === "") return null;
+        if (index === 1 && (cell === "BULAN INI" || cell === "Real (%)" || cell === "Plan (%)")) return null;
+        return cell;
+      })
+    );
+  };
+  
+  const filterData = (data: any[][]) => {
+    return data.filter((row) => row.every((cell) => cell !== null));
+  };
+  
+  const processDataReal = (data: any[][]) => {
+    return data
+      .filter((row) => row[1] === "Real s.d (%)")
+      .map((row) => row.slice(2, 14));
+  };
+  
+  
+  const processDataPlan = (data: any[][]) => {
+    return data
+      .filter((row) => row[1] === "Plan s.d (%)")
+      .map((row) => row.slice(2, 14));
+  };
+
+
+  const parseData = (data: string[][], month: number) => {
+    return data.map((row) => {
+      const value:any = row[month]
+      if(isNaN(value)) return 0
+      return parseFloat(value)
+    })
+  }
+  
+  const useProcessedData = () => {
+    useEffect(() => {
+      const processCSV = async () => {
+        const csv = await fetchData();
+        const parsedData:any = await parseCSV(csv);
+        const cleanedData = cleanData(parsedData);
+        const filteredData = filterData(cleanedData);
+        const processedDataReal = processDataReal(filteredData);
+        const processedDataPlan = processDataPlan(filteredData);
+        const real = parseData(processedDataReal, 1);
+        const plan = parseData(processedDataPlan, 1);
+        setActual(real);
+        setPlan(plan);
+      };
+  
+      processCSV();
+    }, []);
+  };
+
+  useProcessedData();
+  
   const getBarColor = (value: number) => {
     if (value > 93) return "#34a853"; // Hijau
     if (value > 70) return "#46bdc6"; // Biru
@@ -245,7 +323,7 @@ export default function Dashboard() {
             <Select
               styles={customStyles}
               options={[
-          
+
               ]}
               defaultValue={{ value: '3', label: 'Februari' }}
             />
@@ -270,7 +348,7 @@ export default function Dashboard() {
           <TabsList>
             <TabsTrigger value='overview'>Weekly Report</TabsTrigger>
             {/* <TabsTrigger value='analytics'>Delivery Kecambah</TabsTrigger> */}
-            <TabsTrigger value='reports'>S-Curve</TabsTrigger>
+            <TabsTrigger value='reports'>S-Curve & PICA Analysis</TabsTrigger>
 
 
           </TabsList>
@@ -814,37 +892,75 @@ export default function Dashboard() {
 
           </TabsContent>
           <TabsContent value='reports' className='space-y-4'>
-          <div className='grid lg:grid-cols-1'>
-          <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-            <div className='grid gap-6 p-4 md:grid-cols-1'>
-              <div className='space-y-4'>
-                <div className='flex items-center gap-2 text-lg font-medium'>
-                  <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight'>
-                    <img
-                      className='mr-2'
-                      width='28'
-                      height='28'
-                      src='https://img.icons8.com/fluency/48/positive-dynamic.png'
-                      alt='positive-dynamic'
-                    />
-                    S-Curve : Project Replanting Kelapa Sawit 2025
-                  </h1>
-                </div>
+            <div className='grid lg:grid-cols-[70%_30%] gap-2'>
+              <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                <div className='grid gap-6 p-4 md:grid-cols-1'>
+                  <div className='space-y-4'>
+                    <div className='flex items-center gap-2 text-lg font-medium'>
+                      <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight'>
+                        <img
+                          className='mr-2'
+                          width='28'
+                          height='28'
+                          src='https://img.icons8.com/fluency/48/positive-dynamic.png'
+                          alt='positive-dynamic'
+                        />
+                        S-Curve : Project Replanting Kelapa Sawit 2025
+                      </h1>
+                    </div>
 
 
-                {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
-                <div className="p-4 pt-0">
-                  <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
-                    <SCurveChart />
+                    {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
+                    <div className="p-4 pt-0">
+                      <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
+                        <SCurveChart />
+                      </div>
+
+                    </div>
+
                   </div>
-
                 </div>
+              </Card>
+              <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                <div className='grid gap-6 p-4 md:grid-cols-1'>
+                  <div className='space-y-4'>
+                    <div className='flex items-center gap-2 text-lg font-medium'>
+                      <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight'>
+                        <img
+                          className='mr-2'
+                          width='28'
+                          height='28'
+                          src='https://img.icons8.com/fluency/48/positive-dynamic.png'
+                          alt='positive-dynamic'
+                        />
+                        Regional Attainment
+                      </h1>
+                    </div>
 
-              </div>
+
+                    {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
+                    <div className="p-4 pt-0">
+                      <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
+                        <HighchartsRegionalAttainment 
+                          dataprops={
+                            {
+                              actual: actual,
+                              plan: plan
+                            }
+                          }
+                        />
+                      </div>
+                      <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
+
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
+              </Card>
             </div>
-          </Card>
-        </div>
-            </TabsContent>
+          </TabsContent>
         </Tabs>
 
 
