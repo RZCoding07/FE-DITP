@@ -14,6 +14,11 @@ const HighchartsRegionalAttainment = ({
     chart: {
       type: 'bar',
       height: 680, // Atur tinggi chart di sini (misalnya 500px)
+style: {
+        fontFamily: "Inter var, sans-serif",
+        fontSize: '20px',
+        fontWeight: '400',
+      },
     },
     title: {
       text: '',
@@ -32,12 +37,23 @@ const HighchartsRegionalAttainment = ({
       ],
       title: {
         text: 'Regional',
+        style: {
+            color: '#000000',
+            fontSize: '15px',
+            fontWeight: 'bold',
+        },
+        offset: 70,
       },
     },
     yAxis: [{
       min: 0,
       title: {
         text: 'Percentage (%)',
+        style: {
+            color: '#000000',
+            fontSize: '15px',
+            fontWeight: 'bold',
+        }
       },
     }, {
       title: {
@@ -46,7 +62,7 @@ const HighchartsRegionalAttainment = ({
       opposite: true,
     }],
     legend: {
-      shadow: false,
+      shadow: true,
     },
     tooltip: {
       shared: true,
