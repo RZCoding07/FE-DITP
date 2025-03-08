@@ -31,10 +31,10 @@ export default function PalmOilTable() {
 
   const latexExpression = '\\text{Bobot Nilai Kerapatan Pokok} = \\left( \\frac{\\text{Jumlah Pokok Akhir}}{\\text{Jumlah Pokok Awal}} \\times 100\\right) \\times  30\\%';
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-[60%_40%] gap-4">
       <div className="rounded-md borders">
         <Table>
-          <TableHeader className="bg-[#2B5329] text-[9px] text-center">
+          <TableHeader className="bg-[#2B5329] text-[14px] text-center">
             <TableRow>
               <TableHead rowSpan={2} className="text-white border-r text-center">
                 Fase
@@ -73,7 +73,7 @@ export default function PalmOilTable() {
               <TableHead className="border-r bg-[#2B5329]">Skor 80</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="text-[9px] text-center">
+          <TableBody className="text-[13px] text-center">
             {data.map((row, index) => (
               <TableRow key={`${row.fase}-${row.umur}`} className={index % 2 === 0 ? "bg-transparent" : "bg-gray-100 dark:bg-slate-900"}>
                 <TableCell className="border-r border-l font-medium">{row.fase}</TableCell>
@@ -94,25 +94,25 @@ export default function PalmOilTable() {
           </TableBody>
         </Table>
       </div>
-      <div>
+      <div className="text-[13px]">
         <h2>Perumusan Perhitungan Pengukuran Vegetatif</h2>
-        <p className="text-xs my-2">Perumusan perhitungan pengukuran vegetatif pada tanaman kelapa sawit dilakukan dengan menggunakan metode skor. Skor ini diperoleh dari pengukuran langsung pada lapangan. Berikut adalah rumus perhitungan skor pada parameter vegetatif tanaman kelapa sawit:</p>
-        <h3 className="my-2 text-sm">1. Kerapatan Pokok</h3>
+        <p className="text-[13px] my-2">Perumusan perhitungan pengukuran vegetatif pada tanaman kelapa sawit dilakukan dengan menggunakan metode skor. Skor ini diperoleh dari pengukuran langsung pada lapangan. Berikut adalah rumus perhitungan skor pada parameter vegetatif tanaman kelapa sawit:</p>
+        <h3 className="my-2 text-[13px]">1. Kerapatan Pokok</h3>
         <MathRenderer expression={latexExpression}
         />
-        <h3 className="my-2 text-sm">2. Lingkar Batang</h3>
-        <p className="text-xs my-2">
+        <h3 className="my-2 text-[13px]">2. Lingkar Batang</h3>
+        <p className="text-[13px] my-2">
           Skor Lingkar Batang = Total Skor x 40%
         </p>
-        <h3 className="my-2 text-sm">3. Jumlah Pelepah</h3>
-        <p className="text-xs my-2">Bobot Nilai Jumlah Pelepah = Total Skor x 20%
+        <h3 className="my-2 text-[13px]">3. Jumlah Pelepah</h3>
+        <p className="text-[13px] my-2">Bobot Nilai Jumlah Pelepah = Total Skor x 20%
         </p>
-        <h3 className="my-2 text-sm">4. Tinggi Tanaman</h3>
-        <p className="text-xs my-2">Bobot Nilai Tinggi Tanaman = Total Skor x 10%
+        <h3 className="my-2 text-[13px]">4. Tinggi Tanaman</h3>
+        <p className="text-[13px] my-2">Bobot Nilai Tinggi Tanaman = Total Skor x 10%
         </p>
         <hr className="border my-3" />
         <h2>Kelas Blok</h2>
-        <p className="text-xs my-2">
+        <p className="text-[13px] my-2">
           Kelas blok merupakan hasil dari perhitungan skor vegetatif yang telah dilakukan. Berikut adalah kriteria kelas blok berdasarkan skor vegetatif:
         </p>
         <Table>

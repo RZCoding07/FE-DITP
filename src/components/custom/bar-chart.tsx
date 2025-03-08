@@ -95,14 +95,14 @@ const resultBlackTbm4 = useMemo(() => rpcOptions.map((rpc) => dataProps?.countBl
           style: { colors: theme === "dark" ? "#ffffff" : "#000000" },
         },
         title: {
-          text: "Total Luasan Ha",
-          style: { color: theme === "dark" ? "#ffffff" : "#000000" },
+          text: "Total Blok",
+          style: { color: theme === "dark" ? "#ffffff" : "#000000",cssClass: 'apexcharts-yaxis-title' },
         },
       },
       dataLabels: {
         enabled: true,
         offsetY: -5,
-        formatter: (val: number) => `${val.toFixed(0)} Blok`,
+        formatter: (val: number) => `${val.toFixed(0)}`,
       },
       stroke: { width: [1, 1, 4] },
       fill: { type: "solid" },
@@ -142,6 +142,7 @@ const resultBlackTbm4 = useMemo(() => rpcOptions.map((rpc) => dataProps?.countBl
           background: #f3f3f3;
           color: rgba(0, 0, 0, 0.87);
         }
+
       `}</style>
       <div id="chart">
         <ReactApexChart options={options} series={series} type="bar" height={250} />

@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import SCurveChart from '@/components/custom/kurva-replanting'
 
 // react select
 import Select from 'react-select'
@@ -461,7 +462,7 @@ export default function Dashboard() {
                           111
                         </TableCell>
                         <TableCell className='p-1'>2,824.61</TableCell>
-                        <TableCell className='bg-red-100 p-1 text-black'>https://drive.google.com/open?id=1l_iyXSNeyJsbZvU3q5Tvq2_e1iREMEvj&usp=chrome_ntp
+                        <TableCell className='bg-red-100 p-1 text-black'>
                           104
                         </TableCell>
                         <TableCell className='bg-red-100 p-1 text-black'>
@@ -761,6 +762,36 @@ export default function Dashboard() {
                         ))}
                       </tbody>
                     </table>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </Card>
+        </div>
+        <div className='grid lg:grid-cols-1'>
+          <Card className='mt-5 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+            <div className='grid gap-6 p-4 md:grid-cols-1'>
+              <div className='space-y-4'>
+                <div className='flex items-center gap-2 text-lg font-medium'>
+                  <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight'>
+                    <img
+                      className='mr-2'
+                      width='28'
+                      height='28'
+                      src='https://img.icons8.com/fluency/48/positive-dynamic.png'
+                      alt='positive-dynamic'
+                    />
+      S-Curve : Project Replanting Kelapa Sawit 2025
+                  </h1>
+                </div>
+
+
+                {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
+                <div className="p-4 pt-0">
+                  <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
+                        <SCurveChart />
                   </div>
 
                 </div>

@@ -326,6 +326,13 @@ export const immatureSideLinks: SideLink[] = [
       <img width="20" height="20" src="https://img.icons8.com/fluency/20/data-configuration.png" alt="data-configuration" />
     ),
   },
+  {
+    title: 'Master Data CA',
+    href: '/data-pi',
+    icon: (
+      <img width="20" height="20" src="https://img.icons8.com/fluency/20/data-configuration.png" alt="data-configuration" />
+    ),
+  },
 
   {
     title: 'Settings',

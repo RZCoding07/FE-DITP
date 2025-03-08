@@ -810,7 +810,7 @@ export default function PicaTbm() {
             <CardTitle>
               <div className="items-baseline flex justify-between">
                 <h2 className='text-xl font-semibold'>
-                  Kuadran Grafik PICA (Problem Identification & Corrective Action)
+                  Kuadran Grafik PICA
                 </h2>
 
                 <div className='-ml-5 flex gap-4'>
@@ -893,10 +893,10 @@ export default function PicaTbm() {
 
             </CardTitle>
             <div className='flex items-center justify-between'>
-              <p className='text-muted-foreground'>
+              {/* <p className='text-muted-foreground'>
                 Kuadran Grafik PICA (Problem Identification & Corrective Action) Investasi
                 Tanaman
-              </p>
+              </p> */}
             </div>
           </CardHeader>
           <CardContent>

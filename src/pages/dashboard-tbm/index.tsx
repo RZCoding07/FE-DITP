@@ -25,7 +25,7 @@ import { StockAnalysisChartKebunColor } from '@/components/custom/horizontal-keb
 import StockAnalysisChartBar from '@/components/custom/bar-chart'
 import DonutChartTbm from '@/components/custom/donut-chart-tbm'
 import DonutChart from '@/components/custom/donut-chart'
-import  ScatterChart  from '@/components/custom/kuadran'
+import ScatterChart from '@/components/custom/kuadran'
 import { Summary as STbm } from '@/components/summarytbm'
 import * as XLSX from 'xlsx-js-style'
 import toast from 'react-hot-toast'
@@ -34,6 +34,7 @@ import { FaEyeDropper, FaRecycle, FaSync } from 'react-icons/fa'
 import { regionalKebunData } from '@/data/regional-kebun'
 import { kebunAfdBlok } from '@/data/kebun-afd-blok'
 import { fetchSerapanBiaya } from '@/utils/api_immature'
+// import BarChartComponent from '@/components/custom/barchart-master'
 
 export default function Dashboard() {
   const user = cookie.get('user')
@@ -126,7 +127,7 @@ export default function Dashboard() {
   const [kebunOptions, setKebunOptions] = useState<{ value: string; label: string }[]>([])
   const [afdOptions, setAfdOptions] = useState<{ value: string; label: string }[]>([])
   const [scores, setScores] = useState<any[]>([])
-  const [scoresRegional, setScoresRegional]= useState<any[]>([])
+  const [scoresRegional, setScoresRegional] = useState<any[]>([])
   const [scoresKebun, setScoresKebun] = useState<any[]>([])
   const [tbmRes, setTbmRes] = useState<any[]>([])
   const [isKebun, setIsKebun] = useState<boolean>(false)
@@ -301,10 +302,10 @@ export default function Dashboard() {
             input_tbm: 'tbm' + i,
             input_tahun_tanam: tahunTanam.toString(),
             input_bulan: parseInt(bulan.value),
-            input_tahun: parseInt(tahun.value), 
+            input_tahun: parseInt(tahun.value),
           });
 
-          console.log('response.data',i, response.data);
+          console.log('response.data', i, response.data);
 
 
           setTbmRes((prev) => [...prev, Object.values(response.data)]);
@@ -457,7 +458,7 @@ export default function Dashboard() {
                 [`tbm${i}`]: {
                   regional: newScoresPerKebun[kebun].regional,
                   kebun,
-                  luas : newScoresPerKebun[kebun].totalLuas,
+                  luas: newScoresPerKebun[kebun].totalLuas,
                   totalSeleksiKebun: newScoresPerKebun[kebun].totalSeleksiKebun,
                   colorCategory: newScoresPerKebun[kebun].totalSeleksiKebun <= 80 ? 'black' : newScoresPerKebun[kebun].totalSeleksiKebun <= 89 ? 'red' : newScoresPerKebun[kebun].totalSeleksiKebun <= 96 ? 'green' : 'gold',
                 },
@@ -637,9 +638,9 @@ export default function Dashboard() {
         data.colorCategory,
       ];
     });
-    
+
     // Inisialisasi objek colorData
-    const colorData = data.reduce((acc:any, item:any) => {
+    const colorData = data.reduce((acc: any, item: any) => {
       const colorCategory = item[12]; // Ambil colorCategory dari data
       if (colorCategory in acc) {
         acc[colorCategory] += 1; // Tambahkan 1 jika kategori warna sudah ada
@@ -653,7 +654,7 @@ export default function Dashboard() {
     // emas = gold, hijau = green, merah = red, hitam = black
 
     // Inisialisasi objek colorDataLuas
-    const colorDataLuas = data.reduce((acc:any, item:any) => {
+    const colorDataLuas = data.reduce((acc: any, item: any) => {
       const colorCategory = item[12]; // Ambil colorCategory dari data
       const luas = item[5]; // Ambil luas dari data
       if (colorCategory in acc) {
@@ -670,7 +671,7 @@ export default function Dashboard() {
     setColorData(colorData);
   }, [scores])
 
-  
+
 
   const [selectedCard, setSelectedCard] = useState({
     type: 'all',
@@ -1136,7 +1137,7 @@ export default function Dashboard() {
         const merahSumColorLast = merahSumColor?.[merahSumColor.length - 1]?.sumColor ?? 0;
         const hitamSumColorLast = hitamSumColor?.[hitamSumColor.length - 1]?.sumColor ?? 0;
 
-        
+
 
         setColorDataDonat({
           gold: emasSumColorLast,
@@ -1191,7 +1192,7 @@ export default function Dashboard() {
 
       if (selectedCard.name === 'Keseluruhan TBM') {
         // handleResetClick();
-        
+
       } else {
         setIsKebun(false);
       }
@@ -1347,14 +1348,14 @@ export default function Dashboard() {
     const loadingToast = toast.loading('Downloading... Please wait!', {
       position: 'top-right',
     });
-  
+
     // Header untuk sheet pertama (Detail Seleksi)
     const headers = [
-      "Jenis TBM", "Regional", "Kebun", "Afdeling", "Blok", "Luasan", 
-      "Jumlah Pelepah", "Score Lingkar Batang", "Score Jumlah Pelepah", 
+      "Jenis TBM", "Regional", "Kebun", "Afdeling", "Blok", "Luasan",
+      "Jumlah Pelepah", "Score Lingkar Batang", "Score Jumlah Pelepah",
       "Score Tinggi Batang", "Score Kerapatan Pokok", "Total Seleksian", "Kategori Warna"
     ];
-  
+
     // Konversi data dari scores
     const data = scores.map((item) => {
       let key = Object.keys(item)[0];
@@ -1378,10 +1379,10 @@ export default function Dashboard() {
         data.colorCategory,
       ];
     });
-  
+
     // Header untuk sheet kedua (Summary Kebun)
     const headersKebun = ["Jenis TBM", "Regional", "Kebun", "Luas", "Total Seleksi Kebun", "Color Category"];
-   
+
     // Konversi data dari scoresKebun
     const dataKebun = scoresKebun.map((item) => {
       let key = Object.keys(item)[0];
@@ -1398,19 +1399,19 @@ export default function Dashboard() {
 
 
 
-  
+
     // Buat workbook baru
     const wb = XLSX.utils.book_new();
-  
+
     // Buat worksheet pertama (Detail Seleksi)
     const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
-  
+
     // Warna header
     const headerStyle = {
       fill: { fgColor: { rgb: "10CCAD" } }, // Background hijau
       font: { color: { rgb: "FFFFFF" }, bold: true }, // Font putih bold
     };
-  
+
     // Warna untuk kategori
     const colorMapping: any = {
       'gold': 'FFA500',
@@ -1418,14 +1419,14 @@ export default function Dashboard() {
       'red': 'FF0000',
       'black': '000000'
     };
-  
+
     // Apply warna header
     headers.forEach((_, colIndex) => {
       const cellRef = XLSX.utils.encode_cell({ r: 0, c: colIndex });
       if (!ws[cellRef]) ws[cellRef] = {};
       ws[cellRef].s = headerStyle;
     });
-  
+
     // Apply warna untuk "Kategori Warna" (Kolom ke-12, Index 12)
     data.forEach((row, rowIndex) => {
       const color = row[12]?.toLowerCase();
@@ -1438,13 +1439,13 @@ export default function Dashboard() {
         };
       }
     });
-  
+
     // Tambahkan sheet pertama
     XLSX.utils.book_append_sheet(wb, ws, 'Detail Seleksi');
-  
+
     // Buat worksheet kedua (Summary Kebun) tanpa warna
     const wsKebun = XLSX.utils.aoa_to_sheet([headersKebun, ...dataKebun]);
-  
+
     // Apply warna header untuk sheet kedua
     headersKebun.forEach((_, colIndex) => {
       const cellRef = XLSX.utils.encode_cell({ r: 0, c: colIndex });
@@ -1457,16 +1458,16 @@ export default function Dashboard() {
       const color = row[5]?.toLowerCase();
       if (colorMapping[color]) {
         const cellRef = XLSX.utils.encode_cell({ r: rowIndex + 1, c: 5 }); // +1 karena header di index 0
-      wsKebun[cellRef] = wsKebun[cellRef] || {};
+        wsKebun[cellRef] = wsKebun[cellRef] || {};
         wsKebun[cellRef].s = {
           fill: { fgColor: { rgb: colorMapping[color] } },
           font: { color: { rgb: "FFFFFF" }, bold: true },
         };
       }
     });
-  
 
-  
+
+
     // Tambahkan sheet kedua
     XLSX.utils.book_append_sheet(wb, wsKebun, 'Rekap per Kebun');
 
@@ -1501,11 +1502,11 @@ export default function Dashboard() {
 
     // Simpan file Excel
     XLSX.writeFile(wb, `Hasil Seleksi TBM Bulan ${bulan.label} Tahun ${tahun.label}.xlsx`);
-  
+
     // Update toast
     toast.success('Download complete!', { id: loadingToast });
   };
-  
+
 
 
   return (
@@ -1622,7 +1623,7 @@ export default function Dashboard() {
 
                 <div className="grid sm:grid-cols-1 lg:grid-cols-[50%_50%] mt-5">
                   <h2 className='text-2xl font-bold mt-3'>
-                    PICA Cluster {selectedCard.name} {' '} <br/>
+                    PICA Cluster {selectedCard.name} {' '} <br />
                     {rpc ? '' + rpc.label : ''} {kebun ? ' - ' + kebun.label : ''}{' '}
                     {afd ? ' - ' + afd.label : ''}
                     <strong>
@@ -2059,7 +2060,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
-                <div className="grid">
+                <div className="grid grid-cols-1">
                   <div className='items-center justify-center align-middle'>
                     <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
                       <div className='w-full items-center align-middle'>
@@ -2072,43 +2073,58 @@ export default function Dashboard() {
                       </div>
                       <hr className='my-3 border-cyan-400' />
 
-                      <div className='items-center justify-center align-middle mr-4'>
-                        <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-3 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-cyan-700 dark:to-cyan-600'>
-                          <div className='flex justify-between align-middle items-center'>
-                            <h2 className='text-xl font-semibold'>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className='items-center justify-center align-middle'>
+                          <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-3 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-cyan-700 dark:to-cyan-600'>
+                            <h2 className='text-xl text-center font-semibold'>
                               Total {blok.label} Merah Hitam {selectedCard.name}
                             </h2>
 
-                          </div>
-                          <hr className='my-2 mt-4 border-cyan-400' />
+                            <hr className='my-2 mt-4 border-cyan-400' />
 
-                          <div className='mt-5 grid lg:grid-cols-1 sm:grid-cols-1'>
-                            <StockAnalysisChartBar
-                              dataProps={
-                                {
-                                  rpc,
-                                  kebun,
-                                  afd,
-                                  blok,
-                                  ctg: selectedCard.ctg,
-                                  title: selectedCard.name,
-                                  countBlackBlock,
-                                  countRedBlock,
-                                  countBlackBlockTbm1,
-                                  countRedBlockTbm1,
-                                  countBlackBlockTbm2,
-                                  countRedBlockTbm2,
-                                  countBlackBlockTbm3,
-                                  countRedBlockTbm3,
-                                  countBlackBlockTbm4,
-                                  countRedBlockTbm4,
+                            <div className='mt-5'>
+                              <StockAnalysisChartBar
+                                dataProps={
+                                  {
+                                    rpc,
+                                    kebun,
+                                    afd,
+                                    blok,
+                                    ctg: selectedCard.ctg,
+                                    title: selectedCard.name,
+                                    countBlackBlock,
+                                    countRedBlock,
+                                    countBlackBlockTbm1,
+                                    countRedBlockTbm1,
+                                    countBlackBlockTbm2,
+                                    countRedBlockTbm2,
+                                    countBlackBlockTbm3,
+                                    countRedBlockTbm3,
+                                    countBlackBlockTbm4,
+                                    countRedBlockTbm4,
+                                  }
                                 }
-                              }
-                            />
-                            {/* <KuadranChart /> */}
+                              />
+                              {/* <KuadranChart /> */}
+                            </div>
+
+                              
                           </div>
-                          <div className='mt-5 grid lg:grid-cols-1 sm:grid-cols-1'>
-                            {/* <KuadranChart /> */}
+                        </div>
+                        <div className='items-center justify-center align-middle'>
+                          <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-3 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-cyan-700 dark:to-cyan-600'>
+                            <h2 className='text-xl text-center font-semibold'>
+                              Total {blok.label} Merah Hitam {selectedCard.name}
+                            </h2>
+
+                            <hr className='my-2 mt-4 border-cyan-400' />
+
+                            <div className='mt-5'>
+                              {/* <BarChartComponent  /> */}
+                              {/* <KuadranChart /> */}
+                            </div>
+
+                              
                           </div>
                         </div>
                       </div>
