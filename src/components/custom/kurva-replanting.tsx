@@ -62,7 +62,7 @@ const SCurveChart  = ({
             <XAxis
               dataKey="month"
               label={{
-                value: "Bulan",
+                value: "Month",
                 position: "insideBottomRight",
                 offset: -10,
                 fill: titleColor,
@@ -70,7 +70,7 @@ const SCurveChart  = ({
             />
             <YAxis
               label={{
-                value: "Persentase (%)",
+                value: "Percentage (%)",
                 angle: -90,
                 position: "insideLeft",
                 fill: titleColor,

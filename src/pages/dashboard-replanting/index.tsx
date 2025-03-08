@@ -147,8 +147,8 @@ export default function Dashboard() {
   const [data, setData] = useState([]);
 
 
-  const [plan, setPlan] = useState<number[]>([]);
-  const [actual, setActual] = useState<number[]>([]);
+  const [plan, setPlan] = useState<any[]>([]);
+  const [actual, setActual] = useState<any[]>([]);
 
   const [res, setRes] = useState<{ month: string; plan: any; real: any; realVsPlan: any; }[]>([]);
 
@@ -203,8 +203,8 @@ export default function Dashboard() {
           skipEmptyLines: true,
           complete: (result: any) => {
             const months = [
-              "JAN", "FEB", "MAR", "APR", "MEI", "JUN",
-              "JUL", "AGU", "SEP", "OKT", "NOV", "DES"
+              "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
+              "JUL", "AGU", "SEP", "OKT", "NOV", "DEC"
             ];
 
             const filteredData = result.data.slice(1); // Menghilangkan baris pertama
@@ -279,7 +279,7 @@ export default function Dashboard() {
   const parseData = (data: string[][], month: number) => {
     return data.map((row) => {
       const value: any = row[month]
-      if (isNaN(value)) return 0
+      if (isNaN(value)) return null
       return parseFloat(value)
     })
   }

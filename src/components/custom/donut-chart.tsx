@@ -25,7 +25,7 @@ const DonutChart = ({
     },
     dataLabels: {
       enabled: true,
-      formatter: (val: number) => `${Math.round(val)}%`, // Format data menjadi persentase
+      formatter: (val: number) => `${Math.round(val)}%`, // Format data menjadi Percentage
     },
 
     fill: {

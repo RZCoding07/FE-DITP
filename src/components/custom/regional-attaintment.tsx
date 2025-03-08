@@ -20,15 +20,15 @@ const HighchartsRegionalAttainment = ({
     },
     xAxis: {
       categories: [
-        'RPC1',
-        'RPC2',
-        'RPC3',
-        'RPC4',
-        'RPC5',
-        'RPC6',
-        'RPC7',
-        'RPC2N2',
-        'RPC2N14'
+        'R1',
+        'R2',
+        'R3',
+        'R4',
+        'R5',
+        'R6',
+        'R7',
+        'R2 EKS N2',
+        'R2 EKS N14'
       ],
       title: {
         text: 'Regional',
@@ -37,7 +37,7 @@ const HighchartsRegionalAttainment = ({
     yAxis: [{
       min: 0,
       title: {
-        text: 'Persentase (%)',
+        text: 'Percentage (%)',
       },
     }, {
       title: {
