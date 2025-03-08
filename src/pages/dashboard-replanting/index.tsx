@@ -10,6 +10,7 @@ import { TopNav } from '@/components/top-nav'
 import { UserNav } from '@/components/user-nav'
 import { FcDoughnutChart } from 'react-icons/fc'
 import { IconPlant } from '@tabler/icons-react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import axios from 'axios'
 import {
   Table,
@@ -144,6 +145,12 @@ export default function Dashboard() {
 
   const [data, setData] = useState([]);
 
+
+  const [plan, setPlan] = useState([]);
+  const [actual, setActual] = useState([]);
+  const [res, setRes] = useState([]);
+
+
   useEffect(() => {
     fetch(
       "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXTlsseLkShodSUOy-i7l7t03FF68IcucYTYEJmny_lhaODbCQqZZDTEd5dDZfhImykjCwetxwIlXS/pub?gid=2025566438&single=true&output=csv"
@@ -181,6 +188,28 @@ export default function Dashboard() {
       });
   }, []);
 
+  useEffect(() => {
+    fetch(
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIWBq09iOV27VVAV1tELjYEqomRRdYdukJO5QyVkulTxuB8AwY9HZgnonkd_KfgNyKFPZRe3F-e-Sn/pub?gid=429452392&single=true&output=csv"
+    )
+      .then((response) => response.text())
+      .then((csv) => {
+        Papa.parse(csv, {
+          header: false,  // Tidak mengatur header
+          skipEmptyLines: true,
+          complete: (result: any) => {
+            const filteredData = result.data.slice(1); // Menghilangkan baris pertama
+            console.log(filteredData[47])
+            console.log(filteredData[48])
+            console.log(filteredData[49])
+
+
+
+          },
+        });
+      });
+  }, []);
+
   const getBarColor = (value: number) => {
     if (value > 93) return "#34a853"; // Hijau
     if (value > 70) return "#46bdc6"; // Biru
@@ -208,6 +237,7 @@ export default function Dashboard() {
             <h1 className='text-2xl font-bold tracking-tight'>
               Dashboard Replanting
             </h1>
+
           </div>
           <h1>Hi, Welcome back {fullname}👋</h1>
 
@@ -215,20 +245,14 @@ export default function Dashboard() {
             <Select
               styles={customStyles}
               options={[
-                { value: 'this_month', label: 'This Month' },
-                { value: 'last_month', label: 'Last Month' },
-                { value: 'this_year', label: 'This Year' },
-                { value: 'last_year', label: 'Last Year' },
+          
               ]}
-              defaultValue={{ value: 'this_month', label: 'September' }}
+              defaultValue={{ value: '3', label: 'Februari' }}
             />
             <Select
               styles={customStyles}
               options={[
-                { value: 'w3', label: 'W3' },
-                { value: 'last_month', label: 'Last Month' },
-                { value: 'this_year', label: 'This Year' },
-                { value: 'last_year', label: 'Last Year' },
+                { value: 'w3', label: 'W3' }
               ]}
               defaultValue={{ value: 'w3', label: 'W3' }}
             />
@@ -238,540 +262,560 @@ export default function Dashboard() {
             </Button>
           </div>
         </div>
-        <h1 className='mt-2 flex items-center text-xl font-bold tracking-tight'>
-          <img
-            width='28'
-            height='28'
-            src='https://img.icons8.com/fluency/48/calendar--v1.png'
-            alt='calendar icon'
-            className='mr-2'
-          />
-          Weekly Report
-        </h1>
+        <Tabs
+          orientation='vertical'
+          defaultValue='overview'
+          className='space-y-4 '
+        >
+          <TabsList>
+            <TabsTrigger value='overview'>Weekly Report</TabsTrigger>
+            {/* <TabsTrigger value='analytics'>Delivery Kecambah</TabsTrigger> */}
+            <TabsTrigger value='reports'>S-Curve</TabsTrigger>
 
-        <p className='mb-3 font-semibold'>
-          Periode W3 September 2024 (23/09/2024)
-        </p>
-        <div className='grid lg:grid-cols-[70%_30%]'>
-          <Card className='mr-5 bg-slate-50 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-              <CardTitle className='text-sm font-medium'>
-                <h1 className='text-xl'> Overview pekerjaan Replanting</h1>
-              </CardTitle>
-              <FcBarChart size={25} />
-            </CardHeader>
-            <CardContent>
-              <div className='grid grid-cols-[34%_66%]'>
-                <div className='pt-2'>
-                  {dataCard.map((item, index) => (
-                    <div className='pt-1'>
-                      <Card
-                        key={index}
-                        className={`${item.bgColor} rounded-lg p-4 ${item.color} py-1 shadow-md`}
-                        style={{ margin: 0 }}
-                      >
-                        <div className='grid grid-cols-[40%_60%] items-center'>
-                          <div>
-                            <CardTitle className='text-lg font-semibold'>
-                              {item.value}
-                            </CardTitle>
-                          </div>
-                          <div className='text-right'>
-                            <div className='text-md font-bold'>
-                              {item.title}
+
+          </TabsList>
+
+
+
+          <TabsContent value='overview' className='space-y-4'>
+
+            <h1 className='mt-2 flex items-center text-xl font-bold tracking-tight'>
+              <img
+                width='28'
+                height='28'
+                src='https://img.icons8.com/fluency/48/calendar--v1.png'
+                alt='calendar icon'
+                className='mr-2'
+              />
+              Weekly Report
+            </h1>
+
+            <p className='mb-3 font-semibold'>
+              Periode W3 Februari 2025
+            </p>
+            <div className='grid lg:grid-cols-[70%_30%]'>
+              <Card className='mr-5 bg-slate-50 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+                  <CardTitle className='text-sm font-medium'>
+                    <h1 className='text-xl'> Overview pekerjaan Replanting</h1>
+                  </CardTitle>
+                  <FcBarChart size={25} />
+                </CardHeader>
+                <CardContent>
+                  <div className='grid grid-cols-[34%_66%]'>
+                    <div className='pt-2'>
+                      {dataCard.map((item, index) => (
+                        <div className='pt-1'>
+                          <Card
+                            key={index}
+                            className={`${item.bgColor} rounded-lg p-4 ${item.color} py-1 shadow-md`}
+                            style={{ margin: 0 }}
+                          >
+                            <div className='grid grid-cols-[40%_60%] items-center'>
+                              <div>
+                                <CardTitle className='text-lg font-semibold'>
+                                  {item.value}
+                                </CardTitle>
+                              </div>
+                              <div className='text-right'>
+                                <div className='text-md font-bold'>
+                                  {item.title}
+                                </div>
+                                <p className={`text-xs ${item.color}`}>
+                                  {item.percentage}
+                                </p>
+                                <p className={`text-xs ${item.color}`}>
+                                  {item.progress}
+                                </p>
+                              </div>
                             </div>
-                            <p className={`text-xs ${item.color}`}>
-                              {item.percentage}
-                            </p>
-                            <p className={`text-xs ${item.color}`}>
-                              {item.progress}
-                            </p>
-                          </div>
+                          </Card>
                         </div>
-                      </Card>
+                      ))}
                     </div>
-                  ))}
-                </div>
-                <div className='p-4'>
-                  <Table
-                    className='rounded-lg text-xs shadow-md'
-                    style={{ borderCollapse: 'collapse' }}
+                    <div className='p-4'>
+                      <Table
+                        className='rounded-lg text-xs shadow-md'
+                        style={{ borderCollapse: 'collapse' }}
+                      >
+                        <TableHeader className='shadow-sm'>
+                          <TableRow className='bg-gradient-to-l from-green-500 to-green-300 font-semibold text-black'>
+                            <TableCell rowSpan={2} className='p-1'>
+                              Regional
+                            </TableCell>
+                            <TableCell rowSpan={2} className='p-1 text-center'>
+                              RKAP (Ha)
+                            </TableCell>
+                            <TableCell colSpan={4} className='p-1 text-center'>
+                              Berkontrak
+                            </TableCell>
+                            <TableCell colSpan={2} className='p-1 text-center'>
+                              Land Clearing
+                            </TableCell>
+                            <TableCell colSpan={2} className='p-1 text-center'>
+                              Menanam
+                            </TableCell>
+                          </TableRow>
+                          <TableRow className='bg-gradient-to-l from-slate-50 to-slate-300 font-semibold text-black'>
+                            <TableCell className='p-1 text-center'></TableCell>
+                            <TableCell className='p-1 text-center'>
+                              Luas (Ha)
+                            </TableCell>
+                            <TableCell className='p-1 text-center'>%</TableCell>
+                            <TableCell className='p-1 text-center'>
+                              Luas (Ha)
+                            </TableCell>
+                            <TableCell className='p-1 text-center'>%</TableCell>
+                            <TableCell className='p-1 text-center'>
+                              Luas (Ha)
+                            </TableCell>
+                            <TableCell className='p-1 text-center'>%</TableCell>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell rowSpan={5} className='p-1 font-medium'>
+                              Palm Co
+                            </TableCell>
+                            <TableCell className='p-1'>R1</TableCell>
+                            <TableCell className='p-1'>360.13</TableCell>
+                            <TableCell className='bg-emerald-100 p-1 text-black'>
+                              360.13
+                            </TableCell>
+                            <TableCell className='bg-emerald-100 p-1 text-black'>
+                              100
+                            </TableCell>
+                            <TableCell className='p-1'>348.48</TableCell>
+                            <TableCell className='p-1'>97</TableCell>
+                            <TableCell className='p-1'>213.80</TableCell>
+                            <TableCell className='p-1'>59</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className='p-1'>R2</TableCell>
+                            <TableCell className='p-1'>7,859.00</TableCell>
+                            <TableCell className='bg-emerald-100 p-1 text-black'>
+                              7,859.00
+                            </TableCell>
+                            <TableCell className='bg-emerald-100 p-1 text-black'>
+                              100
+                            </TableCell>
+                            <TableCell className='p-1'>7,704.00</TableCell>
+                            <TableCell className='p-1'>98</TableCell>
+                            <TableCell className='p-1'>7,610.00</TableCell>
+                            <TableCell className='p-1'>97</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className='p-1'>R3</TableCell>
+                            <TableCell className='p-1'>1,144.00</TableCell>
+                            <TableCell className='bg-red-100 p-1 text-black'>
+                              -
+                            </TableCell>
+                            <TableCell className='bg-red-100 p-1 text-black'>
+                              0
+                            </TableCell>
+                            <TableCell className='p-1'>-</TableCell>
+                            <TableCell className='p-1'>0</TableCell>
+                            <TableCell className='p-1'>-</TableCell>
+                            <TableCell className='p-1'>0</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className='p-1'>R4</TableCell>
+                            <TableCell className='p-1'>1,377.76</TableCell>
+                            <TableCell className='bg-emerald-100 p-1 text-black'>
+                              1,377.76
+                            </TableCell>
+                            <TableCell className='bg-emerald-100 p-1 text-black'>
+                              100
+                            </TableCell>
+                            <TableCell className='p-1'>1,377.76</TableCell>
+                            <TableCell className='p-1'>100</TableCell>
+                            <TableCell className='p-1'>1,090.22</TableCell>
+                            <TableCell className='p-1'>79</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className='p-1'>R5</TableCell>
+                            <TableCell className='p-1'>3,811.34</TableCell>
+                            <TableCell className='bg-emerald-100 p-1 text-black'>
+                              2,337.88
+                            </TableCell>
+                            <TableCell className='bg-emerald-100 p-1 text-black'>
+                              61
+                            </TableCell>
+                            <TableCell className='p-1'>1,714.52</TableCell>
+                            <TableCell className='bg-red-100 p-1 text-black'>
+                              45
+                            </TableCell>
+                            <TableCell className='bg-red-100 p-1 text-black'>
+                              724.04
+                            </TableCell>
+                            <TableCell className='p-1'>19</TableCell>
+                          </TableRow>
+                          <TableRow className='bg-emerald-50 text-black'>
+                            <TableCell colSpan={2} className='p-1 font-medium'>
+                              Sub Total Palm Co
+                            </TableCell>
+                            <TableCell className='p-1'>14,552.23</TableCell>
+                            <TableCell className='p-1'>11,934.77</TableCell>
+                            <TableCell className='p-1'>82</TableCell>
+                            <TableCell className='p-1'>11,144.76</TableCell>
+                            <TableCell className='p-1'>77</TableCell>
+                            <TableCell className='p-1'>9,638.06</TableCell>
+                            <TableCell className='p-1'>66</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell rowSpan={4} className='p-1 font-medium'>
+                              KSO
+                            </TableCell>
+                            <TableCell className='p-1'>R6 (ex N01)</TableCell>
+                            <TableCell className='p-1'>1,155.90</TableCell>
+                            <TableCell className='bg-emerald-100 p-1 text-black'>
+                              1,155.90
+                            </TableCell>
+                            <TableCell className='bg-emerald-100 p-1 text-black'>
+                              100
+                            </TableCell>
+                            <TableCell className='p-1'>1,155.90</TableCell>
+                            <TableCell className='p-1'>100</TableCell>
+                            <TableCell className='p-1'>1,155.90</TableCell>
+                            <TableCell className='p-1'>100</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className='p-1'>R2 (ex N02)</TableCell>
+                            <TableCell className='p-1'>2,182.38</TableCell>
+                            <TableCell className='bg-emerald-100 p-1 text-black'>
+                              2,182.38
+                            </TableCell>
+                            <TableCell className='bg-emerald-100 p-1 text-black'>
+                              100
+                            </TableCell>
+                            <TableCell className='p-1'>2,182.38</TableCell>
+                            <TableCell className='p-1'>100</TableCell>
+                            <TableCell className='p-1'>2,182.38</TableCell>
+                            <TableCell className='p-1'>100</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className='p-1'>R7 (ex N07)</TableCell>
+                            <TableCell className='p-1'>2,711.00</TableCell>
+                            <TableCell className='bg-emerald-100 p-1 text-black'>
+                              3,008.94
+                            </TableCell>
+                            <TableCell className='bg-emerald-100 p-1 text-black'>
+                              111
+                            </TableCell>
+                            <TableCell className='p-1'>2,824.61</TableCell>
+                            <TableCell className='bg-red-100 p-1 text-black'>
+                              104
+                            </TableCell>
+                            <TableCell className='bg-red-100 p-1 text-black'>
+                              528.22
+                            </TableCell>
+                            <TableCell className='p-1'>19</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className='p-1'>R2 (ex N14)</TableCell>
+                            <TableCell className='p-1'>900.00</TableCell>
+                            <TableCell className='bg-yellow-100 p-1 text-black'>
+                              400.00
+                            </TableCell>
+                            <TableCell className='bg-yellow-100 p-1 text-black'>
+                              44
+                            </TableCell>
+                            <TableCell className='p-1'>400.00</TableCell>
+                            <TableCell className='p-1'>44</TableCell>
+                            <TableCell className='p-1'>300.00</TableCell>
+                            <TableCell className='p-1'>33</TableCell>
+                          </TableRow>
+                          <TableRow className='bg-emerald-50 text-black'>
+                            <TableCell colSpan={2} className='p-1 font-medium'>
+                              Sub Total KSO
+                            </TableCell>
+                            <TableCell className='p-1'>6,949.28</TableCell>
+                            <TableCell className='p-1'>6,686.22</TableCell>
+                            <TableCell className='p-1'>96</TableCell>
+                            <TableCell className='p-1'>6,563.89</TableCell>
+                            <TableCell className='p-1'>95</TableCell>
+                            <TableCell className='p-1'>6,166.50</TableCell>
+                            <TableCell className='p-1'>89</TableCell>
+                          </TableRow>
+
+                          <TableRow className='bg-green-50 text-black'>
+                            <TableCell colSpan={2} className='p-1 font-medium'>
+                              Total
+                            </TableCell>
+                            <TableCell className='p-1'>21,501.51</TableCell>
+                            <TableCell className='p-1'>18,678.21</TableCell>
+                            <TableCell className='p-1'>87</TableCell>
+                            <TableCell className='p-1'>17,708.65</TableCell>
+                            <TableCell className='p-1'>82</TableCell>
+                            <TableCell className='p-1'>15,804.56</TableCell>
+                            <TableCell className='p-1'>73</TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                <CardHeader className='flex flex-row items-center justify-between space-y-0'>
+                  <CardTitle className='text-xl font-medium'>
+                    This Week’s Highlights
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className='text-md text-muted-foreground'>
+                    • R3: Pekerjaan TK 943 Ha belum dapat dilakukan menunggu
+                    penjualan kayu karet
+                    <br />• R5: Proses pengadaan paket pekerjaan di HO seluas 1.020
+                    Ha atas paket yang gagal tender di R5
+                    <br />• R2 KSO N14: Proses tender ulang di PTPN I (Dana IP PEN)
+                    atas pemutusan kontrak
+                  </p>
+                </CardContent>
+                <CardHeader className='flex flex-row items-center justify-between space-y-0 '>
+                  <CardTitle
+                    className='text-xl font-medium'
+                    style={{ paddingTop: 0, marginTop: '-20px' }}
                   >
-                    <TableHeader className='shadow-sm'>
-                      <TableRow className='bg-gradient-to-l from-green-500 to-green-300 font-semibold text-black'>
-                        <TableCell rowSpan={2} className='p-1'>
-                          Regional
-                        </TableCell>
-                        <TableCell rowSpan={2} className='p-1 text-center'>
-                          RKAP (Ha)
-                        </TableCell>
-                        <TableCell colSpan={4} className='p-1 text-center'>
-                          Berkontrak
-                        </TableCell>
-                        <TableCell colSpan={2} className='p-1 text-center'>
-                          Land Clearing
-                        </TableCell>
-                        <TableCell colSpan={2} className='p-1 text-center'>
-                          Menanam
-                        </TableCell>
-                      </TableRow>
-                      <TableRow className='bg-gradient-to-l from-slate-50 to-slate-300 font-semibold text-black'>
-                        <TableCell className='p-1 text-center'></TableCell>
-                        <TableCell className='p-1 text-center'>
-                          Luas (Ha)
-                        </TableCell>
-                        <TableCell className='p-1 text-center'>%</TableCell>
-                        <TableCell className='p-1 text-center'>
-                          Luas (Ha)
-                        </TableCell>
-                        <TableCell className='p-1 text-center'>%</TableCell>
-                        <TableCell className='p-1 text-center'>
-                          Luas (Ha)
-                        </TableCell>
-                        <TableCell className='p-1 text-center'>%</TableCell>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell rowSpan={5} className='p-1 font-medium'>
-                          Palm Co
-                        </TableCell>
-                        <TableCell className='p-1'>R1</TableCell>
-                        <TableCell className='p-1'>360.13</TableCell>
-                        <TableCell className='bg-emerald-100 p-1 text-black'>
-                          360.13
-                        </TableCell>
-                        <TableCell className='bg-emerald-100 p-1 text-black'>
-                          100
-                        </TableCell>
-                        <TableCell className='p-1'>348.48</TableCell>
-                        <TableCell className='p-1'>97</TableCell>
-                        <TableCell className='p-1'>213.80</TableCell>
-                        <TableCell className='p-1'>59</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className='p-1'>R2</TableCell>
-                        <TableCell className='p-1'>7,859.00</TableCell>
-                        <TableCell className='bg-emerald-100 p-1 text-black'>
-                          7,859.00
-                        </TableCell>
-                        <TableCell className='bg-emerald-100 p-1 text-black'>
-                          100
-                        </TableCell>
-                        <TableCell className='p-1'>7,704.00</TableCell>
-                        <TableCell className='p-1'>98</TableCell>
-                        <TableCell className='p-1'>7,610.00</TableCell>
-                        <TableCell className='p-1'>97</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className='p-1'>R3</TableCell>
-                        <TableCell className='p-1'>1,144.00</TableCell>
-                        <TableCell className='bg-red-100 p-1 text-black'>
-                          -
-                        </TableCell>
-                        <TableCell className='bg-red-100 p-1 text-black'>
-                          0
-                        </TableCell>
-                        <TableCell className='p-1'>-</TableCell>
-                        <TableCell className='p-1'>0</TableCell>
-                        <TableCell className='p-1'>-</TableCell>
-                        <TableCell className='p-1'>0</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className='p-1'>R4</TableCell>
-                        <TableCell className='p-1'>1,377.76</TableCell>
-                        <TableCell className='bg-emerald-100 p-1 text-black'>
-                          1,377.76
-                        </TableCell>
-                        <TableCell className='bg-emerald-100 p-1 text-black'>
-                          100
-                        </TableCell>
-                        <TableCell className='p-1'>1,377.76</TableCell>
-                        <TableCell className='p-1'>100</TableCell>
-                        <TableCell className='p-1'>1,090.22</TableCell>
-                        <TableCell className='p-1'>79</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className='p-1'>R5</TableCell>
-                        <TableCell className='p-1'>3,811.34</TableCell>
-                        <TableCell className='bg-emerald-100 p-1 text-black'>
-                          2,337.88
-                        </TableCell>
-                        <TableCell className='bg-emerald-100 p-1 text-black'>
-                          61
-                        </TableCell>
-                        <TableCell className='p-1'>1,714.52</TableCell>
-                        <TableCell className='bg-red-100 p-1 text-black'>
-                          45
-                        </TableCell>
-                        <TableCell className='bg-red-100 p-1 text-black'>
-                          724.04
-                        </TableCell>
-                        <TableCell className='p-1'>19</TableCell>
-                      </TableRow>
-                      <TableRow className='bg-emerald-50 text-black'>
-                        <TableCell colSpan={2} className='p-1 font-medium'>
-                          Sub Total Palm Co
-                        </TableCell>
-                        <TableCell className='p-1'>14,552.23</TableCell>
-                        <TableCell className='p-1'>11,934.77</TableCell>
-                        <TableCell className='p-1'>82</TableCell>
-                        <TableCell className='p-1'>11,144.76</TableCell>
-                        <TableCell className='p-1'>77</TableCell>
-                        <TableCell className='p-1'>9,638.06</TableCell>
-                        <TableCell className='p-1'>66</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell rowSpan={4} className='p-1 font-medium'>
-                          KSO
-                        </TableCell>
-                        <TableCell className='p-1'>R6 (ex N01)</TableCell>
-                        <TableCell className='p-1'>1,155.90</TableCell>
-                        <TableCell className='bg-emerald-100 p-1 text-black'>
-                          1,155.90
-                        </TableCell>
-                        <TableCell className='bg-emerald-100 p-1 text-black'>
-                          100
-                        </TableCell>
-                        <TableCell className='p-1'>1,155.90</TableCell>
-                        <TableCell className='p-1'>100</TableCell>
-                        <TableCell className='p-1'>1,155.90</TableCell>
-                        <TableCell className='p-1'>100</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className='p-1'>R2 (ex N02)</TableCell>
-                        <TableCell className='p-1'>2,182.38</TableCell>
-                        <TableCell className='bg-emerald-100 p-1 text-black'>
-                          2,182.38
-                        </TableCell>
-                        <TableCell className='bg-emerald-100 p-1 text-black'>
-                          100
-                        </TableCell>
-                        <TableCell className='p-1'>2,182.38</TableCell>
-                        <TableCell className='p-1'>100</TableCell>
-                        <TableCell className='p-1'>2,182.38</TableCell>
-                        <TableCell className='p-1'>100</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className='p-1'>R7 (ex N07)</TableCell>
-                        <TableCell className='p-1'>2,711.00</TableCell>
-                        <TableCell className='bg-emerald-100 p-1 text-black'>
-                          3,008.94
-                        </TableCell>
-                        <TableCell className='bg-emerald-100 p-1 text-black'>
-                          111
-                        </TableCell>
-                        <TableCell className='p-1'>2,824.61</TableCell>
-                        <TableCell className='bg-red-100 p-1 text-black'>
-                          104
-                        </TableCell>
-                        <TableCell className='bg-red-100 p-1 text-black'>
-                          528.22
-                        </TableCell>
-                        <TableCell className='p-1'>19</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className='p-1'>R2 (ex N14)</TableCell>
-                        <TableCell className='p-1'>900.00</TableCell>
-                        <TableCell className='bg-yellow-100 p-1 text-black'>
-                          400.00
-                        </TableCell>
-                        <TableCell className='bg-yellow-100 p-1 text-black'>
-                          44
-                        </TableCell>
-                        <TableCell className='p-1'>400.00</TableCell>
-                        <TableCell className='p-1'>44</TableCell>
-                        <TableCell className='p-1'>300.00</TableCell>
-                        <TableCell className='p-1'>33</TableCell>
-                      </TableRow>
-                      <TableRow className='bg-emerald-50 text-black'>
-                        <TableCell colSpan={2} className='p-1 font-medium'>
-                          Sub Total KSO
-                        </TableCell>
-                        <TableCell className='p-1'>6,949.28</TableCell>
-                        <TableCell className='p-1'>6,686.22</TableCell>
-                        <TableCell className='p-1'>96</TableCell>
-                        <TableCell className='p-1'>6,563.89</TableCell>
-                        <TableCell className='p-1'>95</TableCell>
-                        <TableCell className='p-1'>6,166.50</TableCell>
-                        <TableCell className='p-1'>89</TableCell>
-                      </TableRow>
-
-                      <TableRow className='bg-green-50 text-black'>
-                        <TableCell colSpan={2} className='p-1 font-medium'>
-                          Total
-                        </TableCell>
-                        <TableCell className='p-1'>21,501.51</TableCell>
-                        <TableCell className='p-1'>18,678.21</TableCell>
-                        <TableCell className='p-1'>87</TableCell>
-                        <TableCell className='p-1'>17,708.65</TableCell>
-                        <TableCell className='p-1'>82</TableCell>
-                        <TableCell className='p-1'>15,804.56</TableCell>
-                        <TableCell className='p-1'>73</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-            <CardHeader className='flex flex-row items-center justify-between space-y-0'>
-              <CardTitle className='text-xl font-medium'>
-                This Week’s Highlights
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className='text-md text-muted-foreground'>
-                • R3: Pekerjaan TK 943 Ha belum dapat dilakukan menunggu
-                penjualan kayu karet
-                <br />• R5: Proses pengadaan paket pekerjaan di HO seluas 1.020
-                Ha atas paket yang gagal tender di R5
-                <br />• R2 KSO N14: Proses tender ulang di PTPN I (Dana IP PEN)
-                atas pemutusan kontrak
-              </p>
-            </CardContent>
-            <CardHeader className='flex flex-row items-center justify-between space-y-0 '>
-              <CardTitle
-                className='text-xl font-medium'
-                style={{ paddingTop: 0, marginTop: '-20px' }}
-              >
-                Proyeksi 2024 Highlights
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className='text-md text-muted-foreground'>
-                • Proyeksi serapan biaya replanting 95% dari RKAP 2024 <br />•
-                Selesai tanam diproyeksikan seluas 18.678,21 Ha atau 87% dari
-                RKAP 2024 dan Persiapan lahan diproyeksikan seluas 2.581,24 Ha
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-        <div className='mt-5 grid lg:grid-cols-3'>
-          <Card className='mr-5 bg-slate-50 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-            <CardHeader className='flex flex-row items-center justify-between space-y-0'>
-              <CardTitle className='text-xl font-medium'>
-                Tasks Completed This Week
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className='text-md text-muted-foreground'>
-                • R3: Pekerjaan TK 943 Ha belum dapat dilakukan menunggu
-                penjualan kayu karet
-                <br />• R5: Proses pengadaan paket pekerjaan di HO seluas 1.020
-                Ha atas paket yang gagal tender di R5
-                <br />• R2 KSO N14: Proses tender ulang di PTPN I (Dana IP PEN)
-                atas pemutusan kontrak
-              </p>
-            </CardContent>
-          </Card>
-          <Card className='mr-5 bg-slate-50 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-            <CardHeader className='flex flex-row items-center justify-between space-y-0'>
-              <CardTitle className='text-xl font-medium'>
-                Pending Matters
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className='text-md text-muted-foreground'>
-                • R3: Pekerjaan TK 943 Ha belum dapat dilakukan menunggu
-                penjualan kayu karet
-                <br />• R5: Proses pengadaan paket pekerjaan di HO seluas 1.020
-                Ha atas paket yang gagal tender di R5
-                <br />• R2 KSO N14: Proses tender ulang di PTPN I (Dana IP PEN)
-                atas pemutusan kontrak
-              </p>
-            </CardContent>
-          </Card>
-          <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-            <CardHeader className='flex flex-row items-center justify-between space-y-0'>
-              <CardTitle className='text-xl font-medium'>
-                Next Week’s Tasks
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className='text-md text-muted-foreground'>
-                • R3: Pekerjaan TK 943 Ha belum dapat dilakukan menunggu
-                penjualan kayu karet
-                <br />• R5: Proses pengadaan paket pekerjaan di HO seluas 1.020
-                Ha atas paket yang gagal tender di R5
-                <br />• R2 KSO N14: Proses tender ulang di PTPN I (Dana IP PEN)
-                atas pemutusan kontrak
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-        <div className='grid lg:grid-cols-1'>
-          <Card className='mt-5 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-            <div className='grid gap-6 p-4 md:grid-cols-2'>
-              <div className='space-y-4'>
-                <div className='flex items-center gap-2 text-lg font-medium'>
-                  <IconPlant className='h-5 w-5 text-green-600' />
-
-                  <h2>Proyeksi Replanting Tahun 2024 (Ha)</h2>
-                </div>
-                <Table>
-                  <TableHeader>
-                    <TableRow className='bg-muted/50'>
-                      <TableCell>-</TableCell>
-                      <TableCell>RKAP</TableCell>
-                      <TableCell>Selesai Tanam</TableCell>
-                      <TableCell>Persiapan Lahan</TableCell>
-                      <TableCell>%Tanam</TableCell>
-                      <TableCell>%P.Lahan</TableCell>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow className='bg-muted/30'>
-                      <TableCell>Palm Co</TableCell>
-                      <TableCell>14.552,23</TableCell>
-                      <TableCell>11.991,99</TableCell>
-                      <TableCell>2.581,24</TableCell>
-                      <TableCell>82</TableCell>
-                      <TableCell>18</TableCell>
-                    </TableRow>
-                    <TableRow className='bg-muted/30'>
-                      <TableCell>KSO</TableCell>
-                      <TableCell>6.949,28</TableCell>
-                      <TableCell>6.686,22</TableCell>
-                      <TableCell>-</TableCell>
-                      <TableCell>96</TableCell>
-                      <TableCell>-</TableCell>
-                    </TableRow>
-                    <TableRow className='bg-green-50 text-black'>
-                      <TableCell>Total</TableCell>
-                      <TableCell>21.501,51</TableCell>
-                      <TableCell>18.678,21</TableCell>
-                      <TableCell>2.581,24</TableCell>
-                      <TableCell>87</TableCell>
-                      <TableCell>12</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
-
-              <div className='space-y-4'>
-                <div className='flex items-center gap-2 text-lg font-medium'>
-                  <svg
-                    className='h-5 w-5 text-yellow-500'
-                    fill='none'
-                    height='24'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    viewBox='0 0 24 24'
-                    width='24'
-                    xmlns='http://www.w3.org/2000/svg'
-                  >
-                    <path d='M17 18.5a9 9 0 1 0-11.7-5.6' />
-                    <path d='M9 19.5v3' />
-                    <path d='M9 22.5h8' />
-                    <path d='M13 16.5v6' />
-                    <path d='M19 19.5v3' />
-                    <path d='M17 21.5v2' />
-                    <path d='M15 19.5v3' />
-                  </svg>
-                  <h2>Proyeksi Serapan Biaya Tahun 2024 (Rp.Miliar)</h2>
-                </div>
-                <Table>
-                  <TableHeader>
-                    <TableRow className='bg-muted/50'>
-                      <TableCell>-</TableCell>
-                      <TableCell>RKAP</TableCell>
-                      <TableCell>Proyeksi</TableCell>
-                      <TableCell>% of RKAP</TableCell>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow className='bg-muted/30'>
-                      <TableCell>Palm Co</TableCell>
-                      <TableCell>563</TableCell>
-                      <TableCell>548</TableCell>
-                      <TableCell>97,39</TableCell>
-                    </TableRow>
-                    <TableRow className='bg-muted/30'>
-                      <TableCell>KSO</TableCell>
-                      <TableCell>276</TableCell>
-                      <TableCell>250</TableCell>
-                      <TableCell>90,50</TableCell>
-                    </TableRow>
-                    <TableRow className='bg-yellow-50 text-black'>
-                      <TableCell>Total</TableCell>
-                      <TableCell>840</TableCell>
-                      <TableCell>799</TableCell>
-                      <TableCell>95,12</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
+                    Proyeksi 2024 Highlights
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className='text-md text-muted-foreground'>
+                    • Proyeksi serapan biaya replanting 95% dari RKAP 2024 <br />•
+                    Selesai tanam diproyeksikan seluas 18.678,21 Ha atau 87% dari
+                    RKAP 2024 dan Persiapan lahan diproyeksikan seluas 2.581,24 Ha
+                  </p>
+                </CardContent>
+              </Card>
             </div>
-          </Card>
-        </div>
+            <div className='mt-5 grid lg:grid-cols-3'>
+              <Card className='mr-5 bg-slate-50 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                <CardHeader className='flex flex-row items-center justify-between space-y-0'>
+                  <CardTitle className='text-xl font-medium'>
+                    Tasks Completed This Week
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className='text-md text-muted-foreground'>
+                    • R3: Pekerjaan TK 943 Ha belum dapat dilakukan menunggu
+                    penjualan kayu karet
+                    <br />• R5: Proses pengadaan paket pekerjaan di HO seluas 1.020
+                    Ha atas paket yang gagal tender di R5
+                    <br />• R2 KSO N14: Proses tender ulang di PTPN I (Dana IP PEN)
+                    atas pemutusan kontrak
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className='mr-5 bg-slate-50 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                <CardHeader className='flex flex-row items-center justify-between space-y-0'>
+                  <CardTitle className='text-xl font-medium'>
+                    Pending Matters
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className='text-md text-muted-foreground'>
+                    • R3: Pekerjaan TK 943 Ha belum dapat dilakukan menunggu
+                    penjualan kayu karet
+                    <br />• R5: Proses pengadaan paket pekerjaan di HO seluas 1.020
+                    Ha atas paket yang gagal tender di R5
+                    <br />• R2 KSO N14: Proses tender ulang di PTPN I (Dana IP PEN)
+                    atas pemutusan kontrak
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                <CardHeader className='flex flex-row items-center justify-between space-y-0'>
+                  <CardTitle className='text-xl font-medium'>
+                    Next Week’s Tasks
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className='text-md text-muted-foreground'>
+                    • R3: Pekerjaan TK 943 Ha belum dapat dilakukan menunggu
+                    penjualan kayu karet
+                    <br />• R5: Proses pengadaan paket pekerjaan di HO seluas 1.020
+                    Ha atas paket yang gagal tender di R5
+                    <br />• R2 KSO N14: Proses tender ulang di PTPN I (Dana IP PEN)
+                    atas pemutusan kontrak
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+            <div className='grid lg:grid-cols-1'>
+              <Card className='mt-5 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                <div className='grid gap-6 p-4 md:grid-cols-2'>
+                  <div className='space-y-4'>
+                    <div className='flex items-center gap-2 text-lg font-medium'>
+                      <IconPlant className='h-5 w-5 text-green-600' />
 
+                      <h2>Proyeksi Replanting Tahun 2024 (Ha)</h2>
+                    </div>
+                    <Table>
+                      <TableHeader>
+                        <TableRow className='bg-muted/50'>
+                          <TableCell>-</TableCell>
+                          <TableCell>RKAP</TableCell>
+                          <TableCell>Selesai Tanam</TableCell>
+                          <TableCell>Persiapan Lahan</TableCell>
+                          <TableCell>%Tanam</TableCell>
+                          <TableCell>%P.Lahan</TableCell>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        <TableRow className='bg-muted/30'>
+                          <TableCell>Palm Co</TableCell>
+                          <TableCell>14.552,23</TableCell>
+                          <TableCell>11.991,99</TableCell>
+                          <TableCell>2.581,24</TableCell>
+                          <TableCell>82</TableCell>
+                          <TableCell>18</TableCell>
+                        </TableRow>
+                        <TableRow className='bg-muted/30'>
+                          <TableCell>KSO</TableCell>
+                          <TableCell>6.949,28</TableCell>
+                          <TableCell>6.686,22</TableCell>
+                          <TableCell>-</TableCell>
+                          <TableCell>96</TableCell>
+                          <TableCell>-</TableCell>
+                        </TableRow>
+                        <TableRow className='bg-green-50 text-black'>
+                          <TableCell>Total</TableCell>
+                          <TableCell>21.501,51</TableCell>
+                          <TableCell>18.678,21</TableCell>
+                          <TableCell>2.581,24</TableCell>
+                          <TableCell>87</TableCell>
+                          <TableCell>12</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
 
-
-        <div className='grid lg:grid-cols-1'>
-          <Card className='mt-5 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-            <div className='grid gap-6 p-4 md:grid-cols-1'>
-              <div className='space-y-4'>
-                <div className='flex items-center gap-2 text-lg font-medium'>
-                  <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight'>
-                    <img
-                      className='mr-2'
-                      width='28'
-                      height='28'
-                      src='https://img.icons8.com/fluency/48/positive-dynamic.png'
-                      alt='positive-dynamic'
-                    />
-                    Realisasi Tanam Perkebun
-                  </h1>
+                  <div className='space-y-4'>
+                    <div className='flex items-center gap-2 text-lg font-medium'>
+                      <svg
+                        className='h-5 w-5 text-yellow-500'
+                        fill='none'
+                        height='24'
+                        stroke='currentColor'
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth='2'
+                        viewBox='0 0 24 24'
+                        width='24'
+                        xmlns='http://www.w3.org/2000/svg'
+                      >
+                        <path d='M17 18.5a9 9 0 1 0-11.7-5.6' />
+                        <path d='M9 19.5v3' />
+                        <path d='M9 22.5h8' />
+                        <path d='M13 16.5v6' />
+                        <path d='M19 19.5v3' />
+                        <path d='M17 21.5v2' />
+                        <path d='M15 19.5v3' />
+                      </svg>
+                      <h2>Proyeksi Serapan Biaya Tahun 2024 (Rp.Miliar)</h2>
+                    </div>
+                    <Table>
+                      <TableHeader>
+                        <TableRow className='bg-muted/50'>
+                          <TableCell>-</TableCell>
+                          <TableCell>RKAP</TableCell>
+                          <TableCell>Proyeksi</TableCell>
+                          <TableCell>% of RKAP</TableCell>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        <TableRow className='bg-muted/30'>
+                          <TableCell>Palm Co</TableCell>
+                          <TableCell>563</TableCell>
+                          <TableCell>548</TableCell>
+                          <TableCell>97,39</TableCell>
+                        </TableRow>
+                        <TableRow className='bg-muted/30'>
+                          <TableCell>KSO</TableCell>
+                          <TableCell>276</TableCell>
+                          <TableCell>250</TableCell>
+                          <TableCell>90,50</TableCell>
+                        </TableRow>
+                        <TableRow className='bg-yellow-50 text-black'>
+                          <TableCell>Total</TableCell>
+                          <TableCell>840</TableCell>
+                          <TableCell>799</TableCell>
+                          <TableCell>95,12</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
                 </div>
+              </Card>
+            </div>
 
 
-                {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
-                <div className="p-4 pt-0">
-                  <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
-                    <table className="border-collapse border w-full mt-4">
-  
-                      <tbody>
-                        {data.map((row, rowIndex) => (
-                          <tr key={rowIndex} id={rowIndex + ""}>
-                            {Object.values(row).map((value: any, colIndex) =>
-                            (
-                              colIndex === 5 || colIndex === 7 || colIndex === 9 ? (
-                                <td id={colIndex + ""} key={colIndex} className="border p-2">
-                                  {!isNaN(parseFloat(value)) ? (
-                                    <>
-                                      <p className='text-right font-semibold'>{parseInt(value)} %</p>
-                                      <Progress value={parseFloat(value)} bgColor={getBarColor(parseFloat(value))} />
 
-                                    </>
+            <div className='grid lg:grid-cols-1'>
+              <Card className='mt-5 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                <div className='grid gap-6 p-4 md:grid-cols-1'>
+                  <div className='space-y-4'>
+                    <div className='flex items-center gap-2 text-lg font-medium'>
+                      <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight'>
+                        <img
+                          className='mr-2'
+                          width='28'
+                          height='28'
+                          src='https://img.icons8.com/fluency/48/positive-dynamic.png'
+                          alt='positive-dynamic'
+                        />
+                        Realisasi Tanam Perkebun
+                      </h1>
+                    </div>
+
+
+                    {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
+                    <div className="p-4 pt-0">
+                      <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
+                        <table className="border-collapse border w-full mt-4">
+
+                          <tbody>
+                            {data.map((row, rowIndex) => (
+                              <tr key={rowIndex} id={rowIndex + ""}>
+                                {Object.values(row).map((value: any, colIndex) =>
+                                (
+                                  colIndex === 5 || colIndex === 7 || colIndex === 9 ? (
+                                    <td id={colIndex + ""} key={colIndex} className="border p-2">
+                                      {!isNaN(parseFloat(value)) ? (
+                                        <>
+                                          <p className='text-right font-semibold'>{parseInt(value)} %</p>
+                                          <Progress value={parseFloat(value)} bgColor={getBarColor(parseFloat(value))} />
+
+                                        </>
+                                      ) : (
+                                        value
+                                      )}
+
+                                    </td>
+
+
                                   ) : (
-                                    value
-                                  )}
-
-                                </td>
-
-
-                              ) : (
-                                <td id={colIndex + ""} key={colIndex} className="border p-2">{value}</td>
-                              )
+                                    <td id={colIndex + ""} key={colIndex} className="border p-2">{value}</td>
+                                  )
+                                ))}
+                              </tr>
                             ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                          </tbody>
+                        </table>
+                      </div>
+
+                    </div>
+
                   </div>
-
                 </div>
-
-              </div>
+              </Card>
             </div>
-          </Card>
-        </div>
-        <div className='grid lg:grid-cols-1'>
-          <Card className='mt-5 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+
+          </TabsContent>
+          <TabsContent value='reports' className='space-y-4'>
+          <div className='grid lg:grid-cols-1'>
+          <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
             <div className='grid gap-6 p-4 md:grid-cols-1'>
               <div className='space-y-4'>
                 <div className='flex items-center gap-2 text-lg font-medium'>
@@ -783,7 +827,7 @@ export default function Dashboard() {
                       src='https://img.icons8.com/fluency/48/positive-dynamic.png'
                       alt='positive-dynamic'
                     />
-      S-Curve : Project Replanting Kelapa Sawit 2025
+                    S-Curve : Project Replanting Kelapa Sawit 2025
                   </h1>
                 </div>
 
@@ -791,7 +835,7 @@ export default function Dashboard() {
                 {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
                 <div className="p-4 pt-0">
                   <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
-                        <SCurveChart />
+                    <SCurveChart />
                   </div>
 
                 </div>
@@ -800,6 +844,10 @@ export default function Dashboard() {
             </div>
           </Card>
         </div>
+            </TabsContent>
+        </Tabs>
+
+
       </Layout.Body>
     </Layout>
   )

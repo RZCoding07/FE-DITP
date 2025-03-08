@@ -103,7 +103,7 @@ const SCurveChart: FC = () => {
             <Line
               type="monotone"
               dataKey="real"
-              name="Real s.d (%)"
+              name="Actual s.d (%)"
               stroke="#43A047"
               strokeWidth={3}
               dot={{ r: 5 }}
