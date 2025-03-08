@@ -21,6 +21,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import SCurveChart from '@/components/custom/kurva-replanting'
+import ParetoChart from '@/components/custom/pareto-chart'
 
 // react select
 import Select from 'react-select'
@@ -907,9 +908,11 @@ export default function Dashboard() {
               </Card>
             </div>
 
+
+
           </TabsContent>
           <TabsContent value='reports' className='space-y-4'>
-            <div className='grid lg:grid-cols-[65%_35%] gap-2'>
+            <div className='grid lg:grid-cols-[65%_35%] gap-4'>
               <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
                 <div className='grid gap-6 p-4 md:grid-cols-1'>
                   <div className='space-y-4'>
@@ -930,8 +933,8 @@ export default function Dashboard() {
                     {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
                     <div className="p-4 pt-0">
                       <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
-                        <SCurveChart 
-                        dataprops = {{ data:res}}
+                        <SCurveChart
+                          dataprops={{ data: res }}
                         />
                       </div>
 
@@ -977,6 +980,25 @@ export default function Dashboard() {
 
                   </div>
                 </div>
+              </Card>
+            </div>
+            <div className='grid lg:grid-cols-2'>
+
+              <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+              <div className='flex items-center gap-2 text-lg font-medium'>
+                      <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight ml-5'>
+                        <img
+                          className='mr-2'
+                          width='28'
+                          height='28'
+                          src='https://img.icons8.com/fluency/48/positive-dynamic.png'
+                          alt='positive-dynamic'
+                        />
+                      Problem Identification & Cause Analysis
+                      </h1>
+                    </div>
+                <h2 className='ml-5 mt-5 text-lg'>Pareto Chart</h2>
+                <ParetoChart />
               </Card>
             </div>
           </TabsContent>
