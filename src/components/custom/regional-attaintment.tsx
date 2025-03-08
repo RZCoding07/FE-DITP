@@ -13,7 +13,7 @@ const HighchartsRegionalAttainment = ({
   const options: Highcharts.Options = {
     chart: {
       type: 'bar',
-      height: 500, // Atur tinggi chart di sini (misalnya 500px)
+      height: 680, // Atur tinggi chart di sini (misalnya 500px)
     },
     title: {
       text: '',

@@ -958,7 +958,7 @@ export default function Dashboard() {
 
 
                     {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
-                    <div className="p-4 pt-0">
+                    <div className="p-4 pb-0 pt-0">
                       <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
                         <HighchartsRegionalAttainment
                           dataprops={
