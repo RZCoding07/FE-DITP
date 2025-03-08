@@ -31,7 +31,11 @@ export default function ParetoChart() {
   const paretoData = calculateParetoData(rawData)
 
   return (
+    <Card className="w-full">
 
+      <CardContent>
+
+        
         <ChartContainer
           config={{
             effect: {
@@ -54,7 +58,7 @@ export default function ParetoChart() {
                 orientation="left"
                 tickFormatter={(value) => value.toLocaleString()}
                 domain={[0, "dataMax + 500"]}
-                label={{ value: "Effect", angle: -90, position: "insideLeft", style: { textAnchor: "middle" } }}
+                label={{ value: "Effect (HA)", angle: -90, position: "insideLeft", style: { textAnchor: "middle" } }}
               />
               <YAxis
                 yAxisId="right"
@@ -82,13 +86,13 @@ export default function ParetoChart() {
                 yAxisId="left"
                 dataKey="value"
                 name="Sum Effect"
-                fill="#ff7f00"
+                fill="#43A047"
                 radius={[4, 4, 0, 0]}
                 barSize={60}
                 label={{
                   position: "top",
                   formatter: (value:any) => (value > 0 ? value.toLocaleString() : ""),
-                  fill: "#ff7f00",
+                  fill: "#43A047",
                   fontSize: 12,
                 }}
               />
@@ -97,9 +101,9 @@ export default function ParetoChart() {
                 type="monotone"
                 dataKey="cumulativePercentage"
                 name="Cumulative %"
-                stroke="#43A047"
+                stroke="#de0404"
                 strokeWidth={2}
-                dot={{ fill: "#43A047", r: 4 }}
+                dot={{ fill: "#de0404", r: 4 }}
                 activeDot={{ r: 6 }}
                 label={{
                   position: "top",
@@ -111,7 +115,8 @@ export default function ParetoChart() {
             </ComposedChart>
           </ResponsiveContainer>
         </ChartContainer>
-
+</CardContent>
+    </Card>
   )
 }
 

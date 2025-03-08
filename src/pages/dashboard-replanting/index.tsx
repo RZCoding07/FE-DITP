@@ -982,23 +982,26 @@ export default function Dashboard() {
                 </div>
               </Card>
             </div>
-            <div className='grid lg:grid-cols-2'>
+            <div className='grid lg:grid-cols-[65%_35%]'>
 
               <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-              <div className='flex items-center gap-2 text-lg font-medium'>
-                      <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight ml-5'>
-                        <img
-                          className='mr-2'
-                          width='28'
-                          height='28'
-                          src='https://img.icons8.com/fluency/48/positive-dynamic.png'
-                          alt='positive-dynamic'
-                        />
-                      Problem Identification & Cause Analysis
-                      </h1>
-                    </div>
-                <h2 className='ml-5 mt-5 text-lg'>Pareto Chart</h2>
-                <ParetoChart />
+                <div className='flex items-center gap-2 text-lg font-medium'>
+                  <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight ml-5'>
+                    <img
+                      className='mr-2'
+                      width='28'
+                      height='28'
+                      src='https://img.icons8.com/fluency/48/positive-dynamic.png'
+                      alt='positive-dynamic'
+                    />
+                    Problem Identification & Cause Analysis
+                  </h1>
+                </div>
+                <div className="p-8 space-y-2 -mt-4">
+                  <CardTitle className="text-lg">Pareto Chart</CardTitle>
+                  <div className="text-lg">Grafik Pareto menunjukkan efek dari berbagai faktor.</div>
+                  <ParetoChart />
+                </div>
               </Card>
             </div>
           </TabsContent>
