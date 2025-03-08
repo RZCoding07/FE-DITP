@@ -204,7 +204,7 @@ export default function Dashboard() {
           complete: (result: any) => {
             const months = [
               "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
-              "JUL", "AGU", "SEP", "OKT", "NOV", "DEC"
+              "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
             ];
 
             const filteredData = result.data.slice(1); // Menghilangkan baris pertama
