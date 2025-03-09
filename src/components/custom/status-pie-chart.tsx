@@ -152,6 +152,19 @@ const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
         color: theme === "dark" ? "#ffffff" : "#000000",
       },
     },
+    fill: {
+        type: "gradient",
+        gradient: {
+          shade: "dark",
+          type: "horizontal",
+          shadeIntensity: 0.5,
+          gradientToColors: ["#ABE5A1"],
+          inverseColors: true,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 80],
+        },
+        },
   }
 
   return (
