@@ -3,6 +3,7 @@
 import { Bar, CartesianGrid, ComposedChart, Legend, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, ZAxis } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
+import cookie from "js-cookie"
 
 const calculateParetoData = (data: any) => {
   const total = data.reduce((sum: any, item: any) => sum + item.value, 0)
@@ -18,7 +19,7 @@ const calculateParetoData = (data: any) => {
 }
 
 export default function ParetoChart() {
-
+  const theme = cookie.get("theme") || "light"
   const rawData = [
     { name: "Proses Pengadaan", value: 4886 },
     { name: "Regulasi", value: 1120 },
@@ -122,7 +123,7 @@ export default function ParetoChart() {
                 label={{
                   position: "top",
                   formatter: (value: any) => `${value.toFixed(2)}%`,
-                  fill: "hsl(var(--chart-2))",
+                  fill: theme === "dark" ? "#ffffff" : "#000000",
                   fontSize: 15,
                 }}
               />

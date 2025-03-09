@@ -140,7 +140,7 @@ const SCurveChart  = ({
           </tr>
           <tr>
             <td className="border border-gray-300 px-2 py-2 font-medium" style={{ color: titleColor }}>
-            Target Attainment (%)
+         Schedule Performance Index
             </td>
             {data.map((item) => (
               <td key={item.month} className={`border border-gray-300 text-white px-2 py-2 text-center ${getColor(item.realVsPlan, item.plan)}`}>
