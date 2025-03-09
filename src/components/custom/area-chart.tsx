@@ -29,7 +29,7 @@ interface ProblemAnalysisChartProps {
 
 const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => {
   const [theme, setTheme] = useState<string>('light')
-  const [numProblems, setNumProblems] = useState<string>("5") // Default to 5 problems
+  const [numProblems, setNumProblems] = useState<string>("10") // Default to 5 problems
 
   // Process data to count problem occurrences
   const processData = (): ProblemCount[] => {
@@ -100,12 +100,12 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
         show: true,
         style: {
           colors: theme === 'dark' ? '#ffffff' : '#000000',
-          fontSize: '12px',
+          fontSize: '15px',
           fontFamily: 'Arial, sans-serif',
         },
         rotate: -45,
         rotateAlways: false,
-        hideOverlappingLabels: true,
+        hideOverlappingLabels: false,
         trim: true,
         maxHeight: 120,
       },
@@ -113,9 +113,10 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
         text: 'Problem Identifications',
         offsetY: -10,
         style: {
-          color: theme === 'dark' ? '#ffffff' : '#000000',
+          color: theme === 'dark' ? '#ffffff' : '#808080',
         },
       },
+    
     },
     yaxis: {
       axisTicks: {
@@ -128,12 +129,13 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
       labels: {
         style: {
           colors: theme === 'dark' ? '#ffffff' : '#000000',
+          fontSize: '14px',
         },
       },
       title: {
         text: 'Frekuensi',
         style: {
-          color: theme === 'dark' ? '#ffffff' : '#000000',
+          color: theme === 'dark' ? '#ffffff' : '#808080',
         },
         offsetX: 10,
       },
@@ -215,8 +217,8 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
             <SelectValue placeholder="Pilih jumlah masalah" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="5">5 Masalah Terbesar</SelectItem>
-            <SelectItem value="10">Semua Masalah</SelectItem>
+            {/* <SelectItem value="5">5 Masalah Terbesar</SelectItem> */}
+            <SelectItem value="10">10 Masalah Terbesar</SelectItem>
           </SelectContent>
         </Select>
       </div>
