@@ -144,7 +144,7 @@ const SCurveChart  = ({
 Variance
             </td>
             {data.map((item) => (
-              <td key={item.month} className={`border border-gray-300 text-white px-2 py-2 text-center ${getColor(item.realVsPlan, item.plan)}`}>
+              <td key={item.month} className={`border border-gray-300 px-2 py-2 text-center ${getColor(item.realVsPlan, item.plan)}`}>
                 {item.realVsPlan !== null ? item.realVsPlan : "-"}
               </td>
             ))}
