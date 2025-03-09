@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/table'
 import SCurveChart from '@/components/custom/kurva-replanting'
 import ParetoChart from '@/components/custom/pareto-chart'
+import ProblemAnalysisChart from '@/components/custom/area-chart'
 
 // react select
 import Select from 'react-select'
@@ -79,6 +80,7 @@ const customStyles = {
 
 import { IconPdf } from '@tabler/icons-react'
 import { StokAwal } from './components/stokAwal'
+import StatusPieChart from '@/components/custom/status-pie-chart'
 
 export default function Dashboard() {
   const user = cookie.get('user')
@@ -150,6 +152,16 @@ export default function Dashboard() {
 
   const [plan, setPlan] = useState<any[]>([]);
   const [actual, setActual] = useState<any[]>([]);
+
+
+  const [Administrasi, setAdministrasi] = useState<any[]>([]);
+  const [Regulasi, setRegulasi] = useState<any[]>([]);
+  const [Environment, setEnvironment] = useState<any[]>([]);
+  const [Operasional, setOperasional] = useState<any[]>([]);
+  const [ProsesPengadaan, setProsesPengadaan] = useState<any[]>([]);
+
+
+  const [dataMaster, setDataMaster] = useState<any[]>([]);
 
   const [res, setRes] = useState<{ month: string; plan: any; real: any; realVsPlan: any; }[]>([]);
 
@@ -230,7 +242,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetch(
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIWBq09iOV27VVAV1tELjYEqomRRdYdukJO5QyVkulTxuB8AwY9HZgnonkd_KfgNyKFPZRe3F-e-Sn/pub?gid=224467245&single=true&output=csv"
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIWBq09iOV27VVAV1tELjYEqomRRdYdukJO5QyVkulTxuB8AwY9HZgnonkd_KfgNyKFPZRe3F-e-Sn/pub?gid=224467245&single=true&output=csv"
     )
       .then((response) => response.text())
       .then((csv) => {
@@ -238,7 +250,183 @@ export default function Dashboard() {
           header: false,  // Tidak mengatur header
           skipEmptyLines: true,
           complete: (result: any) => {
-            console.log(result.data);
+            const data = result.data;
+
+            let r1 = [];
+            let r2 = [];
+            let r3 = [];
+            let r4 = [];
+            let r5 = [];
+            let r6 = [];
+            let r7 = [];
+            let r8 = [];
+            let r9 = [];
+
+            // console.log(data);
+
+            for (let i = 0; i < data.length; i++) {
+              for (let j = 0; j < data[i].length; j++) {
+                if (i > 3) {
+                  if (j > 0 && j <= 9) {
+                    if (data[i][2] !== "") {
+                      r1.push(data[i][j]);
+                    }
+                  } else if (j > 11 && j <= 20) { 
+                    if (data[i][13] !== "") {
+                      r2.push(data[i][j]);
+                    }
+                  } else if (j > 22 && j <= 31) {
+                    if (data[i][24] !== "") {
+                      r3.push(data[i][j]);
+                    }
+                  } else if (j > 33 && j <= 42) {
+                    if (data[i][35] !== "") {
+                      r4.push(data[i][j]);
+                    }
+                  } else if (j > 44 && j <= 53) {
+                    if (data[i][46] !== "") {
+                      r5.push(data[i][j]);
+                    }
+                  } else if (j > 55 && j <= 64) {
+                    if (data[i][57] !== "") {
+                      r6.push(data[i][j]);
+                    }
+                  } else if (j > 66 && j <= 75) {
+                    if (data[i][68] !== "") {
+                      r7.push(data[i][j]);
+                    }
+                  }
+                  else if (j > 77 && j <= 86) {
+                    if (data[i][79] !== "") {
+                      r8.push(data[i][j]);
+                    }
+                  }
+                  else if (j > 88 && j <= 97) {
+                    if (data[i][90] !== "") {
+                      r9.push(data[i][j]);
+                    }
+                  }
+                }
+
+
+
+              }
+            }
+
+
+            let arrayData = [
+              r1,
+              r2,
+              r3,
+              r4,
+              r5,
+              r6,
+              r7,
+              r8,
+              r9
+            ]
+
+            let arrayDataFinal = []
+            for (let i = 0; i < arrayData.length; i++) {
+              let data = arrayData[i]
+              let dataFinal = []
+              for (let j = 0; j < data.length; j++) {
+
+                dataFinal.push(data[j])
+              }
+              arrayDataFinal.push(dataFinal)
+            }
+
+
+            const categories = [
+              "Adminitrasi",
+              "Regulasi", 
+              "Environment",
+              "Operasional",
+              "Proses Pengadaan"
+            ];
+
+            function convertData(data:any, categories:any, region:any) {
+              const result = [];
+              let currentCategory = "";
+              let currentProblem: { regional?: string; Kategori?: string; "Problem Identification"?: string; Detail?: string; "Root Causes"?: string; "Corrective Action"?: string
+              "w1"?: string; "w2"?: string; "w3"?: string; "w4"?: string
+               } = {};
+
+              for (let i = 0; i < data.length; i++) {
+                if (categories.includes(data[i])) {
+                  // Jika kategori baru ditemukan, simpan problem sebelumnya (jika ada)
+                  if (currentProblem.Kategori) {
+                    result.push(currentProblem);
+                  }
+                  // Mulai problem baru
+                  currentCategory = data[i];
+                  currentProblem = {
+                    regional: region,
+                    Kategori: currentCategory,
+                    "Problem Identification": "",
+                    Detail: "",
+                    "Root Causes": "",
+                    "Corrective Action": "",
+                    "w1": "",
+                    "w2": "",
+                    "w3": "",
+                    "w4": ""
+                  };
+                } else if (currentProblem.Kategori) {
+                  // Isi detail problem berdasarkan urutan
+                  if (!currentProblem["Problem Identification"]) {
+                    currentProblem["Problem Identification"] = data[i];
+                  } else if (!currentProblem.Detail) {
+                    currentProblem.Detail = data[i];
+                  } else if (!currentProblem["Root Causes"]) {
+                    currentProblem["Root Causes"] = data[i];
+                  } else if (!currentProblem["Corrective Action"]) {
+                    currentProblem["Corrective Action"] = data[i];
+                  } else if (!currentProblem["w1"]) {
+                    currentProblem["w1"] = data[i];
+                  } else if (!currentProblem["w2"]) {
+                    currentProblem["w2"] = data[i];
+                  } else if (!currentProblem["w3"]) {
+                    currentProblem["w3"] = data[i];
+                  } else if (!currentProblem["w4"]) {
+                    currentProblem["w4"] = data[i];
+                  }
+                }
+              }
+
+              // Tambahkan problem terakhir jika ada
+              if (currentProblem.Kategori) {
+                result.push(currentProblem);
+              }
+
+              return result;
+            }
+
+            const convertedDataR1 = convertData(arrayDataFinal[0], categories, "R1");
+            const convertedDataR2 = convertData(arrayDataFinal[1], categories, "R2");
+            const convertedDataR3 = convertData(arrayDataFinal[2], categories, "R3");
+            const convertedDataR4 = convertData(arrayDataFinal[3], categories, "R4");
+            const convertedDataR5 = convertData(arrayDataFinal[4], categories, "R5");
+            const convertedDataR6 = convertData(arrayDataFinal[5], categories, "R6");
+            const convertedDataR7 = convertData(arrayDataFinal[6], categories, "R7");
+            const convertedDataR8 = convertData(arrayDataFinal[7], categories, "R2 EKS N2");
+            const convertedDataR9 = convertData(arrayDataFinal[8], categories, "R2 EKS N14");
+
+// merge data into one array
+            const mergedData = [
+              ...convertedDataR1,
+              ...convertedDataR2,
+              ...convertedDataR3,
+              ...convertedDataR4,
+              ...convertedDataR5,
+              ...convertedDataR6,
+              ...convertedDataR7,
+              ...convertedDataR8,
+              ...convertedDataR9
+            ];
+
+            setDataMaster(mergedData);
 
           },
         });
@@ -999,7 +1187,7 @@ export default function Dashboard() {
                 </div>
               </Card>
             </div>
-            <div className='grid lg:grid-cols-[65%_35%]'>
+            <div className='grid lg:grid-cols-[65%_35%] gap-4'>
 
               <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
                 <div className='flex items-center gap-2 text-lg font-medium'>
@@ -1018,6 +1206,90 @@ export default function Dashboard() {
                   <CardTitle className="text-lg">Pareto Chart</CardTitle>
                   <div className="text-lg">Grafik Pareto menunjukkan efek dari berbagai faktor.</div>
                   <ParetoChart />
+                </div>
+              </Card>
+              <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                <div className='grid p-4 md:grid-cols-1'>
+                  <div className='space-y-4'>
+                    <div className='flex items-centertext-lg font-medium'>
+                      <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight'>
+                        <img
+                          className='mr-2'
+                          width='28'
+                          height='28'
+                          src='https://img.icons8.com/fluency/48/positive-dynamic.png'
+                          alt='positive-dynamic'
+                        />
+                        Top 5 Problem Identification
+                      </h1>
+                    </div>
+
+
+                    {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
+                    <div className="">
+                      <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
+                        <ProblemAnalysisChart  data={dataMaster}/>
+                      </div>
+                      <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
+
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
+              </Card>
+            </div>
+            <div className='grid lg:grid-cols-[35%_65%] gap-4'>
+
+              <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                <div className='flex items-center gap-2 text-lg font-medium'>
+                  <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight ml-5'>
+                    <img
+                      className='mr-2'
+                      width='28'
+                      height='28'
+                      src='https://img.icons8.com/fluency/48/positive-dynamic.png'
+                      alt='positive-dynamic'
+                    />
+                    Corrective Action
+                  </h1>
+                </div>
+                <div className="p-8 space-y-2 -mt-4">
+                  <CardTitle className="text-lg">Corrective Action Chart</CardTitle>
+                  <div className="text-lg">Grafik ini menunjukkan corrective action yang dilakukan.</div>
+                  <StatusPieChart data={dataMaster}/>
+                </div>
+              </Card>
+              <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+                <div className='grid p-4 md:grid-cols-1'>
+                  <div className='space-y-4'>
+                    <div className='flex items-centertext-lg font-medium'>
+                      <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight'>
+                        <img
+                          className='mr-2'
+                          width='28'
+                          height='28'
+                          src='https://img.icons8.com/fluency/48/positive-dynamic.png'
+                          alt='positive-dynamic'
+                        />
+                        Top 5 Problem Identification
+                      </h1>
+                    </div>
+
+
+                    {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
+                    <div className="">
+                      <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
+                        <ProblemAnalysisChart  data={dataMaster}/>
+                      </div>
+                      <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
+
+                      </div>
+
+                    </div>
+
+                  </div>
                 </div>
               </Card>
             </div>
