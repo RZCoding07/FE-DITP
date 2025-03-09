@@ -247,7 +247,7 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
             <DrawerTitle>Detail Masalah</DrawerTitle>
             <DrawerDescription>Informasi detail tentang masalah yang dipilih</DrawerDescription>
           </DrawerHeader>
-          <div className="relative w-full max-h-[400px] overflow-y-auto"> {/* Full height and width with overflow */}
+          <div className="relative w-full h-full overflow-y-auto"> {/* Full height and width with overflow */}
             <div className="p-4">
               {selectedProblems.length > 0 && (
                 <table className="w-full text-left">
