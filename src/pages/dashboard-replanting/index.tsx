@@ -1311,7 +1311,7 @@ export default function Dashboard() {
                             <thead>
                               <tr>
                                 <th className="border bg-green-600 text-white px-1 py-2">Regional</th>
-                                <th className="border bg-green-600 text-white px-1 py-2">Kategori</th>
+                                {/* <th className="border bg-green-600 text-white px-1 py-2">Kategori</th> */}
                                 <th className="border bg-green-600 text-white px-1 py-2">Problem Identification</th>
                                 {/* <th className="border bg-green-600 text-white px-1 py-2">Detail</th> */}
                                 <th className="border bg-green-600 text-white px-1 py-2">Root Causes</th>
@@ -1326,15 +1326,23 @@ export default function Dashboard() {
                               {dataMaster.map((problem, index) => (
                                 <tr key={index}>
                                   <td className="border px-1 py-2">{problem.regional}</td>
-                                  <td className="border px-1 py-2">{problem.Kategori}</td>
+                                  {/* <td className="border px-1 py-2">{problem.Kategori}</td> */}
                                   <td className="border px-1 py-2">{problem["Problem Identification"]}</td>
                                   {/* <td className="border px-1 py-2">{problem.Detail}</td> */}
                                   <td className="border px-1 py-2">{problem["Root Causes"]}</td>
                                   <td className="border px-1 py-2">{problem["Corrective Action"]}</td>
-                                  <td className="border px-1 py-2">{problem.w1}</td>
-                                  <td className="border px-1 py-2">{problem.w2}</td>
-                                  <td className="border px-1 py-2">{problem.w3}</td>
-                                  <td className="border px-1 py-2">{problem.w4}</td>
+                                  <td className={`text-white font-semibold border px-1 py-2 ${problem.w1 === 'Not Started' ? 'bg-red-400 rounded' : problem.w1 === 'On Progress' ? 'bg-sky-500 rounded' : problem.w1 === 'Done' ? 'bg-green-500 rounded' : ''}`}>
+                                    {problem.w1}
+                                  </td>
+                                  <td className={`text-white font-semibold border px-1 py-2 ${problem.w2 === 'Not Started' ? 'bg-red-400 rounded' : problem.w2 === 'On Progress' ? 'bg-sky-500 rounded' : problem.w2 === 'Done' ? 'bg-green-500 rounded' : ''}`}>
+                                    {problem.w2}
+                                  </td>
+                                  <td className={`text-white font-semibold border px-1 py-2 ${problem.w3 === 'Not Started' ? 'bg-red-400 rounded' : problem.w3 === 'On Progress' ? 'bg-sky-500 rounded' : problem.w3 === 'Done' ? 'bg-green-500 rounded' : ''}`}>
+                                    {problem.w3}
+                                  </td>
+                                  <td className={`text-white font-semibold border px-1 py-2 ${problem.w4 === 'Not Started' ? 'bg-red-400 rounded' : problem.w4 === 'On Progress' ? 'bg-sky-500 rounded' : problem.w4 === 'Done' ? 'bg-green-500 rounded' : ''}`}>
+                                    {problem.w4}
+                                  </td>
                                 </tr>
                               ))}
                             </tbody>
