@@ -188,7 +188,7 @@ export default function Dashboard() {
 
   const [dataMaster, setDataMaster] = useState<any[]>([]);
 
-  const [res, setRes] = useState<{ month: string; plan: any; real: any; realVsPlan: any; }[]>([]);
+  const [res, setRes] = useState<{ month: string; plan: any; real: any; realVsPlan: any; spi:any }[]>([]);
 
   const [dataTableRegion, setDataTableRegion] = useState([]);
 
@@ -250,12 +250,14 @@ export default function Dashboard() {
             const planCurve = filteredData[47].slice(2, 14);
             const actualCurve = filteredData[48].slice(2, 14);
             const realVsPlanCurve = filteredData[49].slice(2, 14);
+            const spi = filteredData[50].slice(2, 14);
 
             const data = months.map((month, index) => ({
               month,
               plan: planCurve[index] ?? null,
               real: actualCurve[index] ?? null,
-              realVsPlan: realVsPlanCurve[index] ?? null
+              realVsPlan: realVsPlanCurve[index] ?? null,
+              spi: spi[index] ?? null
             }));
 
             setRes(data);

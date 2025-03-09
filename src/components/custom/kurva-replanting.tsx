@@ -9,6 +9,7 @@ interface DataItem {
   plan: number | 0
   real: any
   realVsPlan: any
+  spi: any
 }
 
 const SCurveChart  = ({
@@ -140,13 +141,36 @@ const SCurveChart  = ({
           </tr>
           <tr>
             <td className="border border-gray-300 px-2 py-2 font-medium" style={{ color: titleColor }}>
-         Schedule Performance Index (SPI)
+Variance
             </td>
             {data.map((item) => (
               <td key={item.month} className={`border border-gray-300 text-white px-2 py-2 text-center ${getColor(item.realVsPlan, item.plan)}`}>
                 {item.realVsPlan !== null ? item.realVsPlan : "-"}
               </td>
             ))}
+          </tr>
+          <tr>
+            <td className="border border-gray-300 px-2 py-2 font-medium" style={{ color: titleColor }}>
+         Schedule Performance Index (SPI)
+            </td>
+            {data.map((item) => (
+              <td key={item.month} className={`border border-gray-300 text-white px-2 py-2 text-center ${getColor(item.spi, item.plan)}`}>
+                {item.spi !== null ? item.spi : "-"}
+              </td>
+            ))}
+          </tr>
+          <tr>
+          {/* SPI < 1 : Behind Schedule       SPI = 1 : On Schedule     SPI > 1 : Ahead of Schedule
+           */}
+            <td className="border border-gray-300 px-2 py-2 font-medium" style={{ color: titleColor }}>
+              Status
+            </td>
+            {data.map((item) => (
+              <td key={item.month} className={`border border-gray-300 px-2 py-2 text-center`}>
+                {item.spi !== null ? (item.spi < 1 ? "Behind Schedule" : item.spi === 1 ? "On Schedule" : "") : "-"}
+              </td>
+            ))}
+          
           </tr>
         </tbody>
       </table>
