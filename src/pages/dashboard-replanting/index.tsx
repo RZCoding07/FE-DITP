@@ -125,7 +125,7 @@ export default function Dashboard() {
     w3: string
     w4: string
   }
-  
+
 
   const fetchStokAwal = async (tahun: number, bulan: number) => {
     try {
@@ -296,7 +296,7 @@ export default function Dashboard() {
                     if (data[i][2] !== "") {
                       r1.push(data[i][j]);
                     }
-                  } else if (j > 11 && j <= 20) { 
+                  } else if (j > 11 && j <= 20) {
                     if (data[i][13] !== "") {
                       r2.push(data[i][j]);
                     }
@@ -365,7 +365,7 @@ export default function Dashboard() {
 
             const categories = [
               "Adminitrasi",
-              "Regulasi", 
+              "Regulasi",
               "Environment",
               "Operasional",
               "Proses Pengadaan"
@@ -374,12 +374,12 @@ export default function Dashboard() {
             function convertData(data: any, categories: any, region: any) {
               const result = []
               let currentCategory = ""
-            
+
               for (let i = 0; i < data.length; i++) {
                 if (categories.includes(data[i])) {
                   // Found a new category
                   currentCategory = data[i]
-            
+
                   // Start a new problem with empty fields
                   const newProblem: { [key: string]: any } = {
                     regional: region,
@@ -393,7 +393,7 @@ export default function Dashboard() {
                     w3: "",
                     w4: "",
                   }
-            
+
                   // Find the next fields for this category
                   let j = i + 1
                   let fieldIndex = 0
@@ -407,25 +407,25 @@ export default function Dashboard() {
                     "w3",
                     "w4",
                   ]
-            
+
                   // Continue until we hit the next category or end of data
                   while (j < data.length && !categories.includes(data[j]) && fieldIndex < fieldNames.length) {
                     newProblem[fieldNames[fieldIndex]] = data[j]
                     j++
                     fieldIndex++
                   }
-            
+
                   // Add the problem to results
                   result.push(newProblem)
-            
+
                   // Skip the processed fields
                   i = j - 1
                 }
               }
-            
+
               return result
             }
-            
+
             const convertedDataR1 = convertData(arrayDataFinal[0], categories, "R1");
             const convertedDataR2 = convertData(arrayDataFinal[1], categories, "R2");
             const convertedDataR3 = convertData(arrayDataFinal[2], categories, "R3");
@@ -438,7 +438,7 @@ export default function Dashboard() {
 
             console.log(convertedDataR6);
 
-// merge data into one array
+            // merge data into one array
             const mergedData = [
               ...convertedDataR1,
               ...convertedDataR2,
@@ -1237,7 +1237,7 @@ export default function Dashboard() {
                 <div className='grid p-4 md:grid-cols-1'>
                   <div className='space-y-4'>
                     <div className='flex items-centertext-lg font-medium'>
-                      <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight'>
+                      <h1 className='flex items-center text-xl font-bold tracking-tight'>
                         <img
                           className='mr-2'
                           width='28'
@@ -1245,7 +1245,7 @@ export default function Dashboard() {
                           src='https://img.icons8.com/fluency/48/positive-dynamic.png'
                           alt='positive-dynamic'
                         />
-                        Top 5 Problem Identification
+                        Top 10 Problem Identification
                       </h1>
                     </div>
 
@@ -1253,7 +1253,7 @@ export default function Dashboard() {
                     {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
                     <div className="">
                       <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
-                        <ProblemAnalysisChart  data={dataMaster}/>
+                        <ProblemAnalysisChart data={dataMaster} />
                       </div>
                       <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
 
@@ -1283,14 +1283,14 @@ export default function Dashboard() {
                 <div className="p-8 space-y-2 -mt-4">
                   <CardTitle className="text-lg">Corrective Action Chart</CardTitle>
                   <div className="text-lg">Grafik ini menunjukkan corrective action yang dilakukan.</div>
-                  <StatusPieChart data={dataMaster}/>
+                  <StatusPieChart data={dataMaster} />
                 </div>
               </Card>
               <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
                 <div className='grid p-4 md:grid-cols-1'>
                   <div className='space-y-4'>
                     <div className='flex items-centertext-lg font-medium'>
-                      <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight'>
+                      <h1 className='flex items-center text-xl font-bold tracking-tight'>
                         <img
                           className='mr-2'
                           width='28'
@@ -1306,11 +1306,41 @@ export default function Dashboard() {
                     {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
                     <div className="">
                       <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
+                        <div className="relative overflow-x-auto max-h-[500px]">
+                          <table className="text-left">
+                            <thead>
+                              <tr>
+                                <th className="border bg-green-600 text-white px-1 py-2">Regional</th>
+                                <th className="border bg-green-600 text-white px-1 py-2">Kategori</th>
+                                <th className="border bg-green-600 text-white px-1 py-2">Problem Identification</th>
+                                {/* <th className="border bg-green-600 text-white px-1 py-2">Detail</th> */}
+                                <th className="border bg-green-600 text-white px-1 py-2">Root Causes</th>
+                                <th className="border bg-green-600 text-white px-1 py-2">Corrective Action</th>
+                                <th className="border bg-green-600 text-white px-1 py-2">W1</th>
+                                <th className="border bg-green-600 text-white px-1 py-2">W2</th>
+                                <th className="border bg-green-600 text-white px-1 py-2">W3</th>
+                                <th className="border bg-green-600 text-white px-1 py-2">W4</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {dataMaster.map((problem, index) => (
+                                <tr key={index}>
+                                  <td className="border px-1 py-2">{problem.regional}</td>
+                                  <td className="border px-1 py-2">{problem.Kategori}</td>
+                                  <td className="border px-1 py-2">{problem["Problem Identification"]}</td>
+                                  {/* <td className="border px-1 py-2">{problem.Detail}</td> */}
+                                  <td className="border px-1 py-2">{problem["Root Causes"]}</td>
+                                  <td className="border px-1 py-2">{problem["Corrective Action"]}</td>
+                                  <td className="border px-1 py-2">{problem.w1}</td>
+                                  <td className="border px-1 py-2">{problem.w2}</td>
+                                  <td className="border px-1 py-2">{problem.w3}</td>
+                                  <td className="border px-1 py-2">{problem.w4}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
-                      <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
-
-                      </div>
-
                     </div>
 
                   </div>
