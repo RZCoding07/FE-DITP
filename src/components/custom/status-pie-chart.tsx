@@ -18,6 +18,8 @@ interface ProblemData {
   w4: string
 }
 
+
+
 interface StatusPieChartProps {
   data: ProblemData[]
 }
@@ -48,16 +50,15 @@ const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
   // Process data to count status occurrences across w1-w4
   const processStatusData = () => {
     const statusCounts: Record<string, number> = {
-      Done: 0,
+      "Done": 0,
       "On Progress": 0,
-      "Not Started": 0,
-      Other: 0, // For empty or other values
+      "Not Started": 0
     }
 
     // Count occurrences of each status across all w1-w4 fields
     data.forEach((item) => {
       // Check each of w1, w2, w3, w4 fields
-      ;[item.w1, item.w2, item.w3, item.w4].forEach((status) => {
+      [item.w1, item.w2, item.w3, item.w4].forEach((status) => {
         if (!status || status.trim() === "") {
           // Skip empty values or count as "Other"
           return
@@ -70,9 +71,6 @@ const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
           statusCounts["On Progress"]++
         } else if (status.includes("Not Started")) {
           statusCounts["Not Started"]++
-        } else {
-          // Count other values
-          statusCounts["Other"]++
         }
       })
     })
