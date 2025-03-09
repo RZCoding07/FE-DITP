@@ -1,9 +1,17 @@
-"use client"
-
 import React, { useEffect, useState } from 'react'
 import ReactApexChart from 'react-apexcharts'
 import { ApexOptions } from 'apexcharts'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
 
 interface ProblemData {
   regional: string
@@ -29,13 +37,15 @@ interface ProblemAnalysisChartProps {
 
 const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => {
   const [theme, setTheme] = useState<string>('light')
-  const [numProblems, setNumProblems] = useState<string>("10") // Default to 5 problems
+  const [numProblems, setNumProblems] = useState<string>("10")
+  const [selectedProblems, setSelectedProblems] = useState<ProblemData[]>([])
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
 
-  // Process data to count problem occurrences
+  console.log(data)
+
   const processData = (): ProblemCount[] => {
     const problemCounts: Record<string, number> = {}
 
-    // Count occurrences of each problem identification
     data.forEach(item => {
       const problem = item["Problem Identification"]
       if (problem) {
@@ -43,7 +53,6 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
       }
     })
 
-    // Convert to array and sort by count (descending)
     const sortedProblems = Object.entries(problemCounts)
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count)
@@ -52,20 +61,14 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
   }
 
   const problemData = processData()
-
-  // Get the top N problems based on selection
   const topProblems = problemData.slice(0, Number(numProblems))
-
-  // Extract problem names and counts for the chart
   const problemNames = topProblems.map(p => p.name)
   const problemCounts = topProblems.map(p => p.count)
 
   useEffect(() => {
-    // Check if we're in a browser environment before accessing document
     if (typeof window !== 'undefined') {
       setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light')
 
-      // Listen for theme changes
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           if (mutation.attributeName === 'class') {
@@ -80,7 +83,6 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
     }
   }, [])
 
-  // Apex chart options
   const options: ApexOptions = {
     chart: {
       height: 350,
@@ -92,6 +94,17 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
       },
       toolbar: {
         show: false
+      },
+      events: {
+        click: function (event, chartContext, config) {
+          const problemName = problemNames[config.dataPointIndex]
+          const problem = data.filter(item => item['Problem Identification'] === problemName)
+
+          if (problem) {
+            setSelectedProblems(problem)
+            setIsDrawerOpen(true)
+          }
+        }
       }
     },
     xaxis: {
@@ -116,7 +129,6 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
           color: theme === 'dark' ? '#ffffff' : '#808080',
         },
       },
-    
     },
     yaxis: {
       axisTicks: {
@@ -217,7 +229,6 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
             <SelectValue placeholder="Pilih jumlah masalah" />
           </SelectTrigger>
           <SelectContent>
-            {/* <SelectItem value="5">5 Masalah Terbesar</SelectItem> */}
             <SelectItem value="10">10 Masalah Terbesar</SelectItem>
           </SelectContent>
         </Select>
@@ -230,6 +241,55 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
           height={400}
         />
       </div>
+      <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Detail Masalah</DrawerTitle>
+            <DrawerDescription>Informasi detail tentang masalah yang dipilih</DrawerDescription>
+          </DrawerHeader>
+          <div className="relative w-full max-h-[400px] overflow-y-auto"> {/* Full height and width with overflow */}
+            <div className="p-4">
+              {selectedProblems.length > 0 && (
+                <table className="w-full text-left">
+                  <thead>
+                    <tr>
+                      <th className="border bg-green-600 text-white px-4 py-2">Regional</th>
+                      <th className="border bg-green-600 text-white px-4 py-2">Kategori</th>
+                      <th className="border bg-green-600 text-white px-4 py-2">Problem Identification</th>
+                      <th className="border bg-green-600 text-white px-4 py-2">Detail</th>
+                      <th className="border bg-green-600 text-white px-4 py-2">Root Causes</th>
+                      {/* <th className="border bg-green-600 text-white px-4 py-2">Corrective Action</th>
+                      <th className="border bg-green-600 text-white px-4 py-2">W1</th>
+                      <th className="border bg-green-600 text-white px-4 py-2">W2</th>
+                      <th className="border bg-green-600 text-white px-4 py-2">W3</th>
+                      <th className="border bg-green-600 text-white px-4 py-2">W4</th> */}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedProblems.map((problem, index) => (
+                      <tr key={index}>
+                        <td className="border px-4 py-2">{problem.regional}</td>
+                        <td className="border px-4 py-2">{problem.Kategori}</td>
+                        <td className="border px-4 py-2">{problem["Problem Identification"]}</td>
+                        <td className="border px-4 py-2">{problem.Detail}</td>
+                        <td className="border px-4 py-2">{problem["Root Causes"]}</td>
+                        {/* <td className="border px-4 py-2">{problem["Corrective Action"]}</td>
+                        <td className="border px-4 py-2">{problem.w1}</td>
+                        <td className="border px-4 py-2">{problem.w2}</td>
+                        <td className="border px-4 py-2">{problem.w3}</td>
+                        <td className="border px-4 py-2">{problem.w4}</td> */}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+          <DrawerFooter>
+            <DrawerClose>Close</DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </div>
   )
 }

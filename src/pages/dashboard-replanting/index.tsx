@@ -24,6 +24,16 @@ import SCurveChart from '@/components/custom/kurva-replanting'
 import ParetoChart from '@/components/custom/pareto-chart'
 import ProblemAnalysisChart from '@/components/custom/area-chart'
 
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
 // react select
 import Select from 'react-select'
 import { FcBarChart } from 'react-icons/fc'
@@ -101,6 +111,21 @@ export default function Dashboard() {
     'November',
     'Desember',
   ]
+
+
+  interface ProblemData {
+    regional: string
+    Kategori: string
+    "Problem Identification": string
+    Detail: string
+    "Root Causes": string
+    "Corrective Action": string
+    w1: string
+    w2: string
+    w3: string
+    w4: string
+  }
+  
 
   const fetchStokAwal = async (tahun: number, bulan: number) => {
     try {
@@ -346,63 +371,61 @@ export default function Dashboard() {
               "Proses Pengadaan"
             ];
 
-            function convertData(data:any, categories:any, region:any) {
-              const result = [];
-              let currentCategory = "";
-              let currentProblem: { regional?: string; Kategori?: string; "Problem Identification"?: string; Detail?: string; "Root Causes"?: string; "Corrective Action"?: string
-              "w1"?: string; "w2"?: string; "w3"?: string; "w4"?: string
-               } = {};
-
+            function convertData(data: any, categories: any, region: any) {
+              const result = []
+              let currentCategory = ""
+            
               for (let i = 0; i < data.length; i++) {
                 if (categories.includes(data[i])) {
-                  // Jika kategori baru ditemukan, simpan problem sebelumnya (jika ada)
-                  if (currentProblem.Kategori) {
-                    result.push(currentProblem);
-                  }
-                  // Mulai problem baru
-                  currentCategory = data[i];
-                  currentProblem = {
+                  // Found a new category
+                  currentCategory = data[i]
+            
+                  // Start a new problem with empty fields
+                  const newProblem: { [key: string]: any } = {
                     regional: region,
                     Kategori: currentCategory,
                     "Problem Identification": "",
                     Detail: "",
                     "Root Causes": "",
                     "Corrective Action": "",
-                    "w1": "",
-                    "w2": "",
-                    "w3": "",
-                    "w4": ""
-                  };
-                } else if (currentProblem.Kategori) {
-                  // Isi detail problem berdasarkan urutan
-                  if (!currentProblem["Problem Identification"]) {
-                    currentProblem["Problem Identification"] = data[i];
-                  } else if (!currentProblem.Detail) {
-                    currentProblem.Detail = data[i];
-                  } else if (!currentProblem["Root Causes"]) {
-                    currentProblem["Root Causes"] = data[i];
-                  } else if (!currentProblem["Corrective Action"]) {
-                    currentProblem["Corrective Action"] = data[i];
-                  } else if (!currentProblem["w1"]) {
-                    currentProblem["w1"] = data[i];
-                  } else if (!currentProblem["w2"]) {
-                    currentProblem["w2"] = data[i];
-                  } else if (!currentProblem["w3"]) {
-                    currentProblem["w3"] = data[i];
-                  } else if (!currentProblem["w4"]) {
-                    currentProblem["w4"] = data[i];
+                    w1: "",
+                    w2: "",
+                    w3: "",
+                    w4: "",
                   }
+            
+                  // Find the next fields for this category
+                  let j = i + 1
+                  let fieldIndex = 0
+                  const fieldNames = [
+                    "Problem Identification",
+                    "Detail",
+                    "Root Causes",
+                    "Corrective Action",
+                    "w1",
+                    "w2",
+                    "w3",
+                    "w4",
+                  ]
+            
+                  // Continue until we hit the next category or end of data
+                  while (j < data.length && !categories.includes(data[j]) && fieldIndex < fieldNames.length) {
+                    newProblem[fieldNames[fieldIndex]] = data[j]
+                    j++
+                    fieldIndex++
+                  }
+            
+                  // Add the problem to results
+                  result.push(newProblem)
+            
+                  // Skip the processed fields
+                  i = j - 1
                 }
               }
-
-              // Tambahkan problem terakhir jika ada
-              if (currentProblem.Kategori) {
-                result.push(currentProblem);
-              }
-
-              return result;
+            
+              return result
             }
-
+            
             const convertedDataR1 = convertData(arrayDataFinal[0], categories, "R1");
             const convertedDataR2 = convertData(arrayDataFinal[1], categories, "R2");
             const convertedDataR3 = convertData(arrayDataFinal[2], categories, "R3");
@@ -412,6 +435,8 @@ export default function Dashboard() {
             const convertedDataR7 = convertData(arrayDataFinal[6], categories, "R7");
             const convertedDataR8 = convertData(arrayDataFinal[7], categories, "R2 EKS N2");
             const convertedDataR9 = convertData(arrayDataFinal[8], categories, "R2 EKS N14");
+
+            console.log(convertedDataR6);
 
 // merge data into one array
             const mergedData = [
@@ -1273,7 +1298,7 @@ export default function Dashboard() {
                           src='https://img.icons8.com/fluency/48/positive-dynamic.png'
                           alt='positive-dynamic'
                         />
-                        Top 5 Problem Identification
+                        Detail Corrective Action
                       </h1>
                     </div>
 
@@ -1281,7 +1306,6 @@ export default function Dashboard() {
                     {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
                     <div className="">
                       <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
-                        <ProblemAnalysisChart  data={dataMaster}/>
                       </div>
                       <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
 
