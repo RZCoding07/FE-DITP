@@ -35,7 +35,7 @@ const HighchartsRegionalAttainment = ({
   const options: Highcharts.Options = {
     chart: {
       type: 'bar',
-      height: 680,
+      height: 800,
       backgroundColor: 'transparent', // Set background menjadi transparan
       style: {
         fontFamily: "Inter var, sans-serif",

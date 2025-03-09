@@ -1214,7 +1214,7 @@ export default function Dashboard() {
                 </div>
               </Card>
             </div>
-            <div className='grid lg:grid-cols-[65%_35%] gap-4'>
+            <div className='grid lg:grid-cols-[55%_45%] gap-4'>
 
               <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
                 <div className='flex items-center gap-2 text-lg font-medium'>

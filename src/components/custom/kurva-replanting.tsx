@@ -159,9 +159,7 @@ Variance
               </td>
             ))}
           </tr>
-          <tr>
-          {/* SPI < 1 : Behind Schedule       SPI = 1 : On Schedule     SPI > 1 : Ahead of Schedule
-           */}
+          {/* <tr>
             <td className="border border-gray-300 px-2 py-2 font-medium" style={{ color: titleColor }}>
               Status
             </td>
@@ -171,9 +169,13 @@ Variance
               </td>
             ))}
           
-          </tr>
+          </tr> */}
         </tbody>
       </table>
+      <p className="mt-5">
+                  {'SPI < 1 : Behind Schedule       SPI = 1 : On Schedule     SPI > 1 : Ahead of Schedule'}
+          
+      </p>
     </div>
   </div>
   )

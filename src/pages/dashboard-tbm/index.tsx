@@ -2073,7 +2073,7 @@ export default function Dashboard() {
                       </div>
                       <hr className='my-3 border-cyan-400' />
 
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 gap-4">
                         <div className='items-center justify-center align-middle'>
                           <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-3 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-cyan-700 dark:to-cyan-600'>
                             <h2 className='text-xl text-center font-semibold'>
@@ -2111,22 +2111,7 @@ export default function Dashboard() {
                               
                           </div>
                         </div>
-                        <div className='items-center justify-center align-middle'>
-                          <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-3 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-cyan-700 dark:to-cyan-600'>
-                            <h2 className='text-xl text-center font-semibold'>
-                              Total {blok.label} Merah Hitam {selectedCard.name}
-                            </h2>
-
-                            <hr className='my-2 mt-4 border-cyan-400' />
-
-                            <div className='mt-5'>
-                              {/* <BarChartComponent  /> */}
-                              {/* <KuadranChart /> */}
-                            </div>
-
-                              
-                          </div>
-                        </div>
+            
                       </div>
                     </div>
                   </div>

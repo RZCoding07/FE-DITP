@@ -63,7 +63,7 @@ export default function ParetoChart() {
                 style={{ fontSize: 15, fontFamily: 'Inter var, sans-serif' }}
 
               />
-              <XAxis dataKey="name" angle={0} tick={{ fontSize: 18 }} interval={0} tickMargin={10} />
+              <XAxis dataKey="name" angle={0} tick={{ fontSize: 15 }} interval={0} tickMargin={10} />
               <YAxis
                 yAxisId="left"
                 orientation="left"
