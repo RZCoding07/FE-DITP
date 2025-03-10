@@ -1270,8 +1270,8 @@ export default function Dashboard() {
             <div className='grid lg:grid-cols-[35%_65%] gap-4'>
 
               <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-                <div className='flex items-center gap-2 text-lg font-medium'>
-                  <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight ml-5'>
+                <div className='mt-4 flex justify-between items-center gap-2 text-lg font-medium align-middle'>
+                  <h1 className=' flex items-center text-xl font-bold tracking-tight ml-5'>
                     <img
                       className='mr-2'
                       width='28'
@@ -1280,7 +1280,12 @@ export default function Dashboard() {
                       alt='positive-dynamic'
                     />
                     Corrective Action
+      
                   </h1>
+            <Button variant={"secondary"} className="flex items-center rounded-full mr-4">
+              <img width="20" height="20" src="https://img.icons8.com/stickers/50/visible.png" alt="visible" />
+              <span className="ml-2"> Detail Corrective Action</span>
+            </Button>
                 </div>
                 <div className="p-8 space-y-2 -mt-4">
                   <CardTitle className="text-lg">Corrective Action Chart</CardTitle>
