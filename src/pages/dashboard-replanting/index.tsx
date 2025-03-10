@@ -34,6 +34,9 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+
+import RStatusPieChart from '@/components/custom/region-pie-chart'
+
 // react select
 import Select from 'react-select'
 import { FcBarChart } from 'react-icons/fc'
@@ -184,11 +187,12 @@ export default function Dashboard() {
   const [Environment, setEnvironment] = useState<any[]>([]);
   const [Operasional, setOperasional] = useState<any[]>([]);
   const [ProsesPengadaan, setProsesPengadaan] = useState<any[]>([]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
 
 
   const [dataMaster, setDataMaster] = useState<any[]>([]);
 
-  const [res, setRes] = useState<{ month: string; plan: any; real: any; realVsPlan: any; spi:any }[]>([]);
+  const [res, setRes] = useState<{ month: string; plan: any; real: any; realVsPlan: any; spi: any }[]>([]);
 
   const [dataTableRegion, setDataTableRegion] = useState([]);
 
@@ -1257,9 +1261,7 @@ export default function Dashboard() {
                       <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
                         <ProblemAnalysisChart data={dataMaster} />
                       </div>
-                      <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
 
-                      </div>
 
                     </div>
 
@@ -1280,12 +1282,12 @@ export default function Dashboard() {
                       alt='positive-dynamic'
                     />
                     Corrective Action
-      
+
                   </h1>
-            <Button variant={"secondary"} className="flex items-center rounded-full mr-4">
-              <img width="20" height="20" src="https://img.icons8.com/stickers/50/visible.png" alt="visible" />
-              <span className="ml-2"> Detail Corrective Action</span>
-            </Button>
+                  <Button variant={"secondary"} className="flex items-center rounded-full mr-4" onClick={() => setIsDrawerOpen(true)}>
+                    <img width="20" height="20" src="https://img.icons8.com/stickers/50/visible.png" alt="visible" />
+                    <span className="ml-2"> Detail Corrective Action</span>
+                  </Button>
                 </div>
                 <div className="p-8 space-y-2 -mt-4">
                   <CardTitle className="text-lg">Corrective Action Chart</CardTitle>
@@ -1318,9 +1320,9 @@ export default function Dashboard() {
                             <thead>
                               <tr>
                                 <th className="border bg-green-600 text-white px-1 py-2">Regional</th>
-                                {/* <th className="border bg-green-600 text-white px-1 py-2">Kategori</th> */}
+
                                 <th className="border bg-green-600 text-white px-1 py-2">Problem Identification</th>
-                                {/* <th className="border bg-green-600 text-white px-1 py-2">Detail</th> */}
+
                                 <th className="border bg-green-600 text-white px-1 py-2">Root Causes</th>
                                 <th className="border bg-green-600 text-white px-1 py-2">Corrective Action</th>
                                 <th className="border bg-green-600 text-white px-1 py-2">W1</th>
@@ -1333,9 +1335,9 @@ export default function Dashboard() {
                               {dataMaster.map((problem, index) => (
                                 <tr key={index}>
                                   <td className="border px-1 py-2">{problem.regional}</td>
-                                  {/* <td className="border px-1 py-2">{problem.Kategori}</td> */}
+
                                   <td className="border px-1 py-2">{problem["Problem Identification"]}</td>
-                                  {/* <td className="border px-1 py-2">{problem.Detail}</td> */}
+
                                   <td className="border px-1 py-2">{problem["Root Causes"]}</td>
                                   <td className="border px-1 py-2">{problem["Corrective Action"]}</td>
                                   <td className={`text-white font-semibold border px-1 py-2 ${problem.w1 === 'Not Started' ? 'bg-red-400 rounded' : problem.w1 === 'On Progress' ? 'bg-sky-500 rounded' : problem.w1 === 'Done' ? 'bg-green-500 rounded' : ''}`}>
@@ -1354,10 +1356,27 @@ export default function Dashboard() {
                               ))}
                             </tbody>
                           </table>
+
+
                         </div>
                       </div>
                     </div>
 
+                    <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+                      <DrawerContent >
+                        <DrawerHeader>
+                          <DrawerTitle>Detail Corrective Action</DrawerTitle>
+                          <DrawerDescription>Informasi detail corrective action</DrawerDescription>
+                        </DrawerHeader>
+                        <div className="relative w-full overflow-y-auto max-h-[550px]">
+
+                          <RStatusPieChart data={dataMaster} />
+</div>
+                        <DrawerFooter>
+                          <DrawerClose>Close</DrawerClose>
+                        </DrawerFooter>
+                      </DrawerContent>
+                    </Drawer>
                   </div>
                 </div>
               </Card>
