@@ -60,7 +60,6 @@ const CustomTooltip = ({ active, payload, label }: any) => {
       </div>
     )
   }
-
   return null
 }
 
@@ -77,11 +76,10 @@ const CustomizedLabel = (props: any) => {
 // Custom dot component for markers
 const CustomDot = (props: any) => {
   const { cx, cy, value } = props
-
   return (
     <svg x={cx - 10} y={cy - 10} width={20} height={20} fill="white" viewBox="0 0 20 20">
       <circle cx="10" cy="10" r="6" stroke="#0ea5e9" strokeWidth="2" fill="white" />
-      <text x="10" y="13" textAnchor="middle" fill="#0ea5e9" fontSize="10" fontWeight="bold">
+      <text x="10" y="13" textAnchor="middle" fill="#0ea5e9" fontSize={10} fontWeight="bold">
         {value}
       </text>
     </svg>
@@ -96,18 +94,15 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
 
   const processData = useCallback((): ProblemCount[] => {
     const problemCounts: Record<string, number> = {}
-
     data.forEach((item) => {
       const problem = item["Problem Identification"]
       if (problem) {
         problemCounts[problem] = (problemCounts[problem] || 0) + 1
       }
     })
-
     const sortedProblems = Object.entries(problemCounts)
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count)
-
     return sortedProblems
   }, [data])
 
@@ -146,9 +141,10 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
     }
   }
 
-  // Custom tick for X-axis with rotation
+  // Modified CustomXAxisTick to show full text
   const CustomXAxisTick = (props: any) => {
     const { x, y, payload } = props
+    const text = payload.value
 
     return (
       <g transform={`translate(${x},${y})`}>
@@ -161,7 +157,7 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
           fontSize={12}
           transform="rotate(-45)"
         >
-          {payload.value.length > 15 ? `${payload.value.substring(0, 15)}...` : payload.value}
+          {text.length > 12 ? `${text.substring(0, 12)}...` : text}
         </text>
       </g>
     )
@@ -181,12 +177,12 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
           </SelectContent>
         </Select>
       </div>
-      <div className="mt-6" style={{ height: 400 }}>
+      <div className="mt-6" style={{ height: 450 }}>
         <ResponsiveContainer>
           <ComposedChart
             data={topProblems}
             onClick={(e) => e.activePayload && handleClick(e.activePayload[0].payload.name)}
-            margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+            margin={{ top: 20, right: 30, left: 20, bottom: 100 }}
           >
             <defs>
               <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -195,10 +191,10 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="name" height={60} tick={CustomXAxisTick}>
+            <XAxis dataKey="name" height={80} tick={CustomXAxisTick} interval={0}>
               <Label
                 value="Problem Identifications"
-                offset={-40}
+                offset={-70}
                 position="insideBottom"
                 style={{
                   textAnchor: "middle",
