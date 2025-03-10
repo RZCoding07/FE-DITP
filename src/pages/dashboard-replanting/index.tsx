@@ -611,8 +611,8 @@ export default function Dashboard() {
             </TabsList>
           </div>
 
-          <div className='flex items-center space-x-2 rounded-full shadow-xl bg-gradient-to-br from-slate-500 to-slate-600 px-4 py-2 text-white w-auto float-end'>
-            <h2 className='text-md' >{dataPiCa[0]} &nbsp; {dataPiCa[1]} &nbsp; {dataPiCa[2]} &nbsp; {dataPiCa[3]}  </h2>
+          <div className='flex items-center space-x-2 rounded-full shadow-xl bg-gradient-to-br from-slate-600 to-slate-800 px-4 py-2 text-white w-auto float-end'>
+            <h2 className='text-sm' >{dataPiCa[0]} &nbsp; {dataPiCa[1]} &nbsp; {dataPiCa[2]} &nbsp; {dataPiCa[3]}  </h2>
           </div>
 
           </div>
