@@ -79,6 +79,11 @@ const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
     chart: {
       type: "pie",
       foreColor: theme === "dark" ? "#ffffff" : "#000000",
+      events: {
+        click: function (event, chartContext, config) {
+          console.log(config.globals.labels[config.dataPointIndex])
+        },
+      }
     },
     labels,
     colors: [

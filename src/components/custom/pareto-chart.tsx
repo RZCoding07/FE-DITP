@@ -22,9 +22,9 @@ export default function ParetoChart() {
   const theme = cookie.get("theme") || "light"
   const rawData = [
     { name: "Proses Pengadaan", value: 4886 },
-    { name: "Regulasi", value: 1120 },
+    { name: "Regulasi", value: 2063 },
     { name: "Administrasi", value: 12032 },
-    { name: "Environment", value: 943 },
+    { name: "Environment", value: 0 },
     { name: "Operasional", value: 0 },
   ]
 
