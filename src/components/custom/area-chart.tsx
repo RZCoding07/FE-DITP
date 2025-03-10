@@ -1,7 +1,20 @@
-import React, { useEffect, useState } from 'react'
-import ReactApexChart from 'react-apexcharts'
-import { ApexOptions } from 'apexcharts'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+"use client"
+
+import type React from "react"
+import { useEffect, useState, useCallback } from "react"
+import {
+  ComposedChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  CartesianGrid,
+  Label,
+  LabelList,
+} from "recharts"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
   Drawer,
   DrawerClose,
@@ -10,7 +23,6 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "@/components/ui/drawer"
 
 interface ProblemData {
@@ -35,18 +47,57 @@ interface ProblemAnalysisChartProps {
   data: ProblemData[]
 }
 
+// Custom tooltip component
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg">
+        <p className="font-bold text-sm mb-1">{label}</p>
+        <p className="text-sm">
+          <span className="inline-block w-3 h-3 mr-2 bg-cyan-500 rounded-full"></span>
+          Frekuensi Masalah: <span className="font-semibold">{payload[0].value} kejadian</span>
+        </p>
+      </div>
+    )
+  }
+
+  return null
+}
+
+// Custom label component for data points
+const CustomizedLabel = (props: any) => {
+  const { x, y, value } = props
+  return (
+    <text x={x} y={y} dy={-10} fill="#0ea5e9" fontSize={14} fontWeight="bold" textAnchor="middle">
+      {value}
+    </text>
+  )
+}
+
+// Custom dot component for markers
+const CustomDot = (props: any) => {
+  const { cx, cy, value } = props
+
+  return (
+    <svg x={cx - 10} y={cy - 10} width={20} height={20} fill="white" viewBox="0 0 20 20">
+      <circle cx="10" cy="10" r="6" stroke="#0ea5e9" strokeWidth="2" fill="white" />
+      <text x="10" y="13" textAnchor="middle" fill="#0ea5e9" fontSize="10" fontWeight="bold">
+        {value}
+      </text>
+    </svg>
+  )
+}
+
 const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => {
-  const [theme, setTheme] = useState<string>('light')
+  const [theme, setTheme] = useState<string>("light")
   const [numProblems, setNumProblems] = useState<string>("10")
   const [selectedProblems, setSelectedProblems] = useState<ProblemData[]>([])
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
 
-  console.log(data)
-
-  const processData = (): ProblemCount[] => {
+  const processData = useCallback((): ProblemCount[] => {
     const problemCounts: Record<string, number> = {}
 
-    data.forEach(item => {
+    data.forEach((item) => {
       const problem = item["Problem Identification"]
       if (problem) {
         problemCounts[problem] = (problemCounts[problem] || 0) + 1
@@ -58,166 +109,63 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
       .sort((a, b) => b.count - a.count)
 
     return sortedProblems
-  }
+  }, [data])
 
   const problemData = processData()
   const topProblems = problemData.slice(0, Number(numProblems))
-  const problemNames = topProblems.map(p => p.name)
-  const problemCounts = topProblems.map(p => p.count)
+
+  // Transform data for scatter plot (markers)
+  const scatterData = topProblems.map((item) => ({
+    name: item.name,
+    count: item.count,
+    // Add x and y coordinates for scatter plot
+    x: item.name,
+    y: item.count,
+  }))
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light')
-
+    if (typeof window !== "undefined") {
+      setTheme(document.documentElement.classList.contains("dark") ? "dark" : "light")
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
-          if (mutation.attributeName === 'class') {
-            setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light')
+          if (mutation.attributeName === "class") {
+            setTheme(document.documentElement.classList.contains("dark") ? "dark" : "light")
           }
         })
       })
-
       observer.observe(document.documentElement, { attributes: true })
-
       return () => observer.disconnect()
     }
   }, [])
 
-  const options: ApexOptions = {
-    chart: {
-      height: 350,
-      type: 'area',
-      stacked: false,
-      foreColor: theme === 'dark' ? '#ffffff' : '#000000',
-      zoom: {
-        enabled: false,
-      },
-      toolbar: {
-        show: false
-      },
-      events: {
-        click: function (event, chartContext, config) {
-          const problemName = problemNames[config.dataPointIndex]
-          const problem = data.filter(item => item['Problem Identification'] === problemName)
-
-          if (problem) {
-            setSelectedProblems(problem)
-            setIsDrawerOpen(true)
-          }
-        }
-      }
-    },
-    xaxis: {
-      categories: problemNames,
-      labels: {
-        show: true,
-        style: {
-          colors: theme === 'dark' ? '#ffffff' : '#000000',
-          fontSize: '15px',
-          fontFamily: 'Arial, sans-serif',
-        },
-        rotate: -45,
-        rotateAlways: false,
-        hideOverlappingLabels: false,
-        trim: true,
-        maxHeight: 120,
-      },
-      title: {
-        text: 'Problem Identifications',
-        offsetY: -10,
-        style: {
-          color: theme === 'dark' ? '#ffffff' : '#808080',
-        },
-      },
-    },
-    yaxis: {
-      axisTicks: {
-        show: true,
-      },
-      axisBorder: {
-        show: true,
-        color: theme === 'dark' ? '#ffffff' : '#000000',
-      },
-      labels: {
-        style: {
-          colors: theme === 'dark' ? '#ffffff' : '#000000',
-          fontSize: '14px',
-        },
-      },
-      title: {
-        text: 'Frekuensi',
-        style: {
-          color: theme === 'dark' ? '#ffffff' : '#808080',
-        },
-        offsetX: 10,
-      },
-    },
-    dataLabels: {
-      enabled: true,
-      offsetY: -10,
-      style: {
-        fontSize: '14px',
-        fontWeight: 'bold',
-      },
-      formatter: (val: any) => `${Math.round(val)}`,
-    },
-    stroke: {
-      width: 2,
-      curve: 'smooth',
-    },
-    markers: {
-      size: 5,
-      hover: {
-        size: 7,
-      },
-    },
-    tooltip: {
-      shared: true,
-      intersect: false,
-      theme: theme === 'dark' ? 'dark' : 'light',
-      y: {
-        formatter: (val) => `${val} kejadian`,
-      },
-    },
-    fill: {
-      type: 'gradient',
-      gradient: {
-        shadeIntensity: 1,
-        opacityFrom: 0.7,
-        opacityTo: 0.9,
-        stops: [0, 90, 100],
-        colorStops: [
-          {
-            offset: 0,
-            color: '#0ea5e9',
-            opacity: 0.8
-          },
-          {
-            offset: 100,
-            color: '#22d3ee',
-            opacity: 0.2
-          }
-        ]
-      },
-    },
-    grid: {
-      borderColor: theme === 'dark' ? '#333' : '#e0e0e0',
-    },
-    legend: {
-      position: 'top',
-      horizontalAlign: 'center',
-      offsetY: 10,
-    },
+  const handleClick = (name: string) => {
+    const problem = data.filter((item) => item["Problem Identification"] === name)
+    if (problem && problem.length > 0) {
+      setSelectedProblems(problem)
+      setIsDrawerOpen(true)
+    }
   }
 
-  const series = [
-    {
-      name: 'Frekuensi Masalah',
-      type: 'area',
-      data: problemCounts,
-      color: '#0ea5e9',
-    },
-  ]
+  // Custom tick for X-axis with rotation
+  const CustomXAxisTick = (props: any) => {
+    const { x, y, payload } = props
+
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text
+          x={0}
+          y={0}
+          dy={16}
+          textAnchor="end"
+          fill={theme === "dark" ? "#ffffff" : "#000000"}
+          fontSize={12}
+          transform="rotate(-45)"
+        >
+          {payload.value.length > 15 ? `${payload.value.substring(0, 15)}...` : payload.value}
+        </text>
+      </g>
+    )
+  }
 
   return (
     <div className="w-full">
@@ -233,13 +181,74 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
           </SelectContent>
         </Select>
       </div>
-      <div className="mt-6">
-        <ReactApexChart
-          options={options}
-          series={series}
-          type="area"
-          height={400}
-        />
+      <div className="mt-6" style={{ height: 400 }}>
+        <ResponsiveContainer>
+          <ComposedChart
+            data={topProblems}
+            onClick={(e) => e.activePayload && handleClick(e.activePayload[0].payload.name)}
+            margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+          >
+            <defs>
+              <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#22d3ee" stopOpacity={0.2} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis dataKey="name" height={60} tick={CustomXAxisTick}>
+              <Label
+                value="Problem Identifications"
+                offset={-40}
+                position="insideBottom"
+                style={{
+                  textAnchor: "middle",
+                  fill: theme === "dark" ? "#ffffff" : "#808080",
+                }}
+              />
+            </XAxis>
+            <YAxis
+              label={{
+                value: "Frekuensi",
+                angle: -90,
+                position: "insideLeft",
+                style: {
+                  textAnchor: "middle",
+                  fill: theme === "dark" ? "#ffffff" : "#808080",
+                },
+              }}
+            />
+            <Tooltip content={<CustomTooltip />} />
+            <Legend
+              verticalAlign="top"
+              height={36}
+              formatter={(value) => (
+                <span style={{ color: theme === "dark" ? "#ffffff" : "#000000" }}>Frekuensi Masalah</span>
+              )}
+            />
+            <Area
+              type="monotone"
+              dataKey="count"
+              name="Frekuensi Masalah"
+              stroke="#0ea5e9"
+              fill="url(#colorUv)"
+              fillOpacity={0.7}
+              activeDot={{
+                r: 8,
+                stroke: "#0ea5e9",
+                strokeWidth: 2,
+                fill: "#ffffff",
+              }}
+              dot={{
+                stroke: "#0ea5e9",
+                strokeWidth: 2,
+                r: 4,
+                fill: "#ffffff",
+              }}
+            >
+              <LabelList content={<CustomizedLabel />} />
+            </Area>
+          </ComposedChart>
+        </ResponsiveContainer>
       </div>
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerContent>
@@ -247,7 +256,7 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
             <DrawerTitle>Detail Masalah</DrawerTitle>
             <DrawerDescription>Informasi detail tentang masalah yang dipilih</DrawerDescription>
           </DrawerHeader>
-          <div className="relative w-full h-full overflow-y-auto"> {/* Full height and width with overflow */}
+          <div className="relative w-full h-full overflow-y-auto">
             <div className="p-4">
               {selectedProblems.length > 0 && (
                 <table className="w-full text-left">
@@ -258,26 +267,16 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
                       <th className="border bg-green-600 text-white px-4 py-2">Problem Identification</th>
                       <th className="border bg-green-600 text-white px-4 py-2">Detail</th>
                       <th className="border bg-green-600 text-white px-4 py-2">Root Causes</th>
-                      {/* <th className="border bg-green-600 text-white px-4 py-2">Corrective Action</th>
-                      <th className="border bg-green-600 text-white px-4 py-2">W1</th>
-                      <th className="border bg-green-600 text-white px-4 py-2">W2</th>
-                      <th className="border bg-green-600 text-white px-4 py-2">W3</th>
-                      <th className="border bg-green-600 text-white px-4 py-2">W4</th> */}
                     </tr>
                   </thead>
                   <tbody>
-                    {selectedProblems.map((problem, index) => (
+                    {selectedProblems.map((problem: any, index) => (
                       <tr key={index}>
                         <td className="border px-4 py-2">{problem.regional}</td>
                         <td className="border px-4 py-2">{problem.Kategori}</td>
                         <td className="border px-4 py-2">{problem["Problem Identification"]}</td>
                         <td className="border px-4 py-2">{problem.Detail}</td>
                         <td className="border px-4 py-2">{problem["Root Causes"]}</td>
-                        {/* <td className="border px-4 py-2">{problem["Corrective Action"]}</td>
-                        <td className="border px-4 py-2">{problem.w1}</td>
-                        <td className="border px-4 py-2">{problem.w2}</td>
-                        <td className="border px-4 py-2">{problem.w3}</td>
-                        <td className="border px-4 py-2">{problem.w4}</td> */}
                       </tr>
                     ))}
                   </tbody>
@@ -295,3 +294,4 @@ const ProblemAnalysisChart: React.FC<ProblemAnalysisChartProps> = ({ data }) => 
 }
 
 export default ProblemAnalysisChart
+
