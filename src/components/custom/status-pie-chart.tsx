@@ -18,8 +18,6 @@ interface ProblemData {
   w4: string
 }
 
-
-
 interface StatusPieChartProps {
   data: ProblemData[]
 }
@@ -28,11 +26,9 @@ const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
   const [theme, setTheme] = useState<string>("light")
 
   useEffect(() => {
-    // Check if we're in a browser environment before accessing document
     if (typeof window !== "undefined") {
       setTheme(document.documentElement.classList.contains("dark") ? "dark" : "light")
 
-      // Listen for theme changes
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           if (mutation.attributeName === "class") {
@@ -47,7 +43,6 @@ const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
     }
   }, [])
 
-  // Process data to count status occurrences across w1-w4
   const processStatusData = () => {
     const statusCounts: Record<string, number> = {
       "Done": 0,
@@ -55,16 +50,12 @@ const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
       "Not Started": 0
     }
 
-    // Count occurrences of each status across all w1-w4 fields
     data.forEach((item) => {
-      // Check each of w1, w2, w3, w4 fields
       [item.w1, item.w2, item.w3, item.w4].forEach((status) => {
         if (!status || status.trim() === "") {
-          // Skip empty values or count as "Other"
           return
         }
 
-        // Check if the status contains any of our known statuses
         if (status.includes("Done")) {
           statusCounts["Done"]++
         } else if (status.includes("On Progress")) {
@@ -75,19 +66,15 @@ const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
       })
     })
 
-    // Filter out zero counts and prepare data for the chart
-    return Object.entries(statusCounts)
-      .filter(([_, count]) => count > 0)
-      .map(([status, count]) => ({ status, count }))
+    // Prepare data for the chart, including statuses with zero counts
+    return Object.entries(statusCounts).map(([status, count]) => ({ status, count }))
   }
 
   const statusData = processStatusData()
 
-  // Extract labels and series data for the chart
   const labels = statusData.map((item) => item.status)
   const series = statusData.map((item) => item.count)
 
-  // Pie chart options
   const options: ApexOptions = {
     chart: {
       type: "pie",
@@ -109,7 +96,7 @@ const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
     },
     dataLabels: {
       enabled: true,
-      formatter: (val: number, opts) => {
+      formatter: (val: number) => {
         return `${Math.round(val)}%`
       },
       style: {
@@ -153,18 +140,18 @@ const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
       },
     },
     fill: {
-        type: "gradient",
-        gradient: {
-          shade: "dark",
-          type: "horizontal",
-          shadeIntensity: 0.5,
-          gradientToColors: ["#ABE5A1"],
-          inverseColors: true,
-          opacityFrom: 1,
-          opacityTo: 1,
-          stops: [0, 80],
-        },
-        },
+      type: "gradient",
+      gradient: {
+        shade: "dark",
+        type: "horizontal",
+        shadeIntensity: 0.5,
+        gradientToColors: ["#ABE5A1"],
+        inverseColors: true,
+        opacityFrom: 1,
+        opacityTo: 1,
+        stops: [0, 80],
+      },
+    },
   }
 
   return (
@@ -175,4 +162,3 @@ const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
 }
 
 export default StatusPieChart
-

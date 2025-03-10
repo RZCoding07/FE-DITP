@@ -1286,7 +1286,7 @@ export default function Dashboard() {
                   </h1>
                   <Button variant={"secondary"} className="flex items-center rounded-full mr-4" onClick={() => setIsDrawerOpen(true)}>
                     <img width="20" height="20" src="https://img.icons8.com/stickers/50/visible.png" alt="visible" />
-                    <span className="ml-2"> Detail Corrective Action</span>
+                    <span className="ml-2"> Status Regional</span>
                   </Button>
                 </div>
                 <div className="p-8 space-y-2 -mt-4">
@@ -1365,8 +1365,8 @@ export default function Dashboard() {
                     <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
                       <DrawerContent >
                         <DrawerHeader>
-                          <DrawerTitle>Detail Corrective Action</DrawerTitle>
-                          <DrawerDescription>Informasi detail corrective action</DrawerDescription>
+                          <DrawerTitle>Status Regional</DrawerTitle>
+                          <DrawerDescription>Informasi status regional</DrawerDescription>
                         </DrawerHeader>
                         <div className="relative w-full overflow-y-auto max-h-[550px]">
 
