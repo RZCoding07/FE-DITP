@@ -141,7 +141,7 @@ const SCurveChart = ({
                         </tr>
                         <tr>
                             <td className="border border-gray-300 px-2 py-2 font-medium" style={{ color: titleColor }}>
-                                Variance
+                                Variance (%)
                             </td>
                             {data.map((item) => (
                                 <td key={item.month} className={`border border-gray-300 px-2 py-2 text-center ${getColor(item.realVsPlan, item.plan)}`}>
