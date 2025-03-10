@@ -281,11 +281,13 @@ export default function Dashboard() {
           header: false,  // Tidak mengatur header
           skipEmptyLines: true,
           complete: (result: any) => {
-             console.log(result.data);
+            //  console.log(result.data);
           },
         });
       });
   }, []);
+
+  const [dataPiCa, setDataPiCa] = useState<any[]>([]);
 
   useEffect(() => {
     fetch(
@@ -298,6 +300,8 @@ export default function Dashboard() {
           skipEmptyLines: true,
           complete: (result: any) => {
             const data = result.data;
+            console.log(data);
+            setDataPiCa(data[1]);
 
             let r1 = [];
             let r2 = [];
@@ -309,7 +313,8 @@ export default function Dashboard() {
             let r8 = [];
             let r9 = [];
 
-            // console.log(data);
+
+
 
             for (let i = 0; i < data.length; i++) {
               for (let j = 0; j < data[i].length; j++) {
@@ -458,9 +463,6 @@ export default function Dashboard() {
             const convertedDataR8 = convertData(arrayDataFinal[7], categories, "R2 EKS N2");
             const convertedDataR9 = convertData(arrayDataFinal[8], categories, "R2 EKS N14");
 
-            console.log(convertedDataR6);
-
-            // merge data into one array
             const mergedData = [
               ...convertedDataR1,
               ...convertedDataR2,
@@ -589,41 +591,31 @@ export default function Dashboard() {
           </div>
           <h1>Hi, Welcome back {fullname}👋</h1>
 
-          <div className='flex items-center space-x-2'>
-            <Select
-              styles={customStyles}
-              options={[
 
-              ]}
-              defaultValue={{ value: '3', label: 'Februari' }}
-            />
-            <Select
-              styles={customStyles}
-              options={[
-                { value: 'w3', label: 'W3' }
-              ]}
-              defaultValue={{ value: 'w3', label: 'W3' }}
-            />
-            <Button className='flex items-center rounded-full'>
-              Download
-              <IconPdf size={20} className='ml-2 bg-red-500 text-white' />
-            </Button>
-          </div>
         </div>
+
         <Tabs
           orientation='vertical'
           defaultValue='overview'
           className='space-y-4 '
         >
-          <TabsList>
-            <TabsTrigger value='overview'>Weekly Report</TabsTrigger>
-            {/* <TabsTrigger value='analytics'>Delivery Kecambah</TabsTrigger> */}
-            <TabsTrigger value='reports'>S-Curve & PICA Analysis</TabsTrigger>
+
+          <div className="flex items-center justify-between space-x-2">
+                    <div className='float-start'>
+            <TabsList>
+              <TabsTrigger value='overview'>Weekly Report</TabsTrigger>
+              {/* <TabsTrigger value='analytics'>Delivery Kecambah</TabsTrigger> */}
+              <TabsTrigger value='reports'>S-Curve & PICA Analysis</TabsTrigger>
 
 
-          </TabsList>
+            </TabsList>
+          </div>
 
+          <div className='flex items-center space-x-2 rounded-full shadow-xl bg-gradient-to-br from-slate-500 to-slate-600 px-4 py-2 text-white w-auto float-end'>
+            <h2 className='text-md' >{dataPiCa[0]} &nbsp; {dataPiCa[1]} &nbsp; {dataPiCa[2]} &nbsp; {dataPiCa[3]}  </h2>
+          </div>
 
+          </div>
 
           <TabsContent value='overview' className='space-y-4'>
 
