@@ -164,7 +164,24 @@ const dataWeekly = [
   { regional: "Sub Total KSO", r1: "", rkap: 3954.69, berkontrak: "-", landClearing: "-", menanam: "-" },
   { regional: "TOTAL", r1: "", rkap: 21149.59, berkontrak: 2168.7, landClearing: 1736.18, menanam: 538.01 },
 ]
-
+const formatNumber = (value: any) => {
+  if (!value) return '-';
+  
+  // Konversi nilai ke number jika belum
+  const numericValue = typeof value === 'number' ? value : parseFloat(value);
+  
+  // Cek jika nilai bukan angka
+  if (isNaN(numericValue)) return '';
+  
+  // Pisahkan bagian integer dan desimal
+  const [integerPart, decimalPart] = String(numericValue).split('.');
+  
+  // Format bagian integer dengan separator ribuan
+  const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  
+  // Gabungkan kembali dengan bagian desimal jika ada
+  return decimalPart ? `${formattedInteger}.${decimalPart}` : formattedInteger;
+};
 // Group data by regional for proper rowspan handling
 const groupedData = {
   "Palm Co": dataWeekly.filter((item) => item.r1.startsWith("R") && item.regional === "Palm Co"),
@@ -185,7 +202,7 @@ const groupedData = {
         <thead className="bg-[#1ea297] text-white">
           <tr>
             <th colSpan={2} className="px-4 py-2 border border-cyan-900">
-              Regionalp
+              Regional
             </th>
             <th className="px-4 py-2 border border-cyan-900">RKAP (Ha)</th>
             <th className="px-4 py-2 border border-cyan-900">Berkontrak (Ha)</th>
@@ -203,7 +220,7 @@ const groupedData = {
               Palm Co
             </td>
             <td className="px-4 py-2 border border-cyan-900">R1</td>
-            <td className="px-4 py-2 border border-cyan-900">5048.49</td>
+            <td className="px-4 py-2 border border-cyan-900">5,048.49</td>
             <td className="px-4 py-2 border border-cyan-900">-</td>
             <td className="px-4 py-2 border border-cyan-900 min-w-[120px]">
               0%
@@ -223,8 +240,8 @@ const groupedData = {
           {groupedData["Palm Co"].slice(1).map((item, index) => (
             <tr key={`palm-co-${index + 1}`}>
               <td className="px-4 py-2 border border-cyan-900">{item.r1}</td>
-              <td className="px-4 py-2 border border-cyan-900">{item.rkap}</td>
-              <td className="px-4 py-2 border border-cyan-900">{item.berkontrak}</td>
+              <td className="px-4 py-2 border border-cyan-900">{formatNumber(item.rkap)}</td>
+              <td className="px-4 py-2 border border-cyan-900">{formatNumber(item.berkontrak)}</td>
               <td className="px-4 py-2 border border-cyan-900 min-w-[120px]">
                 {formatPercentage(calculatePercentage(item.berkontrak, item.rkap))}
                 <Progress
@@ -233,7 +250,7 @@ const groupedData = {
                   bgColor={getBarColor(calculatePercentage(item.berkontrak, item.rkap))}
                 />
               </td>
-              <td className="px-4 py-2 border border-cyan-900">{item.landClearing}</td>
+              <td className="px-4 py-2 border border-cyan-900">{formatNumber(item.landClearing)}</td>
               <td className="px-4 py-2 border border-cyan-900 min-w-[120px]">
                 {formatPercentage(calculatePercentage(item.landClearing, item.rkap))}
                 <Progress
@@ -242,7 +259,7 @@ const groupedData = {
                   bgColor={getBarColor(calculatePercentage(item.landClearing, item.rkap))}
                 />
               </td>
-              <td className="px-4 py-2 border border-cyan-900">{item.menanam}</td>
+              <td className="px-4 py-2 border border-cyan-900">{formatNumber(item.menanam)}</td>
               <td className="px-4 py-2 border border-cyan-900 min-w-[120px]">
                 {formatPercentage(calculatePercentage(item.menanam, item.rkap))}
                 <Progress
@@ -260,8 +277,8 @@ const groupedData = {
               <td colSpan={2} className="px-4 py-2 border border-cyan-900">
                 {item.regional}
               </td>
-              <td className="px-4 py-2 border border-cyan-900">{item.rkap}</td>
-              <td className="px-4 py-2 border border-cyan-900">{item.berkontrak}</td>
+              <td  className="px-4 py-2 border border-cyan-900">{formatNumber(item.rkap)}</td>
+              <td className="px-4 py-2 border border-cyan-900">{formatNumber(item.berkontrak)}</td>
               <td className="px-4 py-2 border border-cyan-900 min-w-[120px]">
                 {formatPercentage(calculatePercentage(item.berkontrak, item.rkap))}
                 <Progress
@@ -270,7 +287,7 @@ const groupedData = {
                   bgColor={getBarColor(calculatePercentage(item.berkontrak, item.rkap))}
                 />
               </td>
-              <td className="px-4 py-2 border border-cyan-900">{item.landClearing}</td>
+              <td className="px-4 py-2 border border-cyan-900">{formatNumber(item.landClearing)}</td>
               <td className="px-4 py-2 border border-cyan-900 min-w-[120px]">
                 {formatPercentage(calculatePercentage(item.landClearing, item.rkap))}
                 <Progress
@@ -279,7 +296,7 @@ const groupedData = {
                   bgColor={getBarColor(calculatePercentage(item.landClearing, item.rkap))}
                 />
               </td>
-              <td className="px-4 py-2 border border-cyan-900">{item.menanam}</td>
+              <td className="px-4 py-2 border border-cyan-900">{formatNumber(item.menanam)}</td>
               <td className="px-4 py-2 border border-cyan-900 min-w-[120px]">
                 {formatPercentage(calculatePercentage(item.menanam, item.rkap))}
                 <Progress
@@ -323,12 +340,12 @@ const groupedData = {
                 0%
                 <Progress value={0} className="h-2 mt-1" bgColor="bg-red-500" />
               </td>
-              <td className="px-4 py-2 border border-cyan-900">{item.landClearing}</td>
+              <td className="px-4 py-2 border border-cyan-900">{formatNumber(item.landClearing)}</td>
               <td className="px-4 py-2 border border-cyan-900 min-w-[120px]">
                 0%
                 <Progress value={0} className="h-2 mt-1" bgColor="bg-red-500" />
               </td>
-              <td className="px-4 py-2 border border-cyan-900">{item.menanam}</td>
+              <td className="px-4 py-2 border border-cyan-900">{formatNumber(item.menanam)}</td>
               <td className="px-4 py-2 border border-cyan-900 min-w-[120px]">
                 0%
                 <Progress value={0} className="h-2 mt-1" bgColor="bg-red-500" />
@@ -342,18 +359,18 @@ const groupedData = {
               <td colSpan={2} className="px-4 py-2 border border-cyan-900">
                 {item.regional}
               </td>
-              <td className="px-4 py-2 border border-cyan-900">{item.rkap}</td>
-              <td className="px-4 py-2 border border-cyan-900">{item.berkontrak}</td>
+              <td  className="px-4 py-2 border border-cyan-900">{formatNumber(item.rkap)}</td>
+              <td className="px-4 py-2 border border-cyan-900">{formatNumber(item.berkontrak)}</td>
               <td className="px-4 py-2 border border-cyan-900 min-w-[120px]">
                 0%
                 <Progress value={0} className="h-2 mt-1" bgColor="bg-red-500" />
               </td>
-              <td className="px-4 py-2 border border-cyan-900">{item.landClearing}</td>
+              <td className="px-4 py-2 border border-cyan-900">{formatNumber(item.landClearing)}</td>
               <td className="px-4 py-2 border border-cyan-900 min-w-[120px]">
                 0%
                 <Progress value={0} className="h-2 mt-1" bgColor="bg-red-500" />
               </td>
-              <td className="px-4 py-2 border border-cyan-900">{item.menanam}</td>
+              <td className="px-4 py-2 border border-cyan-900">{formatNumber(item.menanam)}</td>
               <td className="px-4 py-2 border border-cyan-900 min-w-[120px]">
                 0%
                 <Progress value={0} className="h-2 mt-1" bgColor="bg-red-500" />
@@ -367,8 +384,8 @@ const groupedData = {
               <td colSpan={2} className="px-4 py-2 border border-cyan-900">
                 {item.regional}
               </td>
-              <td className="px-4 py-2 border border-cyan-900">{item.rkap}</td>
-              <td className="px-4 py-2 border border-cyan-900">{item.berkontrak}</td>
+              <td  className="px-4 py-2 border border-cyan-900">{formatNumber(item.rkap)}</td>
+              <td className="px-4 py-2 border border-cyan-900">{formatNumber(item.berkontrak)}</td>
               <td className="px-4 py-2 border border-cyan-900 min-w-[120px]">
                 {formatPercentage(calculatePercentage(item.berkontrak, item.rkap))}
                 <Progress
@@ -377,7 +394,7 @@ const groupedData = {
                   bgColor={getBarColor(calculatePercentage(item.berkontrak, item.rkap))}
                 />
               </td>
-              <td className="px-4 py-2 border border-cyan-900">{item.landClearing}</td>
+              <td className="px-4 py-2 border border-cyan-900">{formatNumber(item.landClearing)}</td>
               <td className="px-4 py-2 border border-cyan-900 min-w-[120px]">
                 {formatPercentage(calculatePercentage(item.landClearing, item.rkap))}
                 <Progress
@@ -386,7 +403,7 @@ const groupedData = {
                   bgColor={getBarColor(calculatePercentage(item.landClearing, item.rkap))}
                 />
               </td>
-              <td className="px-4 py-2 border border-cyan-900">{item.menanam}</td>
+              <td className="px-4 py-2 border border-cyan-900">{formatNumber(item.menanam)}</td>
               <td className="px-4 py-2 border border-cyan-900 min-w-[120px]">
                 {formatPercentage(calculatePercentage(item.menanam, item.rkap))}
                 <Progress
