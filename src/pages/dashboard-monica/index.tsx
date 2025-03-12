@@ -400,7 +400,7 @@ export default function Tasks() {
                 value='regional'
                 onClick={() => handleClickProgrees('dtis')}
               >
-                Infrastruktur (DTIS)
+                Infrastruktur (DINF)
               </TabsTrigger>
             </TabsList>
           </div>

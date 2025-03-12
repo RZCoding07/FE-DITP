@@ -8,7 +8,9 @@ import cookie from "js-cookie"
 const HighchartsRegionalAttainment = ({
     dataprops }: {
       dataprops: any
-    }) => {
+    }
+  
+  ) => {
   const chartComponentRef = useRef<HighchartsReact.RefObject>(null)
   const [theme, setTheme] = useState('light')
 
