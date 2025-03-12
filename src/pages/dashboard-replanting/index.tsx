@@ -615,7 +615,7 @@ export default function Dashboard() {
               <TabsList>
                 <TabsTrigger value='overview' onClick={() => setShowPeriod(false)}>
                   Weekly Report
-                  </TabsTrigger>
+                </TabsTrigger>
                 {/* <TabsTrigger value='analytics'>Delivery Kecambah</TabsTrigger> */}
                 <TabsTrigger value='reports' onClick={() => setShowPeriod(true)}>S-Curve & PICA Analysis</TabsTrigger>
 
@@ -857,7 +857,7 @@ export default function Dashboard() {
               <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
                 <div className='grid p-4 md:grid-cols-1'>
                   <div className='space-y-4'>
-                    <div className='flex items-centertext-lg font-medium'>
+                    <div className='flex items-centertext-lg font-medium  justify-between'>
                       <h1 className='flex items-center text-xl font-bold tracking-tight'>
                         <img
                           className='mr-2'
@@ -868,6 +868,15 @@ export default function Dashboard() {
                         />
                         Detail Corrective Action
                       </h1>
+
+                      {/*  Button Reset */}
+                      {(selectedStatus !== "") && (
+                      <div className="flex items-center space-x-2 ">
+                        <Button variant={"secondary"} onClick={() => setSelectedStatus("")}>
+                          Reset Status
+                        </Button>
+                      </div>
+                    )}
                     </div>
 
 
@@ -892,28 +901,30 @@ export default function Dashboard() {
                             </thead>
                             <tbody>
                               {dataMaster.map((problem, index) => (
-                                (selectedStatus ===  problem.w1 || selectedStatus ===  problem.w2 || selectedStatus ===  problem.w3 || selectedStatus ===  problem.w4) && (
-                                <tr key={index}>
-                                  <td className="border px-1 py-2">{problem.regional}</td>
+                                (selectedStatus === problem.w1 || selectedStatus === problem.w2 || selectedStatus === problem.w3 || selectedStatus === problem.w4) && (
+                                  <tr key={index}>
+                                    <td className="border px-1 py-2">{problem.regional}</td>
 
-                                  <td className="border px-1 py-2">{problem["Problem Identification"]}</td>
+                                    <td className="border px-1 py-2">{problem["Problem Identification"]}</td>
 
-                                  <td className="border px-1 py-2">{problem["Root Causes"]}</td>
-                                  <td className="border px-1 py-2">{problem["Corrective Action"]}</td>
-                                  <td className={`text-white font-semibold border px-1 py-2 ${problem.w1 === 'Not Started' ? 'bg-red-400 rounded' : problem.w1 === 'On Progress' ? 'bg-sky-500 rounded' : problem.w1 === 'Done' ? 'bg-green-500 rounded' : ''}`}>
-                                    {problem.w1}
-                                  </td>
-                                  <td className={`text-white font-semibold border px-1 py-2 ${problem.w2 === 'Not Started' ? 'bg-red-400 rounded' : problem.w2 === 'On Progress' ? 'bg-sky-500 rounded' : problem.w2 === 'Done' ? 'bg-green-500 rounded' : ''}`}>
-                                    {problem.w2}
-                                  </td>
-                                  <td className={`text-white font-semibold border px-1 py-2 ${problem.w3 === 'Not Started' ? 'bg-red-400 rounded' : problem.w3 === 'On Progress' ? 'bg-sky-500 rounded' : problem.w3 === 'Done' ? 'bg-green-500 rounded' : ''}`}>
-                                    {problem.w3}
-                                  </td>
-                                  <td className={`text-white font-semibold border px-1 py-2 ${problem.w4 === 'Not Started' ? 'bg-red-400 rounded' : problem.w4 === 'On Progress' ? 'bg-sky-500 rounded' : problem.w4 === 'Done' ? 'bg-green-500 rounded' : ''}`}>
-                                    {problem.w4}
-                                  </td>
-                                </tr>
-                              )))}
+                                    <td className="border px-1 py-2">{problem["Root Causes"]}</td>
+                                    <td className="border px-1 py-2">{problem["Corrective Action"]}</td>
+                                    <td className={`text-white font-semibold border px-1 py-2 ${problem.w1 === 'Not Started' ? 'bg-red-400 rounded' : problem.w1 === 'On Progress' ? 'bg-sky-500 rounded' : problem.w1 === 'Done' ? 'bg-green-500 rounded' : ''}`}>
+                                      {problem.w1}
+                                    </td>
+                                    <td className={`text-white font-semibold border px-1 py-2 ${problem.w2 === 'Not Started' ? 'bg-red-400 rounded' : problem.w2 === 'On Progress' ? 'bg-sky-500 rounded' : problem.w2 === 'Done' ? 'bg-green-500 rounded' : ''}`}>
+                                      {problem.w2}
+                                    </td>
+                                    <td className={`text-white font-semibold border px-1 py-2 ${problem.w3 === 'Not Started' ? 'bg-red-400 rounded' : problem.w3 === 'On Progress' ? 'bg-sky-500 rounded' : problem.w3 === 'Done' ? 'bg-green-500 rounded' : ''}`}>
+                                      {problem.w3}
+                                    </td>
+                                    <td className={`text-white font-semibold border px-1 py-2 ${problem.w4 === 'Not Started' ? 'bg-red-400 rounded' : problem.w4 === 'On Progress' ? 'bg-sky-500 rounded' : problem.w4 === 'Done' ? 'bg-green-500 rounded' : ''}`}>
+                                      {problem.w4}
+                                    </td>
+                                  </tr>
+
+                                )
+                              ))}
                             </tbody>
                           </table>
 
