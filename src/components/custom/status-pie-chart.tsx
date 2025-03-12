@@ -16,15 +16,16 @@ interface ProblemData {
   w2: string
   w3: string
   w4: string
+
 }
 
 interface StatusPieChartProps {
   data: ProblemData[]
+  onEventClick: (data: any) => void
 }
 
-const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
+const StatusPieChart: React.FC<StatusPieChartProps> = ({ data, onEventClick }) => {
   const [theme, setTheme] = useState<string>("light")
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       setTheme(document.documentElement.classList.contains("dark") ? "dark" : "light")
@@ -81,7 +82,8 @@ const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
       foreColor: theme === "dark" ? "#ffffff" : "#000000",
       events: {
         click: function (event, chartContext, config) {
-          console.log(config.globals.labels[config.dataPointIndex])
+          // console.log(config.globals.labels[config.dataPointIndex])
+          onEventClick(config.globals.labels[config.dataPointIndex])
         },
       }
     },
@@ -99,6 +101,7 @@ const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
         colors: theme === "dark" ? "#ffffff" : "#000000",
       },
     },
+
     dataLabels: {
       enabled: true,
       formatter: (val: number) => {

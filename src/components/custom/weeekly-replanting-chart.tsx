@@ -185,7 +185,7 @@ const groupedData = {
         <thead className="bg-[#1ea297] text-white">
           <tr>
             <th colSpan={2} className="px-4 py-2 border border-cyan-900">
-              Regional
+              Regionalp
             </th>
             <th className="px-4 py-2 border border-cyan-900">RKAP (Ha)</th>
             <th className="px-4 py-2 border border-cyan-900">Berkontrak (Ha)</th>

@@ -571,6 +571,12 @@ export default function Dashboard() {
     return "#ea4335"; // Merah
   };
 
+  const [selectedStatus, setSelectedStatus] = useState<string>("")
+
+  const handleEventClick = (eventData: any) => {
+    setSelectedStatus(eventData)
+  }
+
   return (
     <Layout>
       {/* ===== Top Heading ===== */}
@@ -845,7 +851,7 @@ export default function Dashboard() {
                 <div className="p-8 space-y-2 -mt-4">
                   <CardTitle className="text-lg">Corrective Action Chart</CardTitle>
                   <div className="text-lg">Grafik ini menunjukkan corrective action yang dilakukan.</div>
-                  <StatusPieChart data={dataMaster} />
+                  <StatusPieChart data={dataMaster} onEventClick={handleEventClick} />
                 </div>
               </Card>
               <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
@@ -886,6 +892,7 @@ export default function Dashboard() {
                             </thead>
                             <tbody>
                               {dataMaster.map((problem, index) => (
+                                (selectedStatus ===  problem.w1 || selectedStatus ===  problem.w2 || selectedStatus ===  problem.w3 || selectedStatus ===  problem.w4) && (
                                 <tr key={index}>
                                   <td className="border px-1 py-2">{problem.regional}</td>
 
@@ -906,7 +913,7 @@ export default function Dashboard() {
                                     {problem.w4}
                                   </td>
                                 </tr>
-                              ))}
+                              )))}
                             </tbody>
                           </table>
 
