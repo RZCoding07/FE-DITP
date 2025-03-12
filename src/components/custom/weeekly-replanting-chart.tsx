@@ -179,6 +179,7 @@ const groupedData = {
         <div>
           <h1 className="text-4xl font-bold text-[#00695c] dark:text-[#35a39a]">Weekly Report</h1>
           <h2 className="text-xl text-[#689b2d] dark:text-white font-semibold">Periode : W1 Maret 2025</h2>
+          <br />
           <div className="overflow-x-auto">
       <table className="w-full border border-cyan-900 bg-white dark:bg-[#0a192f] dark:text-white">
         <thead className="bg-[#1ea297] text-white">

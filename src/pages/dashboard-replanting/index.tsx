@@ -198,6 +198,8 @@ export default function Dashboard() {
 
   const [dataTableRegion, setDataTableRegion] = useState([]);
 
+  const [showPeriod, setShowPeriod] = useState(false)
+
 
   useEffect(() => {
     fetch(
@@ -605,18 +607,20 @@ export default function Dashboard() {
           <div className="flex items-center justify-between space-x-2">
             <div className='float-start'>
               <TabsList>
-                <TabsTrigger value='overview'>Weekly Report</TabsTrigger>
+                <TabsTrigger value='overview' onClick={() => setShowPeriod(false)}>
+                  Weekly Report
+                  </TabsTrigger>
                 {/* <TabsTrigger value='analytics'>Delivery Kecambah</TabsTrigger> */}
-                <TabsTrigger value='reports'>S-Curve & PICA Analysis</TabsTrigger>
-
+                <TabsTrigger value='reports' onClick={() => setShowPeriod(true)}>S-Curve & PICA Analysis</TabsTrigger>
 
               </TabsList>
             </div>
 
-            <div className='flex items-center space-x-2 rounded-full shadow-xl bg-gradient-to-br from-slate-600 to-slate-800 px-4 py-2 text-white w-auto float-end'>
-              <h2 className='text-sm' >{dataPiCa[0]} &nbsp; {dataPiCa[1]} &nbsp; {dataPiCa[2]} &nbsp; {dataPiCa[3]}  </h2>
-            </div>
-
+            {showPeriod && (
+              <div className='flex items-center space-x-2 rounded-full shadow-xl bg-gradient-to-br from-slate-600 to-slate-800 px-4 py-2 text-white w-auto float-end'>
+                <h2 className='text-sm' >{dataPiCa[0]} &nbsp; {dataPiCa[1]} &nbsp; {dataPiCa[2]} &nbsp; {dataPiCa[3]}  </h2>
+              </div>
+            )}
           </div>
 
           <TabsContent value='overview' className='space-y-4'>
