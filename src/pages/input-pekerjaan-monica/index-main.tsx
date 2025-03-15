@@ -29,394 +29,394 @@ import cookies from 'js-cookie'
 import { Label } from '@/components/ui/label'
 import cookie from 'js-cookie'
 
-// // Define the schema for form validation
-// const formSchema = z.object({
-//   kode: z.string().min(1, { message: 'Kode investasi harus diisi!' }),
-// })
+// Define the schema for form validation
+const formSchema = z.object({
+  kode: z.string().min(1, { message: 'Kode investasi harus diisi!' }),
+})
 
-// type FormValues = z.infer<typeof formSchema>
+type FormValues = z.infer<typeof formSchema>
 
-// // Define the type for the API response
-// interface SearchResult {
-//   // Add the expected properties of your API response here
-//   // For example:
-//   id: string
-//   name: string
-//   // ... other properties
-//   kode?: string
-//   namaInvestasi?: string
-//   komoditas?: string
-//   nilaiProyekTahunBerjalan?: number
-//   no_pk?: string
-// }
+// Define the type for the API response
+interface SearchResult {
+  // Add the expected properties of your API response here
+  // For example:
+  id: string
+  name: string
+  // ... other properties
+  kode?: string
+  namaInvestasi?: string
+  komoditas?: string
+  nilaiProyekTahunBerjalan?: number
+  no_pk?: string
+}
 
-// interface SearchResultSPPBJ {
-//   // Add the expected properties of your API response here
-//   id: string
-//   name: string
-//   // ... other properties
-//   no_pk?: string
-//   judul_pk?: string
-//   total_nilai?: number
-//   value: number
-//   tgl_create_pk?: string
-//   tgl_submit_pk_ke_hps?: string
-//   nilai_hps?: number
-//   nama_panitia_hps?: string
-//   tgl_submit_ke_pengadaan?: string
-//   panitia_pelaksana_pengadaan?: string
-//   status?: string
-//   pengadaan_bersama?: string
-//   sumber_dana?: string
-//   sub_investasi?: string
-//   peruntukan?: string
-//   tahun_anggaran?: string
-//   user_id?: string
-//   createdAt?: string
-//   updatedAt?: string
-//   no_sppbj?: string
-//   rpc_code?: string
-// }
+interface SearchResultSPPBJ {
+  // Add the expected properties of your API response here
+  id: string
+  name: string
+  // ... other properties
+  no_pk?: string
+  judul_pk?: string
+  total_nilai?: number
+  value: number
+  tgl_create_pk?: string
+  tgl_submit_pk_ke_hps?: string
+  nilai_hps?: number
+  nama_panitia_hps?: string
+  tgl_submit_ke_pengadaan?: string
+  panitia_pelaksana_pengadaan?: string
+  status?: string
+  pengadaan_bersama?: string
+  sumber_dana?: string
+  sub_investasi?: string
+  peruntukan?: string
+  tahun_anggaran?: string
+  user_id?: string
+  createdAt?: string
+  updatedAt?: string
+  no_sppbj?: string
+  rpc_code?: string
+}
 
 export default function SearchKodeInvestasi() {
   const theme = cookie.get('theme')
-  // const [result, setResult] = useState<SearchResult[]>([])
-  // const [resultSPPBJ, setResultSPPBJ] = useState<SearchResultSPPBJ[]>([])
-  // const [searchTerm, setSearchTerm] = useState('')
-  // const [selectedPKs, setSelectedPKs] = useState<string[]>([])
-  // const [totalNilaiProyek, setTotalNilaiProyek] = useState(0)
-  // const [nilaiProyek, setNilaiProyek] = useState([] as number[])
-  // const [isSubmittingForm, setIsSubmitting] = useState(false)
-  // const [pkDates, setPkDates] = useState<{
-  //   [key: string]: { startDate: string; endDate: string }
-  // }>({})
-  // const [pkWeekOptions, setPkWeekOptions] = useState<{
-  //   [key: string]: { value: string; label: string }[]
-  // }>({})
-  // const [weekPercentages, setWeekPercentages] = useState<{
-  //   [key: string]: { [key: string]: number }
-  // }>({})
-  // const [isFormValid, setIsFormValid] = useState(false)
+  const [result, setResult] = useState<SearchResult[]>([])
+  const [resultSPPBJ, setResultSPPBJ] = useState<SearchResultSPPBJ[]>([])
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedPKs, setSelectedPKs] = useState<string[]>([])
+  const [totalNilaiProyek, setTotalNilaiProyek] = useState(0)
+  const [nilaiProyek, setNilaiProyek] = useState([] as number[])
+  const [isSubmittingForm, setIsSubmitting] = useState(false)
+  const [pkDates, setPkDates] = useState<{
+    [key: string]: { startDate: string; endDate: string }
+  }>({})
+  const [pkWeekOptions, setPkWeekOptions] = useState<{
+    [key: string]: { value: string; label: string }[]
+  }>({})
+  const [weekPercentages, setWeekPercentages] = useState<{
+    [key: string]: { [key: string]: number }
+  }>({})
+  const [isFormValid, setIsFormValid] = useState(false)
 
-  // const getWeeksBetweenDates = (start: Date, end: Date) => {
-  //   const weeks = []
-  //   let currentDate = new Date(start)
+  const getWeeksBetweenDates = (start: Date, end: Date) => {
+    const weeks = []
+    let currentDate = new Date(start)
 
-  //   // Special case: Include the 1st day of the month in W1, even if it's not Saturday
-  //   if (currentDate.getDate() === 1) {
-  //     const weekStart = new Date(currentDate)
-  //     let weekEnd = new Date(currentDate)
-  //     weekEnd.setDate(weekEnd.getDate() + (5 - currentDate.getDay())) // Extend to Friday
-  //     if (weekEnd.getMonth() !== weekStart.getMonth()) {
-  //       weekEnd = new Date(weekEnd.getFullYear(), weekEnd.getMonth(), 0)
-  //     }
-  //     weeks.push({
-  //       start: weekStart,
-  //       end: weekEnd,
-  //     })
-  //     currentDate.setDate(weekEnd.getDate() + 1) // Move to the next day
-  //   }
+    // Special case: Include the 1st day of the month in W1, even if it's not Saturday
+    if (currentDate.getDate() === 1) {
+      const weekStart = new Date(currentDate)
+      let weekEnd = new Date(currentDate)
+      weekEnd.setDate(weekEnd.getDate() + (5 - currentDate.getDay())) // Extend to Friday
+      if (weekEnd.getMonth() !== weekStart.getMonth()) {
+        weekEnd = new Date(weekEnd.getFullYear(), weekEnd.getMonth(), 0)
+      }
+      weeks.push({
+        start: weekStart,
+        end: weekEnd,
+      })
+      currentDate.setDate(weekEnd.getDate() + 1) // Move to the next day
+    }
 
-  //   // Adjust start date to Saturday if it's not already
-  //   if (currentDate.getDay() !== 6) {
-  //     currentDate.setDate(currentDate.getDate() + (6 - currentDate.getDay()))
-  //   }
+    // Adjust start date to Saturday if it's not already
+    if (currentDate.getDay() !== 6) {
+      currentDate.setDate(currentDate.getDate() + (6 - currentDate.getDay()))
+    }
 
-  //   while (currentDate <= end) {
-  //     const weekStart = new Date(currentDate)
-  //     let weekEnd = new Date(currentDate)
-  //     weekEnd.setDate(weekEnd.getDate() + 6) // Friday
+    while (currentDate <= end) {
+      const weekStart = new Date(currentDate)
+      let weekEnd = new Date(currentDate)
+      weekEnd.setDate(weekEnd.getDate() + 6) // Friday
 
-  //     // If week end is in the next month, set it to the last day of the current month
-  //     if (weekEnd.getMonth() !== weekStart.getMonth()) {
-  //       weekEnd = new Date(weekEnd.getFullYear(), weekEnd.getMonth(), 0)
-  //     }
+      // If week end is in the next month, set it to the last day of the current month
+      if (weekEnd.getMonth() !== weekStart.getMonth()) {
+        weekEnd = new Date(weekEnd.getFullYear(), weekEnd.getMonth(), 0)
+      }
 
-  //     // Ensure week end doesn't exceed the overall end date
-  //     if (weekEnd > end) {
-  //       weekEnd = new Date(end)
-  //     }
+      // Ensure week end doesn't exceed the overall end date
+      if (weekEnd > end) {
+        weekEnd = new Date(end)
+      }
 
-  //     weeks.push({
-  //       start: weekStart,
-  //       end: weekEnd,
-  //     })
+      weeks.push({
+        start: weekStart,
+        end: weekEnd,
+      })
 
-  //     // Move to the next week
-  //     currentDate.setDate(currentDate.getDate() + 7)
+      // Move to the next week
+      currentDate.setDate(currentDate.getDate() + 7)
 
-  //     // If we're in a new month, reset to the 1st of that month
-  //     if (currentDate.getMonth() !== weekStart.getMonth()) {
-  //       currentDate = new Date(
-  //         currentDate.getFullYear(),
-  //         currentDate.getMonth(),
-  //         1
-  //       )
-  //       // Adjust to Saturday if the 1st is not a Saturday
-  //       if (currentDate.getDay() !== 6) {
-  //         currentDate.setDate(
-  //           currentDate.getDate() + (6 - currentDate.getDay())
-  //         )
-  //       }
-  //     }
-  //   }
+      // If we're in a new month, reset to the 1st of that month
+      if (currentDate.getMonth() !== weekStart.getMonth()) {
+        currentDate = new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth(),
+          1
+        )
+        // Adjust to Saturday if the 1st is not a Saturday
+        if (currentDate.getDay() !== 6) {
+          currentDate.setDate(
+            currentDate.getDate() + (6 - currentDate.getDay())
+          )
+        }
+      }
+    }
 
-  //   return weeks
-  // }
+    return weeks
+  }
 
-  // // Format date as DD/MM/YYYY
-  // const formatDate = (date: Date) => {
-  //   return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`
-  // }
+  // Format date as DD/MM/YYYY
+  const formatDate = (date: Date) => {
+    return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`
+  }
 
-  // useEffect(() => {
-  //   Object.entries(pkDates).forEach(([pk, dates]) => {
-  //     if (dates.startDate && dates.endDate) {
-  //       const start = new Date(dates.startDate)
-  //       const end = new Date(dates.endDate)
+  useEffect(() => {
+    Object.entries(pkDates).forEach(([pk, dates]) => {
+      if (dates.startDate && dates.endDate) {
+        const start = new Date(dates.startDate)
+        const end = new Date(dates.endDate)
 
-  //       if (start <= end) {
-  //         const options = getWeeksBetweenDates(start, end)
-  //         setPkWeekOptions((prev) => ({
-  //           ...prev,
-  //           [pk]: options.map((week, index) => ({
-  //             value: `w${index + 1}`,
-  //             label: `W${index + 1}: ${formatDate(week.start)} - ${formatDate(week.end)}`,
-  //           })),
-  //         }))
-  //       } else {
-  //         setPkWeekOptions((prev) => ({ ...prev, [pk]: [] }))
-  //       }
-  //     }
-  //   })
-  // }, [pkDates])
+        if (start <= end) {
+          const options = getWeeksBetweenDates(start, end)
+          setPkWeekOptions((prev) => ({
+            ...prev,
+            [pk]: options.map((week, index) => ({
+              value: `w${index + 1}`,
+              label: `W${index + 1}: ${formatDate(week.start)} - ${formatDate(week.end)}`,
+            })),
+          }))
+        } else {
+          setPkWeekOptions((prev) => ({ ...prev, [pk]: [] }))
+        }
+      }
+    })
+  }, [pkDates])
 
-  // const form = useForm<FormValues>({
-  //   resolver: zodResolver(formSchema),
-  //   defaultValues: {
-  //     kode: '',
-  //   },
-  // })
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      kode: '',
+    },
+  })
 
-  // const { isSubmitting } = form.formState
+  const { isSubmitting } = form.formState
 
-  // const formatRupiah = (value: number) => {
-  //   if (!value) return 'Rp. 0' // Jika nilai kosong atau null
-  //   const numericValue = typeof value === 'number' ? value : parseFloat(value)
-  //   if (isNaN(numericValue)) return 'Rp. 0' // Jika nilai bukan angka
-  //   return `Rp. ${numericValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`
-  // }
+  const formatRupiah = (value: number) => {
+    if (!value) return 'Rp. 0' // Jika nilai kosong atau null
+    const numericValue = typeof value === 'number' ? value : parseFloat(value)
+    if (isNaN(numericValue)) return 'Rp. 0' // Jika nilai bukan angka
+    return `Rp. ${numericValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`
+  }
 
-  // const user = cookies.get('user')
-  // const rpc = user ? JSON.parse(user).rpc : ''
+  const user = cookies.get('user')
+  const rpc = user ? JSON.parse(user).rpc : ''
 
-  // const handleSearch = async (kode: string) => {
-  //   try {
-  //     const apiUrl = import.meta.env.VITE_API_MONICA
-  //     const response = await axios.post(
-  //       `${apiUrl}/monica/getAllRecordsAwalWhereKodeInvestasi`,
-  //       {
-  //         kode: kode,
-  //         regionalEditMapped: rpc,
-  //       }
-  //     )
-  //     setResult(response.data)
-  //     if (response.data.length === 0) {
-  //       toast.error('Data Investasi di Regional Anda tidak ditemukan!')
-  //     } else {
-  //       toast.success('Data ditemukan!')
-  //       toast.loading('Memuat data No PK Terbit SPPBJ')
+  const handleSearch = async (kode: string) => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_MONICA
+      const response = await axios.post(
+        `${apiUrl}/monica/getAllRecordsAwalWhereKodeInvestasi`,
+        {
+          kode: kode,
+          regionalEditMapped: rpc,
+        }
+      )
+      setResult(response.data)
+      if (response.data.length === 0) {
+        toast.error('Data Investasi di Regional Anda tidak ditemukan!')
+      } else {
+        toast.success('Data ditemukan!')
+        toast.loading('Memuat data No PK Terbit SPPBJ')
 
-  //       try {
-  //         const apiUrl = import.meta.env.VITE_API_MONICA
-  //         const response = await axios.post(
-  //           `${apiUrl}/monica/getAllRecordsWhereVwSPPBJ`,
-  //           {
-  //             regionalEditMapped: rpc,
-  //           }
-  //         )
-  //         setResultSPPBJ(response.data)
-  //         if (response.data.length === 0) {
-  //           toast.error('Data Investasi di Regional Anda tidak ditemukan!')
-  //         } else {
-  //           toast.success('Data No PK berhasil ditampilkan!')
-  //         }
-  //       } catch (error) {
-  //         if (axios.isAxiosError(error)) {
-  //           toast.error(error.response?.data?.message || 'Terjadi kesalahan!')
-  //         } else {
-  //           toast.error('Terjadi kesalahan yang tidak diketahui!')
-  //         }
-  //       }
-  //     }
-  //   } catch (error) {
-  //     if (axios.isAxiosError(error)) {
-  //       toast.error(
-  //         error.response?.data?.message || 'Terjadi kesalahan!' + error
-  //       )
-  //     } else {
-  //       toast.error('Terjadi kesalahan yang tidak diketahui!')
-  //     }
-  //   }
-  // }
+        try {
+          const apiUrl = import.meta.env.VITE_API_MONICA
+          const response = await axios.post(
+            `${apiUrl}/monica/getAllRecordsWhereVwSPPBJ`,
+            {
+              regionalEditMapped: rpc,
+            }
+          )
+          setResultSPPBJ(response.data)
+          if (response.data.length === 0) {
+            toast.error('Data Investasi di Regional Anda tidak ditemukan!')
+          } else {
+            toast.success('Data No PK berhasil ditampilkan!')
+          }
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            toast.error(error.response?.data?.message || 'Terjadi kesalahan!')
+          } else {
+            toast.error('Terjadi kesalahan yang tidak diketahui!')
+          }
+        }
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || 'Terjadi kesalahan!' + error
+        )
+      } else {
+        toast.error('Terjadi kesalahan yang tidak diketahui!')
+      }
+    }
+  }
 
-  // const handleSearchSPPBJ = (term: string) => {
-  //   setSearchTerm(term)
-  // }
+  const handleSearchSPPBJ = (term: string) => {
+    setSearchTerm(term)
+  }
 
-  // const handleReset = () => {
-  //   setSearchTerm('')
-  //   form.reset()
-  //   setSelectedPKs([])
-  //   setTotalNilaiProyek(0)
-  //   setPkDates({})
-  //   setPkWeekOptions({})
-  //   setWeekPercentages({})
-  //   setIsFormValid(false)
-  //   setResultSPPBJ([])
-  //   setNilaiProyek([])
-  //   setTotalNilaiProyek(0)
-  //   setResult([])
-  // }
+  const handleReset = () => {
+    setSearchTerm('')
+    form.reset()
+    setSelectedPKs([])
+    setTotalNilaiProyek(0)
+    setPkDates({})
+    setPkWeekOptions({})
+    setWeekPercentages({})
+    setIsFormValid(false)
+    setResultSPPBJ([])
+    setNilaiProyek([])
+    setTotalNilaiProyek(0)
+    setResult([])
+  }
 
-  // const handleCheckboxChange = (
-  //   event: React.ChangeEvent<HTMLInputElement>,
-  //   item: SearchResult
-  // ) => {
-  //   const pk = item.no_pk
+  const handleCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    item: SearchResult
+  ) => {
+    const pk = item.no_pk
 
-  //   if (event.target.checked) {
-  //     setSelectedPKs([...selectedPKs, pk!])
-  //     setPkDates((prev) => ({ ...prev, [pk!]: { startDate: '', endDate: '' } }))
-  //     const res = resultSPPBJ.find((resItem) => resItem.no_pk === pk)
-  //     if (res) {
-  //       const value = res.value || 0 // Default to 0 if value is null or undefined
-  //       setNilaiProyek((prev) => [...prev, value])
-  //     }
-  //   } else {
-  //     setSelectedPKs(selectedPKs.filter((selectedPk) => selectedPk !== pk))
-  //     setPkDates((prev) => {
-  //       const newPkDates = { ...prev }
-  //       delete newPkDates[pk!]
-  //       return newPkDates
-  //     })
-  //     setPkWeekOptions((prev) => {
-  //       const newPkWeekOptions = { ...prev }
-  //       delete newPkWeekOptions[pk!]
-  //       return newPkWeekOptions
-  //     })
-  //     setWeekPercentages((prev) => {
-  //       const newWeekPercentages = { ...prev }
-  //       delete newWeekPercentages[pk!]
-  //       return newWeekPercentages
-  //     })
-  //     const res = resultSPPBJ.find((resItem) => resItem.no_pk === pk)
-  //     if (res) {
-  //       const value = res.value || 0 // Default to 0 if value is null or undefined
-  //       setNilaiProyek((prev) => prev.filter((v) => v !== value))
-  //     }
-  //   }
-  // }
+    if (event.target.checked) {
+      setSelectedPKs([...selectedPKs, pk!])
+      setPkDates((prev) => ({ ...prev, [pk!]: { startDate: '', endDate: '' } }))
+      const res = resultSPPBJ.find((resItem) => resItem.no_pk === pk)
+      if (res) {
+        const value = res.value || 0 // Default to 0 if value is null or undefined
+        setNilaiProyek((prev) => [...prev, value])
+      }
+    } else {
+      setSelectedPKs(selectedPKs.filter((selectedPk) => selectedPk !== pk))
+      setPkDates((prev) => {
+        const newPkDates = { ...prev }
+        delete newPkDates[pk!]
+        return newPkDates
+      })
+      setPkWeekOptions((prev) => {
+        const newPkWeekOptions = { ...prev }
+        delete newPkWeekOptions[pk!]
+        return newPkWeekOptions
+      })
+      setWeekPercentages((prev) => {
+        const newWeekPercentages = { ...prev }
+        delete newWeekPercentages[pk!]
+        return newWeekPercentages
+      })
+      const res = resultSPPBJ.find((resItem) => resItem.no_pk === pk)
+      if (res) {
+        const value = res.value || 0 // Default to 0 if value is null or undefined
+        setNilaiProyek((prev) => prev.filter((v) => v !== value))
+      }
+    }
+  }
 
-  // const handleDateChange = (
-  //   pk: string,
-  //   dateType: 'startDate' | 'endDate',
-  //   value: string
-  // ) => {
-  //   setPkDates((prev) => ({
-  //     ...prev,
-  //     [pk]: { ...prev[pk], [dateType]: value },
-  //   }))
-  // }
+  const handleDateChange = (
+    pk: string,
+    dateType: 'startDate' | 'endDate',
+    value: string
+  ) => {
+    setPkDates((prev) => ({
+      ...prev,
+      [pk]: { ...prev[pk], [dateType]: value },
+    }))
+  }
 
-  // const handlePercentageChange = (pk: string, week: string, value: string) => {
-  //   const numValue = parseInt(value, 10)
-  //   if (!isNaN(numValue) && numValue >= 0 && numValue <= 100) {
-  //     setWeekPercentages((prev) => ({
-  //       ...prev,
-  //       [pk]: {
-  //         ...prev[pk],
-  //         [week]: numValue,
-  //       },
-  //     }))
-  //   } else {
-  //     // If the input is invalid, set it to 0 or remove it
-  //     setWeekPercentages((prev) => ({
-  //       ...prev,
-  //       [pk]: {
-  //         ...prev[pk],
-  //         [week]: 0,
-  //       },
-  //     }))
-  //   }
-  // }
+  const handlePercentageChange = (pk: string, week: string, value: string) => {
+    const numValue = parseInt(value, 10)
+    if (!isNaN(numValue) && numValue >= 0 && numValue <= 100) {
+      setWeekPercentages((prev) => ({
+        ...prev,
+        [pk]: {
+          ...prev[pk],
+          [week]: numValue,
+        },
+      }))
+    } else {
+      // If the input is invalid, set it to 0 or remove it
+      setWeekPercentages((prev) => ({
+        ...prev,
+        [pk]: {
+          ...prev[pk],
+          [week]: 0,
+        },
+      }))
+    }
+  }
 
-  // const handleAllSubmit = async () => {
-  //   const data = {
-  //     selectedPKs,
-  //     pkDates,
-  //     weekPercentages,
-  //     rpc,
-  //   }
+  const handleAllSubmit = async () => {
+    const data = {
+      selectedPKs,
+      pkDates,
+      weekPercentages,
+      rpc,
+    }
 
-  //   console.log(data)
-  // }
+    console.log(data)
+  }
 
-  // useEffect(() => {
-  //   const total = nilaiProyek.reduce((sum, current) => sum + Number(current), 0)
-  //   setTotalNilaiProyek(total)
-  //   const totalNilaiProyekBerjalan = result.reduce(
-  //     (sum, item: any) => sum + (item.nilaiProyekTahunBerjalan || 0),
-  //     0
-  //   )
-  //   console.log(totalNilaiProyekBerjalan)
-  //   if (total > totalNilaiProyekBerjalan) {
-  //     toast.error('Total Nilai Proyek melebihi Nilai Proyek Tahun Berjalan!')
-  //     setIsSubmitting(false)
-  //   } else if (total === 0) {
-  //     setIsSubmitting(false)
-  //   } else {
-  //     setIsSubmitting(true)
-  //   }
+  useEffect(() => {
+    const total = nilaiProyek.reduce((sum, current) => sum + Number(current), 0)
+    setTotalNilaiProyek(total)
+    const totalNilaiProyekBerjalan = result.reduce(
+      (sum, item: any) => sum + (item.nilaiProyekTahunBerjalan || 0),
+      0
+    )
+    console.log(totalNilaiProyekBerjalan)
+    if (total > totalNilaiProyekBerjalan) {
+      toast.error('Total Nilai Proyek melebihi Nilai Proyek Tahun Berjalan!')
+      setIsSubmitting(false)
+    } else if (total === 0) {
+      setIsSubmitting(false)
+    } else {
+      setIsSubmitting(true)
+    }
 
-  //   // Validate form
-  //   let isValid = true
+    // Validate form
+    let isValid = true
 
-  //   // Check if any PK is selected
-  //   if (selectedPKs.length === 0) {
-  //     isValid = false
-  //   }
+    // Check if any PK is selected
+    if (selectedPKs.length === 0) {
+      isValid = false
+    }
 
-  //   // Check if all selected PKs have start and end dates
-  //   selectedPKs.forEach((pk) => {
-  //     if (!pkDates[pk] || !pkDates[pk].startDate || !pkDates[pk].endDate) {
-  //       isValid = false
-  //     }
-  //   })
+    // Check if all selected PKs have start and end dates
+    selectedPKs.forEach((pk) => {
+      if (!pkDates[pk] || !pkDates[pk].startDate || !pkDates[pk].endDate) {
+        isValid = false
+      }
+    })
 
-  //   // Check if all weekly percentages are filled and sum up to 100%
-  //   Object.entries(weekPercentages).forEach(([pk, percentages]) => {
-  //     const totalPercentage = Object.values(percentages).reduce(
-  //       (sum, val) => sum + val,
-  //       0
-  //     )
-  //     if (
-  //       totalPercentage !== 100 ||
-  //       Object.keys(percentages).length !== pkWeekOptions[pk]?.length
-  //     ) {
-  //       isValid = false
-  //     }
-  //   })
+    // Check if all weekly percentages are filled and sum up to 100%
+    Object.entries(weekPercentages).forEach(([pk, percentages]) => {
+      const totalPercentage = Object.values(percentages).reduce(
+        (sum, val) => sum + val,
+        0
+      )
+      if (
+        totalPercentage !== 100 ||
+        Object.keys(percentages).length !== pkWeekOptions[pk]?.length
+      ) {
+        isValid = false
+      }
+    })
 
-  //   setIsFormValid(isValid)
-  // }, [
-  //   nilaiProyek,
-  //   result,
-  //   weekPercentages,
-  //   pkWeekOptions,
-  //   selectedPKs,
-  //   pkDates,
-  // ])
+    setIsFormValid(isValid)
+  }, [
+    nilaiProyek,
+    result,
+    weekPercentages,
+    pkWeekOptions,
+    selectedPKs,
+    pkDates,
+  ])
 
   return (
     <Layout>
@@ -428,7 +428,7 @@ export default function SearchKodeInvestasi() {
         </div>
       </Layout.Header>
       <Layout.Body>
-        {/* <Card>
+        <Card>
           <CardHeader>
             <CardTitle>Input Paket Pekerjaan</CardTitle>
             <CardDescription>
@@ -719,7 +719,7 @@ export default function SearchKodeInvestasi() {
               </div>
             </div>
           </CardContent>
-        </Card> */}
+        </Card>
       </Layout.Body>
     </Layout>
   )
