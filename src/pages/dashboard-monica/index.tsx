@@ -21,6 +21,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ChevronDown, Filter, TrendingUp, Package, Building } from "lucide-react"
 import { DataTable } from "./components/data-table"
 import { DataTablePekerjaan } from "./components/data-table-pekerjaan"
+import BarMonitoring from "./components/bar-monitoring"
 
 // Mock cookie for demo
 const user = { account_type: "superadmin" }
@@ -54,6 +55,13 @@ export default function Tasks() {
   const [p_hps, setP_hps] = useState(0)
   const [p_pengadaan, setP_pengadaan] = useState(0)
   const [p_sppbj, setP_sppbj] = useState(0)
+
+  // State untuk bar monitoring
+  const [pbj, setPbj] = useState<any[]>([])
+  const [penyusunanDokumen, setPenyusunanDokumen] = useState<any[]>([])
+  const [sppbj, setSppbj] = useState<any[]>([])
+  const [hps, setHps] = useState<any[]>([])
+  const [reg, setReg] = useState<any[]>([])
 
   // State untuk filters dan selections
   const [selectedValueRekBesar, setSelectedValueRekBesar] = useState("3. Mesin & Instalasi")
@@ -232,10 +240,42 @@ export default function Tasks() {
     let countSixty = 0
     let countNinety = 0
     let countHundred = 0
+    let dataSppbj: any[] = [];
+    let dataHps: any[] = [];
+    let dataUnit: any[] = [];
+    let dataTekpol: any[] = [];
+    let dataPengadaan: any[] = [];
+    let dataPbj: any[] = [];
+    let dataPenyusunanDokumen: any[] = [];
+    let dataReg: any[] = [];
+
+    filteredData.forEach((item: any[]) => {
+      
+      if (item[24] !== undefined && !dataReg.includes(item[24])) {
+        dataReg.push(item[24])
+      }
+
+      if (item[14] === "Penetapan HPS") {
+        dataHps.push(item);
+      } else if (item[14] === "Proses Pengerjaan (sudah Terbit Kontrak)" || item[14] === "Pekerjaan Selesai 100%") {
+        dataSppbj.push(item);
+      } else if (item[14] === "Belum Diajukan" || item[14] === "Pembuatan Purchase Requisition (PR) SA") {
+        dataUnit.push(item)
+      } else if (item[14] === "Persetujuan Anggaran" || item[14] === "Pembuatan Paket Pekerjaan (PK) IPS") {
+        dataTekpol.push(item)
+      } else if (item[14] === "Proses Pengadaan") {
+        dataPengadaan.push(item)
+      }
+    });
+    dataPbj = [...dataHps, ...dataPengadaan];
+    dataPenyusunanDokumen = [...dataUnit, ...dataTekpol];
+    // console.log("reg", reg)
 
     filteredData.forEach((item: any[]) => {
       const status = item[14] // Status Paket Pekerjaan
       const progressStr = item[19] // Progress Fisik (%)
+      // const reg = item[24]
+      // console.log(reg)
       const progress = progressStr ? Number.parseInt(progressStr.toString().replace("%", "")) || 0 : 0
 
       // Kategorisasi berdasarkan status (column 14)
@@ -269,6 +309,13 @@ export default function Tasks() {
     setCountSixty(countSixty)
     setCountNinety(countNinety)
     setCountHundred(countHundred)
+
+    setPbj(dataPbj)
+    setPenyusunanDokumen(dataPenyusunanDokumen)
+    setSppbj(dataSppbj)
+    setHps(dataHps)
+    setReg(dataReg)
+
   }
 
   // Fetch functions
@@ -316,8 +363,8 @@ export default function Tasks() {
 
       const filteredData = result.slice(11) // Skip header rows
 
-      console.log("Filtered Data:", filteredData)
-
+      // console.log("Filtered Data:", filteredData)
+      // console.log(filteredData)
       setData(filteredData)
 
       // Initial calculation dengan filter default
@@ -467,17 +514,16 @@ export default function Tasks() {
               <FcDoughnutChart size={48} className="animate-spin-slow" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white tracking-tight">Dashboard Monica</h1>
+              <h1 className="text-3xl font-bold text-white tracking-tight">Dashboard Monica</h1>
               <p className="text-blue-100 mt-1">Monitoring Progress Investasi Off Farm</p>
             </div>
           </div>
           <div className="flex space-x-2">
-            <img src="/ptpn4.png" alt="Monica Logo" className="h-12 w-12 rounded-full" />
           </div>
         </div>
 
         {/* Enhanced Filter Section */}
-        <Card className="mb-6 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-900 dark:to-slate-950 shadow-lg">
+        <Card className="mb-6 border-1 border-dashed border-gray-700 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Filter className="h-5 w-5" />
@@ -700,9 +746,18 @@ export default function Tasks() {
           </Card>
         )}
 
+        {/* Bar Monitoring */}
+        <BarMonitoring   
+        pbj={pbj}
+        penyusunanDokumen={penyusunanDokumen}
+        sppbj={sppbj}
+        hps={hps}
+        reg={reg}
+        />
+
         {/* Main Tabs */}
         {progressmasters === "" && (
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 mt-4">
             <div className="w-full overflow-x-auto">
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="keseluruhan" className="flex items-center gap-2">

@@ -1,137 +1,161 @@
 import { useEffect, useState } from 'react'
 import ReactApexChart from 'react-apexcharts'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-// Define the data structure
-interface DataItem {
-  id: number
-  jenis: string
-  kategori: 'Penyusunan Dokumen' | 'HPS' | 'PBJ' | 'SPPRJ'
-}
+type BarMonitoringProps = {
+  pbj: any[];
+  penyusunanDokumen: any[];
+  sppbj: any[];
+  hps: any[];
+  reg: any[];
+};
 
-export default function BarMonitoring() {
+export default function BarMonitoring({
+  pbj = [],
+  penyusunanDokumen = [],
+  sppbj = [],
+  hps = [],
+  reg = [],
+}: BarMonitoringProps) {
   const [mounted, setMounted] = useState(false)
-
+  console.log(sppbj)
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Create the structured dataset
-  const rawData: DataItem[] = [
-    // Penyusunan Dokumen (20 items)
-    { id: 1, jenis: 'RPC1 (ex N3)', kategori: 'Penyusunan Dokumen' },
-    { id: 2, jenis: 'RPC1 (ex N3)', kategori: 'Penyusunan Dokumen' },
-    { id: 3, jenis: 'RPC1 (ex N3)', kategori: 'Penyusunan Dokumen' },
-    { id: 4, jenis: 'RPC2 (ex N4)', kategori: 'Penyusunan Dokumen' },
-    { id: 5, jenis: 'RPC2 (ex N4)', kategori: 'Penyusunan Dokumen' },
-    { id: 6, jenis: 'RPC3 (ex N5)', kategori: 'Penyusunan Dokumen' },
-    { id: 7, jenis: 'RPC4 (ex N6)', kategori: 'Penyusunan Dokumen' },
-    { id: 8, jenis: 'RPC4 (ex N6)', kategori: 'Penyusunan Dokumen' },
-    { id: 9, jenis: 'RPC5', kategori: 'Penyusunan Dokumen' },
-    { id: 10, jenis: 'RPC5', kategori: 'Penyusunan Dokumen' },
-    { id: 11, jenis: 'RPC5', kategori: 'Penyusunan Dokumen' },
-    { id: 12, jenis: 'RPC 1 (Ex Sei Meranti)', kategori: 'Penyusunan Dokumen' },
-    { id: 13, jenis: 'RPC 1 (Ex Djaba)', kategori: 'Penyusunan Dokumen' },
-    { id: 14, jenis: 'RPC 1 (Ex Datim)', kategori: 'Penyusunan Dokumen' },
-    { id: 15, jenis: 'RPC 2 (Ex PKS N2)', kategori: 'Penyusunan Dokumen' },
-    { id: 16, jenis: 'RPC 2 (Ex Liwu)', kategori: 'Penyusunan Dokumen' },
-    { id: 17, jenis: 'RPC 6 (Ex N11)', kategori: 'Penyusunan Dokumen' },
-    { id: 18, jenis: 'RPC 7 (ex N7)', kategori: 'Penyusunan Dokumen' },
-    { id: 19, jenis: 'RPC 7 (ex N7)', kategori: 'Penyusunan Dokumen' },
-    { id: 20, jenis: 'PALMCO', kategori: 'Penyusunan Dokumen' },
-
-    // HPS (15 items)
-    { id: 21, jenis: 'RPC1 (ex N3)', kategori: 'HPS' },
-    { id: 22, jenis: 'RPC1 (ex N3)', kategori: 'HPS' },
-    { id: 23, jenis: 'RPC2 (ex N4)', kategori: 'HPS' },
-    { id: 24, jenis: 'RPC2 (ex N4)', kategori: 'HPS' },
-    { id: 25, jenis: 'RPC2 (ex N4)', kategori: 'HPS' },
-    { id: 26, jenis: 'RPC3 (ex N5)', kategori: 'HPS' },
-    { id: 27, jenis: 'RPC4 (ex N6)', kategori: 'HPS' },
-    { id: 28, jenis: 'RPC4 (ex N6)', kategori: 'HPS' },
-    { id: 29, jenis: 'RPC5', kategori: 'HPS' },
-    { id: 30, jenis: 'RPC 1 (Ex Sei Meranti)', kategori: 'HPS' },
-    { id: 31, jenis: 'RPC 1 (Ex Datim)', kategori: 'HPS' },
-    { id: 32, jenis: 'RPC 2 (Ex PKS N2)', kategori: 'HPS' },
-    { id: 33, jenis: 'RPC 2 (Ex Liwu)', kategori: 'HPS' },
-    { id: 34, jenis: 'RPC 6 (Ex N11)', kategori: 'HPS' },
-    { id: 35, jenis: 'PALMCO', kategori: 'HPS' },
-
-    // PBJ (18 items)
-    { id: 36, jenis: 'RPC1 (ex N3)', kategori: 'PBJ' },
-    { id: 37, jenis: 'RPC1 (ex N3)', kategori: 'PBJ' },
-    { id: 38, jenis: 'RPC2 (ex N4)', kategori: 'PBJ' },
-    { id: 39, jenis: 'RPC2 (ex N4)', kategori: 'PBJ' },
-    { id: 40, jenis: 'RPC2 (ex N4)', kategori: 'PBJ' },
-    { id: 41, jenis: 'RPC3 (ex N5)', kategori: 'PBJ' },
-    { id: 42, jenis: 'RPC3 (ex N5)', kategori: 'PBJ' },
-    { id: 43, jenis: 'RPC4 (ex N6)', kategori: 'PBJ' },
-    { id: 44, jenis: 'RPC5', kategori: 'PBJ' },
-    { id: 45, jenis: 'RPC5', kategori: 'PBJ' },
-    { id: 46, jenis: 'RPC 1 (Ex Sei Meranti)', kategori: 'PBJ' },
-    { id: 47, jenis: 'RPC 1 (Ex Sei Meranti)', kategori: 'PBJ' },
-    { id: 48, jenis: 'RPC 1 (Ex Djaba)', kategori: 'PBJ' },
-    { id: 49, jenis: 'RPC 1 (Ex Datim)', kategori: 'PBJ' },
-    { id: 50, jenis: 'RPC 2 (Ex PKS N2)', kategori: 'PBJ' },
-    { id: 51, jenis: 'RPC 2 (Ex Liwu)', kategori: 'PBJ' },
-    { id: 52, jenis: 'RPC 6 (Ex N11)', kategori: 'PBJ' },
-    { id: 53, jenis: 'PALMCO', kategori: 'PBJ' },
-
-    // SPPRJ (17 items)
-    { id: 54, jenis: 'RPC1 (ex N3)', kategori: 'SPPRJ' },
-    { id: 55, jenis: 'RPC1 (ex N3)', kategori: 'SPPRJ' },
-    { id: 56, jenis: 'RPC1 (ex N3)', kategori: 'SPPRJ' },
-    { id: 57, jenis: 'RPC2 (ex N4)', kategori: 'SPPRJ' },
-    { id: 58, jenis: 'RPC2 (ex N4)', kategori: 'SPPRJ' },
-    { id: 59, jenis: 'RPC2 (ex N4)', kategori: 'SPPRJ' },
-    { id: 60, jenis: 'RPC3 (ex N5)', kategori: 'SPPRJ' },
-    { id: 61, jenis: 'RPC3 (ex N5)', kategori: 'SPPRJ' },
-    { id: 62, jenis: 'RPC3 (ex N5)', kategori: 'SPPRJ' },
-    { id: 63, jenis: 'RPC4 (ex N6)', kategori: 'SPPRJ' },
-    { id: 64, jenis: 'RPC4 (ex N6)', kategori: 'SPPRJ' },
-    { id: 65, jenis: 'RPC5', kategori: 'SPPRJ' },
-    { id: 66, jenis: 'RPC 1 (Ex Sei Meranti)', kategori: 'SPPRJ' },
-    { id: 67, jenis: 'RPC 1 (Ex Djaba)', kategori: 'SPPRJ' },
-    { id: 68, jenis: 'RPC 2 (Ex PKS N2)', kategori: 'SPPRJ' },
-    { id: 69, jenis: 'RPC 6 (Ex N11)', kategori: 'SPPRJ' },
-    { id: 70, jenis: 'PALMCO', kategori: 'SPPRJ' },
-  ]
-
-  // Process the data for the chart
+  // Process the data for the chart using actual parameter data
   const processDataForChart = () => {
-    // Get unique jenis values
-    const uniqueJenis = Array.from(new Set(rawData.map((item) => item.jenis)))
+    // Safety checks - return empty data if reg is empty or undefined
+    if (!reg || reg.length === 0) {
+      return {
+        series: [
+          { name: "SPPBJ", data: [] },
+          { name: "PBJ", data: [] },
+          { name: "HPS", data: [] },
+          { name: "Penyusunan Dokumen", data: [] },
+        ],
+        categories: [],
+        totals: [],
+        countsByJenisAndKategori: {},
+        totalsByJenis: {},
+        uniqueJenis: [],
+      }
+    }
 
-    // Count items by jenis and kategori
+    // Get unique jenis values from reg array - extract the jenis property
+    const uniqueJenis =
+      reg && reg.length > 0
+        ? reg.map((item, index) => {
+          // Handle different possible structures
+          if (typeof item === "string") {
+            return item
+          } else if (item && typeof item === "object") {
+            // Try different possible property names
+            return item.jenis || item.name || item.label || `Item ${index}`
+          } else if (Array.isArray(item) && item.length > 0) {
+            // If reg items are arrays, try to get a meaningful value
+            return item[0] || `Item ${index}`
+          }
+          return `Item ${index}`
+        })
+        : []
+
+    if (uniqueJenis.length === 0) {
+      return {
+        series: [
+          { name: "SPPBJ", data: [] },
+          { name: "PBJ", data: [] },
+          { name: "HPS", data: [] },
+          { name: "Penyusunan Dokumen", data: [] },
+        ],
+        categories: [],
+        totals: [],
+        countsByJenisAndKategori: {},
+        totalsByJenis: {},
+        uniqueJenis: [],
+      }
+    }
+
+    // Initialize count objects
     const countsByJenisAndKategori: Record<string, Record<string, number>> = {}
     const totalsByJenis: Record<string, number> = {}
 
     uniqueJenis.forEach((jenis) => {
       countsByJenisAndKategori[jenis] = {
-        'Penyusunan Dokumen': 0,
+        "Penyusunan Dokumen": 0,
         HPS: 0,
         PBJ: 0,
-        SPPRJ: 0,
+        SPPBJ: 0,
       }
       totalsByJenis[jenis] = 0
     })
 
-    rawData.forEach((item) => {
-      countsByJenisAndKategori[item.jenis][item.kategori]++
-      totalsByJenis[item.jenis]++
-    })
+    // Count items from penyusunanDokumen array - use index 24 for jenis
+    if (penyusunanDokumen && Array.isArray(penyusunanDokumen)) {
+      penyusunanDokumen.forEach((item) => {
+        if (Array.isArray(item) && item.length > 24 && item[24]) {
+          const jenisValue = item[24]
+          // Find matching jenis in uniqueJenis array
+          const matchingJenis = uniqueJenis.find((jenis) => jenis === jenisValue)
+          if (matchingJenis && countsByJenisAndKategori[matchingJenis]) {
+            countsByJenisAndKategori[matchingJenis]["Penyusunan Dokumen"]++
+            totalsByJenis[matchingJenis]++
+          }
+        }
+      })
+    }
+
+    // Count items from hps array - use index 24 for jenis
+    if (hps && Array.isArray(hps)) {
+      hps.forEach((item) => {
+        if (Array.isArray(item) && item.length > 24 && item[24]) {
+          const jenisValue = item[24]
+          const matchingJenis = uniqueJenis.find((jenis) => jenis === jenisValue)
+          if (matchingJenis && countsByJenisAndKategori[matchingJenis]) {
+            countsByJenisAndKategori[matchingJenis]["HPS"]++
+            totalsByJenis[matchingJenis]++
+          }
+        }
+      })
+    }
+
+    // Count items from pbj array - use index 24 for jenis
+    if (pbj && Array.isArray(pbj)) {
+      pbj.forEach((item) => {
+        if (Array.isArray(item) && item.length > 24 && item[24]) {
+          const jenisValue = item[24]
+          const matchingJenis = uniqueJenis.find((jenis) => jenis === jenisValue)
+          if (matchingJenis && countsByJenisAndKategori[matchingJenis]) {
+            countsByJenisAndKategori[matchingJenis]["PBJ"]++
+            totalsByJenis[matchingJenis]++
+          }
+        }
+      })
+    }
+
+    // Count items from sppbj array - use index 24 for jenis
+    if (sppbj && Array.isArray(sppbj)) {
+      sppbj.forEach((item) => {
+        if (Array.isArray(item) && item.length > 24 && item[24]) {
+          const jenisValue = item[24]
+          const matchingJenis = uniqueJenis.find((jenis) => jenis === jenisValue)
+          if (matchingJenis && countsByJenisAndKategori[matchingJenis]) {
+            countsByJenisAndKategori[matchingJenis]["SPPBJ"]++
+            totalsByJenis[matchingJenis]++
+          }
+        }
+      })
+    }
 
     // Calculate percentages
-    const percentagesByJenisAndKategori: Record<
-      string,
-      Record<string, number>
-    > = {}
+    const percentagesByJenisAndKategori: Record<string, Record<string, number>> = {}
 
     uniqueJenis.forEach((jenis) => {
       percentagesByJenisAndKategori[jenis] = {
-        'Penyusunan Dokumen': 0,
+        "Penyusunan Dokumen": 0,
         HPS: 0,
         PBJ: 0,
-        SPPRJ: 0,
+        SPPBJ: 0,
       }
 
       const total = totalsByJenis[jenis]
@@ -143,31 +167,23 @@ export default function BarMonitoring() {
       }
     })
 
-    // Prepare series data for ApexCharts
+    // Prepare series data for ApexCharts (in reverse order to match the original chart)
     const series = [
       {
-        name: 'SPPRJ',
-        data: uniqueJenis.map(
-          (jenis) => percentagesByJenisAndKategori[jenis]['SPPRJ']
-        ),
+        name: "SPPBJ",
+        data: uniqueJenis.map((jenis) => percentagesByJenisAndKategori[jenis]["SPPBJ"]),
       },
       {
-        name: 'PBJ',
-        data: uniqueJenis.map(
-          (jenis) => percentagesByJenisAndKategori[jenis]['PBJ']
-        ),
+        name: "PBJ",
+        data: uniqueJenis.map((jenis) => percentagesByJenisAndKategori[jenis]["PBJ"]),
       },
       {
-        name: 'HPS',
-        data: uniqueJenis.map(
-          (jenis) => percentagesByJenisAndKategori[jenis]['HPS']
-        ),
+        name: "HPS",
+        data: uniqueJenis.map((jenis) => percentagesByJenisAndKategori[jenis]["HPS"]),
       },
       {
-        name: 'Penyusunan Dokumen',
-        data: uniqueJenis.map(
-          (jenis) => percentagesByJenisAndKategori[jenis]['Penyusunan Dokumen']
-        ),
+        name: "Penyusunan Dokumen",
+        data: uniqueJenis.map((jenis) => percentagesByJenisAndKategori[jenis]["Penyusunan Dokumen"]),
       },
     ]
 
@@ -186,17 +202,17 @@ export default function BarMonitoring() {
   // Chart options
   const chartOptions = {
     chart: {
-      type: 'bar' as const,
+      type: "bar" as const,
       stacked: true,
       toolbar: {
         show: false,
       },
-      stackType: '100%' as '100%',
+      stackType: "100%" as const,
     },
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: '55%',
+        columnWidth: "55%",
       },
     },
     dataLabels: {
@@ -206,19 +222,25 @@ export default function BarMonitoring() {
         const seriesIndex = opts.seriesIndex
         const dataPointIndex = opts.dataPointIndex
         const actualValue = chartData.series[seriesIndex].data[dataPointIndex]
-        return actualValue.toFixed(2) + '%'
+
+        // Only show label if percentage is greater than 5% to avoid clutter
+        if (actualValue > 5) {
+          return actualValue.toFixed(1) + "%"
+        }
+        return ""
       },
       style: {
-        fontSize: '10px',
-        fontWeight: 'medium',
+        fontSize: "10px",
+        fontWeight: "medium",
+        colors: ["#FFFFFF"],
       },
     },
     xaxis: {
       categories: chartData.categories,
       labels: {
         style: {
-          fontSize: '10px',
-          colors: 'white',
+          fontSize: "10px",
+          colors: "white",
         },
         rotate: -45,
         rotateAlways: true,
@@ -227,111 +249,124 @@ export default function BarMonitoring() {
     yaxis: {
       max: 100,
       labels: {
-        formatter: (val: number) => val.toFixed(0) + '%',
+        formatter: (val: number) => val.toFixed(0) + "%",
         style: {
-          colors: 'white',
+          colors: "white",
         },
       },
     },
     grid: {
       yaxis: {
         lines: {
-          show: false, // Menghilangkan garis horizontal pada y-axis
+          show: false,
         },
       },
     },
     legend: {
-      position: 'top' as const,
+      position: "top" as const,
       labels: {
-        colors: '#FFFFFF', // Putih
+        colors: "#FFFFFF",
       },
     },
     fill: {
       opacity: 1,
     },
-    colors: ['#006064', '#00897B', '#FFA000', '#757575'],
+    colors: ["#006064", "#00897B", "#FFA000", "#757575"], // Teal, Light Teal, Orange, Gray
     tooltip: {
       y: {
-        formatter: (val: number) => val.toFixed(2) + '%',
+        formatter: (val: number, opts: any) => {
+          const seriesIndex = opts.seriesIndex
+          const dataPointIndex = opts.dataPointIndex
+          const jenis = chartData.categories[dataPointIndex]
+          const kategori = chartData.series[seriesIndex].name
+          const count = chartData.countsByJenisAndKategori[jenis]?.[kategori] || 0
+          const total = chartData.totalsByJenis[jenis] || 0
+
+          return `${count} dari ${total} (${val.toFixed(1)}%)`
+        },
       },
-      theme: 'dark',
+      theme: "dark",
     },
-    // annotations: {
-    //   texts: chartData.totals.map((total, index) => ({
-    //     x: index,
-    //     y: -15, // Position above the bar
-    //     text: total.toString(),
-    //     textAnchor: 'middle',
-    //     style: {
-    //       fontSize: '12px',
-    //       fontWeight: 'bold',
-    //       colors: 'white',
-    //     },
-    //   })),
-    // },
   }
 
-  // Calculate total items by category
+  // Calculate total items by category from actual data with safety checks
   const totalsByCategory = {
-    'Penyusunan Dokumen': rawData.filter(
-      (item) => item.kategori === 'Penyusunan Dokumen'
-    ).length,
-    HPS: rawData.filter((item) => item.kategori === 'HPS').length,
-    PBJ: rawData.filter((item) => item.kategori === 'PBJ').length,
-    SPPRJ: rawData.filter((item) => item.kategori === 'SPPRJ').length,
-    Total: rawData.length,
+    "Penyusunan Dokumen": penyusunanDokumen ? penyusunanDokumen.length : 0,
+    HPS: hps ? hps.length : 0,
+    PBJ: pbj ? pbj.length : 0,
+    SPPBJ: sppbj ? sppbj.length : 0,
+    Total: (penyusunanDokumen?.length || 0) + (hps?.length || 0) + (pbj?.length || 0) + (sppbj?.length || 0),
   }
 
   if (!mounted) return null
 
-  return (
-    <div className='flex-1'>
-      {/* Jenis Totals */}
-      {/* <h3 className='mb-4 text-lg font-medium'>
-          Jumlah Data Berdasarkan Jenis
-        </h3>
-        <div className='overflow-x-auto'>
-          <table className='min-w-full border border-gray-300'>
-            <thead>
-              <tr>
-                <th className='border-b px-4 py-2 text-left'>Jenis</th>
-                <th className='border-b px-4 py-2 text-center font-bold'>
-                  Total
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {chartData.uniqueJenis.map((jenis) => (
-                <tr key={jenis} className='hover:bg-slate-900'>
-                  <td className='border-b px-4 py-2'>{jenis}</td>
-                  <td className='border-b px-4 py-2 text-center font-bold'>
-                    {chartData.totalsByJenis[jenis]}
-                  </td>
-                </tr>
-              ))}
-              <tr className='font-bold'>
-                <td className='border-b px-4 py-2'>Total</td>
-                <td className='border-b px-4 py-2 text-center'>
-                  {totalsByCategory.Total}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div> */}
-
-      {/* Chart */}
-      <div className='h-[580px] pt-8'>
-        {' '}
-        {/* Added padding-top to make room for the labels */}
-        {mounted && (
-          <ReactApexChart
-            options={chartOptions}
-            series={chartData.series}
-            type='bar'
-            height='100%'
-          />
-        )}
+  // Add this check before the return statement
+  if (!chartData.categories || chartData.categories.length === 0) {
+    return (
+      <div className="flex-1">
+        <div className="flex h-[400px] items-center justify-center">
+          <div className="text-center">
+            <div className="text-xl text-gray-400">No data available</div>
+            <div className="text-sm text-gray-500">Please provide valid data to display the chart</div>
+            <div className="mt-4 text-xs text-gray-600">
+              Debug info: reg length = {reg?.length || 0}, pbj length = {pbj?.length || 0}
+            </div>
+          </div>
+        </div>
       </div>
+    )
+  }
+
+  return (
+    <div className="flex-1">
+      {/* Summary Statistics */}
+
+
+      {/* Chart Card */}
+      <Card className="border-0 bg-slate-950">
+        <CardHeader>
+          <CardTitle className="text-white mb-4 text-lg flex justify-between items-center">
+            <div className="flex items-center">
+              <img width="28" height="28" src="https://img.icons8.com/fluency/48/combo-chart--v1.png" alt="combo-chart--v1" />
+              <span className="ml-2"> Monitoring Progress Investasi Off Farm</span>
+            </div>
+          </CardTitle>
+          <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-5">
+            <div className="rounded-lg bg-slate-800 p-4 text-center">
+              <div className="text-2xl font-bold text-orange-400">{totalsByCategory["Penyusunan Dokumen"]}</div>
+              <div className="text-sm text-gray-300">Penyusunan Dokumen</div>
+            </div>
+            <div className="rounded-lg bg-slate-800 p-4 text-center">
+              <div className="text-2xl font-bold text-yellow-400">{totalsByCategory.HPS}</div>
+              <div className="text-sm text-gray-300">HPS</div>
+            </div>
+            <div className="rounded-lg bg-slate-800 p-4 text-center">
+              <div className="text-2xl font-bold text-teal-400">{totalsByCategory.PBJ}</div>
+              <div className="text-sm text-gray-300">PBJ</div>
+            </div>
+            <div className="rounded-lg bg-slate-800 p-4 text-center">
+              <div className="text-2xl font-bold text-cyan-400">{totalsByCategory.SPPBJ}</div>
+              <div className="text-sm text-gray-300">SPPBJ</div>
+            </div>
+            <div className="rounded-lg bg-slate-700 p-4 text-center">
+              <div className="text-2xl font-bold text-white">{totalsByCategory.Total}</div>
+              <div className="text-sm text-gray-300">Total</div>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="h-[500px]">
+            {mounted && (
+              <ReactApexChart
+                options={chartOptions}
+                series={chartData.series}
+                type="bar"
+                height="100%"
+              />
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
