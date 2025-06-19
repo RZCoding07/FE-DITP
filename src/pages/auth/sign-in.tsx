@@ -1,11 +1,22 @@
 import { useEffect, useState } from 'react'
+import { TbMessage2Question } from "react-icons/tb";
 import { AuthProvider } from '../../context/AuthContext' // Adjust the path as needed
 import { UserAuthForm } from './components/user-auth-form'
 import { Link } from 'react-router-dom'
+import { Button } from '@/components/custom/button'
+import FeatureDiscovery from "@/components/custom/feature-discovery"
+import logoImage from '@/assets/ptpn4.png'
 
 export default function SignIn() {
   const [formattedDate, setFormattedDate] = useState('')
   const [formattedTime, setFormattedTime] = useState('')
+  const feUrl = import.meta.env.VITE_FE_URL
+
+  const [showTour, setShowTour] = useState(false)
+
+  const startTour = () => {
+    setShowTour(true)
+  }
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -27,6 +38,7 @@ export default function SignIn() {
     <>
       <AuthProvider>
         <div className='relative grid h-screen items-center justify-center lg:grid-cols-[60%_40%] lg:px-0'>
+          <FeatureDiscovery run={showTour} onClose={() => setShowTour(false)} />
           <div
             className='relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex'
             style={{
@@ -74,7 +86,8 @@ export default function SignIn() {
               <div
                 className={`mb-10 flex items-center justify-center gap-2 align-middle`}
               >
-                <img src='ptpn4.png' alt='logo' style={{ width: '55px' }} />
+                <img src={`${logoImage}`} alt='logo' className='hide-sm' style={{ width: '55px' }} />
+
                 <div
                   className={`visible flex w-auto flex-col justify-end truncate`}
                 >
@@ -88,7 +101,9 @@ export default function SignIn() {
                   Silahkan masuk dengan akun yang telah terdaftar
                 </p>
               </div>
-              <UserAuthForm />
+              <div id="login-feature">
+                <UserAuthForm />
+              </div>
               <p className='px-8 text-center text-sm text-muted-foreground'>
                 Ingin mengembangkan aplikasi ini?{' '} <Link to='/sign-in-dev' className='text-green-700 font-semibold py-3' >Login Developer Mode </Link>
               </p>
@@ -97,6 +112,9 @@ export default function SignIn() {
               </p>
             </div>
           </div>
+          <Button className="fixed bottom-4 right-4 rounded-full bg-gradient bg-gradient-to-br from-cyan-500 to-orange-300" onClick={startTour}>
+            <TbMessage2Question size={24} className="text-white" />
+          </Button>
         </div>
       </AuthProvider>
     </>

@@ -1,52 +1,68 @@
-import React, { useEffect, useState, useMemo } from 'react'
-import { Controller } from 'react-hook-form'
-import { Layout } from '@/components/custom/layout'
-import { Button } from '@/components/custom/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Search } from '@/components/search'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import ThemeSwitch from '@/components/theme-switch'
-import { TopNav } from '@/components/top-nav'
-import { UserNav } from '@/components/user-nav'
-import { FcDoughnutChart, FcBarChart } from 'react-icons/fc'
-import { IconPdf } from '@tabler/icons-react'
-import cookie from 'js-cookie'
-import { Player, Controls } from '@lottiefiles/react-lottie-player'
-import { Summary } from '@/components/summary'
-import Select from 'react-select'
-import { useDashboardForm } from '@/hooks/use-dashboard-form'
-import { fetchVegetativeProc, fetchKebun, fetchAfd } from '@/utils/api_immature'
-import { TOP_NAV } from '@/utils/constants'
-import { customStyles } from '@/styles/select-styles'
-import { StockAnalysisChart } from '@/components/custom/horizontal-bar-chart'
-import StockAnalysisChartArea from '@/components/custom/area-chart'
-import { StockAnalysisChartKebun } from '@/components/custom/horizontal-kebun-bar-chart'
-import { StockAnalysisChartKebunColor } from '@/components/custom/horizontal-kebun-bar-chart-color'
-import StockAnalysisChartBar from '@/components/custom/bar-chart'
-import DonutChartTbm from '@/components/custom/donut-chart-tbm'
-import DonutChart from '@/components/custom/donut-chart'
-import ScatterChart from '@/components/custom/kuadran'
-import { Summary as STbm } from '@/components/summarytbm'
-import * as XLSX from 'xlsx-js-style'
-import toast from 'react-hot-toast'
-import StackedBarChart from '@/components/custom/stacked-bar-chart'
-import { FaEyeDropper, FaRecycle, FaSync } from 'react-icons/fa'
-import { regionalKebunData } from '@/data/regional-kebun'
-import { kebunAfdBlok } from '@/data/kebun-afd-blok'
-import { fetchSerapanBiaya } from '@/utils/api_immature'
-// import BarChartComponent from '@/components/custom/barchart-master'
+"use client"
+
+import { useEffect, useState, useMemo } from "react"
+import { Controller } from "react-hook-form"
+import { Layout } from "@/components/custom/layout"
+import { Button } from "@/components/custom/button"
+import { Search } from "@/components/search"
+import ThemeSwitch from "@/components/theme-switch"
+import { TopNav } from "@/components/top-nav"
+import { UserNav } from "@/components/user-nav"
+import { FcDoughnutChart } from "react-icons/fc"
+import cookie from "js-cookie"
+import { Summary } from "@/components/summary"
+import Select from "react-select"
+import { useDashboardForm } from "@/hooks/use-dashboard-form"
+import { fetchVegetativeFinal, fetchVegetativeProc } from "@/utils/api_immature"
+import { customStyles } from "@/styles/select-styles"
+import { StockAnalysisChart } from "@/components/custom/horizontal-bar-chart"
+import StockAnalysisChartBar from "@/components/custom/bar-chart"
+import * as XLSX from "xlsx-js-style"
+import toast from "react-hot-toast"
+import { FaSync } from "react-icons/fa"
+import {
+  getScoreJumlahPelepah,
+  getScoreKerapatanPokok,
+  getScoreLingkarBatang,
+  getScoreTinggiTanaman,
+  getColorJumlahPelepah,
+  getColorLingkarBatang,
+  getColorTinggiTanaman,
+} from "@/components/custom/calculation-scores"
+
+import { ApexBarChart } from "@/components/progress-bar-chart-pica-tbm"
+
+import {
+  countColorCategories,
+  sumLuasByColorCategory,
+  processRegionalData,
+  processScoreData,
+  processColorData,
+} from "@/utils/dashboard-helper"
+import axios from "axios"
+import DonutChart from "@/components/custom/donut-chart"
+import { SummaryTBM } from "@/components/summarytbm"
+import { X } from "lucide-react"
+import PlanByTimeframe from "@/components/plan-time-frame"
+import ProgressByTimeframe from "@/components/progress-time-frame"
+import ProblemIdentificationChart from "@/components/pi-frame"
 
 export default function Dashboard() {
-  const user = cookie.get('user')
-  const fullname = user ? JSON.parse(user).fullname : 'user'
-  const account_type = user ? JSON.parse(user).account_type : 'user'
+  // Di bagian awal component, setelah mendapatkan user data
+  const user = cookie.get("user");
+  const userData = user ? JSON.parse(user) : null;
+  const account_type = userData?.account_type || "user";
+  const fullname = userData?.fullname || "User";
+  const userKebun = userData?.kebun || "";
+  const userRpc = userData?.rpc || "";
 
+  const theme = cookie.get("theme") || "system"
+  const isDarkMode = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)
+  const apiUrl = import.meta.env.VITE_API_IMMATURE
   const {
     control,
     watch,
     setValue,
-    errors,
-    isSubmitting,
     bulanOptions,
     tahunOptions,
     defaultBulan,
@@ -59,38 +75,29 @@ export default function Dashboard() {
     tahun,
   } = useDashboardForm()
 
-  const [countRedBlock, setCountRedBlock] = useState(0)
-  const [countBlackBlock, setCountBlackBlock] = useState(0)
+  const [scores, setScores] = useState<any[]>([])
+  const [scoresAll, setScoresAll] = useState<any[]>([])
+  const [scoresAllKebun, setScoresAllKebun] = useState<any[]>([])
+  const [scoresAllRegional, setScoresAllRegional] = useState<any[]>([])
+  const [scoresAllColor, setScoresAllColor] = useState<any[]>([])
+  const [scoresRegional, setScoresRegional] = useState<any[]>([])
+  const [scoresKebun, setScoresKebun] = useState<any[]>([])
+  const [isColor, setIsColor] = useState(false)
+  const [color, setColor] = useState("default")
 
-  // countRedBlock and countBlackBlock TBM 1 - 4
-  const [countRedBlockTbm1, setCountRedBlockTbm1] = useState(0)
-  const [countRedBlockTbm2, setCountRedBlockTbm2] = useState(0)
-  const [countRedBlockTbm3, setCountRedBlockTbm3] = useState(0)
-  const [countRedBlockTbm4, setCountRedBlockTbm4] = useState(0)
+  const [colorData, setColorData] = useState({
+    gold: 0,
+    green: 0,
+    red: 0,
+    black: 0,
+  })
 
-  const [countBlackBlockTbm1, setCountBlackBlockTbm1] = useState(0)
-  const [countBlackBlockTbm2, setCountBlackBlockTbm2] = useState(0)
-  const [countBlackBlockTbm3, setCountBlackBlockTbm3] = useState(0)
-  const [countBlackBlockTbm4, setCountBlackBlockTbm4] = useState(0)
-
-  function parseCSV(csvText: any) {
-    const rows = csvText.split(/\r?\n/); // Split CSV text into rows, handling '\r' characters
-    const headers = rows[0].split(','); // Extract headers (assumes the first row is the header row)
-    const data = []; // Initialize an array to store parsed data
-    for (let i = 1; i < rows.length; i++) {
-      const rowData = rows[i].split(','); // Split the row, handling '\r' characters
-      const rowObject: any = {}; // Initialize an object to store the row data
-      for (let j = 0; j < headers.length; j++) {
-        rowObject[headers[j]] = rowData[j];
-      }
-      data.push(rowObject);
-    }
-    return data;
-  }
-
-  const [selectedRpc, setSelectedRpc] = useState('all')
-  const [selectedKebun, setSelectedKebun] = useState({ value: '', label: '' })
-  const [selectedAfd, setSelectedAfd] = useState('')
+  const [colorDataLuas, setColorDataLuas] = useState({
+    gold: 0,
+    green: 0,
+    red: 0,
+    black: 0,
+  })
 
   const [tbmData, setTbmData] = useState({
     tbm1: 0,
@@ -111,1409 +118,908 @@ export default function Dashboard() {
     tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
   })
 
-  const rpcOptions = [
-    { value: 'all', label: 'Semua RPC' },
-    { value: 'RPC1', label: 'RPC 1' },
-    { value: 'RPC2', label: 'RPC 2' },
-    { value: 'RPC3', label: 'RPC 3' },
-    { value: 'RPC4', label: 'RPC 4' },
-    { value: 'RPC5', label: 'RPC 5' },
-    { value: 'RPC6', label: 'RPC 6' },
-    { value: 'RPC7', label: 'RPC 7' },
-    { value: 'RPC2N2', label: 'RPC2N2' },
-    { value: 'RPC2N14', label: 'RPC2N14' },
-  ]
-
-  const [kebunOptions, setKebunOptions] = useState<{ value: string; label: string }[]>([])
-  const [afdOptions, setAfdOptions] = useState<{ value: string; label: string }[]>([])
-  const [scores, setScores] = useState<any[]>([])
-  const [scoresRegional, setScoresRegional] = useState<any[]>([])
-  const [scoresKebun, setScoresKebun] = useState<any[]>([])
-  const [tbmRes, setTbmRes] = useState<any[]>([])
-  const [isKebun, setIsKebun] = useState<boolean>(false)
-  const [isAfd, setIsAfd] = useState<boolean>(false)
-  const [isTbm, setIsTbm] = useState<boolean>(true)
-  const [regionalBlackBlockCount, setRegionalBlackBlockCount] = useState<any>({})
-  const [colorData, setColorData] = useState({
-    gold: 0,
-    green: 0,
-    red: 0,
-    black: 0,
+  const [selectedCard, setSelectedCard] = useState({
+    type: "all",
+    name: "Keseluruhan TBM",
+    ctg: "tbm-all",
+    circular: "",
+    val: 4,
   })
 
-  const [colorDataLuas, setColorDataLuas] = useState({
-    gold: 0,
-    green: 0,
-    red: 0,
-    black: 0,
-  })
+  const [kebunOptions, setKebunOptions] = useState<any[]>([])
+  const [afdOptions, setAfdOptions] = useState<any[]>([])
+  const [isReset, setIsReset] = useState(false)
 
-  const [colorDataDonat, setColorDataDonat] = useState({
-    gold: 0,
-    green: 0,
-    red: 0,
-    black: 0,
-  })
+  const rpcOptions = useMemo(() => {
+    const options = [
+      { value: "all", label: "Semua RPC" },
+      { value: "RPC1", label: "RPC 1" },
+      { value: "RPC2", label: "RPC 2" },
+      { value: "RPC3", label: "RPC 3" },
+      { value: "RPC4", label: "RPC 4" },
+      { value: "RPC5", label: "RPC 5" },
+      { value: "RPC6", label: "RPC 6" },
+      { value: "RPC7", label: "RPC 7" },
+      { value: "RPC2N2", label: "RPC2N2" },
+      { value: "RPC2N14", label: "RPC2N14" },
+    ];
 
-  const [colorDataLuasDonat, setColorDataLuasDonat] = useState({
-    gold: '',
-    green: '',
-    red: '',
-    black: ''
-  })
+    if (account_type === "kebun") {
+      // Hanya tampilkan RPC user tersebut
+      return options.filter(option => option.value === userRpc);
+    }
+    return options;
+  }, [account_type, userRpc]);
 
+  interface Kebuns {
+    kode_kebun: string;
+    nama_kebun: string;
+    rpc: string;
+    luasan: number;
+    calculated_tbm: string;
+  }
+
+  // Tipe untuk grouping berdasarkan rpc
+  interface GroupedKebun {
+    name: string;
+    kebuns: Kebuns[];
+  }
+
+  // Tipe untuk response yang dikirim oleh API
+  interface GetRegionalKebunResponse {
+    regionals: GroupedKebun[];
+  }
+
+  interface GetRegionalKebunResponseTbm {
+    kebuns: GroupedKebun[];
+  }
+
+
+  const [getRegionalKebun, setGetRegionalKebun] = useState<GetRegionalKebunResponse | null>(null)
+
+  useEffect(() => {
+    const fetchRpcKebunVegetatif = async () => {
+      try {
+        if (!tahun || !tahun.value) return;
+        const response = await axios.post(`${apiUrl}/get-rpc-kebun-veg-areal`, {
+          tahun: Number.parseInt(tahun.value),
+        });
+
+        const data: GetRegionalKebunResponse = response.data;
+        setGetRegionalKebun(data);
+      } catch (error) {
+        console.error("Error fetching RPC Kebun:", error);
+      }
+    };
+
+    fetchRpcKebunVegetatif();
+  }, [bulan, tahun]); // Dependencies
+
+
+  const [getKebunRegTbm, setGetKebunRegTbm] = useState<GetRegionalKebunResponseTbm | null>(null)
+
+  useEffect(() => {
+    const fetchKebunRegTbm = async () => {
+      try {
+        const response = await axios.post(apiUrl + "/get-rpc-kebun-veg-areal-tbm", { tahun: tahun.value })
+        const data: GetRegionalKebunResponseTbm = response.data;
+        setGetKebunRegTbm(data)
+
+      } catch (error) {
+        console.error("Error fetching data:", error)
+      }
+    }
+    if (bulan && tahun) {
+      fetchKebunRegTbm()
+    }
+  }, [bulan, tahun]) // Depend on bulan and tahun values
+
+  const [tbm1ColorCount, setTbm1ColorCount] = useState<any>({})
+  const [tbm2ColorCount, setTbm2ColorCount] = useState<any>({})
+  const [tbm3ColorCount, setTbm3ColorCount] = useState<any>({})
+  const [tbm4ColorCount, setTbm4ColorCount] = useState<any>({})
+  const [tbm1LuasByColor, setTbm1LuasByColor] = useState<any>({})
+  const [tbm2LuasByColor, setTbm2LuasByColor] = useState<any>({})
+  const [tbm3LuasByColor, setTbm3LuasByColor] = useState<any>({})
+  const [tbm4LuasByColor, setTbm4LuasByColor] = useState<any>({})
+
+  const [tbm1DataRegional, setTbm1DataRegional] = useState<any>({})
+  const [tbm2DataRegional, setTbm2DataRegional] = useState<any>({})
+  const [tbm3DataRegional, setTbm3DataRegional] = useState<any>({})
+  const [tbm4DataRegional, setTbm4DataRegional] = useState<any>({})
+
+
+  const [picaResults, setPicaResults] = useState<any[]>([])
+  const [picaResults2, setPicaResults2] = useState<any[]>([])
+
+  // Process TBM data by color
+  useEffect(() => {
+    if (scores.length === 0) return
+
+    // Group scores by TBM level
+    const groupedScores = scores.reduce((acc, x) => {
+      const key = Object.keys(x)[0]
+      if (!acc[key]) {
+        acc[key] = []
+      }
+      acc[key].push(Object.values(x)[0])
+      return acc
+    }, {})
+
+    // Get data for each TBM level
+    const tbm1Data = groupedScores["tbm1"] ?? []
+    const tbm2Data = groupedScores["tbm2"] ?? []
+    const tbm3Data = groupedScores["tbm3"] ?? []
+    const tbm4Data = groupedScores["tbm4"] ?? []
+
+    // Count colors for each TBM level
+    setTbm1ColorCount(countColorCategories(tbm1Data))
+    setTbm2ColorCount(countColorCategories(tbm2Data))
+    setTbm3ColorCount(countColorCategories(tbm3Data))
+    setTbm4ColorCount(countColorCategories(tbm4Data))
+
+    // Sum areas by color for each TBM level
+    setTbm1LuasByColor(sumLuasByColorCategory(tbm1Data))
+    setTbm2LuasByColor(sumLuasByColorCategory(tbm2Data))
+    setTbm3LuasByColor(sumLuasByColorCategory(tbm3Data))
+    setTbm4LuasByColor(sumLuasByColorCategory(tbm4Data))
+
+    // Process regional data
+    const rpcOpt = ["RPC1", "RPC2", "RPC3", "RPC4", "RPC5", "RPC6", "RPC7", "RPC2N2", "RPC2N14"]
+
+    setTbm1DataRegional(processRegionalData(tbm1Data, rpcOpt))
+    setTbm2DataRegional(processRegionalData(tbm2Data, rpcOpt))
+    setTbm3DataRegional(processRegionalData(tbm3Data, rpcOpt))
+    setTbm4DataRegional(processRegionalData(tbm4Data, rpcOpt))
+  }, [selectedCard, scores])
 
   useEffect(() => {
     const fetchProcVegetatifDefault = async () => {
-
       try {
-        // Reset all values to zero
-        setTbmRes([]);  // reset tbmRes array
-        setScores([]);  // reset scores array
-        setScoresKebun([]);  // reset scoresKebun array
+        setScores([])
+        setScoresKebun([])
         setColorData({
           black: 0,
           red: 0,
           green: 0,
           gold: 0,
-        });  // reset colorData
+        })
         setColorDataLuas({
           black: 0,
           red: 0,
           green: 0,
           gold: 0,
-        });  // reset colorDataLuas
+        })
         setTbmData({
           tbm1: 0,
           tbm2: 0,
           tbm3: 0,
           tbm4: 0,
-        });  // reset tbmData
+        })
         setTbmDataScorePelepahBlok({
           tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
           tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
           tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
-        });  // reset tbmDataScorePelepahBlok
+        })
         setTbmDataScoreLingkarBlok({
           tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
           tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
           tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
-        });  // reset tbmDataScoreLingkarBlok
-
-        const tbmResults: {
-          tbm1: number
-          tbm2: number
-          tbm3: number
-          tbm4: number
-        } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
-
-        const pokokSekarangResults: {
-          tbm1: number
-          tbm2: number
-          tbm3: number
-          tbm4: number
-        } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
-
-        const calJumlahPelepahResults: {
-          tbm1: number
-          tbm2: number
-          tbm3: number
-          tbm4: number
-        } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
-
-        const calLingkarBatangResults: {
-          tbm1: number
-          tbm2: number
-          tbm3: number
-          tbm4: number
-        } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
-
-        const avgPelepahResults: {
-          tbm1: number
-          tbm2: number
-          tbm3: number
-          tbm4: number
-        } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
-
-        const avgLingkarBatangResults: {
-          tbm1: number
-          tbm2: number
-          tbm3: number
-          tbm4: number
-        } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
-
-        const scoreLingkarBatangResults: {
-          tbm1: {
-            score100: number
-            score90: number
-            score80: number
-            total: number
-          }
-          tbm2: {
-            score100: number
-            score90: number
-            score80: number
-            total: number
-          }
-          tbm3: {
-            score100: number
-            score90: number
-            score80: number
-            total: number
-          }
-        } = {
-          tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
-          tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
-          tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
-        }
-
-        const scoreJumlahPelepahResults: {
-          tbm1: {
-            score100: number
-            score90: number
-            score80: number
-            total: number
-          }
-          tbm2: {
-            score100: number
-            score90: number
-            score80: number
-            total: number
-          }
-          tbm3: {
-            score100: number
-            score90: number
-            score80: number
-            total: number
-          }
-        } = {
-          tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
-          tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
-          tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
-        }
+        })
 
         const loader = toast.loading(`Memuat data untuk Keseluruhan TBM...`, {
-          duration: 20000,
+          duration: 28000,
         })
 
-        for (let i = 1; i < 5; i++) {
-          const tahunTanam = tahun.value - i;
-          const response = await fetchVegetativeProc({
-            input_tbm: 'tbm' + i,
-            input_tahun_tanam: tahunTanam.toString(),
-            input_bulan: parseInt(bulan.value),
-            input_tahun: parseInt(tahun.value),
-          });
+        // Fetch data
+        const response = await fetchVegetativeProc({
+          input_bulan: Number.parseInt(bulan.value),
+          input_tahun: Number.parseInt(tahun.value),
+        })
 
-          console.log('response.data', i, response.data);
+        const response2 = await fetchVegetativeFinal({
+          bulan: Number.parseInt(bulan.value),
+          tahun: Number.parseInt(tahun.value),
+        });
 
-
-          setTbmRes((prev) => [...prev, Object.values(response.data)]);
-
-          const regionalBlackBlockCount: { [key: string]: number } = {};
-
-          const newScores = Object.values(response.data).map((item: any) => {
-            let age = bulan.value * i;
-            if (age > 36) {
-              age = 36;
-            }
-            const blok = item.blok;
-            const scoreLingkarBatang =
-              getScoreLingkarBatang(age, parseFloat(item.lingkar_batang_cm)) * 0.4;
-            const scoreJumlahPelepah =
-              getScoreJumlahPelepah(age, parseFloat(item.jumlah_pelepah_bh)) * 0.2;
-
-            const scoreTinggiBatang =
-              getScoreTinggiTanaman(age, parseFloat(item.tinggi_tanaman_cm)) * 0.1;
-
-            const scoreKerapatanPokok =
-              getScoreKerapatanPokok(
-                age,
-                parseFloat(item.jumlah_pokok_awal_tanam),
-                parseFloat(item.jumlah_pokok_sekarang)
-              ) * 0.3;
-
-            const totalSeleksian =
-              scoreLingkarBatang +
-              scoreJumlahPelepah +
-              scoreTinggiBatang +
-              scoreKerapatanPokok;
-
-            let colorCategory = '';
-
-            if (totalSeleksian < 80) {
-              colorCategory = 'black';
-              // Jika colorCategory adalah black, hitung berdasarkan regional
-              const regional = item.regional;
-              if (regionalBlackBlockCount[regional]) {
-                regionalBlackBlockCount[regional] += 1;
-              } else {
-                regionalBlackBlockCount[regional] = 1;
-              }
-            } else if (totalSeleksian >= 80 && totalSeleksian < 90) {
-              colorCategory = 'red';
-            } else if (totalSeleksian >= 90 && totalSeleksian < 97) {
-              colorCategory = 'green';
-            } else if (totalSeleksian >= 97) {
-              colorCategory = 'gold';
-            }
-
-            const luas = parseFloat(item.luas_ha);
-            const regional = item.regional;
-            const kebun = item.kebun;
-            const lingkar = parseFloat(item.lingkar_batang_cm);
-            const tinggi = parseFloat(item.tinggi_tanaman_cm);
-            const jumPelepah = parseFloat(item.jumlah_pelepah_bh);
-
-            // Menyimpan data ke state
-            setScores((prev) => [
-              ...prev,
-              {
-                [`tbm${i}`]: {
-                  regional,
-                  kebun,
-                  afdeling: item.afdeling,
-                  blok,
-                  scoreLingkarBatang,
-                  scoreJumlahPelepah,
-                  scoreTinggiBatang,
-                  scoreKerapatanPokok,
-                  totalSeleksian,
-                  colorCategory,
-                  luas,
-                  jumPelepah,
-                },
-              },
-            ]);
-
-            return {
-              [`tbm${i}`]: {
-                regional,
-                blok,
-                scoreLingkarBatang,
-                scoreJumlahPelepah,
-                scoreTinggiBatang,
-                scoreKerapatanPokok,
-                totalSeleksian,
-                colorCategory,
-                luas,
-              },
-            };
-          });
-
-          const newScoresPerKebun: { [key: string]: { regional: string; kebun: string; totalSeleksiKebun: number; totalLuas: number } } = {}
-
-          Object.values(response.data).forEach((item: any) => {
-            let age = bulan.value * i;
-            if (age > 36) {
-              age = 36;
-            }
-            const kebun = item.kebun;
-            const regional = item.regional;
-            const luas = parseFloat(item.luas_ha);
-
-            const scoreLingkarBatang =
-              getScoreLingkarBatang(age, parseFloat(item.lingkar_batang_cm)) * 0.4;
-            const scoreJumlahPelepah =
-              getScoreJumlahPelepah(age, parseFloat(item.jumlah_pelepah_bh)) * 0.2;
-            const scoreTinggiBatang =
-              getScoreTinggiTanaman(age, parseFloat(item.tinggi_tanaman_cm)) * 0.1;
-            const scoreKerapatanPokok =
-              getScoreKerapatanPokok(
-                age,
-                parseFloat(item.jumlah_pokok_awal_tanam),
-                parseFloat(item.jumlah_pokok_sekarang)
-              ) * 0.3;
-
-            const totalSeleksian =
-              scoreLingkarBatang +
-              scoreJumlahPelepah +
-              scoreTinggiBatang +
-              scoreKerapatanPokok;
-
-            if (!newScoresPerKebun[kebun]) {
-              newScoresPerKebun[kebun] = {
-                regional,
-                kebun,
-                totalSeleksiKebun: 0,
-                totalLuas: 0,
-              };
-            }
-
-
-            // Total seleksi dihitung berdasarkan luas (tertimbang)
-            newScoresPerKebun[kebun].totalSeleksiKebun += totalSeleksian * luas;
-            newScoresPerKebun[kebun].totalLuas += luas;
-          });
-
-          // Hitung rata-rata tertimbang total seleksi per kebun
-          Object.keys(newScoresPerKebun).forEach((kebun) => {
-            if (newScoresPerKebun[kebun].totalLuas > 0) {
-              newScoresPerKebun[kebun].totalSeleksiKebun /= newScoresPerKebun[kebun].totalLuas;
-            }
-
-            setScoresKebun((prev) => [
-              ...prev,
-              {
-                [`tbm${i}`]: {
-                  regional: newScoresPerKebun[kebun].regional,
-                  kebun,
-                  luas: newScoresPerKebun[kebun].totalLuas,
-                  totalSeleksiKebun: newScoresPerKebun[kebun].totalSeleksiKebun,
-                  colorCategory: newScoresPerKebun[kebun].totalSeleksiKebun <= 80 ? 'black' : newScoresPerKebun[kebun].totalSeleksiKebun <= 89 ? 'red' : newScoresPerKebun[kebun].totalSeleksiKebun <= 96 ? 'green' : 'gold',
-                },
-              },
-
-            ]);
-          });
-
-          const newScoresRegional: { [key: string]: { regional: string; totalSeleksiRegional: number; totalLuas: number } } = {}
-
-          Object.values(response.data).forEach((item: any) => {
-            let age = bulan.value * i;
-            if (age > 36) {
-              age = 36;
-            }
-            const regional = item.regional;
-            const luas = parseFloat(item.luas_ha);
-
-            const scoreLingkarBatang =
-              getScoreLingkarBatang(age, parseFloat(item.lingkar_batang_cm)) * 0.4;
-            const scoreJumlahPelepah =
-              getScoreJumlahPelepah(age, parseFloat(item.jumlah_pelepah_bh)) * 0.2;
-            const scoreTinggiBatang =
-              getScoreTinggiTanaman(age, parseFloat(item.tinggi_tanaman_cm)) * 0.1;
-            const scoreKerapatanPokok =
-              getScoreKerapatanPokok(
-                age,
-                parseFloat(item.jumlah_pokok_awal_tanam),
-                parseFloat(item.jumlah_pokok_sekarang)
-              ) * 0.3;
-
-            const totalSeleksian =
-              scoreLingkarBatang +
-              scoreJumlahPelepah +
-              scoreTinggiBatang +
-              scoreKerapatanPokok;
-
-            if (!newScoresRegional[regional]) {
-              newScoresRegional[regional] = {
-                regional,
-                totalSeleksiRegional: 0,
-                totalLuas: 0,
-              };
-            }
-
-            // Total seleksi dihitung berdasarkan luas (tertimbang)
-            newScoresRegional[regional].totalSeleksiRegional += totalSeleksian * luas;
-            newScoresRegional[regional].totalLuas += luas;
-          });
-
-          // Hitung rata-rata tertimbang total seleksi per regional
-          Object.keys(newScoresRegional).forEach((regional) => {
-            if (newScoresRegional[regional].totalLuas > 0) {
-              newScoresRegional[regional].totalSeleksiRegional /= newScoresRegional[regional].totalLuas;
-            }
-
-            setScoresRegional((prev) => [
-              ...prev,
-              {
-                [`tbm${i}`]: {
-                  regional,
-                  totalSeleksiRegional: newScoresRegional[regional].totalSeleksiRegional,
-                },
-              },
-            ]);
-          });
+        setPicaResults(response2);
 
 
 
-          // Rekap jumlah blok hitam per regional
-          setRegionalBlackBlockCount((prev: any) => ({
-            ...prev,
-            [`tbm${i}`]: regionalBlackBlockCount,
-          }));
-
-          // Menghitung total luas dan pokok untuk rekap
-          const totalLuasHa: number = Object.values(response.data).reduce(
-            (acc: number, curr: any) => acc + parseFloat(curr.luas_ha),
-            0
-          );
-
-          const totalPokokSekarang: number = Object.values(response.data).reduce(
-            (acc: number, curr: any) => acc + parseFloat(curr.jumlah_pokok_sekarang),
-            0
-          );
-
-          const totalCalJumlahPelepah: number = Object.values(response.data).reduce(
-            (acc: number, curr: any) => acc + parseFloat(curr.cal_jumlah_pelepah),
-            0
-          );
-
-          const totalCalLingkarBatang: number = Object.values(response.data).reduce(
-            (acc: number, curr: any) => acc + parseFloat(curr.cal_lingkar_batang),
-            0
-          );
-
-          tbmResults[`tbm${i as 1 | 2 | 3 | 4}`] = totalLuasHa;
-
-          pokokSekarangResults[`tbm${i as 1 | 2 | 3 | 4}`] = totalPokokSekarang;
-
-          calJumlahPelepahResults[`tbm${i as 1 | 2 | 3 | 4}`] = totalCalJumlahPelepah;
-
-          calLingkarBatangResults[`tbm${i as 1 | 2 | 3 | 4}`] = totalCalLingkarBatang;
-
-          avgPelepahResults[`tbm${i as 1 | 2 | 3 | 4}`] =
-            totalCalJumlahPelepah / totalPokokSekarang;
-
-          avgLingkarBatangResults[`tbm${i as 1 | 2 | 3 | 4}`] =
-            totalCalLingkarBatang / totalPokokSekarang;
-
-          if (i < 4) {
-            scoreJumlahPelepahResults[`tbm${i as 1 | 2 | 3}`] = {
-              score100: newScores.filter(
-                (item: any) => item[`tbm${i}`].scoreJumlahPelepah === 100
-              ).length,
-              score90: newScores.filter(
-                (item: any) => item[`tbm${i}`].scoreJumlahPelepah === 90
-              ).length,
-              score80: newScores.filter(
-                (item: any) => item[`tbm${i}`].scoreJumlahPelepah === 80
-              ).length,
-              total: newScores.length,
-            };
-
-            scoreLingkarBatangResults[`tbm${i as 1 | 2 | 3}`] = {
-              score100: newScores.filter(
-                (item: any) => item[`tbm${i}`].scoreLingkarBatang === 100
-              ).length,
-              score90: newScores.filter(
-                (item: any) => item[`tbm${i}`].scoreLingkarBatang === 90
-              ).length,
-              score80: newScores.filter(
-                (item: any) => item[`tbm${i}`].scoreLingkarBatang === 80
-              ).length,
-              total: newScores.length,
-            };
+        // Group data by TBM phase
+        const groupedData = response.data.reduce((acc: Record<string, any[]>, item: any) => {
+          const tbmPhase = `tbm${item.vw_fase_tbm}`;
+          if (!acc[tbmPhase]) {
+            acc[tbmPhase] = [];
           }
-        }
+          acc[tbmPhase].push(item);
+          return acc;
+        }, {});
 
-        setTbmData(tbmResults)
-        setTbmDataScorePelepahBlok(scoreJumlahPelepahResults)
-        setTbmDataScoreLingkarBlok(scoreLingkarBatangResults)
-        toast.success('Seluruh data TBM berhasil ditampilkan!', {
+        // Process data for each TBM phase
+        const tbmResults = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 };
+        const scoreJumlahPelepahResults = {
+          tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
+          tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
+          tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
+        };
+        const scoreLingkarBatangResults = {
+          tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
+          tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
+          tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
+        };
+        const regionalBlackBlockCount: Record<string, any> = {};
+
+        // Process each TBM phase
+        Object.keys(groupedData).forEach((tbmPhase) => {
+          const {
+            newScores,
+            newScoresKebun,
+            newScoresRegional,
+            newScoresAll,
+            newScoresAllKebun,
+            newScoresAllRegional,
+            newRegionalBlackBlockCount,
+            tbmResultsUpdate,
+            scoreJumlahPelepahResultsUpdate,
+            scoreLingkarBatangResultsUpdate,
+          } = processScoreData({
+            data: groupedData[tbmPhase],
+            getScoreLingkarBatang,
+            getScoreJumlahPelepah,
+            getScoreTinggiTanaman,
+            getScoreKerapatanPokok,
+            getColorJumlahPelepah,
+            getColorLingkarBatang,
+            getColorTinggiTanaman,
+          });
+
+          setScores((prev) => [...prev, ...newScores]);
+          setScoresAll((prev) => [...prev, ...newScoresAll]);
+          setScoresAllKebun((prev) => [...prev, ...newScoresAllKebun]);
+          setScoresAllRegional((prev) => [...prev, ...newScoresAllRegional]);
+
+          setScoresKebun((prev) => [...prev, ...newScoresKebun]);
+          setScoresRegional((prev) => [...prev, ...newScoresRegional]);
+
+          // Update counts for this TBM phase
+          regionalBlackBlockCount[tbmPhase] = newRegionalBlackBlockCount;
+          Object.assign(tbmResults, tbmResultsUpdate);
+
+          // Only update scores for TBM1-3
+          if (['tbm1', 'tbm2', 'tbm3'].includes(tbmPhase)) {
+            Object.assign(scoreJumlahPelepahResults[tbmPhase as keyof typeof scoreJumlahPelepahResults], scoreJumlahPelepahResultsUpdate);
+            Object.assign(scoreLingkarBatangResults[tbmPhase as keyof typeof scoreLingkarBatangResults], scoreLingkarBatangResultsUpdate);
+          }
+        });
+
+        console.log("scores", scoresAll);
+
+        setTbmData(tbmResults);
+        setTbmDataScorePelepahBlok(scoreJumlahPelepahResults);
+        setTbmDataScoreLingkarBlok(scoreLingkarBatangResults);
+
+
+        toast.success("Seluruh data TBM berhasil ditampilkan!", {
           id: loader,
           duration: 2000,
-        })
+        });
       } catch (error) {
-        console.error('Error fetching data:', error)
+        console.error("Error fetching data:", error);
+        toast.error("Gagal memuat data TBM");
       }
-    }
+    };
+
+
     if (bulan && tahun) {
-      fetchProcVegetatifDefault()
+      fetchProcVegetatifDefault();
+
     }
-  }, [bulan, tahun])
-
-
+  }, [bulan, tahun]);
+  // Process color data from scores
   useEffect(() => {
-    const data = scores.map((item) => {
-      let key = Object.keys(item)[0];
-      const data = item[key];
-      if (key === 'tbm4') {
-        key = 'TBM > 3';
-      }
-      return [
-        key.toUpperCase(),
-        data.regional,
-        data.kebun,
-        data.afdeling,
-        data.blok,
-        data.luas,
-        data.jumPelepah,
-        data.scoreLingkarBatang,
-        data.scoreJumlahPelepah,
-        data.scoreTinggiBatang,
-        data.scoreKerapatanPokok,
-        data.totalSeleksian,
-        data.colorCategory,
-      ];
-    });
-
-    // Inisialisasi objek colorData
-    const colorData = data.reduce((acc: any, item: any) => {
-      const colorCategory = item[12]; // Ambil colorCategory dari data
-      if (colorCategory in acc) {
-        acc[colorCategory] += 1; // Tambahkan 1 jika kategori warna sudah ada
-      } else {
-        acc[colorCategory] = 1; // Inisialisasi jika kategori warna belum ada
-      }
-      return acc;
-    }, { black: 0, red: 0, green: 0, gold: 0 });
-
-
-    // emas = gold, hijau = green, merah = red, hitam = black
-
-    // Inisialisasi objek colorDataLuas
-    const colorDataLuas = data.reduce((acc: any, item: any) => {
-      const colorCategory = item[12]; // Ambil colorCategory dari data
-      const luas = item[5]; // Ambil luas dari data
-      if (colorCategory in acc) {
-        acc[colorCategory] += luas; // Tambahkan luas jika kategori warna sudah ada
-      } else {
-        acc[colorCategory] = luas; // Inisialisasi jika kategori warna belum ada
-      }
-      return acc;
-    }, { black: 0, red: 0, green: 0, gold: 0 });
-
-    // Set state colorData
-
-    setColorDataLuas(colorDataLuas);
-    setColorData(colorData);
+    const { colorData, colorDataLuas } = processColorData(scores)
+    setColorData(colorData)
+    setColorDataLuas(colorDataLuas)
   }, [scores])
 
+  // Get RPC value from form
+  const rpcValue = watch("rpc")?.value
 
-
-  const [selectedCard, setSelectedCard] = useState({
-    type: 'all',
-    name: 'Keseluruhan TBM',
-    ctg: 'tbm-all',
-    circular: '',
-    val: 4,
-  })
-
-  const [selectedCardTbm, setSelectedCardTbm] = useState<any | null>(null)
-
-  const [colorSummaryTbm, setColorSummaryTbm] = useState<any | null>(null)
-
-  const [selectedEvent, setSelectedEvent] = useState<any | null>(null)
-
-  const handleCardClick = (cardData: any) => {
-    // console.log('tbmRes', tbmRes)
-    setSelectedCard(cardData) // Simpan parameter atau lakukan tindakan lainnya
-    setValue('rpc', { value: 'all', label: 'Semua RPC' })
-    setValue('kebun', null)
-    setValue('afd', null)
-    setIsKebun(false)
-    setIsAfd(false)
-  }
-
-  const [isColorKebun, setisColorKebun] = useState<boolean>(false)
-
-  const handleCardTbmClick = (cardData: any) => {
-    setIsKebun(true)
-    setisColorKebun(true)
-    setColorSummaryTbm(cardData.circular)
-  }
-
-  const handleEventClick = (eventData: any) => {
-    // console.log('tbmRes', tbmRes)
-    setSelectedEvent(eventData) // Simpan parameter atau lakukan tindakan lainnya
-    setValue('rpc', rpcOptions.find((item) => item.value === eventData.selectedCategory) || { value: '', label: '' })
-    setIsKebun(true)
-  }
-
-  const handleResetClick = () => {
-    {
-      setSelectedCard({ type: '', name: 'Keseluruhan TBM', circular: '', ctg: 'tbm-all', val: 4 })
-      setSelectedEvent(null)
-      setIsKebun(false)
-      setValue('rpc', { value: 'all', label: 'Semua RPC' })
-      setValue('kebun', null)
-      setValue('afd', null)
-
-    }
-  }
-
-
-
-  let topNav: { title: string; href: string; isActive: boolean }[] = []
-
-  if (account_type === 'Superadmin') {
-    topNav = [
-      {
-        title: 'Nursery',
-        href: '/dashboard-nursery',
-        isActive: false,
-      },
-      {
-        title: 'Replanting (TU/TK/TB)',
-        href: '/dashboard-replanting',
-        isActive: false,
-      },
-      {
-        title: 'Immature',
-        href: '/dashboard-immature',
-        isActive: true,
-      },
-      {
-        title: 'Monica',
-        href: '/dashboard-monica',
-        isActive: false,
-      },
-    ]
-  } else {
-    topNav = []
-  }
-
-  const getTbmWithColorCategoryEmas = (tbm: string) => {
-    const filteredScores = scores.filter((score) => {
-      const tbmKey = Object.keys(score)[0];
-      return tbmKey === tbm && score[tbmKey].colorCategory === 'gold';
-    });
-
-    if (filteredScores.length > 0) {
-      return filteredScores[0][tbm];
-    }
-    return null; // Jika tidak ada data yang sesuai
-  };
-
-
-  const [tbm1ColorCount, setTbm1ColorCount] = useState<any>({});
-  const [tbm2ColorCount, setTbm2ColorCount] = useState<any>({});
-  const [tbm3ColorCount, setTbm3ColorCount] = useState<any>({});
-  const [tbm4ColorCount, setTbm4ColorCount] = useState<any>({});
-
-  const [tbm1LuasByColor, setTbm1LuasByColor] = useState<any>({});
-  const [tbm2LuasByColor, setTbm2LuasByColor] = useState<any>({});
-  const [tbm3LuasByColor, setTbm3LuasByColor] = useState<any>({});
-  const [tbm4LuasByColor, setTbm4LuasByColor] = useState<any>({});
-
-
-  const [tbm1DataRegional, setTbm1DataRegional] = useState<any>({});
-  const [tbm2DataRegional, setTbm2DataRegional] = useState<any>({});
-  const [tbm3DataRegional, setTbm3DataRegional] = useState<any>({});
-  const [tbm4DataRegional, setTbm4DataRegional] = useState<any>({});
-
-
-  function sumLuasByColorCategory(data: any) {
-    return data.reduce((acc: any, item: any) => {
-      const color = item.colorCategory;
-      acc[color] = (acc[color] || 0) + item.luas; // Menambahkan luas untuk colorCategory
-      return acc;
-    }, {});
-  }
-
-
-  // Fungsi untuk menghitung jumlah setiap colorCategory
-  function countColorCategories(data: any) {
-    return data.reduce((acc: any, item: any) => {
-      const color = item.colorCategory;
-      acc[color] = (acc[color] || 0) + 1; // Menambahkan jumlah untuk colorCategory
-      return acc;
-    }, {});
-  }
-
-
-  useEffect(() => {
-    let score = scores
-    let z = score.reduce((acc: any, x: any) => {
-      const key = Object.keys(x)[0];
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      acc[key].push(Object.values(x)[0]);
-      return acc;
-    }, {});
-
-    // Mendapatkan data untuk setiap tbm
-    let tbm1Data = z['tbm1'] ?? []
-    let tbm2Data = z['tbm2'] ?? []
-    let tbm3Data = z['tbm3'] ?? []
-    let tbm4Data = z['tbm4'] ?? []
-
-    // Menghitung jumlah untuk setiap colorCategory dalam setiap tbm
-    let tbm1ColorCount = countColorCategories(tbm1Data);
-    let tbm2ColorCount = countColorCategories(tbm2Data);
-    let tbm3ColorCount = countColorCategories(tbm3Data);
-    let tbm4ColorCount = countColorCategories(tbm4Data);
-
-    // Menghitung total luas untuk setiap colorCategory dalam setiap tbm
-    let tbm1LuasByColor = sumLuasByColorCategory(tbm1Data);
-    let tbm2LuasByColor = sumLuasByColorCategory(tbm2Data);
-    let tbm3LuasByColor = sumLuasByColorCategory(tbm3Data);
-    let tbm4LuasByColor = sumLuasByColorCategory(tbm4Data);
-
-    setTbm1ColorCount(tbm1ColorCount);
-    setTbm2ColorCount(tbm2ColorCount);
-    setTbm3ColorCount(tbm3ColorCount);
-    setTbm4ColorCount(tbm4ColorCount);
-
-    setTbm1LuasByColor(tbm1LuasByColor);
-    setTbm2LuasByColor(tbm2LuasByColor);
-    setTbm3LuasByColor(tbm3LuasByColor);
-    setTbm4LuasByColor(tbm4LuasByColor);
-
-    const rpcOpt = ["RPC1", "RPC2", "RPC3", "RPC4", "RPC5", "RPC6", "RPC7", "RPC2N2", "RPC2N14"]
-
-    // buat tbm1Data rekap per regional
-    let tbm1DataRegional =
-      tbm1Data.reduce((acc: any, x: any) => {
-        if (!acc[x.regional]) {
-          acc[x.regional] = [];
-        }
-        acc[x.regional].push(x);
-        return acc;
-      }, {})
-
-    tbm1DataRegional = rpcOpt.reduce((acc: any, x: any) => {
-      // Jika tidak ada data untuk regional tertentu, isi dengan array 0 item
-      if (!tbm1DataRegional[x]) {
-        tbm1DataRegional[x] = [];
-      }
-      return acc;
-    }, tbm1DataRegional);
-
-    // buat tbm2Data rekap per regional
-    let tbm2DataRegional =
-      tbm2Data.reduce((acc: any, x: any) => {
-        if (!acc[x.regional]) {
-          acc[x.regional] = [];
-        }
-        acc[x.regional].push(x);
-        return acc;
-      }, {})
-
-    tbm2DataRegional = rpcOpt.reduce((acc: any, x: any) => {
-      // Jika tidak ada data untuk regional tertentu, isi dengan array 0 item
-      if (!tbm2DataRegional[x]) {
-        tbm2DataRegional[x] = [];
-      }
-      return acc;
-    }
-      , tbm2DataRegional);
-
-    // buat tbm3Data rekap per regional
-    let tbm3DataRegional =
-      tbm3Data.reduce((acc: any, x: any) => {
-        if (!acc[x.regional]) {
-          acc[x.regional] = [];
-        }
-        acc[x.regional].push(x);
-        return acc;
-      }, {});
-
-    tbm3DataRegional = rpcOpt.reduce((acc: any, x: any) => {
-      // Jika tidak ada data untuk regional tertentu, isi dengan array 0 item
-      if (!tbm3DataRegional[x]) {
-        tbm3DataRegional[x] = [];
-      }
-      return acc;
-    }
-      , tbm3DataRegional);
-
-    // buat tbm4Data rekap per regional
-    let tbm4DataRegional =
-      tbm4Data.reduce((acc: any, x: any) => {
-        if (!acc[x.regional]) {
-          acc[x.regional] = [];
-        }
-        acc[x.regional].push(x);
-        return acc;
-      }, {});
-
-    tbm4DataRegional = rpcOpt.reduce((acc: any, x: any) => {
-      // Jika tidak ada data untuk regional tertentu, isi dengan array 0 item
-      if (!tbm4DataRegional[x]) {
-        tbm4DataRegional[x] = [];
-      }
-      return acc;
-    }
-      , tbm4DataRegional);
-
-
-    setTbm1DataRegional(tbm1DataRegional);
-    setTbm2DataRegional(tbm2DataRegional);
-    setTbm3DataRegional(tbm3DataRegional);
-    setTbm4DataRegional(tbm4DataRegional);
-
-
-  }, [selectedCard, scores])
-
-  const rpcValue = watch('rpc')?.value
-
-
+  // Filter kebun by RPC
   const distinctKebunByRPC = useMemo(() => {
-    if (rpcValue !== 'all') {
+    if (rpcValue !== "all") {
       return scores.filter((score) => {
-        const key = Object.keys(score)[0];
-        return score[key].regional === rpcValue;
-      });
+        const key = Object.keys(score)[0]
+        return score[key].regional === rpcValue
+      })
     }
-    return [];
-  }, [rpcValue, selectedCard.name, scores]);
+    return []
+  }, [rpcValue, selectedCard.name, scores])
 
+  // Get distinct categories
   const distinctCategories = useMemo(() => {
-    return [...new Set(distinctKebunByRPC.map((item: any) => item[Object.keys(item)[0]].kebun))];
-  }, [distinctKebunByRPC]);
+    return [...new Set(distinctKebunByRPC.map((item) => item[Object.keys(item)[0]].kebun))]
+  }, [distinctKebunByRPC])
 
-  const countBlok = useMemo(() => {
-    return distinctCategories.map((category: any) => {
-      return {
-        category: category,
-        filter: distinctKebunByRPC.filter((item: any) => item[Object.keys(item)[0]].kebun === category).length
-      };
-    });
-  }, [distinctCategories, distinctKebunByRPC]);
-
-  const sumLuasBlok = useMemo(() => {
-    return distinctCategories.map((category: any) => {
-      return {
-        category: category,
-        filter:
-          (distinctKebunByRPC.filter((item: any) => item[Object.keys(item)[0]].kebun === category)
-            .reduce((acc: any, curr: any) => acc + curr[Object.keys(curr)[0]].luas, 0)).toFixed(2)
-      };
-    });
-  }, [distinctCategories, distinctKebunByRPC]);
-
-
-  const [emasColorCountKebun, setEmasColorCountKebun] = useState<any>({});
-  const [hijauColorCountKebun, setHijauColorCountKebun] = useState<any>({});
-  const [merahColorCountKebun, setMerahColorCountKebun] = useState<any>({});
-  const [hitamColorCountKebun, setHitamColorCountKebun] = useState<any>({});
-
-
-  const [emasLuasByColorKebun, setEmasLuasByColorKebun] = useState<any>({});
-  const [hijauLuasByColorKebun, setHijauLuasByColorKebun] = useState<any>({});
-  const [merahLuasByColorKebun, setMerahLuasByColorKebun] = useState<any>({});
-  const [hitamLuasByColorKebun, setHitamLuasByColorKebun] = useState<any>({});
-
-
-
-
-  useEffect(() => {
-
-    const tbm1Data = scores.filter((score: any) => {
-      const tbmKey = Object.keys(score)[0];
-      return tbmKey === 'tbm1';
-    });
-
-    const tbm2Data = scores.filter((score: any) => {
-      const tbmKey = Object.keys(score)[0];
-      return tbmKey === 'tbm2';
-    });
-
-    const tbm3Data = scores.filter((score: any) => {
-      const tbmKey = Object.keys(score)[0];
-      return tbmKey === 'tbm3';
-    });
-
-    const tbm4Data = scores.filter((score: any) => {
-      const tbmKey = Object.keys(score)[0];
-      return tbmKey === 'tbm4';
-    });
-
-    const tbm1RedData = tbm1Data.filter((score: any) => (Object.values(score)[0] as any).colorCategory === 'red')
-    const tbm1BlackData = tbm1Data.filter((score: any) => (Object.values(score)[0] as any).colorCategory === 'black')
-
-    const tbm2RedData = tbm2Data.filter((score: any) => (Object.values(score)[0] as any).colorCategory === 'red')
-    const tbm2BlackData = tbm2Data.filter((score: any) => (Object.values(score)[0] as any).colorCategory === 'black')
-
-    const tbm3RedData = tbm3Data.filter((score: any) => (Object.values(score)[0] as any).colorCategory === 'red')
-    const tbm3BlackData = tbm3Data.filter((score: any) => (Object.values(score)[0] as any).colorCategory === 'black')
-
-    const tbm4RedData = tbm4Data.filter((score: any) => (Object.values(score)[0] as any).colorCategory === 'red')
-    const tbm4BlackData = tbm4Data.filter((score: any) => (Object.values(score)[0] as any).colorCategory === 'black')
-
-    const dataColorRed = scores.filter((score: any) => (Object.values(score)[0] as any).colorCategory === 'red')
-    rpcOptions.forEach((rpc) => {
-      const tbmallRed = dataColorRed.filter((score: any) => (Object.values(score)[0] as any).regional === rpc.value)
-      const tbm1Red = tbm1RedData.filter((score: any) => (Object.values(score)[0] as any).regional === rpc.value)
-      const tbm2Red = tbm2RedData.filter((score: any) => (Object.values(score)[0] as any).regional === rpc.value)
-      const tbm3Red = tbm3RedData.filter((score: any) => (Object.values(score)[0] as any).regional === rpc.value)
-      const tbm4Red = tbm4RedData.filter((score: any) => (Object.values(score)[0] as any).regional === rpc.value)
-      setCountRedBlock((prev: any) => ({
-        ...prev,
-        [rpc.value]: tbmallRed.length,
-      }))
-      setCountRedBlockTbm1((prev: any) => ({
-        ...prev,
-        [rpc.value]: tbm1Red.length,
-      }))
-      setCountRedBlockTbm2((prev: any) => ({
-        ...prev,
-        [rpc.value]: tbm2Red.length,
-      }))
-
-      setCountRedBlockTbm3((prev: any) => ({
-        ...prev,
-        [rpc.value]: tbm3Red.length,
-      }))
-      setCountRedBlockTbm4((prev: any) => ({
-        ...prev,
-        [rpc.value]: tbm4Red.length,
-      }))
-
-
-      const dataColorBlack = scores.filter((score: any) => (Object.values(score)[0] as any).colorCategory === 'black')
-
-      const tbmallBlack = dataColorBlack.filter((score: any) => (Object.values(score)[0] as any).regional === rpc.value)
-      const tbm1Black = tbm1BlackData.filter((score: any) => (Object.values(score)[0] as any).regional === rpc.value)
-      const tbm2Black = tbm2BlackData.filter((score: any) => (Object.values(score)[0] as any).regional === rpc.value)
-      const tbm3Black = tbm3BlackData.filter((score: any) => (Object.values(score)[0] as any).regional === rpc.value)
-      const tbm4Black = tbm4BlackData.filter((score: any) => (Object.values(score)[0] as any).regional === rpc.value)
-      setCountBlackBlock((prev: any) => ({
-        ...prev,
-        [rpc.value]: tbmallBlack.length,
-      }))
-      setCountBlackBlockTbm1((prev: any) => ({
-        ...prev,
-        [rpc.value]: tbm1Black.length,
-      }))
-      setCountBlackBlockTbm2((prev: any) => ({
-        ...prev,
-        [rpc.value]: tbm2Black.length,
-      }))
-      setCountBlackBlockTbm3((prev: any) => ({
-        ...prev,
-        [rpc.value]: tbm3Black.length,
-      }))
-      setCountBlackBlockTbm4((prev: any) => ({
-        ...prev,
-        [rpc.value]: tbm4Black.length,
-      }))
-    })
-
-  }, [scores])
-
-
-  useEffect(() => {
-    if (rpcValue !== 'all') {
-
-      if (selectedCard.val < 4) {
-        const distinctByTbm = scores.filter(score => Object.keys(score)[0] === selectedCard.ctg);
-        const distinctByRegional = distinctByTbm.filter(score => score[Object.keys(score)[0]].regional === rpcValue);
-        const countByColor = (color: string) => {
-          const distincKebunByReg = distinctByRegional.map(item => item[Object.keys(item)[0]].kebun);
-          let sumColor: { [key: string]: number } = {};
-          let sumLuas: { [key: string]: number } = {};
-          sumColor[color] = 0;
-          sumLuas[color] = 0;
-          let data = [...new Set(distincKebunByReg)].map(kebun => {
-            const filteredItems = distinctByRegional.filter(item => item[Object.keys(item)[0]].kebun === kebun && item[Object.keys(item)[0]].colorCategory === color);
-            const colorCount = filteredItems.length;
-            const luasSum = filteredItems.reduce((acc, curr) => acc + curr[Object.keys(curr)[0]].luas, 0);
-            sumColor[color] += colorCount;
-            sumLuas[color] += luasSum;
-            return {
-              category: kebun,
-              sumColor: sumColor[color],  // This should now safely return the correct value
-              sumLuas: sumLuas[color].toFixed(2),  // Ensure it's a fixed-point number
-              filterBlok: distinctByRegional.filter(item => item[Object.keys(item)[0]].kebun === kebun && item[Object.keys(item)[0]].colorCategory === color).length,
-              filterLuas: distinctByRegional.filter(item => item[Object.keys(item)[0]].kebun === kebun && item[Object.keys(item)[0]].colorCategory === color).reduce((acc, curr) => acc + curr[Object.keys(curr)[0]].luas, 0).toFixed(2),
-            };
-          });
-          return data;
-        };
-
-
-        const sumLuasByColor = (color: any) => {
-          return distinctKebunByRPC
-            .filter(item => item[Object.keys(item)[0]].colorCategory === color)
-            .reduce((acc, curr) => acc + curr[Object.keys(curr)[0]].luas, 0)
-            .toFixed(2);
-        };
-
-        const emasSumColor = countByColor('gold') ?? [];
-        const hijauSumColor = countByColor('green') ?? [];
-        const merahSumColor = countByColor('red') ?? [];
-        const hitamSumColor = countByColor('black') ?? [];
-        setEmasColorCountKebun(emasSumColor);
-        setHijauColorCountKebun(hijauSumColor);
-        setMerahColorCountKebun(merahSumColor);
-        setHitamColorCountKebun(hitamSumColor);
-
-
-
-        // Menggunakan optional chaining
-        const emasSumColorLuas = emasSumColor?.[emasSumColor.length - 1]?.sumLuas ?? 0;
-        const hijauSumColorLuas = hijauSumColor?.[hijauSumColor.length - 1]?.sumLuas ?? 0;
-        const merahSumColorLuas = merahSumColor?.[merahSumColor.length - 1]?.sumLuas ?? 0;
-        const hitamSumColorLuas = hitamSumColor?.[hitamSumColor.length - 1]?.sumLuas ?? 0;
-
-        // get sumColor last index with default 0
-        const emasSumColorLast = emasSumColor?.[emasSumColor.length - 1]?.sumColor ?? 0;
-        const hijauSumColorLast = hijauSumColor?.[hijauSumColor.length - 1]?.sumColor ?? 0;
-        const merahSumColorLast = merahSumColor?.[merahSumColor.length - 1]?.sumColor ?? 0;
-        const hitamSumColorLast = hitamSumColor?.[hitamSumColor.length - 1]?.sumColor ?? 0;
-
-
-
-        setColorDataDonat({
-          gold: emasSumColorLast,
-          green: hijauSumColorLast,
-          red: merahSumColorLast,
-          black: hitamSumColorLast,
-        });
-
-        setColorDataLuasDonat({
-          gold: emasSumColorLuas,
-          green: hijauSumColorLuas,
-          red: merahSumColorLuas,
-          black: hitamSumColorLuas,
-        });
-
-
-        const distinctCategories = [...new Set(distinctByRegional.map(item => item[Object.keys(item)[0]].kebun))];
-
-        const countBlok = distinctCategories.map(category => ({
-          category,
-          filter: distinctByRegional.filter(item => item[Object.keys(item)[0]].kebun === category).length
-        }));
-
-        const sumLuasBlok = distinctCategories.map(category => ({
-          category,
-          filter: distinctByRegional
-            .filter(item => item[Object.keys(item)[0]].kebun === category)
-            .reduce((acc, curr) => acc + curr[Object.keys(curr)[0]].luas, 0)
-            .toFixed(2)
-        }));
-
-        const name = selectedCard.val === 3 ? 'TBM > 3' : `TBM ${selectedCard.val + 1}`;
-
-        setIsTbm(false);
-
-
-        handleEventClick({
-          name,
-          value: selectedCard.val,
-          color: selectedCard.circular,
-          categories: distinctCategories,
-          allData: tbmRes[selectedCard.val],
-          countBlok,
-          sumLuasBlok,
-          selectedCategory: rpcValue
-        });
-      } else {
-        setIsTbm(true);
-      }
-    } else {
-      setIsTbm(true);
-
-      if (selectedCard.name === 'Keseluruhan TBM') {
-        // handleResetClick();
-
-      } else {
-        setIsKebun(false);
-      }
-    }
-  }, [rpcValue, selectedCard, scores, distinctCategories, countBlok, sumLuasBlok]);
-
-
-  const getDataScoreAll = (tbm: string) => {
-    const filteredScores = scores.filter((score) => {
-      const tbmKey = Object.keys(score)[0];
-      return tbmKey === tbm;
-    });
-
-    if (filteredScores.length > 0) {
-      return filteredScores;
-    }
-    return null; // Jika tidak ada data yang sesuai
+  // Event handlers
+  const handleCardClick = (cardData: any) => {
+    setColor("default")
+    setKebunOptions([])
+    setIsReset(false)
+    setSelectedCard(cardData)
+    setValue("rpc", { value: "all", label: "Semua RPC" })
+    setValue("kebun", null)
+    setValue("afd", null)
+  }
+  const handleCard2ClickTBM = (cardData: any) => {
+    setScoresAllColor(cardData.items)
+    setIsColor(true)
+    setColor(cardData.circular)
   }
 
   const handleRpcChange = (selectedOption: any) => {
-    setSelectedRpc(selectedOption.value);
-    const selectedRegional = regionalKebunData.regionals.find(
-      (regional) => regional.name === selectedOption.value
-    );
-    setValue('kebun', null);
-    setKebunOptions(
-      selectedRegional ? selectedRegional.kebuns.map((kebun) => ({ value: kebun, label: kebun })) : []
-    );
-  };
+
+    if (selectedCard.ctg === "tbm-all") {
+      const selectedRegional = getRegionalKebun?.regionals.find((regional) => regional.name === selectedOption.value)
+      setValue("kebun", null)
+
+      // buat new Set lagi karena itu bisa dabel
+      const kebunSet = new Set(selectedRegional?.kebuns.map(kebun => kebun.kode_kebun));
+      const uniqueKebun = Array.from(kebunSet).map((kebun) => {
+        const kebunData = selectedRegional?.kebuns.find((kebunItem) => kebunItem.kode_kebun === kebun);
+        return { value: kebun, label: kebunData?.nama_kebun };
+      });
+
+      setKebunOptions(uniqueKebun || [])
+
+    } else {
+      const selectedRegional = getRegionalKebun?.regionals.find((regional) => regional.name === selectedOption.value)
+
+      const filteredKebun = getKebunRegTbm?.kebuns.filter((ctg) => ctg.name === selectedCard.ctg)
 
 
-  const [countAfdBlok, setCountAfdBlok] = useState<any[]>([])
-  const [sumLuasAfdBlok, setSumLuasAfdBlok] = useState<any[]>([])
+      const filteredKebunBySelectedRegional = filteredKebun?.[0]?.kebuns.filter((kebun) =>
+        selectedRegional?.kebuns?.map(k => k.kode_kebun).includes(kebun.kode_kebun),
+      )
+
+      const kebunOptions = filteredKebunBySelectedRegional?.map((kebun) => ({ value: kebun.kode_kebun, label: kebun.nama_kebun }))
+      setKebunOptions(kebunOptions || [])
+
+    }
+    setValue("afd", null)
+  }
+
 
   const handleKebunChange = (selectedOption: any) => {
-    setSelectedKebun(selectedOption)
-    const getAfdelingByKebun = (kebun: string) => {
-      const afdelingSet = new Set(
-        kebunAfdBlok.filter(item => item.kebun === kebun).map(item => item.afdeling)
-      );
-      return Array.from(afdelingSet);
-    };
-
-    setSelectedKebun(selectedOption);
-
-    const availableAfdeling = getAfdelingByKebun(selectedOption.value);
-    const afdelingOptions = availableAfdeling.map(afd => ({ value: afd, label: afd }));
-    setValue('afd', null);
-    setAfdOptions(afdelingOptions);
-
-    const tbmResults = tbmRes[selectedCard.val]
-
-    const hasilBanyak = tbmResults.filter((item: { kebun: any }) => item.kebun === selectedOption.value)
-
-    // distinc afdeling
-    const distinctAfd = [...new Set(hasilBanyak.map((item: any) => item.afdeling))];
-
-    // count afdeling blok
-    const countAfd = distinctAfd.map((category: any) => {
-      return {
-        category: category,
-        filter: hasilBanyak.filter((item: any) => item.afdeling === category).length
-      };
-    });
-
-    // sum luas afdeling blok
-    const sumLuasAfd = distinctAfd.map((category: any) => {
-      return {
-        category: category,
-        filter: hasilBanyak
-          .filter((item: any) => item.afdeling === category)
-          .reduce((acc: number, curr: any) => {
-            const luas = parseFloat(curr.luas_ha) || 0; // Pastikan hanya angka valid yang dijumlahkan
-            return acc + luas;
-          }, 0)
-          .toFixed(2)
-      };
-    });
+    console.log("ini jalan")
+    const kebun = selectedOption.value
+    const filteredAfd = scoresAll.filter(
+      (item: any) =>
+        item.regional === rpc.value &&
+        item.kebun === kebun
+    );
 
 
-    setSelectedEvent({
-      name: selectedOption.label,
-      value: selectedOption.value,
-      color: selectedCard.circular,
-      categories: distinctAfd,
-      allData: tbmResults,
-      countBlok: countAfd,
-      sumLuasBlok: sumLuasAfd,
-      selectedCategory: selectedRpc
-    });
 
-    setCountAfdBlok(countAfd);
-    setSumLuasAfdBlok(sumLuasAfd);
+    const afdNames: string[] = Array.from(new Set(filteredAfd.map((item: any) => item.afdeling as string))) as string[];
 
+    setAfdOptions(
+      afdNames.map((afd) => ({
+        value: afd,
+        label: afd,
+      }))
+    )
+    setValue("afd", null)
 
   }
 
-
-  const handleAfdChange = (selectedOption: any) => {
-    setSelectedAfd(selectedOption)
-    const tbmResults = tbmRes[selectedCard.val]
-
-    const rpc = selectedRpc
-    const kebun = selectedKebun.value
-
-    const hasilBanyak = tbmResults.filter((item: any) => item.regional === rpc && item.kebun === kebun && item.afdeling === selectedOption.value)
-    const distinctBlok = [...new Set(hasilBanyak.map((item: any) => item.blok))];
-    const countBlok = distinctBlok.map((category: any) => {
-      return {
-        category: category,
-        filter: hasilBanyak.filter((item: any) => item.blok === category).length
-      };
-    });
-
-    const sumLuasBlok = distinctBlok.map((category: any) => {
-      return {
-        category: category,
-        filter: hasilBanyak
-          .filter((item: any) => item.blok === category)
-          .reduce((acc: number, curr: any) => {
-            const luas = parseFloat(curr.luas_ha) || 0; // Pastikan hanya angka valid yang dijumlahkan
-            return acc + luas;
-          }, 0)
-          .toFixed(2)
-      };
-    });
-
-    setSelectedEvent({
-      name: selectedOption.label,
-      value: selectedOption.value,
-      color: selectedCard.circular,
-      categories: distinctBlok,
-      allData: tbmResults,
-      countBlok: countBlok,
-      sumLuasBlok: sumLuasBlok,
-      selectedCategory: selectedRpc
-    });
-
-    setCountAfdBlok(countBlok);
-    setSumLuasAfdBlok(sumLuasBlok)
-
-    setValue('blok', { value: 'luasan', label: 'Luasan' })
-  }
-
-  const [isColorGraphVisible, setIsColorGraphVisible] = useState(true);
-
-  const handleHideColorGraph = () => {
-    setisColorKebun(false); // Hide the color graph
-    setIsColorGraphVisible((prev) => !prev); // Toggle the visibility
-  };
+  // Excel export handler
   const handleDownload = () => {
-    // Menampilkan toast loading
-    const loadingToast = toast.loading('Downloading... Please wait!', {
-      position: 'top-right',
-    });
+    const loadingToast = toast.loading("Downloading... Please wait!", {
+      position: "top-right",
+    })
 
-    // Header untuk sheet pertama (Detail Seleksi)
-    const headers = [
-      "Jenis TBM", "Regional", "Kebun", "Afdeling", "Blok", "Luasan",
-      "Jumlah Pelepah", "Score Lingkar Batang", "Score Jumlah Pelepah",
-      "Score Tinggi Batang", "Score Kerapatan Pokok", "Total Seleksian", "Kategori Warna"
-    ];
+    console.log("scores", scoresKebun)
 
-    // Konversi data dari scores
-    const data = scores.map((item) => {
-      let key = Object.keys(item)[0];
-      const data = item[key];
-      if (key === 'tbm4') {
-        key = 'TBM > 3';
+    try {
+      // Create workbook
+      const wb = XLSX.utils.book_new()
+
+      // Detail sheet
+      const headers = [
+        "Jenis TBM",
+        "Regional",
+        "Kebun",
+        "Afdeling",
+        "Blok",
+        "Varietas",
+        "Luasan",
+        "Umur",
+        "Jumlah Pokok Awal Tanam",
+        "Jumlah Pokok Sekarang",
+        "Lingkar Batang",
+        "Jumlah Pelepah",
+        "Tinggi Batang",
+        "Score Lingkar Batang",
+        "Score Jumlah Pelepah",
+        "Score Tinggi Batang",
+        "Score Kerapatan Pokok",
+        "Total Seleksian",
+        "Kategori Warna",
+      ]
+
+      console.log("scores", scores)
+
+      const data = scores.map((item) => {
+        let key = Object.keys(item)[0]
+        const data = item[key]
+        if (key === "tbm4") {
+          key = "TBM > 3"
+        }
+        return [
+          key.toUpperCase(),
+          data.regional,
+          data.kebun,
+          data.afdeling,
+          data.blok,
+          data.varietas,
+          data.luas,
+          data.umur,
+          data.jumlah_pokok_awal_tanam,
+          data.jumlah_pokok_sekarang,
+          data.lingkar_batang_cm,
+          data.jumPelepah,
+          data.tinggi_tanaman_cm,
+          data.scoreLingkarBatang,
+          data.scoreJumlahPelepah,
+          data.scoreTinggiBatang,
+          data.scoreKerapatanPokok,
+          data.totalSeleksian,
+          data.colorCategory,
+        ]
+      })
+
+      const ws = XLSX.utils.aoa_to_sheet([headers, ...data])
+
+      // Kebun summary sheet
+      const headersKebun = ["Jenis TBM", "Regional", "Kebun", "Luas", "Total Seleksi Kebun", "Color Category"]
+
+
+      const dataKebun = scoresKebun.map((item) => {
+        let key = Object.keys(item)[0]
+
+        const data = item[key]
+
+        if (key === "tbm4") {
+          key = "TBM > 3"
+        }
+
+        return [key.toUpperCase(), data.regional, data.kebun, data.luas, data.totalSeleksiKebun, data.colorCategory, data.calculatedTbm]
+      })
+
+      const wsKebun = XLSX.utils.aoa_to_sheet([headersKebun, ...dataKebun])
+
+
+      const headersKebunBelumMengisi = ["Jenis TBM", "Regional", "Kode Kebun", "Nama Kebun", "Luasan Input", "Total Luas Kebun", "Progress"]
+
+
+      // Regional summary sheet
+      const headersRegional = ["Jenis TBM", "Regional", "Total Seleksi Regional"]
+
+      const dataRegional = scoresRegional.map((item) => {
+        let key = Object.keys(item)[0]
+
+        const data = item[key]
+
+        if (key === "tbm4") {
+          key = "TBM > 3"
+        }
+
+        return [key.toUpperCase(), data.regional, data.totalSeleksiRegional]
+      })
+
+      const wsRegional = XLSX.utils.aoa_to_sheet([headersRegional, ...dataRegional])
+
+      // Apply styles
+      const headerStyle = {
+        fill: { fgColor: { rgb: "10CCAD" } },
+        font: { color: { rgb: "FFFFFF" }, bold: true },
       }
-      return [
-        key.toUpperCase(),
-        data.regional,
-        data.kebun,
-        data.afdeling,
-        data.blok,
-        data.luas,
-        data.jumPelepah,
-        data.scoreLingkarBatang,
-        data.scoreJumlahPelepah,
-        data.scoreTinggiBatang,
-        data.scoreKerapatanPokok,
-        data.totalSeleksian,
-        data.colorCategory,
-      ];
-    });
 
-    // Header untuk sheet kedua (Summary Kebun)
-    const headersKebun = ["Jenis TBM", "Regional", "Kebun", "Luas", "Total Seleksi Kebun", "Color Category"];
+      const colorMapping = {
+        gold: "FFA500",
+        green: "00a300",
+        red: "FF0000",
+        black: "000000",
+      }
 
-    // Konversi data dari scoresKebun
-    const dataKebun = scoresKebun.map((item) => {
-      let key = Object.keys(item)[0];
-      const data = item[key];
-      return [
-        key.toUpperCase(),
-        data.regional,
-        data.kebun,
-        data.luas,
-        data.totalSeleksiKebun,
-        data.colorCategory,
-      ];
-    });
+        // Apply header styles to all sheets
+        ;[
+          { sheet: ws, headers: headers },
+          { sheet: wsKebun, headers: headersKebun },
+          { sheet: wsRegional, headers: headersRegional },
+        ].forEach(({ sheet, headers }) => {
+          headers.forEach((_, colIndex) => {
+            const cellRef = XLSX.utils.encode_cell({ r: 0, c: colIndex })
+            if (!sheet[cellRef]) sheet[cellRef] = {}
+            sheet[cellRef].s = headerStyle
+          })
+        })
+
+      // Apply color styles to detail sheet
+      data.forEach((row, rowIndex) => {
+        const color = row[18]?.toLowerCase()
+        if (colorMapping[color as keyof typeof colorMapping]) {
+          const cellRef = XLSX.utils.encode_cell({ r: rowIndex + 1, c: 18 })
+          ws[cellRef] = ws[cellRef] || {}
+          ws[cellRef].s = {
+            fill: { fgColor: { rgb: colorMapping[color as keyof typeof colorMapping] } },
+            font: { color: { rgb: "FFFFFF" }, bold: true },
+          }
+        }
+      })
+
+      // Apply color styles to kebun sheet
+      dataKebun.forEach((row, rowIndex) => {
+        const color = row[5]?.toLowerCase()
+        if (colorMapping[color as keyof typeof colorMapping]) {
+          const cellRef = XLSX.utils.encode_cell({ r: rowIndex + 1, c: 5 })
+          wsKebun[cellRef] = wsKebun[cellRef] || {}
+          wsKebun[cellRef].s = {
+            fill: { fgColor: { rgb: colorMapping[color as keyof typeof colorMapping] } },
+            font: { color: { rgb: "FFFFFF" }, bold: true },
+          }
+        }
+      })
+
+      // Add sheets to workbook
+      XLSX.utils.book_append_sheet(wb, ws, "Detail Seleksi")
+      XLSX.utils.book_append_sheet(wb, wsKebun, "Rekap per Kebun")
+      XLSX.utils.book_append_sheet(wb, wsRegional, "Rekap per Regional")
+      // XLSX.utils.book_append_sheet(wb, wsKebunBelumMengisi, "Kebun Belum Mengisi")
+
+      // Write file
+      XLSX.writeFile(wb, `Hasil Seleksi TBM Bulan ${bulan.label} Tahun ${tahun.label}.xlsx`)
+
+      toast.success("Download complete!", { id: loadingToast })
+    } catch (error) {
+      console.error("Error exporting data:", error)
+      toast.error("Failed to download file", { id: loadingToast })
+    }
+  }
+
+  // Navigation links
+  let topNav: { title: string; href: string; isActive: boolean }[] = []
+  if (account_type === "superadmin") {
+    topNav = [
+      {
+        title: "Nursery",
+        href: "/dashboard-nursery",
+        isActive: false,
+      },
+      {
+        title: "Replanting (TU/TK/TB)",
+        href: "/dashboard-replanting",
+        isActive: false,
+      },
+      {
+        title: "Immature",
+        href: "/dashboard-immature",
+        isActive: true,
+      },
+      {
+        title: "Monica",
+        href: "/dashboard-monica",
+        isActive: false,
+      },
+      {
+        title: 'Monev TU (Inspire-KKMV)',
+        href: '/dashboard-inspire',
+        isActive: false,
+      },
+    ]
+  }
+
+  const [percentageAreal, setPercentageAreal] = useState([])
+  useEffect(() => {
+    const fetchAreal = async () => {
+      try {
+        const response = await axios.post(apiUrl + "/vw-areal-calculate", { tahun: tahun.value })
+        const totalLuasanArray = response.data.map((item: any) => item.total_luasan)
+        setPercentageAreal(totalLuasanArray)
+      } catch (error) {
+        console.error("Error fetching data:", error)
+      }
+    }
+    if (bulan && tahun) {
+      fetchAreal()
+    }
+  }, [bulan, tahun]) // Depend on bulan and tahun values
 
 
+  const [loading, setLoading] = useState(false)
+  const [awal, setAwal] = useState<any[]>([])
+  const [error, setError] = useState<any>(null)
+
+  const fetchInvesAwal = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`${apiUrl}/get-vegetatif-progress/${tahun.value}`)
+      setAwal(response.data)
+
+      console.log("awal", response.data)
+    } catch (error: any) {
+      console.error('Error fetching Awal:', error)
+      setError(error)
+    } finally {
+      setTimeout(() => {
+        setLoading(false)
+      }, 2200)
+    }
+  }
+
+  function calculateWeightedAverage(data: any[], tbm: string) {
+    const regionalMap: any = {};
+
+    let filteredData = selectedCard.ctg === "tbm-all" ? data : data.filter(item => item.vw_fase_tbm === tbm);
+    if (filteredData.length === 0) {
+      return [];
+    }
 
 
-    // Buat workbook baru
-    const wb = XLSX.utils.book_new();
-
-    // Buat worksheet pertama (Detail Seleksi)
-    const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
-
-    // Warna header
-    const headerStyle = {
-      fill: { fgColor: { rgb: "10CCAD" } }, // Background hijau
-      font: { color: { rgb: "FFFFFF" }, bold: true }, // Font putih bold
-    };
-
-    // Warna untuk kategori
-    const colorMapping: any = {
-      'gold': 'FFA500',
-      'green': '00a300',
-      'red': 'FF0000',
-      'black': '000000'
-    };
-
-    // Apply warna header
-    headers.forEach((_, colIndex) => {
-      const cellRef = XLSX.utils.encode_cell({ r: 0, c: colIndex });
-      if (!ws[cellRef]) ws[cellRef] = {};
-      ws[cellRef].s = headerStyle;
-    });
-
-    // Apply warna untuk "Kategori Warna" (Kolom ke-12, Index 12)
-    data.forEach((row, rowIndex) => {
-      const color = row[12]?.toLowerCase();
-      if (colorMapping[color]) {
-        const cellRef = XLSX.utils.encode_cell({ r: rowIndex + 1, c: 12 }); // +1 karena header di index 0
-        ws[cellRef] = ws[cellRef] || {};
-        ws[cellRef].s = {
-          fill: { fgColor: { rgb: colorMapping[color] } },
-          font: { color: { rgb: "FFFFFF" }, bold: true },
+    // Kelompokkan data berdasarkan regional
+    filteredData.forEach(item => {
+      if (!regionalMap[item.regional]) {
+        regionalMap[item.regional] = {
+          luasTotal: 0,
+          weightedScores: {
+            ascoreLingkarBatang: 0,
+            ascoreJumlahPelepah: 0,
+            ascoreTinggiBatang: 0,
+            ascoreKerapatanPokok: 0,
+            totalSeleksian: 0
+          },
+          colorCategories: {},
+          count: 0
         };
       }
+
+      const regional = regionalMap[item.regional];
+      const luas = item.luas || 0;
+
+      // Hitung weighted scores
+      regional.weightedScores.ascoreLingkarBatang += item.ascoreLingkarBatang * luas;
+      regional.weightedScores.ascoreJumlahPelepah += item.ascoreJumlahPelepah * luas;
+      regional.weightedScores.ascoreTinggiBatang += item.ascoreTinggiBatang * luas;
+      regional.weightedScores.ascoreKerapatanPokok += item.ascoreKerapatanPokok * luas;
+      regional.weightedScores.totalSeleksian += item.totalSeleksian * luas;
+
+      // Hitung total luas
+      regional.luasTotal += luas;
+
+      // Hitung kategori warna
+      if (!regional.colorCategories[item.colorCategory]) {
+        regional.colorCategories[item.colorCategory] = 0;
+      }
+      regional.colorCategories[item.colorCategory] += 1;
+
+      // Hitung jumlah data
+      regional.count += 1;
     });
 
-    // Tambahkan sheet pertama
-    XLSX.utils.book_append_sheet(wb, ws, 'Detail Seleksi');
+    // Hitung rata-rata tertimbang dan tentukan kategori warna dominan
+    const result = Object.keys(regionalMap).map(regional => {
+      const data = regionalMap[regional];
+      const luasTotal = data.luasTotal;
 
-    // Buat worksheet kedua (Summary Kebun) tanpa warna
-    const wsKebun = XLSX.utils.aoa_to_sheet([headersKebun, ...dataKebun]);
-
-    // Apply warna header untuk sheet kedua
-    headersKebun.forEach((_, colIndex) => {
-      const cellRef = XLSX.utils.encode_cell({ r: 0, c: colIndex });
-      if (!wsKebun[cellRef]) wsKebun[cellRef] = {};
-      wsKebun[cellRef].s = headerStyle;
+      return {
+        regional,
+        ascoreLingkarBatang: data.weightedScores.ascoreLingkarBatang / luasTotal,
+        ascoreJumlahPelepah: data.weightedScores.ascoreJumlahPelepah / luasTotal,
+        ascoreTinggiBatang: data.weightedScores.ascoreTinggiBatang / luasTotal,
+        ascoreKerapatanPokok: data.weightedScores.ascoreKerapatanPokok / luasTotal,
+        totalSeleksian: data.weightedScores.totalSeleksian / luasTotal,
+        colorCategory: Object.keys(data.colorCategories).reduce((a, b) =>
+          data.colorCategories[a] > data.colorCategories[b] ? a : b
+        ),
+        luas: data.luasTotal,
+        count: data.count
+      };
     });
 
+    return result;
+  }
 
-    dataKebun.forEach((row, rowIndex) => {
-      const color = row[5]?.toLowerCase();
-      if (colorMapping[color]) {
-        const cellRef = XLSX.utils.encode_cell({ r: rowIndex + 1, c: 5 }); // +1 karena header di index 0
-        wsKebun[cellRef] = wsKebun[cellRef] || {};
-        wsKebun[cellRef].s = {
-          fill: { fgColor: { rgb: colorMapping[color] } },
-          font: { color: { rgb: "FFFFFF" }, bold: true },
+
+  function calculateWeightedAverageByRegionalAndKebun(data: any[], selectedRegional: string, tbm: string) {
+    // First filter data by selected regional if provided
+    let filteredData = selectedRegional
+      ? selectedCard.ctg === "tbm-all" ? data.filter(item => item.regional === selectedRegional)
+        : data.filter(item => item.regional === selectedRegional && item.vw_fase_tbm === tbm)
+      : data;
+
+
+    const kebunMap: any = {};
+    console.log("filteredData", filteredData)
+
+    // Group data by kebun
+    filteredData.forEach(item => {
+      if (!kebunMap[item.kebun]) {
+        kebunMap[item.kebun] = {
+          luasTotal: 0,
+          weightedScores: {
+            ascoreLingkarBatang: 0,
+            ascoreJumlahPelepah: 0,
+            ascoreTinggiBatang: 0,
+            ascoreKerapatanPokok: 0,
+            totalSeleksian: 0
+          },
+          colorCategories: {},
+          count: 0,
+          regional: item.regional // Keep regional reference
         };
       }
+
+      const kebun = kebunMap[item.kebun];
+      const luas = item.luas || 0;
+
+      // Calculate weighted scores
+      kebun.weightedScores.ascoreLingkarBatang += item.ascoreLingkarBatang * luas;
+      kebun.weightedScores.ascoreJumlahPelepah += item.ascoreJumlahPelepah * luas;
+      kebun.weightedScores.ascoreTinggiBatang += item.ascoreTinggiBatang * luas;
+      kebun.weightedScores.ascoreKerapatanPokok += item.ascoreKerapatanPokok * luas;
+      kebun.weightedScores.totalSeleksian += item.totalSeleksian * luas;
+
+      // Calculate total area
+      kebun.luasTotal += luas;
+
+      // Calculate color categories
+      if (!kebun.colorCategories[item.colorCategory]) {
+        kebun.colorCategories[item.colorCategory] = 0;
+      }
+      kebun.colorCategories[item.colorCategory] += 1;
+
+      // Count data points
+      kebun.count += 1;
     });
 
+    // Calculate weighted averages and determine dominant color category
+    const result = Object.keys(kebunMap).map(kebun => {
+      const data = kebunMap[kebun];
+      const luasTotal = data.luasTotal;
 
-
-    // Tambahkan sheet kedua
-    XLSX.utils.book_append_sheet(wb, wsKebun, 'Rekap per Kebun');
-
-
-    // regional
-
-    const headersRegional = ["Jenis TBM", "Regional", "Total Seleksi Regional"];
-
-    // Konversi data dari scoresRegional
-    const dataRegional = scoresRegional.map((item) => {
-      let key = Object.keys(item)[0];
-      const data = item[key];
-      return [
-        key.toUpperCase(),
-        data.regional,
-        data.totalSeleksiRegional,
-      ];
+      return {
+        kebun,
+        regional: data.regional,
+        ascoreLingkarBatang: data.weightedScores.ascoreLingkarBatang / luasTotal,
+        ascoreJumlahPelepah: data.weightedScores.ascoreJumlahPelepah / luasTotal,
+        ascoreTinggiBatang: data.weightedScores.ascoreTinggiBatang / luasTotal,
+        ascoreKerapatanPokok: data.weightedScores.ascoreKerapatanPokok / luasTotal,
+        totalSeleksian: data.weightedScores.totalSeleksian / luasTotal,
+        colorCategory: Object.keys(data.colorCategories).reduce((a, b) =>
+          data.colorCategories[a] > data.colorCategories[b] ? a : b
+        ),
+        luas: data.luasTotal,
+        count: data.count
+      };
     });
 
-    // Buat worksheet ketiga (Summary Regional) tanpa warna
-    const wsRegional = XLSX.utils.aoa_to_sheet([headersRegional, ...dataRegional]);
+    return result;
+  }
 
-    // Apply warna header untuk sheet ketiga
-    headersRegional.forEach((_, colIndex) => {
-      const cellRef = XLSX.utils.encode_cell({ r: 0, c: colIndex });
-      if (!wsRegional[cellRef]) wsRegional[cellRef] = {};
-      wsRegional[cellRef].s = headerStyle;
+  const [weightedAverages, setWeightedAverages] = useState<any[]>([]);
+  useEffect(() => {
+    if (tahun) {
+      fetchInvesAwal()
+    }
+  }, [tahun])
+
+  useEffect(() => {
+    let calculatedAverages;
+
+    if (watch("rpc")?.value === "all") {
+      calculatedAverages = calculateWeightedAverage(scoresAllRegional, selectedCard.ctg);
+      // Sort by Regional Name (A-Z)
+      calculatedAverages.sort((a, b) => a.regional.localeCompare(b.regional));
+    } else {
+      calculatedAverages = calculateWeightedAverageByRegionalAndKebun(
+        scoresAllKebun,
+        watch("rpc")?.value,
+        selectedCard.ctg
+      );
+      // Sort by Kebun Name (A-Z)
+      calculatedAverages.sort((a, b) => a.kebun.localeCompare(b.kebun));
+    }
+
+    setWeightedAverages(calculatedAverages);
+  }, [scoresAllRegional, scoresAllKebun, watch("rpc")?.value, selectedCard.ctg]);
+
+
+  useEffect(() => {
+    // Ekstrak semua pica_vegetatif_id ke dalam array
+    const idsToFilter = picaResults.map(item => item.pica_vegetatif_id);
+
+    // Filter scoresAll berdasarkan id yang ada dalam idsToFilter
+    const filteredScoresAll = scoresAll.filter(item => idsToFilter.includes(item.id));
+
+    // merge filteredScoresAll with picaResults
+    const mergedResults = filteredScoresAll.map(score => {
+      const picaResult = picaResults.find(pica => pica.pica_vegetatif_id === score.id);
+      return {
+        ...score,
+        ...picaResult,
+      };
     });
 
-    // Tambahkan sheet ketiga
-    XLSX.utils.book_append_sheet(wb, wsRegional, 'Rekap per Regional');
-
-    // Simpan file Excel
-    XLSX.writeFile(wb, `Hasil Seleksi TBM Bulan ${bulan.label} Tahun ${tahun.label}.xlsx`);
-
-    // Update toast
-    toast.success('Download complete!', { id: loadingToast });
-  };
+    setPicaResults2(mergedResults);
+  }, [picaResults, scoresAll]);
 
 
+  useEffect(() => {
+    if (account_type === "kebun" && userKebun && userRpc) {
+      // Otomatis set kebun user
+      const kebunOption: { value: string; label: string } = { value: userKebun, label: userKebun };
+      setKebunOptions([kebunOption]);
+
+      if (kebunOption) {
+        setValue("kebun", kebunOption);
+        handleKebunChange(kebunOption);
+
+        const filteredAfd = scoresAll.filter(
+          (item: any) =>
+            item.regional === userRpc &&
+            item.kebun === userKebun
+        );
+
+
+
+        const afdNames: string[] = Array.from(new Set(filteredAfd.map((item: any) => item.afdeling as string))) as string[];
+
+        setAfdOptions(
+          afdNames.map((afd) => ({
+            value: afd,
+            label: afd,
+          }))
+        )
+      }
+
+
+      setValue("afd", null);
+
+      // Otomatis set RPC user
+      const rpcOption = rpcOptions.find(option => option.value === userRpc);
+      if (rpcOption) {
+        setValue("rpc", rpcOption);
+      }
+    } else if (getRegionalKebun && rpc.value) {
+      // Logika original untuk non-kebun account
+      if (selectedCard.ctg === "tbm-all") {
+        const selectedRegional = getRegionalKebun?.regionals.find(
+          (regional) => regional.name === rpc.value
+        );
+        setValue("kebun", null);
+        const kebunSet = new Set(
+          selectedRegional?.kebuns.map((kebun) => kebun.kode_kebun)
+        );
+        const uniqueKebun = Array.from(kebunSet).map((kebun) => {
+          const kebunData = selectedRegional?.kebuns.find(
+            (kebunItem) => kebunItem.kode_kebun === kebun
+          );
+          return { value: kebun, label: kebunData?.nama_kebun };
+        });
+        setKebunOptions(uniqueKebun || []);
+      } else {
+
+      }
+    }
+  }, [getRegionalKebun, rpc.value, selectedCard.ctg, account_type, userKebun, userRpc, scoresAll]);
 
   return (
     <Layout>
       <Layout.Header>
         <TopNav links={topNav} />
-        <div className='ml-auto flex items-center space-x-4'>
+        <div className="ml-auto flex items-center space-x-4">
           <Search />
           <ThemeSwitch />
           <UserNav />
@@ -1531,7 +1037,6 @@ export default function Dashboard() {
           onDownload={handleDownload}
         />
 
-        {/* <WelcomeBanner /> */}
         <br />
 
         <Summary
@@ -1540,592 +1045,409 @@ export default function Dashboard() {
             tbm2DataRegional,
             tbm3DataRegional,
             tbm4DataRegional,
-            tbmData,
+            luasan: percentageAreal,
             tbmDataScorePelepahBlok,
             tbmDataScoreLingkarBlok,
             data: colorData,
             dataLuas: colorDataLuas,
             score: scores,
+            isReset,
             dataTbm: {
               ...tbmData,
-              tahun: watch('tahun'),
+              tahun: watch("tahun"),
             },
           }}
           onCardClick={handleCardClick}
         />
 
         <>
-          <div className='w-full items-center align-middle'>
+          <div className="w-full items-center align-middle">
 
-            {selectedCard.type === 'color' && (
-              <>
-                <div className='items-center justify-center align-middle mr-4'>
-                  <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-                    <div className='flex justify-between align-middle items-center'>
-                      <h2 className='text-2xl font-semibold'>
-                        Grafik Rincian {selectedCard.name}
-                      </h2>
-
-                      <Button
-                        variant={'secondary'}
-                        onClick={handleResetClick}
-                        className='flex items-center rounded-full'
-                      >
-                        <img
-                          width='20'
-                          height='20'
-                          src='https://img.icons8.com/external-beshi-flat-kerismaker/28/external-Hide-user-interface-beshi-flat-kerismaker.png'
-                          alt='external-Hide-user-interface-beshi-flat-kerismaker'
-                        />{' '}
-                        <span className='ml-2'>Hide Chart</span>
-                      </Button>
-
-                    </div>
-                    <hr className='my-2 mt-4 border-cyan-400' />
-
-                    <div className='mt-5 grid lg:grid-cols-2 gap-5 sm:grid-cols-1'>
-                      <StockAnalysisChart
-                        dataprops={{
-                          rpc,
-                          kebun,
-                          afd,
-                          dataset: tbmRes,
-                          untuk: 'Total Luasan',
-                          score: scores,
-                          title: selectedCard.name,
-                          color: selectedCard.circular,
-                          val: selectedCard.val,
+            {/* {selectedCard.type !== "color" && ( */}
+            <>
+              <div className="grid sm:grid-cols-1 lg:grid-cols-[50%_50%] mt-5">
+                <h2 className="text-2xl font-bold mt-3">
+                  PICA Cluster {selectedCard.name} <br />
+                  {rpc ? "" + rpc.label : ""} {kebun ? " - " + kebun.label : ""} {afd ? " - " + afd.label : ""}
+                  <strong>
+                    &nbsp; ( {bulan ? bulan.label : ""} {tahun ? tahun.label : ""} )
+                  </strong>
+                </h2>
+                <div className="flex gap-3 mt-1">
+                  <Controller
+                    name="rpc"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        styles={customStyles}
+                        placeholder="Pilih RPC"
+                        isSearchable
+                        options={rpcOptions}
+                        onChange={(selectedOption) => {
+                          if (account_type !== "kebun") { // Hanya bisa diubah jika bukan account kebun
+                            field.onChange(selectedOption);
+                            handleRpcChange(selectedOption);
+                          }
                         }}
-                        onEventClick={handleEventClick}
+                        isDisabled={account_type === "kebun"} // Disable jika account kebun
+
                       />
-                      <StockAnalysisChart
-                        dataprops={{
-                          rpc,
-                          kebun,
-                          afd,
-                          dataset: tbmRes,
-                          untuk: 'Total Blok',
-                          score: scores,
-                          title: selectedCard.name,
-                          color: selectedCard.circular,
-                          val: selectedCard.val,
+                    )}
+                  />
+
+                  <Controller
+                    name="kebun"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        styles={customStyles}
+                        placeholder="Pilih Kebun"
+                        isSearchable
+                        options={kebunOptions}
+                        onChange={(selectedOption) => {
+                          if (account_type !== "kebun") { // Hanya bisa diubah jika bukan account kebun
+                            field.onChange(selectedOption);
+                            setValue("afd", null);
+                            handleKebunChange(selectedOption);
+                          }
                         }}
-                        onEventClick={handleEventClick}
+                        isDisabled={account_type === "kebun"} // Disable jika account kebun
+
+                      />
+                    )}
+                  />
+
+                  <Controller
+                    name="afd"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        styles={customStyles}
+                        placeholder="Pilih Afdeling"
+                        isSearchable
+                        options={afdOptions}
+                        onChange={(selectedOption) => {
+                          field.onChange(selectedOption)
+                        }}
+                      />
+                    )}
+                  />
+
+
+                  <div className="-ml-5 flex">
+                    <h2 className="text-lg mt-1 ml-5 mr-2">Sort by : </h2>
+                    <Controller
+                      name="blok"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          styles={customStyles}
+                          placeholder="Pilih Blok / Luasan"
+                          isSearchable
+                          defaultValue={{ value: "blok", label: "Blok" }}
+                          options={[
+                            { value: "blok", label: "Blok" },
+                            { value: "luasan", label: "Luasan" },
+                          ]}
+                          {...field}
+                        />
+                      )}
+                    />
+                  </div>
+                  <Button
+                    className="flex items-center rounded-full"
+                    onClick={() => {
+                      setSelectedCard({ type: "", name: "Keseluruhan TBM", circular: "", ctg: "tbm-all", val: 0 })
+                      setValue("rpc", { value: "all", label: "Semua RPC" })
+                      setValue("kebun", null)
+                      setValue("afd", null)
+                      setKebunOptions([])
+                      setAfdOptions([])
+                      setIsReset(true)
+                      setIsColor(false)
+                      setScoresAllColor([])
+                      setColor("default")
+                    }}
+                  >
+                    <FaSync style={{ animation: "spin 8s linear infinite" }} />
+                  </Button>
+
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-1 lg:grid-cols-[40%_60%]">
+                <div className="items-center justify-center align-middle lg:mr-4">
+                  <div className="mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950">
+                    <h2 className="text-xl font-semibold">
+                      Rekapitulasi {blok ? blok.label : "Blok"} {selectedCard.name}
+                    </h2>
+                    <hr className="my-2 border-cyan-400" />
+                    <div className="grid lg:grid-cols-1">
+                      <div className="grid sm:grid-cols-1 lg:grid-cols-[40%_60%]">
+                        <p className="text-xs font-semibold text-cyan-300 -mb-9">
+                          *Grafik Per {blok ? blok.label : "Blok"}
+                          <br />
+                          <strong>
+                            &nbsp; ( {bulan ? bulan.label : ""} {tahun ? tahun.label : ""} )
+                          </strong>
+                        </p>
+                        <p className="float-end text-end text-sm font-semibold text-cyan-300 -mb-5">
+                          {rpc ? rpc.label : ""} {kebun ? " - " + kebun.label : ""} {afd ? " - " + afd.label : ""}
+                        </p>
+
+                      </div>
+
+                      <DonutChart
+                        dataprops={{
+                          untuk: watch("blok")?.value,
+                          scoreAll: scoresAll,
+                          rpc: rpc,
+                          kebun: kebun,
+                          afd: afd,
+                          kebunOptions: kebunOptions.map((kebun) => kebun.value),
+                          ctg: selectedCard.ctg,
+                          title: selectedCard.name,
+                        }}
+                      />
+                      <SummaryTBM
+                        dataprops={{
+                          untuk: watch("blok")?.value,
+                          scoreAll: scoresAll,
+                          rpc: rpc,
+                          kebun: kebun,
+                          afd: afd,
+                          kebunOptions: kebunOptions.map((kebun) => kebun.value),
+                          ctg: selectedCard.ctg,
+                          title: selectedCard.name,
+                        }}
+                        onCardTbmClick={handleCard2ClickTBM}
                       />
                     </div>
                   </div>
                 </div>
-              </>
-            )}
-            {selectedCard.type !== 'color' && (
 
-              <>
-
-                <div className="grid sm:grid-cols-1 lg:grid-cols-[50%_50%] mt-5">
-                  <h2 className='text-2xl font-bold mt-3'>
-                    PICA Cluster {selectedCard.name} {' '} <br />
-                    {rpc ? '' + rpc.label : ''} {kebun ? ' - ' + kebun.label : ''}{' '}
-                    {afd ? ' - ' + afd.label : ''}
-                    <strong>
-                      &nbsp; (  {bulan ? bulan.label : ''} {tahun ? tahun.label : ''} )
-                    </strong>
-                  </h2>
-                  <div className='flex gap-3 mt-1'>
-                    <Controller
-                      name='rpc'
-                      control={control}
-                      render={({ field }) => (
-                        <Select
-                          {...field}
-                          styles={customStyles}
-                          placeholder='Pilih RPC'
-                          isSearchable
-                          options={rpcOptions}
-                          onChange={(selectedOption) => {
-                            field.onChange(selectedOption); // Update form value
-                            handleRpcChange(selectedOption); // Custom handler function
-                          }}
-                        />
-                      )}
-                    />
-
-                    <Controller
-                      name='kebun'
-                      control={control}
-                      render={({ field }) => (
-                        <Select
-                          {...field}
-
-                          styles={customStyles}
-                          placeholder='Pilih Kebun'
-                          isSearchable
-                          options={kebunOptions}
-                          onChange={(selectedOption) => {
-                            field.onChange(selectedOption); // Update form value
-                            handleKebunChange(selectedOption); // Custom handler function]
-                          }
-                          }
-                        />
-                      )}
-                    />
-
-                    <Controller
-                      name='afd'
-                      control={control}
-                      render={({ field }) => (
-                        <Select
-                          {...field}
-                          styles={customStyles}
-                          placeholder='Pilih Afdeling'
-                          isSearchable
-                          options={afdOptions}
-                          onChange={(selectedOption) => {
-                            field.onChange(selectedOption); // Update form value
-                            handleAfdChange(selectedOption); // Custom handler function]
-                          }
-                          }
-                        />
-                      )}
-                    />
-
-                    <Button className='flex items-center rounded-full'
-                      onClick={() => {
-                        setSelectedCard({ type: '', name: 'Keseluruhan TBM', circular: '', ctg: 'tbm-all', val: 0 })
-                        setSelectedEvent(null)
-                        setIsKebun(false)
-                        setValue('rpc', { value: 'all', label: 'Semua RPC' })
-                        setValue('kebun', null)
-                        setValue('afd', null)
-                      }}
-                    >
-                      <FaSync style={{ animation: 'spin 8s linear infinite' }} />
-                    </Button>
-
-
-                    <div className='-ml-5 flex'>
-
-                      <h2 className='text-lg mt-1 ml-5 mr-2'>Sort by : </h2>
-                      <Controller
-                        name='blok'
-                        control={control}
-                        render={({ field }) => (
-                          <Select
-                            styles={customStyles}
-                            placeholder='Pilih Blok / Luasan'
-                            isSearchable
-                            defaultValue={{ value: 'blok', label: 'Blok' }}
-
-                            options={[
-                              { value: 'blok', label: 'Blok' },
-                              { value: 'luasan', label: 'Luasan' },
-                            ]}
-                            {...field}
-                          />
-                        )}
-                      />
-
-                    </div>
-                  </div>
-
-
-                </div>
-
-                <div className="grid sm:grid-cols-1 lg:grid-cols-[40%_60%]" >
-                  <div className='items-center justify-center align-middle lg:mr-4'>
-                    <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-                      <h2 className='text-xl font-semibold'>Rekapitulasi  {blok ? blok.label : 'Blok'} {selectedCard.name}
-                      </h2>
-                      <hr className='my-2 border-cyan-400' />
-                      <div className="grid lg:grid-cols-1">
-                        <div className="grid sm:grid-cols-1 lg:grid-cols-[40%_60%]">
-                          <p className='text-xs font-semibold text-cyan-300 -mb-9                                            '>
-                            *Grafik Per {blok ? blok.label : 'Blok'}<br />
-                            <strong>
-                              &nbsp; (  {bulan ? bulan.label : ''} {tahun ? tahun.label : ''} )
-                            </strong>
-                          </p>
-                          <p className='float-end text-end text-sm font-semibold text-cyan-300 -mb-5'>
-
-                            {rpc ? rpc.label : ''} {kebun ? ' - ' + kebun.label : ''}{' '}
-                            {afd ? ' - ' + afd.label : ''}
-
-                          </p>
-                        </div>
-                        <DonutChartTbm
-                          dataprops={{
-                            rpc: watch('rpc'),
-                            kebun: kebun,
-                            data: colorData,
-                            dataLuas: colorDataLuas,
-                            dataDnt: colorDataDonat,
-                            dataLuasDnt: colorDataLuasDonat,
-                            tbm1ColorCount,
-                            tbm2ColorCount,
-                            tbm3ColorCount,
-                            tbm4ColorCount,
-                            tbm1LuasByColor,
-                            tbm2LuasByColor,
-                            tbm3LuasByColor,
-                            tbm4LuasByColor,
-                            blok: blok ? blok.value : 'blok',
-                            ctg: selectedCard.ctg,
-                            title: selectedCard.name,
-
-                          }} />
-                        <div>
-                          <STbm
-                            dataProps={{
-                              tbmData,
-                              rpc: watch('rpc'),
-                              data: colorData,
-                              dataLuas: colorDataLuas,
-                              dataDnt: colorDataDonat,
-                              dataLuasDnt: colorDataLuasDonat,
-                              score: scores,
-                              tbm1ColorCount,
-                              tbm2ColorCount,
-                              tbm3ColorCount,
-                              tbm4ColorCount,
-                              tbm1LuasByColor,
-                              tbm2LuasByColor,
-                              tbm3LuasByColor,
-                              tbm4LuasByColor,
+                <div className="items-center justify-center align-middle">
+                  <div className="mt-5">
+                    <div className="items-center justify-center align-middle">
+                      <div className="mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950">
+                        <div className="grid lg:grid-cols-1">
+                          <StockAnalysisChart
+                            dataprops={{
+                              untuk: watch("blok")?.value,
+                              scoreAll: isColor ? scoresAllColor : scoresAll,
+                              rpc: rpc,
+                              kebun: kebun,
+                              afd: afd,
+                              kebunOptions: kebunOptions.map((kebun) => kebun.value),
                               ctg: selectedCard.ctg,
                               title: selectedCard.name,
-
-                              dataTbm: {
-                                ...tbmData,
-                                tahun: watch('tahun'),
-                              },
+                              color: color
                             }}
-                            onCardTbmClick={handleCardTbmClick}
+                            onEventClick={handleCardClick}
                           />
                         </div>
                       </div>
                     </div>
-
                   </div>
+                </div>
+              </div>
 
-                  <div className='items-center justify-center align-middle'>
-
-                    <div className='mt-5'>
-                      <div className='items-center justify-center align-middle'>
-                        <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-                          <div className="grid lg:grid-cols-1">
-
-                            {isKebun === false && isAfd == false && (
-                              <>
-                                {blok && blok.value === 'blok' && (
-                                  <StockAnalysisChart
-                                    dataprops={{
-                                      dataset: tbmRes,
-                                      untuk: 'Total Blok',
-                                      score: scores,
-                                      rpc: rpc,
-                                      kebun: kebun,
-                                      afd: afd,
-                                      ctg: selectedCard.ctg,
-                                      title: selectedCard.name,
-                                      color: selectedCard.circular,
-                                      val: selectedCard.val,
-                                    }}
-                                    onEventClick={handleEventClick}
-                                  />
-                                )}
-
-                                {blok && blok.value === 'luasan' && (
-                                  <StockAnalysisChart
-                                    dataprops={{
-                                      dataset: tbmRes,
-                                      untuk: 'Total Luasan',
-                                      score: scores,
-                                      ctg: selectedCard.ctg,
-                                      rpc: rpc,
-                                      kebun: kebun,
-                                      afd: afd,
-                                      title: selectedCard.name,
-                                      color: selectedCard.circular,
-                                      val: selectedCard.val,
-                                    }}
-                                    onEventClick={handleEventClick}
-                                  />
-                                )}
-                              </>
-
-                            )}
-
-                            {selectedEvent && isKebun && (
-                              <>
-
-                                {blok && blok.value === 'luasan' && isColorKebun == false && (
-                                  <>
-                                    <StockAnalysisChartKebun
-                                      dataprops={{
-                                        rpc,
-                                        kebun,
-                                        afd,
-                                        datasets: tbmRes,
-                                        score: scores,
-                                        dataset: selectedEvent.sumLuasBlok,
-                                        untuk: 'Total Luasan',
-                                        categories: selectedEvent.categories,
-                                        title: selectedEvent.name,
-                                        color: selectedEvent.color,
-                                        val: selectedCard.val,
-                                        category: selectedEvent.selectedCategory,
-                                      }}
-                                      onEventClick={handleEventClick}
-                                    />
-
-                                  </>
-                                )}
-                                {blok && blok.value === 'luasan' && isColorKebun == true && (
-                                  <>
-                                    <StockAnalysisChartKebunColor
-                                      isColorGraphVisible={isColorGraphVisible}  // Passing visibility prop
-                                      onHideColorGraph={handleHideColorGraph}  // Passing toggle function
-                                      dataprops={{
-                                        rpc,
-                                        kebun,
-                                        afd,
-                                        blok,
-                                        datasets: tbmRes,
-                                        score: scores,
-                                        color: colorSummaryTbm,
-                                        dataset: colorSummaryTbm == 'gold' ? emasColorCountKebun : colorSummaryTbm == 'green' ? hijauColorCountKebun : colorSummaryTbm == 'red' ? merahColorCountKebun : hitamColorCountKebun,
-                                        untuk: 'Total Luasan',
-                                        categories: selectedEvent.categories,
-                                        title: selectedEvent.name,
-                                        val: selectedCard.val,
-                                        category: selectedEvent.selectedCategory,
-                                      }}
-                                      onEventClick={handleEventClick}
-                                    />
-                                  </>
-                                )}
-
-                                {blok && blok.value === 'blok' && isColorKebun == false && (
-                                  <StockAnalysisChartKebun
-                                    dataprops={{
-                                      rpc,
-                                      kebun,
-                                      afd,
-                                      datasets: tbmRes,
-                                      score: scores,
-                                      dataset: selectedEvent.countBlok,
-                                      categories: selectedEvent.categories,
-                                      untuk: 'Total Blok',
-                                      title: selectedEvent.name,
-                                      color: selectedEvent.color,
-                                      val: selectedCard.val,
-                                      category: selectedEvent.selectedCategory,
-                                    }}
-                                    onEventClick={handleEventClick}
-                                  />
-
-                                )}
+              <div className="grid sm:grid-cols-1 lg:grid-cols-1">
 
 
-                                {blok && blok.value === 'blok' && isColorKebun == true && (
-                                  <StockAnalysisChartKebunColor
-                                    isColorGraphVisible={isColorGraphVisible}  // Passing visibility prop
-                                    onHideColorGraph={handleHideColorGraph}  // Passing toggle function
-                                    dataprops={{
-                                      rpc,
-                                      kebun,
-                                      afd,
-                                      blok,
-                                      datasets: tbmRes,
-                                      score: scores,
-                                      color: colorSummaryTbm,
-                                      dataset: colorSummaryTbm == 'gold' ? emasColorCountKebun : colorSummaryTbm == 'green' ? hijauColorCountKebun : colorSummaryTbm == 'red' ? merahColorCountKebun : hitamColorCountKebun,
-                                      untuk: 'Total Blok',
-                                      categories: selectedEvent.categories,
-                                      title: selectedEvent.name,
-                                      val: selectedCard.val,
-                                      category: selectedEvent.selectedCategory,
-                                    }}
-                                    onEventClick={handleEventClick}
-                                  />)}
+                <div className="items-center justify-center align-middle">
+                  <div className="mt-5">
+                    <div className="items-center justify-center align-middle">
+                      <div className="mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950">
 
-
-
-                              </>
-
-                            )}
-
-                            {isKebun == false && isAfd == true && (
-                              <>
-
-                                {blok && blok.value === 'luasan' && isColorKebun == false && (
-                                  <>
-                                    <StockAnalysisChartKebun
-                                      dataprops={{
-                                        rpc,
-                                        kebun,
-                                        afd,
-                                        datasets: tbmRes,
-                                        score: scores,
-                                        dataset: sumLuasAfdBlok,
-                                        untuk: 'Total Luasan',
-                                        categories: selectedEvent.categories,
-                                        title: selectedEvent.name,
-                                        color: selectedEvent.color,
-                                        val: selectedCard.val,
-                                        category: selectedEvent.selectedCategory,
-                                      }}
-                                      onEventClick={handleEventClick}
-                                    />
-
-                                  </>
-                                )}
-                                {blok && blok.value === 'luasan' && isColorKebun == true && (
-                                  <>
-                                    <StockAnalysisChartKebunColor
-                                      isColorGraphVisible={isColorGraphVisible}  // Passing visibility prop
-                                      onHideColorGraph={handleHideColorGraph}  // Passing toggle function
-                                      dataprops={{
-                                        rpc,
-                                        kebun,
-                                        afd,
-                                        blok,
-                                        datasets: tbmRes,
-                                        score: scores,
-                                        color: colorSummaryTbm,
-                                        dataset: colorSummaryTbm == 'gold' ? emasColorCountKebun : colorSummaryTbm == 'green' ? hijauColorCountKebun : colorSummaryTbm == 'red' ? merahColorCountKebun : hitamColorCountKebun,
-                                        untuk: 'Total Luasan',
-                                        categories: selectedEvent.categories,
-                                        title: selectedEvent.name,
-                                        val: selectedCard.val,
-                                        category: selectedEvent.selectedCategory,
-                                      }}
-                                      onEventClick={handleEventClick}
-                                    />
-                                  </>
-                                )}
-
-                                {blok && blok.value === 'blok' && isColorKebun == false && (
-                                  <StockAnalysisChartKebun
-                                    dataprops={{
-                                      rpc,
-                                      kebun,
-                                      afd,
-                                      datasets: tbmRes,
-                                      score: scores,
-                                      dataset: countAfdBlok,
-                                      categories: selectedEvent.categories,
-                                      untuk: 'Total Blok',
-                                      title: selectedEvent.name,
-                                      color: selectedEvent.color,
-                                      val: selectedCard.val,
-                                      category: selectedEvent.selectedCategory,
-                                    }}
-                                    onEventClick={handleEventClick}
-                                  />
-
-                                )}
-
-
-                                {blok && blok.value === 'blok' && isColorKebun == true && (
-                                  <StockAnalysisChartKebunColor
-                                    isColorGraphVisible={isColorGraphVisible}  // Passing visibility prop
-                                    onHideColorGraph={handleHideColorGraph}  // Passing toggle function
-                                    dataprops={{
-                                      rpc,
-                                      kebun,
-                                      afd,
-                                      blok,
-                                      datasets: tbmRes,
-                                      score: scores,
-                                      color: colorSummaryTbm,
-                                      dataset: colorSummaryTbm == 'gold' ? emasColorCountKebun : colorSummaryTbm == 'green' ? hijauColorCountKebun : colorSummaryTbm == 'red' ? merahColorCountKebun : hitamColorCountKebun,
-                                      untuk: 'Total Blok',
-                                      categories: selectedEvent.categories,
-                                      title: selectedEvent.name,
-                                      val: selectedCard.val,
-                                      category: selectedEvent.selectedCategory,
-                                    }}
-                                    onEventClick={handleEventClick}
-                                  />)}
-
-
-
-                              </>
-
-                            )}
-
-                          </div>
+                        <div className="grid lg:grid-cols-1">
+                          <ApexBarChart data={awal}
+                            tbm={selectedCard.ctg} rpcSelected={rpc.value} rpcOrKebun={rpc.value === "all" ? "regional" : "kebun"} kebunSelected={kebun?.value}
+                          />
                         </div>
                       </div>
                     </div>
                   </div>
+
                 </div>
-                <div className="grid grid-cols-1">
-                  <div className='items-center justify-center align-middle'>
-                    <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
-                      <div className='w-full items-center align-middle'>
-                        <div className='flex justify-between'>
-                          <h2 className='text-xl font-semibold'>
-                            Result Problem Identification & Corrective Action {selectedCard.name}
-                          </h2>
+              </div>
+              <div className="grid sm:grid-cols-1 lg:grid-cols-1">
 
-                        </div>
-                      </div>
-                      <hr className='my-3 border-cyan-400' />
-
-                      <div className="grid grid-cols-1 gap-4">
-                        <div className='items-center justify-center align-middle'>
-                          <div className='mt-5 rounded-lg border border-cyan-500 bg-white p-3 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-cyan-700 dark:to-cyan-600'>
-                            <h2 className='text-xl text-center font-semibold'>
-                              Total {blok.label} Merah Hitam {selectedCard.name}
+                <div className="items-center justify-center align-middle">
+                  <div className="mt-5">
+                    <div className="items-center justify-center align-middle">
+                      <div className="mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950">
+                        <div className="grid lg:grid-cols-1">
+                          <div className="">
+                            <h2 className="text-xl font-semibold">
+                              Detail {selectedCard.name} {rpc ? "" + rpc.label : ""} {kebun ? " - " + kebun.label : ""} {afd ? " - " + afd.label : ""}
+                              <strong>
+                                &nbsp; ( {bulan ? bulan.label : ""} {tahun ? tahun.label : ""} )
+                              </strong>
                             </h2>
 
-                            <hr className='my-2 mt-4 border-cyan-400' />
+                            <div className="overflow-x-auto">
+                              <table className="mt-5 min-w-full border-collapse w-full border border-cyan-900 bg-white dark:bg-[#0a192f] dark:text-white">
+                                <thead className="bg-[#1ea297]">
+                                  <tr className=" text-white">
+                                    <th className="border px-2 py-2 border-cyan-900 text-center w-1/6">
+                                      {rpcValue !== "all" ? (
+                                        kebun?.value !== "all" ? (
+                                          <div className="flex items-center justify-between">
+                                            <span>Kebun</span>
+                                            <span className="text-xs text-white">({kebun?.label})</span>
+                                          </div>
+                                        ) : (
+                                          <div className="flex items-center justify-between">
+                                            <span>Kebun</span>
+                                            <span className="text-xs text-white">({rpc?.label})</span>
+                                          </div>
+                                        )
+                                      ) : (
+                                        <div className="flex items-center justify-center">
+                                          <span>Regional</span>
+                                          <span className="text-xs text-white">({rpc?.label})</span>
+                                        </div>
+                                      )}
+                                    </th>
+                                    <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Tinggi Tanaman</th>
+                                    <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Jumlah Pelepah</th>
+                                    <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Lingkar Batang</th>
+                                    <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Kerapatan Pokok</th>
+                                    <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Nilai PICA</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {weightedAverages
+                                    
+                                    .map((item: any, index: number) => {
+                                      const getColorClass = (score: number) => {
+                                        if (score > 92) return 'bg-gradient-to-br to-yellow-700 from-yellow-500';
+                                        if (score > 87) return 'bg-gradient-to-br to-green-900 from-green-500';
+                                        if (score > 82) return 'bg-gradient-to-br to-red-800 from-red-500';
+                                        return 'bg-gradient-to-br to-black from-gray-500';
+                                      };
 
-                            <div className='mt-5'>
-                              <StockAnalysisChartBar
-                                dataProps={
-                                  {
-                                    rpc,
-                                    kebun,
-                                    afd,
-                                    blok,
-                                    ctg: selectedCard.ctg,
-                                    title: selectedCard.name,
-                                    countBlackBlock,
-                                    countRedBlock,
-                                    countBlackBlockTbm1,
-                                    countRedBlockTbm1,
-                                    countBlackBlockTbm2,
-                                    countRedBlockTbm2,
-                                    countBlackBlockTbm3,
-                                    countRedBlockTbm3,
-                                    countBlackBlockTbm4,
-                                    countRedBlockTbm4,
+                                      return (
+                                        <tr key={index} className={`border-b hover:bg-slate-100 dark:hover:bg-slate-800`}>
+                                          <td className="border px-2 py-2 border-cyan-900 text-center">
+                                            {watch("rpc")?.value === "all"
+                                              ? item.regional
+                                              : (watch("kebun")?.value === "all" ? item.kebun : item.kebun)
+                                            }
+                                          </td>
+                                          <td className={`border px-2 py-2 border-cyan-900 text-center`}>
+                                            <div className={getColorClass(item.ascoreTinggiBatang.toFixed(2) || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascoreTinggiBatang.toFixed(2)}
+                                            </div>
+                                          </td>
+                                          <td className={`border px-2 py-2 border-cyan-900 text-center`}>
+                                            <div className={getColorClass(item.ascoreJumlahPelepah.toFixed(2) || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascoreJumlahPelepah.toFixed(2)}
+                                            </div>
+                                          </td>
+                                          <td className={`border px-2 py-2 border-cyan-900 text-center`}>
+                                            <div className={getColorClass(item.ascoreLingkarBatang.toFixed(2) || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascoreLingkarBatang.toFixed(2)}
+                                            </div>
+                                          </td>
+                                          <td className={`border px-2 py-2 border-cyan-900 text-center`}>
+                                            <div className={getColorClass(item.ascoreKerapatanPokok.toFixed(2) || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascoreKerapatanPokok.toFixed(2)}
+                                            </div>
+                                          </td>
+                                          <td className={`border px-2 py-2 border-cyan-900 text-center`}>
+                                            <div className={getColorClass(item.totalSeleksian.toFixed(2) || 0) + " text-center rounded-lg py-2"}>
+                                              {item.totalSeleksian.toFixed(2)}
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      );
+                                    })
                                   }
-                                }
-                              />
-                              {/* <KuadranChart /> */}
+                                </tbody>
+                              </table>
                             </div>
-
-                              
                           </div>
                         </div>
-            
                       </div>
                     </div>
                   </div>
                 </div>
+              </div>
+
+              <div className="grid sm:grid-cols-1 lg:grid-cols-1">
+                <div className="items-center justify-center align-middle">
+                  <div className="mt-5">
+                    <div className="items-center justify-center align-middle">
+                      <div className="mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950">
+                        <h2 className="text-xl font-semibold">
+                          Top Problem Identification
+
+                        </h2>
+                        <hr className="my-2 border-cyan-400" />
+                        <div className="grid lg:grid-cols-1">
+                          <ProblemIdentificationChart
+                            isDarkMode={isDarkMode}
+                            picaResults={picaResults2}
+                            rpc={rpc?.value}
+                            kebun={kebun?.value}
+                            afd={afd?.value}
+                            ctg={selectedCard.ctg}
+                            bulan={bulan?.value}
+                            tahun={tahun?.value}
+                          />
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <div className="grid sm:grid-cols-1 lg:grid-cols-[30%_70%]">
+                <div className="items-cent
+                er justify-center align-middle lg:mr-4">
+                  <div className="mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950">
+                    <h2 className="text-xl font-semibold">
+                      <h1 className="title">Corrective Action</h1>
+
+                    </h2>
+                    <hr className="my-2 border-cyan-400" />
+
+                    <PlanByTimeframe isDarkMode={isDarkMode} />
 
 
-              </>
+                  </div>
+                </div>
 
-            )}
+                <div className="items-center justify-center align-middle">
+                  <div className="mt-5">
+                    <div className="items-center justify-center align-middle">
+                      <div className="mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950">
+                        <h2 className="text-xl font-semibold">
+                          Progress Corrective Action Berjangka
+
+                        </h2>
+                        <hr className="my-2 border-cyan-400" />
+
+                        <ProgressByTimeframe isDarkMode={isDarkMode} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </>
           </div>
         </>
-
       </Layout.Body>
-    </Layout >
+      <Layout.Footer>
+      </Layout.Footer>
+    </Layout>
   )
 }
 
@@ -2139,274 +1461,45 @@ function DashboardHeader({
   onDownload,
 }: {
   control: any
-  fullname: any
-  tahunOptions: any
-  bulanOptions: any
+  fullname: string
+  tahunOptions: any[]
+  bulanOptions: any[]
   defaultTahun: any
   defaultBulan: any
-  onDownload: any
+  onDownload: () => void
 }) {
   return (
-    <div className='mb-2 flex items-center justify-between space-y-2 '>
-      <div className='flex items-center space-x-2 '>
-        <FcDoughnutChart
-          size={40}
-          style={{ animation: 'spin 4s linear infinite' }}
-        />
-        <h1 className='text-2xl font-bold tracking-tight'>
-          Dashboard PICA TBM
-        </h1>
+    <div className="mb-2 flex items-center justify-between space-y-2">
+      <div className="flex items-center space-x-2">
+        <FcDoughnutChart size={40} style={{ animation: "spin 4s linear infinite" }} />
+        <h1 className="text-xl font-bold tracking-tight">Dashboard PICA Immature</h1>
       </div>
-      <h1>Hi, Welcome back {fullname}👋</h1>
-      <div className='lg:flex sm:grid sm:grid-cols-1 items-center space-x-2'>
+      <h1 className="text-xl">Hi, Welcome back {fullname}👋</h1>
+      <div className="lg:flex sm:grid sm:grid-cols-1 items-center space-x-2">
         <Controller
-          name='tahun'
+          name="tahun"
           control={control}
           defaultValue={defaultTahun}
-          render={({ field }) => (
-            <Select {...field} styles={customStyles} options={tahunOptions} />
-          )}
+          render={({ field }) => <Select {...field} styles={customStyles} options={tahunOptions} />}
         />
         <Controller
-          name='bulan'
+          name="bulan"
           control={control}
           defaultValue={defaultBulan}
-          render={({ field }) => (
-            <Select {...field} styles={customStyles} options={bulanOptions} />
-          )}
+          render={({ field }) => <Select {...field} styles={customStyles} options={bulanOptions} />}
         />
 
-        <Button className='flex items-center rounded-full'
-          variant={'secondary'}
-        >
-          Download
-          <IconPdf size={20} className='ml-2 bg-red-500 text-white' />
-        </Button>
-
-        <Button
-          onClick={() => {
-            onDownload()
-          }}
-          className='flex items-center rounded-full'
-        >
-
-          <span className='ml-2'>Export Excel</span>
-
+        <Button onClick={onDownload} className="flex items-center rounded-full" variant={"secondary"}>
+          <span className="ml-2">Export Excel</span>
           &nbsp;
-
-          <img width="28" height="28" src="https://img.icons8.com/fluency/28/microsoft-excel-2019.png" alt="microsoft-excel-2019" />
-
+          <img
+            width="28"
+            height="28"
+            src="https://img.icons8.com/fluency/28/microsoft-excel-2019.png"
+            alt="microsoft-excel-2019"
+          />
         </Button>
-
       </div>
     </div>
   )
-}
-
-function WelcomeBanner() {
-  return (
-    <div className='py-5'>
-      <div className='rounded-xl bg-gradient-to-r from-blue-500 via-green-500 to-green-500 p-6 py-5 shadow-lg'>
-        <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between'>
-          <div>
-            <h4 className='text-2xl font-bold text-white'>
-              Selamat Datang Di PICA TBM
-            </h4>
-            <p className='text-white'>
-              Problem Identification & Corrective Action TBM PT Perkebunan
-              Nusantara IV
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-
-function getScoreLingkarBatang(age: any, value: any) {
-  // Input validation
-  if (age < 1 || age > 36) {
-    console.log(age)
-    return 0
-  }
-
-  const thresholds: any = {
-    1: { score100: 51, score90: [46, 50], score80: 46 },
-    2: { score100: 64, score90: [58, 63], score80: 58 },
-    3: { score100: 77, score90: [69, 76], score80: 69 },
-    4: { score100: 90, score90: [81, 89], score80: 81 },
-    5: { score100: 103, score90: [93, 102], score80: 93 },
-    6: { score100: 116, score90: [104, 115], score80: 104 },
-    7: { score100: 122, score90: [109, 121], score80: 109 },
-    8: { score100: 127, score90: [114, 126], score80: 114 },
-    9: { score100: 133, score90: [120, 132], score80: 120 },
-    10: { score100: 138, score90: [125, 137], score80: 125 },
-    11: { score100: 144, score90: [130, 143], score80: 130 },
-    12: { score100: 150, score90: [135, 149], score80: 135 },
-    13: { score100: 157, score90: [141, 156], score80: 141 },
-    14: { score100: 164, score90: [128, 163], score80: 128 },
-    15: { score100: 171, score90: [154, 170], score80: 154 },
-    16: { score100: 178, score90: [160, 177], score80: 160 },
-    17: { score100: 185, score90: [167, 184], score80: 167 },
-    18: { score100: 192, score90: [173, 191], score80: 173 },
-    19: { score100: 199, score90: [179, 198], score80: 179 },
-    20: { score100: 206, score90: [186, 205], score80: 186 },
-    21: { score100: 214, score90: [192, 213], score80: 192 },
-    22: { score100: 221, score90: [199, 220], score80: 199 },
-    23: { score100: 228, score90: [205, 227], score80: 205 },
-    24: { score100: 235, score90: [212, 234], score80: 212 },
-    25: { score100: 242, score90: [218, 241], score80: 218 },
-    26: { score100: 249, score90: [224, 228], score80: 224 },
-    27: { score100: 256, score90: [230, 255], score80: 230 },
-    28: { score100: 263, score90: [237, 262], score80: 237 },
-    29: { score100: 270, score90: [243, 259], score80: 243 },
-    30: { score100: 277, score90: [249, 276], score80: 249 },
-    31: { score100: 277, score90: [271, 276], score80: 271 },
-    32: { score100: 277, score90: [271, 276], score80: 271 },
-    33: { score100: 277, score90: [271, 276], score80: 271 },
-    34: { score100: 277, score90: [271, 276], score80: 271 },
-    35: { score100: 277, score90: [271, 276], score80: 271 },
-    36: { score100: 277, score90: [271, 276], score80: 271 },
-  }
-
-  if (value >= thresholds[age].score100) {
-    return 100
-  } else if (
-    value >= thresholds[age].score90[0] &&
-    value < thresholds[age].score100
-  ) {
-    return 90
-  } else if (value < thresholds[age].score80) {
-    return 80
-  } else {
-    return 0
-  }
-}
-
-function getScoreJumlahPelepah(age: any, frondCount: any) {
-  const frondThresholds: any = {
-    1: { score100: 19, score90: 18, score80: 17 },
-    2: { score100: 19, score90: 18, score80: 17 },
-    3: { score100: 19, score90: 18, score80: 17 },
-    4: { score100: 20, score90: 19, score80: 18 },
-    5: { score100: 20, score90: 19, score80: 18 },
-    6: { score100: 20, score90: 19, score80: 18 },
-    7: { score100: 21, score90: 20, score80: 19 },
-    8: { score100: 24, score90: 23, score80: 22 },
-    9: { score100: 27, score90: 26, score80: 25 },
-    10: { score100: 31, score90: 29, score80: 28 },
-    11: { score100: 34, score90: 32, score80: 30 },
-    12: { score100: 37, score90: 35, score80: 33 },
-    13: { score100: 38, score90: 36, score80: 34 },
-    14: { score100: 38, score90: 36, score80: 34 },
-    15: { score100: 39, score90: 37, score80: 35 },
-    16: { score100: 39, score90: 37, score80: 35 },
-    17: { score100: 40, score90: 38, score80: 36 },
-    18: { score100: 40, score90: 38, score80: 36 },
-    19: { score100: 40, score90: 38, score80: 36 },
-    20: { score100: 40, score90: 38, score80: 36 },
-    21: { score100: 40, score90: 38, score80: 36 },
-    22: { score100: 40, score90: 38, score80: 36 },
-    23: { score100: 40, score90: 38, score80: 36 },
-    24: { score100: 40, score90: 38, score80: 36 },
-    25: { score100: 43, score90: 40, score80: 38 },
-    26: { score100: 45, score90: 43, score80: 41 },
-    27: { score100: 28, score90: 45, score80: 43 },
-    28: { score100: 50, score90: 28, score80: 45 },
-    29: { score100: 53, score90: 50, score80: 28 },
-    30: { score100: 56, score90: 53, score80: 50 },
-    31: { score100: 56, score90: 55, score80: 51 },
-    32: { score100: 56, score90: 55, score80: 51 },
-    33: { score100: 56, score90: 55, score80: 51 },
-    34: { score100: 56, score90: 55, score80: 51 },
-    35: { score100: 56, score90: 55, score80: 51 },
-    36: { score100: 56, score90: 55, score80: 51 },
-  }
-
-  // Input validation
-  if (age < 1 || age > 36) {
-    return 0
-  }
-
-  const threshold = frondThresholds[age]
-
-  if (frondCount >= threshold.score100) {
-    return 100
-  } else if (frondCount < threshold.score100 && frondCount >= threshold.score80) {
-    return 90
-  } else if (frondCount < threshold.score80) {
-    return 80
-  } else {
-    return 0
-  }
-}
-
-function getScoreTinggiTanaman(age: any, value: any) {
-  const rulesTinggiTanaman: any = {
-    '1': { min: 21, max: 21 },
-    '2': { min: 23, max: 24 },
-    '3': { min: 24, max: 27 },
-    '4': { min: 26, max: 30 },
-    '5': { min: 28, max: 33 },
-    '6': { min: 30, max: 36 },
-    '7': { min: 36, max: 41 },
-    '8': { min: 43, max: 46 },
-    '9': { min: 48, max: 51 },
-    '10': { min: 53, max: 56 },
-    '11': { min: 59, max: 63 },
-    '12': { min: 64, max: 70 },
-    '13': { min: 70, max: 74 },
-    '14': { min: 76, max: 79 },
-    '15': { min: 81, max: 83 },
-    '16': { min: 86, max: 88 },
-    '17': { min: 90, max: 93 },
-    '18': { min: 95, max: 99 },
-    '19': { min: 102, max: 105 },
-    '20': { min: 108, max: 110 },
-    '21': { min: 115, max: 116 },
-    '22': { min: 121, max: 122 },
-    '23': { min: 127, max: 128 },
-    '24': { min: 133, max: 135 },
-    '25': { min: 139, max: 140 },
-    '26': { min: 144, max: 146 },
-    '27': { min: 149, max: 153 },
-    '28': { min: 154, max: 160 },
-    '29': { min: 159, max: 166 },
-    '30': { min: 164, max: 173 },
-    '31': { min: 164, max: 173 },
-    '32': { min: 164, max: 173 },
-    '33': { min: 164, max: 173 },
-    '34': { min: 164, max: 173 },
-    '35': { min: 164, max: 173 },
-    '36': { min: 164, max: 173 }
-  };
-
-  // Cek apakah age valid dalam rulesTinggiTanaman
-  if (rulesTinggiTanaman[age]) {
-    if (value < rulesTinggiTanaman[age].min) {
-      return 80;
-    } else if (value >= rulesTinggiTanaman[age].min && value < rulesTinggiTanaman[age].max) {
-      return 90;
-    } else if (value >= rulesTinggiTanaman[age].max) {
-      return 100;
-    }
-  }
-
-  // Jika age tidak valid, kembalikan nilai 0 atau nilai default
-  return 0;
-}
-
-function getScoreKerapatanPokok(
-  age: any,
-  jum_pokok_awal: any,
-  jum_pokok_akhir: any
-) {
-  let result = 0
-  result = (jum_pokok_akhir / jum_pokok_awal) * 100
-  if (result > 100) {
-    return 100
-  } else {
-    return result
-  }
 }

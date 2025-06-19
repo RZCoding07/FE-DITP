@@ -1,387 +1,145 @@
-import React from 'react'
 import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/custom/button'
 
-export const Summary = ({ dataProps, onCardTbmClick }: { dataProps: any; onCardTbmClick: (data: any) => void }) => {
-  const tahunValue = dataProps?.dataTbm?.tahun?.value
-  const rpc = dataProps?.rpc?.value
-  let data: any = []
+export const SummaryTBM = ({ dataprops, onCardTbmClick }: { dataprops: any; onCardTbmClick: (data: any) => void }) => {
+  // Initialize counts and areas
+  let goldCount = 0, greenCount = 0, redCount = 0, blackCount = 0;
+  let goldArea = 0, greenArea = 0, redArea = 0, blackArea = 0;
 
+  // Filter data based on TBM category
+  let filteredData = dataprops.scoreAll;
+  if (dataprops.ctg !== 'tbm-all') {
+    filteredData = dataprops.scoreAll.filter((item:any) => item.vw_fase_tbm === dataprops.ctg);
+  }
 
-  if (dataProps.title === 'Keseluruhan TBM') {
-    data = [
-      {
-        show: true,
-        name: 'Emas',
-        val: 0,
-
-        progress:
-          dataProps.data.gold == null
-            ? 0
-            : dataProps.data.gold.toLocaleString('id-ID'),
-        progressLuas:
-          dataProps.data.gold == null
-            ? 0
-            : dataProps.dataLuas.gold.toLocaleString('id-ID'),
-        circular: 'gold',
-        image: '/2.png',
-        color: '#FFA500',
-        textColor: '#ffffff',
-      },
-
-      {
-        show: true,
-        name: 'Hijau',
-        val: 1,
-        progress: dataProps.data.green == null ? 0 : dataProps.data.green.toLocaleString('id-ID'),
-        progressLuas: dataProps.dataLuas.green == null ? 0 : dataProps.dataLuas.green.toLocaleString('id-ID'),
-
-        circular: 'green',
-        image: '/2.png',
-        color: '#00a300',
-        textColor: '#ffffff',
-      },
-      {
-        show: true,
-        name: 'Merah',
-        progress: dataProps.data.red == null ? 0 : dataProps.data.red.toLocaleString('id-ID'),
-        progressLuas: dataProps.dataLuas.red == null ? 0 : dataProps.dataLuas.red.toLocaleString('id-ID'),
-        val: 2,
-        circular: 'red',
-        image: '/2.png',
-        color: '#FF0000',
-        textColor: '#ffffff',
-      },
-      {
-        show: true,
-        name: 'Hitam',
-        val: 3,
-        progress: dataProps.data.black == null ? 0 : dataProps.data.black.toLocaleString('id-ID'),
-        progressLuas: dataProps.data.black == null ? 0 : dataProps.dataLuas.black.toLocaleString('id-ID'),
-        circular: 'black',
-        image: '/2.png',
-        color: '#000000',
-        textColor: '#ffffff',
-      },
-    ]
-  } else {
-    if (dataProps.ctg == 'tbm1' && rpc == 'all') {
-      data = [
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Emas',
-          progress:
-            dataProps.tbm1ColorCount.gold == null
-              ? 0
-              : dataProps.tbm1ColorCount.gold,
-          progressLuas:
-            dataProps.tbm1LuasByColor.gold == null
-              ? 0
-              : dataProps.tbm1LuasByColor.gold.toFixed(2),
-
-          circular: 'gold',
-          rules: 'Kelas A : 97 - 100',
-          image: '/2.png',
-          color: '#FFA500',
-          textColor: '#ffffff',
-        },
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Hijau',
-          progress: dataProps.tbm1ColorCount.green == null ? 0 : dataProps.tbm1ColorCount.green,
-          progressLuas: dataProps.tbm1LuasByColor.green == null ? 0 : dataProps.tbm1LuasByColor.green.toFixed(2),
-          circular: 'green',
-          rules: 'Kelas B : 85 - 96',
-          image: '/2.png',
-          color: '#00a300',
-          textColor: '#ffffff',
-        },
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Merah',
-          progress: dataProps.tbm1ColorCount.red == null ? 0 : dataProps.tbm1ColorCount.red,
-          progressLuas: dataProps.tbm1LuasByColor.red == null ? 0 : dataProps.tbm1LuasByColor.red.toFixed(2),
-          circular: 'red',
-          rules: 'Kelas C : 75 - 84',
-          image: '/2.png',
-          color: '#FF0000',
-          textColor: '#ffffff',
-        },
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Hitam',
-          progress: dataProps.tbm1ColorCount.black == null ? 0 : dataProps.tbm1ColorCount.black,
-          progressLuas: dataProps.tbm1LuasByColor.black == null ? 0 : dataProps.tbm1LuasByColor.black.toFixed(2),
-          circular: 'black',
-          rules: 'Kelas D : 0 - 74',
-          image: '/2.png',
-          color: '#000000',
-          textColor: '#ffffff',
-        },
-      ]
-    } else if (dataProps.ctg == 'tbm2' && rpc == 'all') {
-      data = [
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Emas',
-          progress: dataProps.tbm2ColorCount.gold == null ? 0 : dataProps.tbm2ColorCount.gold,
-          progressLuas: dataProps.tbm2LuasByColor.gold == null ? 0 : dataProps.tbm2LuasByColor.gold.toFixed(2),
-          circular: 'gold',
-          rules: 'Kelas A : 97 - 100',
-          image: '/2.png',
-          color: '#FFA500',
-          textColor: '#ffffff',
-        },
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Hijau',
-          progress: dataProps.tbm2ColorCount.green == null ? 0 : dataProps.tbm2ColorCount.green,
-          progressLuas: dataProps.tbm2LuasByColor.green == null ? 0 : dataProps.tbm2LuasByColor.green.toFixed(2),
-          circular: 'green',
-          rules: 'Kelas B : 85 - 96',
-          image: '/2.png',
-          color: '#00a300',
-          textColor: '#ffffff',
-        },
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Merah',
-          progress: dataProps.tbm2ColorCount.red == null ? 0 : dataProps.tbm2ColorCount.red,
-          progressLuas: dataProps.tbm2LuasByColor.red == null ? 0 : dataProps.tbm2LuasByColor.red.toFixed(2),
-          circular: 'red',
-          rules: 'Kelas C : 75 - 84',
-          image: '/2.png',
-          color: '#FF0000',
-          textColor: '#ffffff',
-        },
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Hitam',
-          progress: dataProps.tbm2ColorCount.black == null ? 0 : dataProps.tbm2ColorCount.black,
-          progressLuas: dataProps.tbm2LuasByColor.black == null ? 0 : dataProps.tbm2LuasByColor.black.toFixed(2),
-          circular: 'black',
-          rules: 'Kelas D : 0 - 74',
-          image: '/2.png',
-          color: '#000000',
-          textColor: '#ffffff',
-        },
-      ]
-    } else if (dataProps.ctg == 'tbm3' && rpc == 'all') {
-      data = [
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Emas',
-          progress: dataProps.tbm3ColorCount.gold == null ? 0 : dataProps.tbm3ColorCount.gold,
-          progressLuas: dataProps.tbm3LuasByColor.gold == null ? 0 : dataProps.tbm3LuasByColor.gold.toFixed(2),
-          circular: 'gold',
-          rules: 'Kelas A : 97 - 100',
-          image: '/2.png',
-          color: '#FFA500',
-          textColor: '#ffffff',
-        },
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Hijau',
-          progress: dataProps.tbm3ColorCount.green == null ? 0 : dataProps.tbm3ColorCount.green,
-          progressLuas: dataProps.tbm3LuasByColor.green == null ? 0 : dataProps.tbm3LuasByColor.green.toFixed(2),
-          circular: 'green',
-          rules: 'Kelas B : 85 - 96',
-          image: '/2.png',
-          color: '#00a300',
-          textColor: '#ffffff',
-        },
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Merah',
-          progress: dataProps.tbm3ColorCount.red == null ? 0 : dataProps.tbm3ColorCount.red,
-          progressLuas: dataProps.tbm3LuasByColor.red == null ? 0 : dataProps.tbm3LuasByColor.red.toFixed(2),
-          circular: 'red',
-          rules: 'Kelas C : 75 - 84',
-          image: '/2.png',
-          color: '#FF0000',
-          textColor: '#ffffff',
-        },
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Hitam',
-          progress: dataProps.tbm3ColorCount.black == null ? 0 : dataProps.tbm3ColorCount.black,
-          progressLuas: dataProps.tbm3LuasByColor.black == null ? 0 : dataProps.tbm3LuasByColor.black.toFixed(2),
-          circular: 'black',
-          rules: 'Kelas D : 0 - 74',
-          image: '/2.png',
-          color: '#000000',
-          textColor: '#ffffff',
-        },
-      ]
-    } else if (dataProps.ctg == 'tbm4' && rpc == 'all') {
-      data = [
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Emas',
-          progress: dataProps.tbm4ColorCount.gold == null ? 0 : dataProps.tbm4ColorCount.gold,
-          progressLuas: dataProps.tbm4LuasByColor.gold == null ? 0 : dataProps.tbm4LuasByColor.gold.toFixed(2),
-          circular: 'gold',
-          rules: 'Kelas A : 97 - 100',
-          image: '/2.png',
-          color: '#FFA500',
-          textColor: '#ffffff',
-        },
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Hijau',
-          progress: dataProps.tbm4ColorCount.green == null ? 0 : dataProps.tbm4ColorCount.green,
-          progressLuas: dataProps.tbm4LuasByColor.green == null ? 0 : dataProps.tbm4LuasByColor.green.toFixed(2),
-          circular: 'green',
-          rules: 'Kelas B : 85 - 96',
-          image: '/2.png',
-          color: '#00a300',
-          textColor: '#ffffff',
-        },
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Merah',
-          progress: dataProps.tbm4ColorCount.red == null ? 0 : dataProps.tbm4ColorCount.red,
-          progressLuas: dataProps.tbm4LuasByColor.red == null ? 0 : dataProps.tbm4LuasByColor.red.toFixed(2),
-          circular: 'red',
-          rules: 'Kelas C : 75 - 84',
-          image: '/2.png',
-          color: '#FF0000',
-          textColor: '#ffffff',
-        },
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Hitam',
-          progress: dataProps.tbm4ColorCount.black == null ? 0 : dataProps.tbm4ColorCount.black,
-          progressLuas: dataProps.tbm4LuasByColor.black == null ? 0 : dataProps.tbm4LuasByColor.black.toFixed(2),
-          circular: 'black',
-          rules: 'Kelas D : 0 - 74',
-          image: '/2.png',
-          color: '#000000',
-          textColor: '#ffffff',
-        },
-      ]
-
-    }
-
-
-    if (dataProps.ctg !== 'tbm-all' && rpc !== 'all') {
-      data = [
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Emas',
-          val: 0,
-
-          progress:
-            dataProps.dataDnt.gold == null
-              ? 0
-              : dataProps.dataDnt.gold.toLocaleString('id-ID'),
-          progressLuas:
-            dataProps.dataDnt.gold == null
-              ? 0
-              : dataProps.dataLuasDnt.gold.toLocaleString('id-ID'),
-          circular: 'gold',
-          image: '/2.png',
-          color: '#FFA500',
-          textColor: '#ffffff',
-        },
-
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Hijau',
-          val: 1,
-          progress: dataProps.dataDnt.green == null ? 0 : dataProps.dataDnt.green.toLocaleString('id-ID'),
-          progressLuas: dataProps.dataLuasDnt.green == null ? 0 : dataProps.dataLuasDnt.green.toLocaleString('id-ID'),
-          circular: 'green',
-          image: '/2.png',
-          color: '#00a300',
-          textColor: '#ffffff',
-        },
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Merah',
-          progress: dataProps.dataDnt.red == null ? 0 : dataProps.dataDnt.red.toLocaleString('id-ID'),
-          progressLuas: dataProps.dataLuasDnt.red == null ? 0 : dataProps.dataLuasDnt.red.toLocaleString('id-ID'),
-          val: 2,
-          circular: 'red',
-          image: '/2.png',
-          color: '#FF0000',
-          textColor: '#ffffff',
-        },
-        {
-          show: true,
-          isColorTbm: true,
-          name: 'Hitam',
-          val: 3,
-          progress: dataProps.dataDnt.black == null ? 0 : dataProps.dataDnt.black.toLocaleString('id-ID'),
-          progressLuas: dataProps.dataDnt.black == null ? 0 : dataProps.dataLuasDnt.black.toLocaleString('id-ID'),
-          circular: 'black',
-          image: '/2.png',
-          color: '#000000',
-          textColor: '#ffffff',
-        },
-      ]
+  // Additional filters
+  if (dataprops.rpc.value !== 'all') {
+    filteredData = filteredData.filter((item:any) => item.regional === dataprops.rpc.value);
+    if (dataprops.kebun && dataprops.kebun.value) {
+      filteredData = filteredData.filter((item:any) => item.kebun === dataprops.kebun.value);
+      if (dataprops.afd && dataprops.afd.value) {
+        filteredData = filteredData.filter((item:any) => item.afdeling === dataprops.afd.value);
+      }
     }
   }
 
+  // Count items and sum areas
+  filteredData.forEach((item:any) => {
+    const area = item.luas || 0;
+    switch (item.colorCategory) {
+      case 'gold':
+        goldCount++;
+        goldArea += area;
+        break;
+      case 'green':
+        greenCount++;
+        greenArea += area;
+        break;
+      case 'red':
+        redCount++;
+        redArea += area;
+        break;
+      case 'black':
+        blackCount++;
+        blackArea += area;
+        break;
+    }
+  });
 
+  // Prepare data for cards including all relevant properties
+  const data = [
+    {
+      show: true,
+      name: 'Emas',
+      title: dataprops.ctg,
+      progress: goldCount.toLocaleString('id-ID'),
+      progressLuas: Number(goldArea.toFixed(2)).toLocaleString('id-ID'),
+      items: filteredData.filter((item:any) => item.colorCategory === 'gold'), // Pass all data for gold
+      circular: 'gold',
+      image: '/2.png',
+      color: '#FFA500',
+      textColor: '#ffffff',
+      rules: 'Kelas A : 91 - 100'
+    },
+    {
+      show: true,
+      name: 'Hijau',
+      title: dataprops.ctg,
+      progress: greenCount.toLocaleString('id-ID'),
+      progressLuas: Number(greenArea.toFixed(2)).toLocaleString('id-ID'),
+      items: filteredData.filter((item:any) => item.colorCategory === 'green'), // Pass all data for green
+      circular: 'green',
+      image: '/2.png',
+      color: '#00a300',
+      textColor: '#ffffff',
+      rules: 'Kelas B : 85 - 90'
+    },
+    {
+      show: true,
+      name: 'Merah',
+      title: dataprops.ctg,
+      progress: redCount.toLocaleString('id-ID'),
+      progressLuas: Number(redArea.toFixed(2)).toLocaleString('id-ID'),
+      items: filteredData.filter((item:any) => item.colorCategory === 'red'), // Pass all data for red
+      circular: 'red',
+      image: '/2.png',
+      color: '#FF0000',
+      textColor: '#ffffff',
+      rules: 'Kelas C : 81 - 84'
+    },
+    {
+      show: true,
+      name: 'Hitam',
+      title: dataprops.ctg,
+      progress: blackCount.toLocaleString('id-ID'),
+      progressLuas: Number(blackArea.toFixed(2)).toLocaleString('id-ID'),
+      items: filteredData.filter((item:any) => item.colorCategory === 'black'), // Pass all data for black
+      circular: 'black',
+      image: '/2.png',
+      color: '#000000',
+      textColor: '#ffffff',
+      rules: 'Kelas D : < 81'
+    }
+  ];
 
   return (
-    <>
-      <div className='grid gap-4 grid-cols-2 mt-5'>
-        {data.map((item: any, i: any) =>
-          item.show ? (
-            <Card
-              key={i}
-              className='py-1 shadow-md dark:from-slate-900 dark:via-slate-950 dark:to-transparent border dark:hover:border-cyan-500 hover:shadow-cyan-500'
-              onClick={() => onCardTbmClick(item)} // Kirim data ke parent saat card di-klik
-              style={{
-                background: `linear-gradient(135deg, ${item.color} 55%, ${item.color}29 45%)`,
-                borderColor: item.color,
-              }}
-            >
-              <CardContent className='flex items-center px-2 py-1'>
-                <div className='relative mr-2 w-10 h-10'>
-                  <img src={item.image} alt={item.name} className="object-contain" />
-                </div>
-                <div className='grid grid-cols-[20%_80%] py-0 my-0 text-xs align-middle items-center w-full'>
-                  <p className='text-sm font-semibold capitalize' style={{ color: `${item.textColor}` }}>
-                    {item.name}
-                  </p>
-                  <div className='py-0 my-0 items-end'>
-                    <p className='font-semibold float-right' style={{ color: `${item.textColor}` }}>
-                      {item.progress} Blok
-                    </p>
-                    <br />
-                    <p className='font-semibold float-end' style={{ color: `${item.textColor}` }}>
-                      {item.progressLuas} HA
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ) : null
-        )}
-      </div>
-    </>
-
+    <div className='grid gap-4 grid-cols-2 mt-5'>
+      {data.map((item, i) => (
+        <Card
+          key={i}
+          className='py-1 shadow-md dark:from-slate-900 dark:via-slate-950 dark:to-transparent border dark:hover:border-cyan-500 hover:shadow-cyan-500'
+          onClick={() => onCardTbmClick(item)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              onCardTbmClick(item);
+              console.log('Enter key pressed!');
+            }
+          }}
+          style={{
+            background: `linear-gradient(135deg, ${item.color} 55%, ${item.color}29 45%)`,
+            borderColor: item.color,
+          }}
+        >
+          <CardContent className='flex items-center px-2 py-1'>
+            <div className='relative mr-2 w-10 h-10'>
+              <img src={item.image} alt={item.name} className="object-contain" />
+            </div>
+            <div className='grid grid-cols-[20%_80%] py-0 my-0 text-xs align-middle items-center w-full'>
+              <p className='text-sm font-semibold capitalize' style={{ color: item.textColor }}>
+                {item.name}
+              </p>
+              <div className='py-0 my-0 items-end'>
+                <p className='font-semibold float-right' style={{ color: item.textColor }}>
+                  {item.progress} Blok
+                </p>
+                <br />
+                <p className='font-semibold float-end' style={{ color: item.textColor }}>
+                  {item.progressLuas} HA
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   )
 }

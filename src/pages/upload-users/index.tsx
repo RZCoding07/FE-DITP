@@ -118,6 +118,9 @@ export default function UploadUser() {
     setLoading(false)
   }
 
+
+  // 140203137
+  
   useEffect(() => {
     if (values.length > 0) {
       const uploadData = async () => {
@@ -131,7 +134,7 @@ export default function UploadUser() {
             pks: value[5],
             afd: value[6],
             account_type: value[7],
-            app_type: value[8]
+            app_type: value[8],
           }
         })
 

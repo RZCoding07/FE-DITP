@@ -63,13 +63,14 @@ const [Awal, setAwal] = useState([])
               Here&apos;s a list of all the Serapan Biaya PICA TBM
             </p>
           </div>
-          {/* {(account_type === 'HO PalmCo' || account_type === 'Superadmin' ) && ( */}
+          {account_type === 'superadmin' && (
+
           <div className='ml-auto flex space-x-2'>
             <Link to='/upload-serapan-biaya'>
               <Button>Upload Data</Button>
             </Link>
           </div>
-          {/* )} */}
+           )} 
         </div>
 
         <div className='flex-1 overflow-auto rounded-lg bg-slate-50 bg-gradient-to-br p-4 px-4 py-5 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900 lg:flex-row lg:space-x-12 lg:space-y-0'>

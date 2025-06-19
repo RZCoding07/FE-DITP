@@ -5,7 +5,7 @@ import cookie from 'js-cookie';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/custom/button';
 
-export const StockAnalysisChartKebunColor = ({
+export const StockAnalysisChartRpcColor = ({
   dataprops,
   onEventClick,
   isColorGraphVisible,  // Add this prop
@@ -22,6 +22,10 @@ export const StockAnalysisChartKebunColor = ({
 
   const color = dataprops.color;
   datas = dataprops.dataset;
+
+  
+
+  console.log('datas', datas);
   const categories = datas.map(item => item.category);
 
   const options: ApexOptions = {

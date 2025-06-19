@@ -1,3 +1,5 @@
+import { min } from "date-fns";
+
 export const customStyles = {
     theme: (theme: any) => ({
       ...theme,
@@ -11,14 +13,13 @@ export const customStyles = {
     control: (provided: any) => ({
       ...provided,
       backgroundColor: 'var(--bg-primary)',
-      borderColor: 'var(--border-primary)',
+      borderColor: '#1E293B',
       borderRadius: '10.5rem',
       boxShadow: 'none',
       color: 'var(--text-primary)',
       width: '100%', // Set desired width here
-      minHeight: '2.5rem',
       '&:hover': {
-        borderColor: 'var(--border-primary)',
+        borderColor: '#1E293B',
       },
     }),
     menu: (provided: any) => ({
@@ -27,6 +28,7 @@ export const customStyles = {
       color: 'black',
       boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.15)',
       borderRadius: '0.5rem',
+      minWidth: '300px', // Set minimum width for the menu
     }),
     option: (base: any, state: any) => ({
       ...base,
@@ -35,7 +37,6 @@ export const customStyles = {
         ? 'var(--bg-secondary)'
         : 'var(--bg-primary)',
       whiteSpace: 'nowrap', // Prevent text from wrapping
-      overflow: 'hidden', // Hide overflow
       textOverflow: 'ellipsis', // Add ellipsis if text is too long
       '&:hover': {
         backgroundColor: 'var(--bg-secondary)',

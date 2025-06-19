@@ -20,4 +20,5 @@ export interface Vegetatif {
   lingkar_batang_cm: string
   tahun: number
   bulan: number
+  pica_id: string
 }

@@ -1,0 +1,646 @@
+[
+    {
+        "kodering": "1E02",
+        "name": "KEBUN SEI DAUN",
+        "lon": 100.3241735,
+        "lat": 1.730430233,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E06",
+        "name": "KEBUN SEI KEBARA",
+        "lon": 100.2754431,
+        "lat": 1.700688373,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E09",
+        "name": "KEBUN SISUMUT",
+        "lon": 100.1075271,
+        "lat": 1.962704036,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E10",
+        "name": "KEBUN AEK NABARA UTARA",
+        "lon": 99.95583728,
+        "lat": 2.057840086,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E11",
+        "name": "KEBUN AEK NABARA SELATAN",
+        "lon": 99.95648276,
+        "lat": 2.084945166,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E12",
+        "name": "KEBUN RANTAU PRAPAT",
+        "lon": 99.80192427,
+        "lat": 2.118665586,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E13",
+        "name": "KEBUN MEMBANG MUDA",
+        "lon": 99.67201754,
+        "lat": 2.551798562,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E14",
+        "name": "KEBUN LABUHAN HAJI",
+        "lon": 97.00319728,
+        "lat": 3.554283883,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E15",
+        "name": "KEBUN MERBAU SELATAN",
+        "lon": 99.69680771,
+        "lat": 2.535640406,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E16",
+        "name": "KEBUN SEI DADAP",
+        "lon": 99.66507136,
+        "lat": 2.957210866,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E17",
+        "name": "KEBUN PULAU MANDI",
+        "lon": 99.50156863,
+        "lat": 2.867689321,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E18",
+        "name": "KEBUN AMBALUTU",
+        "lon": 99.46175398,
+        "lat": 2.863366637,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E19",
+        "name": "KEBUN SEI SILAU",
+        "lon": 99.51404903,
+        "lat": 2.948553652,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E20",
+        "name": "KEBUN HUTA PADANG",
+        "lon": 99.40044294,
+        "lat": 2.888805869,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E22",
+        "name": "KEBUN DUSUN HULU",
+        "lon": 99.4791147,
+        "lat": 3.099879326,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E24",
+        "name": "KEBUN BANGUN",
+        "lon": 99.16887164,
+        "lat": 2.975766426,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E25",
+        "name": "KEBUN GUNUNG PAMELA",
+        "lon": 99.06423809,
+        "lat": 3.222342704,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E26",
+        "name": "KEBUN GUNUNG MONACO",
+        "lon": 98.99990731,
+        "lat": 3.225762847,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E27",
+        "name": "KEBUN SILAU DUNIA",
+        "lon": 98.9583169,
+        "lat": 3.282253744,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E28",
+        "name": "KEBUN GUNUNG PARA",
+        "lon": 99.11012678,
+        "lat": 3.163656997,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E29",
+        "name": "KEBUN SEI PUTIH",
+        "lon": 98.6492165,
+        "lat": 3.602711494,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E30",
+        "name": "KEBUN SARANG GITING",
+        "lon": 98.96558341,
+        "lat": 3.33992811,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E32",
+        "name": "KEBUN RAMBUTAN",
+        "lon": 99.15699723,
+        "lat": 3.353702833,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E33",
+        "name": "KEBUN HAPESONG",
+        "lon": 99.06845809,
+        "lat": 1.449130501,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "1E34",
+        "name": "KEBUN BATANG TORU",
+        "lon": 99.05223476,
+        "lat": 1.489112579,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E01",
+        "name": "KEBUN BAH JAMBI",
+        "lon": 99.21987529,
+        "lat": 2.986762354,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E02",
+        "name": "KEBUN PASIR MANDOGE",
+        "lon": 99.31987119,
+        "lat": 2.770682509,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E03",
+        "name": "KEBUN DOLOK SINUMBAH",
+        "lon": 99.32940317,
+        "lat": 3.11348896,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E04",
+        "name": "KEBUN MARIHAT",
+        "lon": 99.0823161,
+        "lat": 2.919393533,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E05",
+        "name": "KEBUN TONDUHAN",
+        "lon": 99.21292633,
+        "lat": 2.828620397,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E06",
+        "name": "KEBUN SEI KOPAS",
+        "lon": 99.37590939,
+        "lat": 2.792165081,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E07",
+        "name": "KEBUN MARJANDI",
+        "lon": 98.95403381,
+        "lat": 2.931322401,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E09",
+        "name": "KEBUN BALIMBINGAN",
+        "lon": 99.15018739,
+        "lat": 2.889182067,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E10",
+        "name": "KEBUN DOLOK ILIR",
+        "lon": 99.16050291,
+        "lat": 3.119663873,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E11",
+        "name": "KEBUN GUNUNG BAYU",
+        "lon": 99.39589382,
+        "lat": 3.185139683,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E12",
+        "name": "KEBUN MAYANG",
+        "lon": 99.33312718,
+        "lat": 3.033014595,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E13",
+        "name": "KEBUN LARAS",
+        "lon": 99.15502941,
+        "lat": 3.04171944,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E14",
+        "name": "KEBUN BUKIT LIMA",
+        "lon": 99.34588839,
+        "lat": 2.939709766,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E15",
+        "name": "KEBUN TANAH ITAM ULU",
+        "lon": 99.45848172,
+        "lat": 3.192215414,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E16",
+        "name": "KEBUN TEH",
+        "lon": 0,
+        "lat": 0,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E17",
+        "name": "KEBUN ADOLINA",
+        "lon": 98.94784731,
+        "lat": 3.567868798,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E18",
+        "name": "KEBUN PABATU",
+        "lon": 99.11085272,
+        "lat": 3.28695093,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E21",
+        "name": "KEBUN TINJOWAN",
+        "lon": 99.5126237,
+        "lat": 3.079560349,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E22",
+        "name": "KEBUN PADANG MATINGGI",
+        "lon": 99.50329701,
+        "lat": 3.075216398,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E26",
+        "name": "KEBUN AIR BATU",
+        "lon": 99.63603447,
+        "lat": 2.853105863,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E27",
+        "name": "KEBUN PULU RAJA",
+        "lon": 99.62542876,
+        "lat": 2.699104451,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E29",
+        "name": "KEBUN AJAMU",
+        "lon": 100.1591213,
+        "lat": 2.392259721,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E30",
+        "name": "KEBUN SOSA",
+        "lon": 100.0114099,
+        "lat": 1.043443123,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "2E32",
+        "name": "KEBUN MERANTI PAHAM",
+        "lon": 100.4126787,
+        "lat": 1.650404187,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "3E01",
+        "name": "KEBUN INTI/KKPA SEI GALUH",
+        "lon": 101.2300597,
+        "lat": 0.549862401,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "3E08",
+        "name": "KEBUN INTI LUBUK DALAM",
+        "lon": 101.7818927,
+        "lat": 0.626646706,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "3E14",
+        "name": "KEBUN TERANTAM",
+        "lon": 100.7210878,
+        "lat": 0.550857533,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "3E21",
+        "name": "KEBUN INTI SEI INTAN",
+        "lon": 100.6135386,
+        "lat": 0.792150965,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "3E23",
+        "name": "KEBUN INTI / KKPA SEI TAPUNG",
+        "lon": 100.6243124,
+        "lat": 0.599922359,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "4E05",
+        "name": "KEBUN DURIAN LUNCUK",
+        "lon": 103.1246777,
+        "lat": -1.943104602,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "4E09",
+        "name": "KEBUN RIMBO BUJANG DUA",
+        "lon": 102.1637509,
+        "lat": -1.366646823,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "4E11",
+        "name": "KEBUN SOLOK SELATAN",
+        "lon": 101.4648338,
+        "lat": -1.412307582,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "4E14",
+        "name": "KEBUN BUKIT KAUSAR",
+        "lon": 102.9048654,
+        "lat": -1.241421007,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "5E01",
+        "name": "KEBUN GUNUNG MELIAU",
+        "lon": 110.2927736,
+        "lat": -0.100994171,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "5E02",
+        "name": "KEBUN GUNUNG MAS",
+        "lon": 110.3319711,
+        "lat": 0.022948017,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "5E03",
+        "name": "KEBUN SUNGAI DEKAN",
+        "lon": 110.3766935,
+        "lat": -0.095409468,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "5E04",
+        "name": "KEBUN RIMBA BELIAN",
+        "lon": 110.4624764,
+        "lat": -0.025725356,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "5E07",
+        "name": "KEBUN NGABANG",
+        "lon": 109.9133645,
+        "lat": 0.341983302,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "5E08",
+        "name": "KEBUN PARINDU",
+        "lon": 110.3188256,
+        "lat": 0.262646495,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "5E09",
+        "name": "KEBUN KEMBAYAN",
+        "lon": 110.374269,
+        "lat": 0.469628208,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "5E11",
+        "name": "KEBUN DANAU SALAK",
+        "lon": 114.9496976,
+        "lat": -3.319929383,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "5E14",
+        "name": "KEBUN PAMUKAN",
+        "lon": 115.9130284,
+        "lat": -3.397391624,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "5E16",
+        "name": "KEBUN TABARA",
+        "lon": 116.1308602,
+        "lat": -1.675015725,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "5E17",
+        "name": "KEBUN TAJATI",
+        "lon": 116.1262018,
+        "lat": -1.929699338,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "5E18",
+        "name": "KEBUN PANDAWA",
+        "lon": 117.2932325,
+        "lat": 0.714560428,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "5E19",
+        "name": "KEBUN LONGKALI",
+        "lon": 116.2448898,
+        "lat": -1.491085197,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "6E16",
+        "name": "KEBUN LAMA",
+        "lon": 97.95920262,
+        "lat": 4.463716125,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "6E19",
+        "name": "KEBUN JULOK RAYEUK UTARA",
+        "lon": 97.60336981,
+        "lat": 4.896487309,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "6E20",
+        "name": "KEBUN COT GIREK",
+        "lon": 97.37177787,
+        "lat": 4.924498997,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "7E01",
+        "name": "KEBUN REJOSARI",
+        "lon": 105.4157133,
+        "lat": -5.21200251,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "7E02",
+        "name": "KEBUN BEKRI",
+        "lon": 105.1210227,
+        "lat": -5.08623041,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "7E04",
+        "name": "KEBUN PADANG RATU",
+        "lon": 104.9411292,
+        "lat": -5.030038094,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "7E05",
+        "name": "KEBUN BETUNG KRAWO",
+        "lon": 104.2270181,
+        "lat": -2.788878792,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "7E08",
+        "name": "KEBUN SUNGAI LENGI",
+        "lon": 103.7870107,
+        "lat": -3.468488578,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "7E10",
+        "name": "KEBUN BERINGIN",
+        "lon": 0,
+        "lat": 0,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "8E01",
+        "name": "KEBUN LUWU I",
+        "lon": 120.6576574,
+        "lat": -2.621674522,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "8E03",
+        "name": "KEBUN KEERA MAROANGIN",
+        "lon": 119.8419517,
+        "lat": -3.741445089,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "ME02",
+        "name": "KEBUN SAWIT HULU",
+        "lon": 98.24637241,
+        "lat": 3.833065659,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "ME03",
+        "name": "KEBUN SAWIT SEBERANG",
+        "lon": 98.27630258,
+        "lat": 3.799590866,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "ME04",
+        "name": "KEBUN TANJUNG GARBUS",
+        "lon": 98.87604381,
+        "lat": 3.524928953,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "ME05",
+        "name": "KEBUN AIR TENANG",
+        "lon": 98.17546855,
+        "lat": 3.621647242,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "ME06",
+        "name": "KEBUN BATANG SERANGAN",
+        "lon": 98.25188645,
+        "lat": 3.75558371,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "ME07",
+        "name": "KEBUN MELATI",
+        "lon": 98.96167891,
+        "lat": 3.53430729,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "ME08",
+        "name": "KEBUN LIMAU MUNGKUR",
+        "lon": 98.78505776,
+        "lat": 3.429154539,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "ME09",
+        "name": "KEBUN BANDAR KLIPPA",
+        "lon": 98.80813768,
+        "lat": 3.611468834,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "ME11",
+        "name": "KEBUN TANJUNG JATI",
+        "lon": 98.46185024,
+        "lat": 3.623229461,
+        "is_blok_tu": "1"
+    },
+    {
+        "kodering": "ME12",
+        "name": "KEBUN PATUMBAK",
+        "lon": 98.71318852,
+        "lat": 3.443811045,
+        "is_blok_tu": "1"
+    }
+]

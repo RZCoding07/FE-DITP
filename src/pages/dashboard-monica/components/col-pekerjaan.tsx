@@ -1,127 +1,47 @@
-import { ColumnDef,
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable
+"use client"
 
+import type { ColumnDef } from "@tanstack/react-table"
+import { Badge } from "@/components/ui/badge"
 
- } from '@tanstack/react-table'
-import { Badge } from '@/components/ui/badge'
-import { Checkbox } from '@/components/ui/checkbox'
-import { DataTableColumnHeader } from './data-table-column-header'
-import { DataTableRowActions } from './data-table-row-actions'
-
-interface Peogress {
-  id: string
-  sub_investasi: string
-  hps: string
-  total_tekpol: string
-  pengadaan: string
-  sppbj: string
-}
-
-type HousingData = {
-  rpc_code: string
-  rkap_nilai_proyek: number
-  rkap_jumlah_paket: number
-  tekpol: string
-  hps: string
-  pengadaan: number
-  hpsPackage: number
-  sppbj: string
-  value_sppbj: number
-}
-
-
-const formatRupiah = (value: number) => {
-  if (!value) return 'Rp. 0' // Jika nilai kosong atau null
-  const numericValue = typeof value === 'number' ? value : parseFloat(value)
-  if (isNaN(numericValue)) return 'Rp. 0' // Jika nilai bukan angka
-  return `Rp. ${numericValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`
-}
-
-const columnHelper = createColumnHelper<HousingData>()
-
-  export const columns = [
-    columnHelper.group({
-      id: 'rpc_code',
-      header: () => null,
-      columns: [
-        columnHelper.accessor('rpc_code', {
-          header: 'rpc_code',
-          cell: (info) => {
-            return (
-              <td rowSpan={3} className="p-2 align-middle">
-                <div className="flex items-center space-x-2">
-                  <span>{info.getValue().toUpperCase()}</span>
-                </div>
-              </td>
-            );
-          },
-        }),
-      ],
-    }),
-    columnHelper.group({
-      header: 'Bangunan Perumahan',
-      columns: [
-        columnHelper.group({
-          header: 'RKAP',
-          columns: [
-            columnHelper.accessor('rkap_nilai_proyek', {
-              header: 'Rp. M',
-              cell: info => formatRupiah(info.getValue()),
-            }),
-            columnHelper.accessor('rkap_jumlah_paket', {
-              header: 'Paket',
-              cell: info => info.getValue() + ' PAKET',
-            }),
-          ],
-        }),
-        columnHelper.group({
-          header: 'Tekpol',
-          columns: [
-            columnHelper.accessor('tekpol', {
-              header: 'Paket',
-              cell: info => info.getValue() + ' PAKET',
-            })
-          ],
-        }),
-        columnHelper.group({
-          header: 'HPS',
-          columns: [
-            columnHelper.accessor('hps', {
-              header: 'Paket',
-              cell: info => info.getValue() + ' PAKET',
-            })
-          ],
-        }),
-        columnHelper.group({
-          header: 'Pengadaan',
-          columns: [
-            columnHelper.accessor('pengadaan', {
-              header: 'Paket',
-              cell: info => info.getValue() + ' PAKET',
-            })
-          ],
-        }),
-        columnHelper.group({
-          header: 'SPPBJ',
-          columns: [
-            columnHelper.accessor('value_sppbj', {
-              header: 'Rp. M',
-              cell: info => formatRupiah(info.getValue()),
-            }),
-            columnHelper.accessor('sppbj', {
-              header: 'Paket',
-              cell: info => info.getValue() + ' PAKET',
-            }),
-          ],
-        }),
-      ]
-    })
-  ]
-
-  
-  
-
-  
+export const columns: ColumnDef<any>[] = [
+  {
+    accessorKey: "id",
+    header: "ID",
+  },
+  {
+    accessorKey: "nama_pekerjaan",
+    header: "Nama Pekerjaan",
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const status = row.getValue("status") as string
+      const getStatusColor = (status: string) => {
+        if (status?.includes("Progress")) return "default"
+        if (status?.includes("Selesai")) return "secondary"
+        return "outline"
+      }
+      return <Badge variant={getStatusColor(status)}>{status}</Badge>
+    },
+  },
+  {
+    accessorKey: "progress",
+    header: "Progress (%)",
+    cell: ({ row }) => {
+      const progress = row.getValue("progress") as number
+      return (
+        <div className="flex items-center space-x-2">
+          <div className="w-16 bg-gray-200 rounded-full h-2">
+            <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${progress}%` }}></div>
+          </div>
+          <span className="text-sm font-medium">{progress}%</span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "regional",
+    header: "Regional",
+  },
+]

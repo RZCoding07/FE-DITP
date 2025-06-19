@@ -1,30 +1,24 @@
+import React from 'react'
 import { z } from 'zod'
-import { Link } from 'react-router-dom'
-import { useFieldArray, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { Button } from '@/components/custom/button'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/use-toast'
-import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 const profileFormSchema = z.object({
+  fullname: z.string().min(2, {
+    message: 'Name must be at least 2 characters.',
+  }),
   username: z
     .string()
     .min(2, {
@@ -38,42 +32,46 @@ const profileFormSchema = z.object({
       required_error: 'Please select an email to display.',
     })
     .email(),
-  bio: z.string().max(160).min(4),
-  urls: z
-    .array(
-      z.object({
-        value: z.string().url({ message: 'Please enter a valid URL.' }),
-      })
-    )
-    .optional(),
+  rpc: z.string().optional(),
+  pks: z.string().optional(),
+  kebun: z.string().optional(),
+  afd: z.string().optional(),
+  account_type: z.string().optional(),
+  app_type: z.string().optional(),
+  lastLogin: z.string().optional(),
+  bio: z.string().max(160).min(4).optional(),
 })
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
-// This can come from your database or API.
-const defaultValues: Partial<ProfileFormValues> = {
-  bio: 'I own a computer.',
-  urls: [
-    { value: 'https://shadcn.com' },
-    { value: 'http://twitter.com/shadcn' },
-  ],
-}
-
 export default function ProfileForm() {
+  const user = JSON.parse(localStorage.getItem('user') || '{}')
+  const isKebunAccount = user.account_type === 'kebun'
+  const isRegionalAccount = user.account_type === 'regional'
+
+  const defaultValues: Partial<ProfileFormValues> = {
+    fullname: user.fullname || '',
+    username: user.username || '',
+    email: user.email || '',
+    rpc: user.rpc || '',
+    pks: user.pks || '',
+    kebun: user.kebun || '',
+    afd: user.afd || '',
+    account_type: user.account_type || '',
+    app_type: user.app_type || '',
+    lastLogin: user.lastLogin || '',
+    bio: 'I own a computer.',
+  }
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
     mode: 'onChange',
   })
 
-  const { fields, append } = useFieldArray({
-    name: 'urls',
-    control: form.control,
-  })
-
   function onSubmit(data: ProfileFormValues) {
     toast({
-      title: 'You submitted the following values:',
+      title: 'Profile Information',
       description: (
         <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
           <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
@@ -83,106 +81,183 @@ export default function ProfileForm() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-        <FormField
-          control={form.control}
-          name='username'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder='shadcn' {...field} />
-              </FormControl>
-              <FormDescription>
-                This is your public display name. It can be your real name or a
-                pseudonym. You can only change this once every 30 days.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='email'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+    <div className='flex flex-1 flex-col rounded-lg border bg-card lg:overflow-hidden lg:rounded-lg lg:border lg:bg-card lg:p-6 h-[calc(100vh-200px)]'>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className='space-y-4 h-full overflow-y-auto p-1'
+        >
+          {/* Common fields for all account types */}
+          <FormField
+            control={form.control}
+            name="fullname"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Full Name</FormLabel>
                 <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder='Select a verified email to display' />
-                  </SelectTrigger>
+                  <Input placeholder="Full Name" {...field} readOnly />
                 </FormControl>
-                <SelectContent>
-                  <SelectItem value='m@example.com'>m@example.com</SelectItem>
-                  <SelectItem value='m@google.com'>m@google.com</SelectItem>
-                  <SelectItem value='m@support.com'>m@support.com</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                You can manage verified email addresses in your{' '}
-                <Link to='/examples/forms'>email settings</Link>.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='username'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input placeholder='Username' {...field} readOnly />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='email'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input placeholder='Email' {...field} readOnly />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='account_type'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Account Type</FormLabel>
+                <FormControl>
+                  <Input placeholder='Account Type' {...field} readOnly />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='app_type'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Application Type</FormLabel>
+                <FormControl>
+                  <Input placeholder='Application Type' {...field} readOnly />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='lastLogin'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Last Login</FormLabel>
+                <FormControl>
+                  <Input placeholder='Last Login' {...field} readOnly />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Fields for Kebun account */}
+          {isKebunAccount && (
+            <>
+              <FormField
+                control={form.control}
+                name='rpc'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>RPC</FormLabel>
+                    <FormControl>
+                      <Input placeholder='RPC' {...field} readOnly />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='pks'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>PKS</FormLabel>
+                    <FormControl>
+                      <Input placeholder='PKS' {...field} readOnly />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='kebun'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kebun</FormLabel>
+                    <FormControl>
+                      <Input placeholder='Kebun' {...field} readOnly />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='afd'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Afdeling</FormLabel>
+                    <FormControl>
+                      <Input placeholder='Afdeling' {...field} readOnly />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </>
           )}
-        />
-        <FormField
-          control={form.control}
-          name='bio'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Bio</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder='Tell us a little bit about yourself'
-                  className='resize-none'
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                You can <span>@mention</span> other users and organizations to
-                link to them.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
+
+          {/* Fields for Regional account */}
+          {isRegionalAccount && (
+            <>
+              <FormField
+                control={form.control}
+                name='rpc'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>RPC</FormLabel>
+                    <FormControl>
+                      <Input placeholder='RPC' {...field} readOnly />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </>
           )}
-        />
-        <div>
-          {fields.map((field, index) => (
-            <FormField
-              control={form.control}
-              key={field.id}
-              name={`urls.${index}.value`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className={cn(index !== 0 && 'sr-only')}>
-                    URLs
-                  </FormLabel>
-                  <FormDescription className={cn(index !== 0 && 'sr-only')}>
-                    Add links to your website, blog, or social media profiles.
-                  </FormDescription>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          ))}
-          <Button
-            type='button'
-            variant='outline'
-            size='sm'
-            className='mt-2'
-            onClick={() => append({ value: '' })}
-          >
-            Add URL
-          </Button>
-        </div>
-        <Button type='submit'>Update profile</Button>
-      </form>
-    </Form>
+          <br />
+          <br />
+
+
+        </form>
+      </Form>
+    </div>
+
   )
 }

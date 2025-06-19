@@ -131,52 +131,6 @@ export default function Dashboard() {
     w4: string
   }
 
-
-  const fetchStokAwal = async (tahun: number, bulan: number) => {
-    try {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/stok-awal-bibit?tahun=${tahun}&bulan=${bulan}`
-      )
-      const data = response.data
-    } catch (error) {
-      console.error(error)
-    }
-  }
-  const dataCard = [
-    {
-      value: '18,681.99 Ha',
-      title: 'Total Berkontrak',
-      percentage: '+0% from last week',
-      progress: '87% of RKAP 2024',
-      bgColor: 'bg-gradient-to-l from-green-600 to-green-400',
-      color: 'text-white',
-    },
-    {
-      value: '17,646.65 Ha',
-      title: 'Total Land Clearing',
-      percentage: '+1.03% from last week',
-      progress: '82% of RKAP 2024',
-      bgColor: 'bg-gradient-to-tl from-teal-500 to-teal-300',
-      color: 'text-black',
-    },
-    {
-      value: '13,559.26 Ha',
-      title: 'Total Menanam',
-      percentage: '+3.53% from last week',
-      progress: '63% of RKAP 2024',
-      bgColor: 'bg-gradient-to-l from-green-400 to-green-200',
-      color: 'text-black',
-    },
-    {
-      value: 'Rp439 Miliar',
-      title: 'Serapan Biaya',
-      percentage: '+1.46% from last week',
-      progress: '52% of RKAP 2024',
-      bgColor: 'bg-gradient-to-l from-yellow-400 to-yellow-200',
-      color: 'text-black',
-    },
-  ]
-
   const [data, setData] = useState([]);
 
 
@@ -274,6 +228,7 @@ export default function Dashboard() {
         });
       });
   }, []);
+
 
   useEffect(() => {
     fetch(
@@ -632,7 +587,7 @@ export default function Dashboard() {
           <TabsContent value='overview' className='space-y-4'>
 
             <div className='grid lg:grid-cols-1'>
-              <Card className='mr-5 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+              <Card className='bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
 
                 <CardContent>
                   <WeeklyReport />
@@ -644,10 +599,10 @@ export default function Dashboard() {
 
 
             <div className='grid lg:grid-cols-1'>
-              <Card className='mt-5 bg-gradient-to-br dark:from-slate-900 dark:to-slate-950'>
+              <Card className='mt-5 bg-gradient-to-br dark:from-slate-950 dark:to-slate-950'>
                 <div className='grid gap-6 p-4 md:grid-cols-1'>
                   <div className='space-y-4'>
-                    <div className='flex items-center gap-2 text-lg font-medium'>
+                    <div className='flex items-center gap-2 text-lg font-medium mu-4'>
                       <h1 className='mt-4 flex items-center text-xl font-bold tracking-tight'>
                         <img
                           className='mr-2'
@@ -661,8 +616,9 @@ export default function Dashboard() {
                     </div>
 
 
+
                     {/* <div className='grid lg:grid-cols-[70%_30%]'></div> */}
-                    <div className="p-4 pt-0">
+                    <div className="p-4 pt-2">
                       <div className="bg-gradient-to-br  bg-white dark:from-slate-900 dark:to-slate-950">
                         <table className="border-collapse border w-full mt-4">
 
@@ -980,6 +936,11 @@ const topNav = [
   {
     title: 'Monica',
     href: '/dashboard-monica',
+    isActive: false,
+  },
+  {
+    title: 'Monev TU (Inspire-KKMV)',
+    href: '/dashboard-inspire',
     isActive: false,
   },
 ]

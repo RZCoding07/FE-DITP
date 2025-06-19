@@ -24,6 +24,7 @@ export default function UploadUser() {
   const [progressValue, setProgressValue] = useState(0)
 
   const user = JSON.parse(cookie.get('user') || '{}')
+  const account_type = user ? JSON.parse(user).account_type : 'user'
 
   interface UploadData {
     w1: { label: string; value: string }
@@ -216,7 +217,6 @@ export default function UploadUser() {
             <div className='flex items-center justify-between'>
               <p className='text-muted-foreground'>
                 Upload file .csv atau .xlsx untuk menambahkan data Problem Identification
-                SPPBJ
               </p>
             </div>
             <div className='flex items-center justify-between'>

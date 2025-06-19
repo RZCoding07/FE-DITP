@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { Vegetatif } from './columns'
 import { DataTableColumnHeader } from './data-table-column-header'
+import { DataTableRowActions } from './data-table-row-actions'
 
 
 
@@ -41,6 +42,27 @@ export const columns: ColumnDef<Vegetatif>[] = [
     ),
     cell: ({ row }) => <span>{row.getValue('measurement')}</span>,
   },
+ 
+  {
+    accessorKey: 'approval',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='approval' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('approval')}</span>,
+  },
+ 
+  {
+    accessorKey: 'status',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='status' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('status')}</span>,
+  },
+  //  {
+  //    id: 'actions',
+  //    header: ({ column }) => <DataTableColumnHeader column={column} title="Actions" />,
+  //    cell: ({ row }) => <DataTableRowActions row={row} />,
+  //  },
  
 
 ]

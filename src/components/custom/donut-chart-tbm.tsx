@@ -19,8 +19,6 @@ interface DonutChartTbmProps {
     tbm2LuasByColor: any
     tbm3LuasByColor: any
     tbm4LuasByColor: any
-    dataDnt: any
-    dataLuasDnt: any
   }
 }
 
@@ -48,9 +46,6 @@ const DonutChartTbm: React.FC<DonutChartTbmProps> = React.memo(({ dataprops }) =
           result = ["gold", "green", "red", "black"].map((color) => colorCounts[color] ?? 0)
         }
 
-        if (ctg !== "tbm-all" && rpc.value !== "all") {
-          result = [dataprops.dataDnt.gold, dataprops.dataDnt.green, dataprops.dataDnt.red, dataprops.dataDnt.black]
-        }
       } else {
         const luasByColor = {
           tbm1: dataprops.tbm1LuasByColor,
@@ -61,10 +56,6 @@ const DonutChartTbm: React.FC<DonutChartTbmProps> = React.memo(({ dataprops }) =
 
         if (luasByColor) {
           result = ["gold", "green", "red", "black"].map((color) => luasByColor[color] ?? 0)
-        }
-
-        if (ctg !== "tbm-all" && rpc.value !== "all") {
-          result = ["gold", "green", "red", "black"].map((color) => Number(dataprops.dataLuasDnt[color]))
         }
       }
     }
@@ -130,7 +121,7 @@ const DonutChartTbm: React.FC<DonutChartTbmProps> = React.memo(({ dataprops }) =
         style={{
           position: 'absolute',
           top: '50%',
-          left: '42%',
+          left: '43.5%',
           transform: 'translate(-50%, -50%)',
           width: '90px', // Adjust size as needed
           height: '90px', // Adjust size as needed

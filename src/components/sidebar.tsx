@@ -6,6 +6,10 @@ import Nav from './nav'
 import { cn } from '@/lib/utils'
 import { getSideLinks } from '@/data/sidelinks'
 import cookie from 'js-cookie'
+import logoImage from '@/assets/ptpn4.png'
+
+
+
 
 interface SidebarProps extends React.HTMLAttributes<HTMLElement> {
   isCollapsed: boolean
@@ -23,6 +27,9 @@ export default function Sidebar({
   const fullname = user ? JSON.parse(user).fullname : 'user'
   const account_type = user ? JSON.parse(user).account_type : 'user'
   const app_type = user ? JSON.parse(user).app_type : ''
+
+  const feUrl = import.meta.env.VITE_FE_URL
+
 
   /* Make body not scrollable when navBar is opened */
   useEffect(() => {
@@ -51,7 +58,7 @@ export default function Sidebar({
           className='z-50 flex justify-between px-4 py-3 shadow-sm md:px-4'
         >
           <div className={`flex items-center ${!isCollapsed ? 'gap-2' : ''}`}>
-            <img src='ptpn4.png' alt='logo' style={{ width: '35px' }} />
+            <img src={`${logoImage}`} alt='logo' className='hide-sm' style={{ width: '35px' }} />
             <div
               className={`flex flex-col justify-end truncate ${isCollapsed ? 'invisible w-0' : 'visible w-auto'}`}
             >
@@ -103,7 +110,8 @@ export default function Sidebar({
           transform: 'translateY(0px)',
         }}>
           <div className={`flex ml-1 items-center ${!isCollapsed ? 'gap-2' : ''}`}>
-            <img src='ptpn4.png' alt='logo' className='hide-sm' style={{ width: '35px' }} />
+          <img src={`${logoImage}`} alt='logo' className='hide-sm' style={{ width: '35px' }} />
+  
             <div
               className={`flex flex-col justify-end truncate ${isCollapsed ? 'invisible w-0' : 'visible w-auto'} 
       hide-sm`}

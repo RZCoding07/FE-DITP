@@ -1,28 +1,47 @@
 import { ColumnDef } from '@tanstack/react-table'
+import { cn } from '@/lib/utils'
 import { Vegetatif } from './columns'
 import { DataTableColumnHeader } from './data-table-column-header'
-
-
-// regional: string
-// kebun: string
-// afdeling: string
-// blok: string
-// tahun_tanam: string
-// varietas: string
-// luas_ha: string
-// jumlah_pokok_awal_tanam: string
-// jumlah_pokok_sekarang: string
-// tinggi_tanaman_cm: string
-// jumlah_pelepah_bh: string
-// panjang_rachis_cm: string
-// lebar_petiola_cm: string
-// tebal_petiola_cm: string
-// jad_1_sisi: string
-// rerata_panjang_anak_daun: string
-// rerata_lebar_anak_daun: string
-// lingkar_batang_cm: string
+import { DataTableRowActions } from './data-table-row-actions';
+import { Checkbox } from '@/components/ui/checkbox'
+// Helper function to format numbers with 2 decimal places
+const formatNumber = (value: any) => {
+  const num = parseFloat(value);
+  return isNaN(num) ? value : num.toFixed(2);
+};
 
 export const columns: ColumnDef<Vegetatif>[] = [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label='Select all'
+        className='translate-y-[2px]'
+      />
+    ),
+    meta: {
+      className: cn(
+        'sticky md:table-cell left-0 z-10 rounded-tl',
+        'bg-background transition-colors duration-200 group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted'
+      ),
+    },
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label='Select row'
+        className='translate-y-[2px]'
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  
   {
     id: 'number',
     header: 'No.',
@@ -66,6 +85,13 @@ export const columns: ColumnDef<Vegetatif>[] = [
     cell: ({ row }) => <span>{row.getValue('tahun_tanam')}</span>,
   },
   {
+    accessorKey: 'umur_saat_ini_bulan',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Umur' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('umur_saat_ini_bulan')}</span>,
+  },
+  {
     accessorKey: 'varietas',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Varietas' />
@@ -77,7 +103,7 @@ export const columns: ColumnDef<Vegetatif>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Luas (Ha)' />
     ),
-    cell: ({ row }) => <span>{row.getValue('luas_ha')}</span>,
+    cell: ({ row }) => <span>{formatNumber(row.getValue('luas_ha'))}</span>,
   },
   {
     accessorKey: 'jumlah_pokok_awal_tanam',
@@ -88,7 +114,7 @@ export const columns: ColumnDef<Vegetatif>[] = [
       />
     ),
     cell: ({ row }) => (
-      <span>{row.getValue('jumlah_pokok_awal_tanam')}</span>
+      <span>{formatNumber(row.getValue('jumlah_pokok_awal_tanam'))}</span>
     ),
   },
   {
@@ -100,11 +126,10 @@ export const columns: ColumnDef<Vegetatif>[] = [
       />
     ),
     cell: ({ row }) => (
-      
-      <span>{row.getValue('jumlah_pokok_sekarang')}</span>
+      <span>{formatNumber(row.getValue('jumlah_pokok_sekarang'))}</span>
     ),
-},
-{
+  },
+  {
     accessorKey: 'tinggi_tanaman_cm',
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -113,7 +138,7 @@ export const columns: ColumnDef<Vegetatif>[] = [
       />
     ),
     cell: ({ row }) => (
-      <span>{row.getValue('tinggi_tanaman_cm')}</span>
+      <span>{formatNumber(row.getValue('tinggi_tanaman_cm'))}</span>
     ),
   },
   {
@@ -125,7 +150,7 @@ export const columns: ColumnDef<Vegetatif>[] = [
       />
     ),
     cell: ({ row }) => (
-      <span>{row.getValue('jumlah_pelepah_bh')}</span>
+      <span>{formatNumber(row.getValue('jumlah_pelepah_bh'))}</span>
     ),
   },
   {
@@ -137,7 +162,7 @@ export const columns: ColumnDef<Vegetatif>[] = [
       />
     ),
     cell: ({ row }) => (
-      <span>{row.getValue('panjang_rachis_cm')}</span>
+      <span>{formatNumber(row.getValue('panjang_rachis_cm'))}</span>
     ),
   },
   {
@@ -149,7 +174,7 @@ export const columns: ColumnDef<Vegetatif>[] = [
       />
     ),
     cell: ({ row }) => (
-      <span>{row.getValue('lebar_petiola_cm')}</span>
+      <span>{formatNumber(row.getValue('lebar_petiola_cm'))}</span>
     ),
   },
   {
@@ -161,19 +186,19 @@ export const columns: ColumnDef<Vegetatif>[] = [
       />
     ),
     cell: ({ row }) => (
-      <span>{row.getValue('tebal_petiola_cm')}</span>
+      <span>{formatNumber(row.getValue('tebal_petiola_cm'))}</span>
     ),
   },
   {
-    accessorKey: 'jad_1_sisi',
+    accessorKey: 'jumlah_anak_daun',
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title='Jad 1 Sisi'
+        title='Jumlah Anak Daun'
       />
     ),
     cell: ({ row }) => (
-      <span>{row.getValue('jad_1_sisi')}</span>
+      <span>{formatNumber(row.getValue('jumlah_anak_daun'))}</span>
     ),
   },
   {
@@ -181,12 +206,11 @@ export const columns: ColumnDef<Vegetatif>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title='
-Rerata Panjang Anak Daun'
+        title='Rerata Panjang Anak Daun'
       />
     ),
     cell: ({ row }) => (
-      <span>{row.getValue('rerata_panjang_anak_daun')}</span>
+      <span>{formatNumber(row.getValue('rerata_panjang_anak_daun'))}</span>
     ),
   },
   {
@@ -198,7 +222,7 @@ Rerata Panjang Anak Daun'
       />
     ),
     cell: ({ row }) => (
-      <span>{row.getValue('rerata_lebar_anak_daun')}</span>
+      <span>{formatNumber(row.getValue('rerata_lebar_anak_daun'))}</span>
     ),
   },
   {
@@ -210,10 +234,10 @@ Rerata Panjang Anak Daun'
       />
     ),
     cell: ({ row }) => (
-      <span>{row.getValue('lingkar_batang_cm')}</span>
+      <span>{formatNumber(row.getValue('lingkar_batang_cm'))}</span>
     ),
   },
-{
+  {
     accessorKey: 'tahun',
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -237,5 +261,9 @@ Rerata Panjang Anak Daun'
       <span>{row.getValue('bulan')}</span>
     ),
   },
-
-]
+  // {
+  //   id: 'actions',
+  //   header: ({ column }) => <DataTableColumnHeader column={column} title="Actions" />,
+  //   cell: ({ row }) => <DataTableRowActions row={row} />,
+  // },
+];

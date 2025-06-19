@@ -28,6 +28,7 @@ import * as z from 'zod'
 import cookies from 'js-cookie'
 import { Label } from '@/components/ui/label'
 import cookie from 'js-cookie'
+import MyComponent from '@/components/my-components'
 
 // Define the schema for form validation
 const formSchema = z.object({
@@ -718,6 +719,7 @@ export default function SearchKodeInvestasi() {
                 </div>
               </div>
             </div>
+            <MyComponent />
           </CardContent>
         </Card>
       </Layout.Body>

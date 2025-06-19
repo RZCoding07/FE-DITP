@@ -1,10 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import {
-  IconBrowserCheck,
-  IconExclamationCircle,
-  IconNotification,
   IconPalette,
-  IconTool,
   IconUser,
 } from '@tabler/icons-react'
 import { Layout } from '@/components/custom/layout'
@@ -31,7 +27,7 @@ export default function Settings() {
           <h1 className='text-2xl font-bold tracking-tight md:text-3xl'>
             Settings
           </h1>
-          <p className='text-muted-foreground'>
+          <p className='text-muted-foreground text-white'>
             Manage your account settings and set e-mail preferences.
           </p>
         </div>
@@ -40,7 +36,7 @@ export default function Settings() {
           <aside className='top-0 lg:sticky lg:w-1/5'>
             <SidebarNav items={sidebarNavItems} />
           </aside>
-          <div className='flex w-full p-1 pr-4 md:overflow-y-hidden'>
+          <div className='flex w-full  pr-4 md:overflow-y-scroll lg:pr-0'>
             <Outlet />
           </div>
         </div>
@@ -55,29 +51,10 @@ const sidebarNavItems = [
     icon: <IconUser size={18} />,
     href: '/settings',
   },
-  {
-    title: 'Account',
-    icon: <IconTool size={18} />,
-    href: '/settings/account',
-  },
+
   {
     title: 'Appearance',
     icon: <IconPalette size={18} />,
-    href: '/settings/appearance',
-  },
-  {
-    title: 'Notifications',
-    icon: <IconNotification size={18} />,
-    href: '/settings/notifications',
-  },
-  {
-    title: 'Display',
-    icon: <IconBrowserCheck size={18} />,
-    href: '/settings/display',
-  },
-  {
-    title: 'Error Example',
-    icon: <IconExclamationCircle size={18} />,
-    href: '/settings/error-example',
+    href: '/settings/appearance', 
   },
 ]

@@ -30,7 +30,7 @@ export default function Tasks() {
     try {
       const response = await axios.get(`${apiUrl}/stok-bibit`)
       setLokasiBibitan(response.data.payload)
-      console.log(response.data.payload)
+      // console.log(response.data.payload)
     } catch (error: any) {
       console.error('Error fetching LokasiBibitan:', error)
       setError(error)

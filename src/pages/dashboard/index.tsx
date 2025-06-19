@@ -9,66 +9,10 @@ import Papa from 'papaparse'
 import { TopNav } from '@/components/top-nav'
 import { UserNav } from '@/components/user-nav'
 import { FcDoughnutChart } from 'react-icons/fc'
-import axios from 'axios'
-import { useForm, Controller } from 'react-hook-form'
-import { Overview } from './components/overview'
 import cookie from 'js-cookie'
 import PieChart from '@/components/custom/pie-chart'
 import BarChartSB from '@/components/custom/bibitan-sumber-benih'
-// react select
-import Select from 'react-select'
-import { FcBarChart } from 'react-icons/fc'
-// custom styles for react select component with tsx
-const customStyles = {
-  theme: (theme: any) => ({
-    ...theme,
-    colors: {
-      ...theme.colors,
-      primary25: 'var(--bg-secondary)',
-      primary: 'var(--text-primary)',
-    },
-  }),
-  control: (provided: any) => ({
-    ...provided,
-    backgroundColor: 'var(--bg-primary)',
-    borderColor: 'var(--border-primary)',
-    borderRadius: '10.5rem',
-    boxShadow: 'none',
-    color: 'var(--text-primary)',
-    width: '250px', // Set desired width here
-    minHeight: '2.5rem',
-    '&:hover': {
-      borderColor: 'var(--border-primary)',
-    },
-  }),
-  menu: (provided: any) => ({
-    ...provided,
-    backgroundColor: '#fff',
-    color: 'black',
-    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.15)',
-    borderRadius: '0.5rem',
-  }),
-  option: (base: any, state: any) => ({
-    ...base,
-    color: state.isSelected ? 'var(--text-primary)' : 'var(--text-secondary)',
-    backgroundColor: state.isSelected ? 'var(--bg-secondary)' : 'var(--bg-primary)',
-    whiteSpace: 'nowrap', // Prevent text from wrapping
-    overflow: 'hidden', // Hide overflow
-    textOverflow: 'ellipsis', // Add ellipsis if text is too long
-    '&:hover': {
-      backgroundColor: 'var(--bg-secondary)',
-      color: 'var(--text-primary)',
-    },
-  }),
-  singleValue: (provided: any) => ({
-    ...provided,
-    color: 'var(--text-primary)',
-  }),
-  input: (provided: any) => ({
-    ...provided,
-    color: 'var(--text-primary)',
-  }),
-};
+
 
 import { IconPdf } from '@tabler/icons-react'
 import BarChart from '@/components/custom/bibitan-bar-chart'
@@ -174,7 +118,7 @@ export default function Dashboard() {
   const [hasilSeleksi, setHasilSeleksi] = useState([])
 
 
-  const apiUrl = import.meta.env.VITE_API_NURSERY
+const apiUrl = import.meta.env.VITE_API_NURSERY
 
   // r1
   useEffect(() => {
@@ -802,26 +746,6 @@ const formatNumber = (value: number) => {
   return new Intl.NumberFormat('id-ID').format(value)
 }
 
-
-
-  // const fetchSeleksiAkhirBibit = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${apiUrl}/pie-chart-bibitan-regional`
-  //     )
-  //     const data = response.data
-
-  //     setHasilSeleksi(data)
-
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   fetchSeleksiAkhirBibit()
-  // }, [])
-
   useEffect(() => {
     setCountAllPn(countpN1 + countpN2 + countpN3 + countpN4 + countpN5 + countpN6 + countpN7 + countpN2n2 + countpN2n14)
     setCountAllMn(countMnR1 + countMnR2 + countMnR3 + countMnR4 + countMnR5 + countMnR6 + countMnR7 + countMnR2n2 + countMnR2n14)
@@ -987,6 +911,11 @@ const topNav = [
   {
     title: 'Monica',
     href: '/dashboard-monica',
+    isActive: false,
+  },
+  {
+    title: 'Monev TU (Inspire-KKMV)',
+    href: '/dashboard-inspire',
     isActive: false,
   },
 ]

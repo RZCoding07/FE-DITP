@@ -58,6 +58,7 @@ const removeAllCookies = () => {
       .replace(/^ +/, '')
       .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/')
   })
+  window.location.href = '/sign-in'
 }
 
 requireAuth().catch((error) => {
@@ -245,11 +246,11 @@ let immatureRouter = [
   {
     index: true,
     lazy: async () => ({
-      Component: (await import('./pages/dashboard-tbm')).default,
+      Component: (await import('./pages/beranda')).default,
     }),
   },
   {
-    path: 'dashboard-pica-tbm',
+    path: 'dashboard',
     lazy: async () => ({
       Component: (await import('./pages/dashboard-tbm')).default,
     }),
@@ -261,9 +262,9 @@ let immatureRouter = [
     }),
   },
   {
-    path: 'data-vegetatif',
+    path: 'isi-masalah/:id',
     lazy: async () => ({
-      Component: (await import('./pages/data-vegetatif')).default,
+      Component: (await import('./pages/isi-masalah')).default,
     }),
   },
   {
@@ -282,6 +283,33 @@ let immatureRouter = [
     path: 'data-pi',
     lazy: async () => ({
       Component: (await import('./pages/data-pi')).default,
+    }),
+    loader: async () => {
+      return <Preloader />
+    }
+  },
+  {
+    path: 'data-vegetatif',
+    lazy: async () => ({
+      Component: (await import('./pages/data-vegetatif')).default,
+    }),
+    loader: async () => {
+      return <Preloader />
+    }
+  },
+  {
+    path: 'progress-vegetatif',
+    lazy: async () => ({
+      Component: (await import('./pages/progress-vegetatif')).default,
+    }),
+    loader: async () => {
+      return <Preloader />
+    }
+  },
+  {
+    path: 'data-ca',
+    lazy: async () => ({
+      Component: (await import('./pages/data-ca')).default,
     }),
     loader: async () => {
       return <Preloader />
@@ -309,9 +337,33 @@ let immatureRouter = [
     }),
   },
   {
+    path : 'upload-corrective-action',
+    lazy: async () => ({
+      Component: (await import('./pages/upload-data-ca-tbm')).default,
+    }),
+  },
+  {
     path : 'upload-serapan-biaya',
     lazy: async () => ({
       Component: (await import('./pages/upload-serapan-biaya')).default,
+    }),
+  },
+  {
+    path : 'luas-areal',
+    lazy: async () => ({
+      Component: (await import('./pages/luas-areal-statement')).default,
+    }),
+  },
+    {
+    path: 'res-pica-tbm',
+    lazy: async () => ({
+      Component: (await import('./pages/result-pica')).default,
+    }),
+  },
+  {
+    path : 'upload-areal-statement',
+    lazy: async () => ({
+      Component: (await import('./pages/upload-luas-areal')).default,
     }),
   },
   {
@@ -319,6 +371,30 @@ let immatureRouter = [
     lazy: async () => ({
       Component: (await import('@/pages/create-uraian-pekerjaan-immature'))
         .default,
+    }),
+  },
+  {
+    path: 'input-problem-identification',
+    lazy: async () => ({
+      Component: (await import('@/pages/input-data-pi')).default,
+    }),
+  },
+  {
+    path: 'input-corrective-action',
+    lazy: async () => ({
+      Component: (await import('@/pages/input-data-ca')).default,
+    }),
+  },
+    {
+    path: 'weekly-pica-tbm/:id/:start_date/:end_date',
+    lazy: async () => ({
+      Component: (await import('./pages/weekly-progress-pica-immature')).default,
+    }),
+  },
+  {
+    path: 'edit-vegetatif/:id',
+    lazy: async () => ({
+      Component: (await import('@/pages/edit-pengukuran-vegetatif')).default,
     }),
   },
   {
@@ -334,13 +410,88 @@ let immatureRouter = [
       Component: (await import('./pages/immature')).default,
     }),
   },
+  {
+    path: 'settings',
+    lazy: async () => ({
+      Component: (await import('./pages/settings')).default,
+    }),
+    errorElement: <GeneralError />,
+    children: [
+      {
+        index: true,
+        lazy: async () => ({
+          Component: (await import('./pages/settings/profile')).default,
+        }),
+      },
+      {
+        path: 'account',
+        lazy: async () => ({
+          Component: (await import('./pages/settings/account')).default,
+        }),
+      },
+      {
+        path: 'appearance',
+        lazy: async () => ({
+          Component: (await import('./pages/settings/appearance')).default,
+        }),
+      },
+      {
+        path: 'notifications',
+        lazy: async () => ({
+          Component: (await import('./pages/settings/notifications'))
+            .default,
+        }),
+      },
+      {
+        path: 'display',
+        lazy: async () => ({
+          Component: (await import('./pages/settings/display')).default,
+        }),
+      },
+      {
+        path: 'error-example',
+        lazy: async () => ({
+          Component: (await import('./pages/settings/error-example'))
+            .default,
+        }),
+        errorElement: <GeneralError className='h-[50svh]' minimal />,
+      },
+    ]
+  },
 ]
 
 let allRouter = [
   {
     index: true,
     lazy: async () => ({
+      Component: (await import('./pages/beranda')).default,
+    }),
+  },
+  {
+    path: 'beranda',
+    lazy: async () => ({
+      Component: (await import('./pages/beranda')).default,
+    }),
+  },
+  {
+    path: 'progress-vegetatif',
+    lazy: async () => ({
+      Component: (await import('./pages/progress-vegetatif')).default,
+    }),
+    loader: async () => {
+      return <Preloader />
+    }
+  },
+  {
+    path: 'dashboard',
+    lazy: async () => ({
       Component: (await import('./pages/dashboard')).default,
+    }),
+  },
+  {
+    path: 'dashboard-monev',
+    lazy: async () => ({
+      Component: (await import('./pages/dashboard-monev')).default,
     }),
   },
   {
@@ -356,6 +507,12 @@ let allRouter = [
     }),
   },
   {
+    path: 'dashboard-inspire',
+    lazy: async () => ({
+      Component: (await import('./pages/dashboard-inspire')).default,
+    }),
+  },
+  {
     path: 'dashboard-monica',
     lazy: async () => ({
       Component: (await import('./pages/dashboard-monica')).default,
@@ -365,6 +522,12 @@ let allRouter = [
     path: 'foresight-ai',
     lazy: async () => ({
       Component: (await import('./pages/foresight-ai')).default,
+    }),
+  },
+  {
+    path: 'res-pica-tbm',
+    lazy: async () => ({
+      Component: (await import('./pages/result-pica')).default,
     }),
   },
   {
@@ -548,6 +711,146 @@ let allRouter = [
     }),
   },
   {
+    path: 'pica-tbm',
+    lazy: async () => ({
+      Component: (await import('./pages/pica')).default,
+    }),
+  },
+  {
+    path: 'isi-masalah/:id',
+    lazy: async () => ({
+      Component: (await import('./pages/isi-masalah')).default,
+    }),
+  },
+  {
+    path: 'weekly-pica-tbm/:id/:start_date/:end_date',
+    lazy: async () => ({
+      Component: (await import('./pages/weekly-progress-pica-immature')).default,
+    }),
+  },
+  {
+    path: 'serapan-biaya',
+    lazy: async () => ({
+      Component: (await import('./pages/serapan-biaya')).default,
+    }),
+  },
+  {
+    path: 'kuadran-grafik',
+    lazy: async () => ({
+      Component: (await import('./pages/kuadran-grafik')).default,
+    }),
+  },
+  {
+    path: 'data-pi',
+    lazy: async () => ({
+      Component: (await import('./pages/data-pi')).default,
+    }),
+    loader: async () => {
+      return <Preloader />
+    }
+  },
+  {
+    path: 'data-vegetatif',
+    lazy: async () => ({
+      Component: (await import('./pages/data-vegetatif')).default,
+    }),
+    loader: async () => {
+      return <Preloader />
+    }
+  },
+  {
+    path: 'data-ca',
+    lazy: async () => ({
+      Component: (await import('./pages/data-ca')).default,
+    }),
+    loader: async () => {
+      return <Preloader />
+    }
+  },
+  {
+    path: 'hasil-pengukuran-vegetatif',
+    lazy: async () => ({
+      Component: (await import('./pages/hasil-pengukuran-vegetatif')).default,
+    }),
+    loader: async () => {
+      return <Preloader />
+    }
+  },
+  {
+    path : 'upload-pengukuran-vegetatif',
+    lazy: async () => ({
+      Component: (await import('./pages/upload-pengukuran-vegetatif')).default,
+    }),
+  },
+  {
+    path : 'upload-problem-identification',
+    lazy: async () => ({
+      Component: (await import('./pages/upload-data-pi-tbm')).default,
+    }),
+  },
+  {
+    path : 'upload-corrective-action',
+    lazy: async () => ({
+      Component: (await import('./pages/upload-data-ca-tbm')).default,
+    }),
+  },
+  {
+    path : 'upload-serapan-biaya',
+    lazy: async () => ({
+      Component: (await import('./pages/upload-serapan-biaya')).default,
+    }),
+  },
+  {
+    path : 'luas-areal',
+    lazy: async () => ({
+      Component: (await import('./pages/luas-areal-statement')).default,
+    }),
+  },
+  {
+    path : 'upload-areal-statement',
+    lazy: async () => ({
+      Component: (await import('./pages/upload-luas-areal')).default,
+    }),
+  },
+  {
+    path: 'create-uraian-pekerjaan-immature',
+    lazy: async () => ({
+      Component: (await import('@/pages/create-uraian-pekerjaan-immature'))
+        .default,
+    }),
+  },
+  {
+    path: 'input-problem-identification',
+    lazy: async () => ({
+      Component: (await import('@/pages/input-data-pi')).default,
+    }),
+  },
+  {
+    path: 'input-corrective-action',
+    lazy: async () => ({
+      Component: (await import('@/pages/input-data-ca')).default,
+    }),
+  },
+  {
+    path: 'edit-vegetatif/:id',
+    lazy: async () => ({
+      Component: (await import('@/pages/edit-pengukuran-vegetatif')).default,
+    }),
+  },
+  {
+    path: 'upload-uraian-pekerjaan-immature',
+    lazy: async () => ({
+      Component: (await import('@/pages/upload-uraian-pekerjaan-immature'))
+        .default,
+    }),
+  },
+  {
+    path: 'immature',
+    lazy: async () => ({
+      Component: (await import('./pages/immature')).default,
+    }),
+  },
+  {
     path: 'settings',
     lazy: async () => ({
       Component: (await import('./pages/settings')).default,
@@ -595,6 +898,8 @@ let allRouter = [
       },
     ]
   },
+  
+
 ]
 
 // Define the children array dynamically based on app_type
@@ -636,7 +941,6 @@ let mainRouter = [
     }),
     loader: async () => {
       removeAllCookies();
-      return redirect('/sign-in');
     },
   },
   {

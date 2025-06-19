@@ -12,7 +12,7 @@ import { Loading } from '@/components/ui/loading'
 import cookies from 'js-cookie'
 
 export default function Awal() {
-const [Awal, setAwal] = useState([])
+  const [Awal, setAwal] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const apiUrl = import.meta.env.VITE_API_IMMATURE
@@ -64,11 +64,13 @@ const [Awal, setAwal] = useState([])
             </p>
           </div>
           {/* {(account_type === 'HO PalmCo' || account_type === 'Superadmin' ) && ( */}
-          <div className='ml-auto flex space-x-2'>
-            <Link to='/upload-problem-identification'>
-              <Button>Upload Data</Button>
-            </Link>
-          </div>
+          {account_type === 'superadmin' && (
+            <div className='ml-auto flex space-x-2'>
+              <Link to='/upload-problem-identification'>
+                <Button>Upload Data</Button>
+              </Link>
+            </div>
+          )}
           {/* )} */}
         </div>
 

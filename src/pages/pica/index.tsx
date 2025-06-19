@@ -23,25 +23,115 @@ import slugify from 'slugify'
 import Select from 'react-select'
 import axios from 'axios'
 import StockAnalysisChartBar from '@/components/custom/bar-chart'
-import { fetchKebun } from '@/utils/api_immature'
+import { fetchDistinctYearsMonth, fetchKebun } from '@/utils/api_immature'
 import { SelectOption } from '@/utils/types'
 import { MONTH_NAMES } from '@/utils/constants'
 import { fetchDistinctYears } from '@/utils/api_immature'
 import { fetchVegetativeProc } from '@/utils/api_immature'
+import {
+  getScoreJumlahPelepah,
+  getScoreKerapatanPokok,
+  getScoreLingkarBatang,
+  getScoreTinggiTanaman, getColorJumlahPelepah,
+  getColorLingkarBatang,
+  getColorTinggiTanaman,
+} from "@/components/custom/calculation-scores"
+import {
+  processScoreData,
+  countColorCategories,
+  sumLuasByColorCategory,
+  processRegionalData,
+} from "@/utils/dashboard-helper"
+import * as XLSX from "xlsx-js-style"
+
+// Define the header style for Excel export
+const headerStyle = {
+  fill: { fgColor: { rgb: "10CCAD" } },
+  font: { color: { rgb: "FFFFFF" }, bold: true },
+  alignment: { horizontal: "center" },
+};
 
 export default function PicaTbm() {
   const [isLoadingUpload, setIsLoadingUpload] = useState(false)
   const [isUploadingDone, setIsUploadingDone] = useState(false)
   const [progressValue, setProgressValue] = useState(0)
 
-  const [kebunOptions, setKebunOptions] = useState([])
-  const [afdOptions, setAfdOptions] = useState([])
-
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [awal, setAwal] = useState([])
 
+  const [picaData, setPicaData] = useState<any[]>([])
+
+  // Get user data from cookie
   const user = JSON.parse(cookie.get('user') || '{}')
+  const accountType = user?.account_type || 'superadmin'
+  const userRpc = user?.rpc || null
+  const userKebun = user?.kebun || null
+
+  // Filter RPC options based on user role
+  const getFilteredRpcOptions = () => {
+    const allRpcOptions = [
+      { value: "all", label: "Semua RPC" },
+      { value: "RPC1", label: "RPC 1" },
+      { value: "RPC2", label: "RPC 2" },
+      { value: "RPC3", label: "RPC 3" },
+      { value: "RPC4", label: "RPC 4" },
+      { value: "RPC5", label: "RPC 5" },
+      { value: "RPC6", label: "RPC 6" },
+      { value: "RPC7", label: "RPC 7" },
+      { value: "RPC2N2", label: "RPC2N2" },
+      { value: "RPC2N14", label: "RPC2N14" },
+    ]
+
+    if (accountType === 'superadmin') {
+      return allRpcOptions
+    } else if (accountType === 'regional') {
+      return allRpcOptions.filter(option => 
+        option.value === 'all' || option.value === userRpc
+      )
+    } else if (accountType === 'kebun') {
+      // Kebun users should only see their RPC
+      return allRpcOptions.filter(option => option.value === userRpc)
+    }
+    return allRpcOptions
+  }
+
+  const rpcOptions = getFilteredRpcOptions()
+
+  // Filter data based on user role
+  const filterDataByRole = (data: any[]) => {
+    if (accountType === 'superadmin') {
+      return data
+    } else if (accountType === 'regional') {
+      return data.filter(item => item.regional === userRpc)
+    } else if (accountType === 'kebun') {
+      return data.filter(item => item.kebun === userKebun)
+    }
+    return data
+  }
+
+  useEffect(() => {
+    const fetchPicaData = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_IMMATURE}/pica-all`)
+        const data = response.data
+
+        // Filter data based on user role
+        const filteredData = filterDataByRole(data.data || [])
+        
+        console.log('Pica Data:', filteredData)
+        setPicaData(filteredData)
+        setLoading(false)
+      } catch (error: any) {
+        console.error('Error fetching data:', error)
+        setError(error)
+        setLoading(false)
+      }
+    }
+
+    fetchPicaData()
+  }, [])
+
   const {
     register,
     handleSubmit,
@@ -62,63 +152,49 @@ export default function PicaTbm() {
   const [defaultTahun, setDefaultTahun] = useState<SelectOption | null>(null)
   const [selectedTbm, setSelectedTbm] = useState('keseluruhan-tbm')
 
+  const [hasInitialized, setHasInitialized] = useState(false)
+
   const handleTbmChange = (selectedOption: any) => {
     setSelectedTbm(selectedOption.value);
   }
 
-
-  const [countRedBlock, setCountRedBlock] = useState(0)
-  const [countBlackBlock, setCountBlackBlock] = useState(0)
-
-  // countRedBlock and countBlackBlock TBM 1 - 4
-  const [countRedBlockTbm1, setCountRedBlockTbm1] = useState(0)
-  const [countRedBlockTbm2, setCountRedBlockTbm2] = useState(0)
-  const [countRedBlockTbm3, setCountRedBlockTbm3] = useState(0)
-  const [countRedBlockTbm4, setCountRedBlockTbm4] = useState(0)
-
-  const [countBlackBlockTbm1, setCountBlackBlockTbm1] = useState(0)
-  const [countBlackBlockTbm2, setCountBlackBlockTbm2] = useState(0)
-  const [countBlackBlockTbm3, setCountBlackBlockTbm3] = useState(0)
-  const [countBlackBlockTbm4, setCountBlackBlockTbm4] = useState(0)
-
-  const apiUrl = import.meta.env.VITE_API_IMMATURE
-  const rpcOptions = [
-    { value: 'RPC1', label: 'RPC 1' },
-    { value: 'RPC2', label: 'RPC 2' },
-    { value: 'RPC3', label: 'RPC 3' },
-    { value: 'RPC4', label: 'RPC 4' },
-    { value: 'RPC5', label: 'RPC 5' },
-    { value: 'RPC6', label: 'RPC 6' },
-    { value: 'RPC7', label: 'RPC 7' },
-    { value: 'RPC2N2', label: 'RPC2N2' },
-    { value: 'RPC2N14', label: 'RPC2N14' },
-  ]
-
-  const tbmopt = [
-    { value: 'tbm1', label: 'TBM 1' },
-    { value: 'tbm2', label: 'TBM 2' },
-    { value: 'tbm3', label: 'TBM 3' },
-    { value: 'tbm4', label: 'TBM > 3' },
-  ]
-
-
-
-  const [tbmRes, setTbmRes] = useState<any[]>([])
+  // Main state variables
   const [scores, setScores] = useState<any[]>([])
+  const [scoresAll, setScoresAll] = useState<any[]>([])
+  const [scoresRegional, setScoresRegional] = useState<any[]>([])
+  const [scoresKebun, setScoresKebun] = useState<any[]>([])
+  const [tbmRes, setTbmRes] = useState<any[]>([])
+
+  // Color data state
   const [colorData, setColorData] = useState({
-    hitam: 0,
-    merah: 0,
-    hijau: 0,
-    emas: 0,
+    gold: 0,
+    green: 0,
+    red: 0,
+    black: 0,
   })
 
   const [colorDataLuas, setColorDataLuas] = useState({
-    hitam: 0,
-    merah: 0,
-    hijau: 0,
-    emas: 0,
+    gold: 0,
+    green: 0,
+    red: 0,
+    black: 0,
   })
 
+  const [colorDataDonat, setColorDataDonat] = useState({
+    gold: 0,
+    green: 0,
+    red: 0,
+    black: 0,
+  })
+
+  const [colorDataLuasDonat, setColorDataLuasDonat] = useState({
+    gold: "",
+    green: "",
+    red: "",
+    black: "",
+  })
+
+  // TBM data state
   const [tbmData, setTbmData] = useState({
     tbm1: 0,
     tbm2: 0,
@@ -138,339 +214,275 @@ export default function PicaTbm() {
     tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
   })
 
-  const [regionalBlackBlockCount, setRegionalBlackBlockCount] = useState<any>({});
+  // Block count state
+  const [countRedBlock, setCountRedBlock] = useState<Record<string, number>>({})
+  const [countBlackBlock, setCountBlackBlock] = useState<Record<string, number>>({})
+  const [countRedBlockTbm1, setCountRedBlockTbm1] = useState<Record<string, number>>({})
+  const [countRedBlockTbm2, setCountRedBlockTbm2] = useState<Record<string, number>>({})
+  const [countRedBlockTbm3, setCountRedBlockTbm3] = useState<Record<string, number>>({})
+  const [countRedBlockTbm4, setCountRedBlockTbm4] = useState<Record<string, number>>({})
+  const [countBlackBlockTbm1, setCountBlackBlockTbm1] = useState<Record<string, number>>({})
+  const [countBlackBlockTbm2, setCountBlackBlockTbm2] = useState<Record<string, number>>({})
+  const [countBlackBlockTbm3, setCountBlackBlockTbm3] = useState<Record<string, number>>({})
+  const [countBlackBlockTbm4, setCountBlackBlockTbm4] = useState<Record<string, number>>({})
+  const [regionalBlackBlockCount, setRegionalBlackBlockCount] = useState<any>({})
 
+  // Selection state
+  const [selectedRpc, setSelectedRpc] = useState("all")
+  const [selectedKebun, setSelectedKebun] = useState({ value: "", label: "" })
+  const [selectedAfd, setSelectedAfd] = useState("")
+  const [selectedCard, setSelectedCard] = useState({
+    type: "all",
+    name: "Keseluruhan TBM",
+    ctg: "tbm-all",
+    circular: "",
+    val: 4,
+  })
 
+  // Excel export function
+  const exportToExcel = (data: any[], selectedTbm: string) => {
+    // Filter data based on user role before exporting
+    const filteredData = filterDataByRole(data)
+    
+    // Prepare the worksheet data
+    const wsData = [
+      // Header row with styles
+      [
+        { v: "Regional", t: "s", s: headerStyle },
+        { v: "Kebun", t: "s", s: headerStyle },
+        { v: "Afdeling", t: "s", s: headerStyle },
+        { v: "Blok", t: "s", s: headerStyle },
+        { v: "Luas (Ha)", t: "s", s: headerStyle },
+        { v: "Varietas", t: "s", s: headerStyle },
+        { v: "Tahun Tanam", t: "s", s: headerStyle },
+        { v: "Nilai Jumlah Pelepah", t: "s", s: headerStyle },
+        { v: "Nilai Kerapatan Pokok", t: "s", s: headerStyle },
+        { v: "Nilai Lingkar Batang", t: "s", s: headerStyle },
+        { v: "Nilai Tinggi Batang", t: "s", s: headerStyle },
+        { v: "Nilai Vegetatif", t: "s", s: headerStyle },
+        { v: "Kategori Warna", t: "s", s: headerStyle },
+        { v: "Status PICA", t: "s", s: headerStyle },
+      ],
+      // Data rows
+      ...filteredData.map((item) => [
+        item.regional,
+        item.kebun,
+        item.afdeling,
+        item.blok,
+        item.luas,
+        item.varietas,
+        item.tahun_tanam,
+        item.scoreJumlahPelepah,
+        item.scoreKerapatanPokok?.toFixed(2),
+        item.scoreLingkarBatang,
+        item.scoreTinggiBatang,
+        item.totalSeleksian?.toFixed(2),
+        {
+          v: item.colorCategory === "red" ? "MERAH" : "HITAM",
+          t: "s",
+          s: {
+            fill: {
+              fgColor: {
+                rgb: item.colorCategory === "red" ? "DC143C" : "000000",
+              },
+            },
+            font: { color: { rgb: "FFFFFF" } },
+          },
+        },
+        item.pica_id ? "Sudah Terisi" : "Belum Terisi",
+      ]),
+    ];
 
+    // Create worksheet
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
 
+    // Set column widths
+    ws["!cols"] = [
+      { width: 10 }, // Regional
+      { width: 15 }, // Kebun
+      { width: 10 }, // Afdeling
+      { width: 10 }, // Blok
+      { width: 10 }, // Luas
+      { width: 12 }, // Varietas
+      { width: 12 }, // Tahun Tanam
+      { width: 18 }, // Jumlah Pelepah
+      { width: 18 }, // Kerapatan Pokok
+      { width: 18 }, // Lingkar Batang
+      { width: 16 }, // Tinggi Batang
+      { width: 14 }, // Vegetatif
+      { width: 14 }, // Kategori Warna
+      { width: 12 }, // Status PICA
+    ];
+
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(
+      wb,
+      ws,
+      `PICA ${selectedTbm === "keseluruhan-tbm" ? "All TBM" : selectedTbm.toUpperCase()}`
+    );
+
+    // Export the file
+    XLSX.writeFile(
+      wb,
+      `PICA_${selectedTbm === "keseluruhan-tbm" ? "All_TBM" : selectedTbm}_${new Date().toISOString().slice(0, 10)}.xlsx`
+    );
+  };
+
+  // Main data fetching effect
   useEffect(() => {
     const fetchProcVegetatifDefault = async () => {
-
       try {
         // Reset all values to zero
-        setTbmRes([]);  // reset tbmRes array
-        setScores([]);  // reset scores array
+        setTbmRes([])
+        setScores([])
+        setScoresKebun([])
         setColorData({
-          hitam: 0,
-          merah: 0,
-          hijau: 0,
-          emas: 0,
-        });  // reset colorData
+          black: 0,
+          red: 0,
+          green: 0,
+          gold: 0,
+        })
         setColorDataLuas({
-          hitam: 0,
-          merah: 0,
-          hijau: 0,
-          emas: 0,
-        });  // reset colorDataLuas
+          black: 0,
+          red: 0,
+          green: 0,
+          gold: 0,
+        })
         setTbmData({
           tbm1: 0,
           tbm2: 0,
           tbm3: 0,
           tbm4: 0,
-        });  // reset tbmData
+        })
         setTbmDataScorePelepahBlok({
           tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
           tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
           tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
-        });  // reset tbmDataScorePelepahBlok
+        })
         setTbmDataScoreLingkarBlok({
           tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
           tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
           tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
-        });  // reset tbmDataScoreLingkarBlok
-
-        const tbmResults: {
-          tbm1: number
-          tbm2: number
-          tbm3: number
-          tbm4: number
-        } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
-
-        const pokokSekarangResults: {
-          tbm1: number
-          tbm2: number
-          tbm3: number
-          tbm4: number
-        } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
-
-        const calJumlahPelepahResults: {
-          tbm1: number
-          tbm2: number
-          tbm3: number
-          tbm4: number
-        } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
-
-        const calLingkarBatangResults: {
-          tbm1: number
-          tbm2: number
-          tbm3: number
-          tbm4: number
-        } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
-
-        const avgPelepahResults: {
-          tbm1: number
-          tbm2: number
-          tbm3: number
-          tbm4: number
-        } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
-
-        const avgLingkarBatangResults: {
-          tbm1: number
-          tbm2: number
-          tbm3: number
-          tbm4: number
-        } = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
-
-        const scoreLingkarBatangResults: {
-          tbm1: {
-            score100: number
-            score90: number
-            score80: number
-            total: number
-          }
-          tbm2: {
-            score100: number
-            score90: number
-            score80: number
-            total: number
-          }
-          tbm3: {
-            score100: number
-            score90: number
-            score80: number
-            total: number
-          }
-        } = {
-          tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
-          tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
-          tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
-        }
-
-        const scoreJumlahPelepahResults: {
-          tbm1: {
-            score100: number
-            score90: number
-            score80: number
-            total: number
-          }
-          tbm2: {
-            score100: number
-            score90: number
-            score80: number
-            total: number
-          }
-          tbm3: {
-            score100: number
-            score90: number
-            score80: number
-            total: number
-          }
-        } = {
-          tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
-          tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
-          tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
-        }
+        })
 
         const loader = toast.loading(`Memuat data untuk Keseluruhan TBM...`, {
           duration: 20000,
         })
 
-        for (let i = 1; i < 5; i++) {
-          const tahunTanam = tahun.value - i;
-          const response = await fetchVegetativeProc({
-            input_tbm: 'tbm' + i,
-            input_tahun_tanam: tahunTanam,
-            input_bulan: bulan.value,
-            input_tahun: tahun.value
-          });
-
-          setTbmRes((prev) => [...prev, Object.values(response.data)]);
-
-          const regionalBlackBlockCount: { [key: string]: number } = {};
-
-          const newScores = Object.values(response.data).map((item: any) => {
-            let age = bulan.value * i;
-            if (age > 36) {
-              age = 36;
-            }
-            const blok = item.blok;
-            const scoreLingkarBatang =
-              getScoreLingkarBatang(age, parseFloat(item.lingkar_batang_cm)) * 0.4;
-            const scoreJumlahPelepah =
-              getScoreJumlahPelepah(age, parseFloat(item.jumlah_pelepah_bh)) * 0.2;
-
-            const scoreTinggiBatang =
-              getScoreTinggiTanaman(age, parseFloat(item.tinggi_tanaman_cm)) * 0.1;
-
-            const scoreKerapatanPokok =
-              getScoreKerapatanPokok(
-                age,
-                parseFloat(item.jumlah_pokok_awal_tanam),
-                parseFloat(item.jumlah_pokok_sekarang)
-              ) * 0.3;
-
-            const totalSeleksian =
-              scoreLingkarBatang +
-              scoreJumlahPelepah +
-              scoreTinggiBatang +
-              scoreKerapatanPokok;
-
-            let colorCategory = '';
-
-            if (totalSeleksian < 80) {
-              colorCategory = 'black';
-              // Jika colorCategory adalah black, hitung berdasarkan regional
-              const regional = item.regional;
-              if (regionalBlackBlockCount[regional]) {
-                regionalBlackBlockCount[regional] += 1;
-              } else {
-                regionalBlackBlockCount[regional] = 1;
-              }
-            } else if (totalSeleksian >= 80 && totalSeleksian < 90) {
-              colorCategory = 'red';
-            } else if (totalSeleksian >= 90 && totalSeleksian < 97) {
-              colorCategory = 'green';
-            } else if (totalSeleksian >= 97) {
-              colorCategory = 'gold';
-            }
-
-            const luas = parseFloat(item.luas_ha);
-            const regional = item.regional;
-            const kebun = item.kebun;
-            const lingkar = parseFloat(item.lingkar_batang_cm);
-            const tinggi = parseFloat(item.tinggi_tanaman_cm);
-            const jumPelepah = parseFloat(item.jumlah_pelepah_bh);
-
-            // Menyimpan data ke state
-            setScores((prev) => [
-              ...prev,
-              {
-                [`tbm${i}`]: {
-                  id: item.id,
-                  regional,
-                  kebun,
-                  afdeling: item.afdeling,
-                  blok,
-                  scoreLingkarBatang,
-                  scoreJumlahPelepah,
-                  scoreTinggiBatang,
-                  scoreKerapatanPokok,
-                  totalSeleksian,
-                  colorCategory,
-                  luas,
-                  jumPelepah,
-                  tahunTanam,
-                  bulan,
-                  tahun,
-                },
-              },
-            ]);
-
-            return {
-              [`tbm${i}`]: {
-                id: item.id,
-                regional,
-                blok,
-                scoreLingkarBatang,
-                scoreJumlahPelepah,
-                scoreTinggiBatang,
-                scoreKerapatanPokok,
-                totalSeleksian,
-                colorCategory,
-                luas,
-              },
-            };
-          });
-
-          // Rekap jumlah blok hitam per regional
-          setRegionalBlackBlockCount((prev: any) => ({
-            ...prev,
-            [`tbm${i}`]: regionalBlackBlockCount,
-          }));
-
-          // Menghitung total luas dan pokok untuk rekap
-          const totalLuasHa: number = Object.values(response.data).reduce(
-            (acc: number, curr: any) => acc + parseFloat(curr.luas_ha),
-            0
-          );
-
-          const totalPokokSekarang: number = Object.values(response.data).reduce(
-            (acc: number, curr: any) => acc + parseFloat(curr.jumlah_pokok_sekarang),
-            0
-          );
-
-          const totalCalJumlahPelepah: number = Object.values(response.data).reduce(
-            (acc: number, curr: any) => acc + parseFloat(curr.cal_jumlah_pelepah),
-            0
-          );
-
-          const totalCalLingkarBatang: number = Object.values(response.data).reduce(
-            (acc: number, curr: any) => acc + parseFloat(curr.cal_lingkar_batang),
-            0
-          );
-
-          tbmResults[`tbm${i as 1 | 2 | 3 | 4}`] = totalLuasHa;
-
-          pokokSekarangResults[`tbm${i as 1 | 2 | 3 | 4}`] = totalPokokSekarang;
-
-          calJumlahPelepahResults[`tbm${i as 1 | 2 | 3 | 4}`] = totalCalJumlahPelepah;
-
-          calLingkarBatangResults[`tbm${i as 1 | 2 | 3 | 4}`] = totalCalLingkarBatang;
-
-          avgPelepahResults[`tbm${i as 1 | 2 | 3 | 4}`] =
-            totalCalJumlahPelepah / totalPokokSekarang;
-
-          avgLingkarBatangResults[`tbm${i as 1 | 2 | 3 | 4}`] =
-            totalCalLingkarBatang / totalPokokSekarang;
-
-          if (i < 4) {
-            scoreJumlahPelepahResults[`tbm${i as 1 | 2 | 3}`] = {
-              score100: newScores.filter(
-                (item: any) => item[`tbm${i}`].scoreJumlahPelepah === 100
-              ).length,
-              score90: newScores.filter(
-                (item: any) => item[`tbm${i}`].scoreJumlahPelepah === 90
-              ).length,
-              score80: newScores.filter(
-                (item: any) => item[`tbm${i}`].scoreJumlahPelepah === 80
-              ).length,
-              total: newScores.length,
-            };
-
-            scoreLingkarBatangResults[`tbm${i as 1 | 2 | 3}`] = {
-              score100: newScores.filter(
-                (item: any) => item[`tbm${i}`].scoreLingkarBatang === 100
-              ).length,
-              score90: newScores.filter(
-                (item: any) => item[`tbm${i}`].scoreLingkarBatang === 90
-              ).length,
-              score80: newScores.filter(
-                (item: any) => item[`tbm${i}`].scoreLingkarBatang === 80
-              ).length,
-              total: newScores.length,
-            };
-          }
+        // Add filter based on user role
+        const params: any = {
+          input_bulan: Number.parseInt(bulan.value),
+          input_tahun: Number.parseInt(tahun.value),
         }
 
-        setTbmData(tbmResults)
-        setTbmDataScorePelepahBlok(scoreJumlahPelepahResults)
-        setTbmDataScoreLingkarBlok(scoreLingkarBatangResults)
-        toast.success('Seluruh data TBM berhasil ditampilkan!', {
+        if (accountType === 'regional') {
+          params.regional = userRpc
+        } else if (accountType === 'kebun') {
+          params.kebun = userKebun
+        }
+
+        const response = await fetchVegetativeProc(params)
+
+        // Filter data based on user role
+        let filteredData = response.data
+        if (accountType === 'regional') {
+          filteredData = filteredData.filter((item: any) => item.regional === userRpc)
+        } else if (accountType === 'kebun') {
+          filteredData = filteredData.filter((item: any) => item.kebun === userKebun)
+        }
+
+        // Group data by TBM phase
+        const groupedData = filteredData.reduce((acc: Record<string, any[]>, item: any) => {
+          const tbmPhase = `tbm${item.vw_fase_tbm}`;
+          if (!acc[tbmPhase]) {
+            acc[tbmPhase] = [];
+          }
+          acc[tbmPhase].push(item);
+          return acc;
+        }, {});
+
+        const tbmResults = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 };
+        const scoreJumlahPelepahResults = {
+          tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
+          tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
+          tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
+        };
+        const scoreLingkarBatangResults = {
+          tbm1: { score100: 0, score90: 0, score80: 0, total: 0 },
+          tbm2: { score100: 0, score90: 0, score80: 0, total: 0 },
+          tbm3: { score100: 0, score90: 0, score80: 0, total: 0 },
+        };
+        const regionalBlackBlockCount: Record<string, any> = {};
+
+        // Process each TBM phase
+        Object.keys(groupedData).forEach((tbmPhase) => {
+          const {
+            newScores,
+            newScoresKebun,
+            newScoresRegional,
+            newScoresAll,
+            newRegionalBlackBlockCount,
+            tbmResultsUpdate,
+            scoreJumlahPelepahResultsUpdate,
+            scoreLingkarBatangResultsUpdate,
+          } = processScoreData({
+            data: groupedData[tbmPhase],
+            getScoreLingkarBatang,
+            getScoreJumlahPelepah,
+            getScoreTinggiTanaman,
+            getScoreKerapatanPokok,
+            getColorJumlahPelepah,
+            getColorLingkarBatang,
+            getColorTinggiTanaman,
+          });
+
+          setScores((prev) => [...prev, ...newScores]);
+          setScoresAll((prev) => [...prev, ...newScoresAll]);
+          setScoresKebun((prev) => [...prev, ...newScoresKebun]);
+          setScoresRegional((prev) => [...prev, ...newScoresRegional]);
+
+          // Update counts for this TBM phase
+          regionalBlackBlockCount[tbmPhase] = newRegionalBlackBlockCount;
+          Object.assign(tbmResults, tbmResultsUpdate);
+
+          // Only update scores for TBM1-3
+          if (['tbm1', 'tbm2', 'tbm3'].includes(tbmPhase)) {
+            Object.assign(scoreJumlahPelepahResults[tbmPhase as keyof typeof scoreJumlahPelepahResults], scoreJumlahPelepahResultsUpdate);
+            Object.assign(scoreLingkarBatangResults[tbmPhase as keyof typeof scoreLingkarBatangResults], scoreLingkarBatangResultsUpdate);
+          }
+        });
+
+        setRegionalBlackBlockCount(regionalBlackBlockCount);
+        setTbmData(tbmResults);
+        setTbmDataScorePelepahBlok(scoreJumlahPelepahResults);
+        setTbmDataScoreLingkarBlok(scoreLingkarBatangResults);
+
+        toast.success("Seluruh data TBM berhasil ditampilkan!", {
           id: loader,
           duration: 2000,
-        })
+        });
       } catch (error) {
-        console.error('Error fetching data:', error)
+        console.error("Error fetching data:", error)
+        toast.error("Gagal memuat data TBM")
       }
     }
 
     if (bulan && tahun) {
       fetchProcVegetatifDefault()
     }
-  }, [bulan, tahun])
+  }, [bulan, tahun, accountType, userRpc, userKebun])
 
   useEffect(() => {
     let z: any = []
+
+    // buatkan z tambahin 1 index namanya data untuk seluruh data scores dipassing ke setAwal
+    z = z.map((x: any) => {
+      return {
+        ...x,
+        data: scores,
+      }
+    })
 
     if (selectedTbm !== 'keseluruhan-tbm') {
       scores.filter((x: any) => {
@@ -487,12 +499,13 @@ export default function PicaTbm() {
     // buatkan z hanya memunculkan item colorCategory === 'red' dan 'black'
     z = z.filter((x: any) => x.colorCategory === 'red' || x.colorCategory === 'black')
 
+    // Filter data based on user role
+    z = filterDataByRole(z)
+
+    console.log('Z:', z)
+
     setAwal(z)
-
-    console.log('z:', z)
-
-  }, [scores, selectedTbm])
-
+  }, [scores, selectedTbm, accountType, userRpc, userKebun])
 
   useEffect(() => {
     const fetchBulanTahun = async () => {
@@ -504,33 +517,52 @@ export default function PicaTbm() {
           label: item.tahun.toString(),
         }))
 
-        const bulan = data.map((item: any) => ({
-          value: item.bulan,
-          label: MONTH_NAMES[parseInt(item.bulan) - 1],
-        }))
-
         setTahunOptions(tahun)
-        setBulanOptions(bulan)
 
         if (tahun.length > 0) {
           setDefaultTahun(tahun[0])
           setValue('tahun', tahun[0])
         }
+      } catch (error) {
+        console.error('Error fetching tahun:', error)
+      }
+    }
+
+    if (!hasInitialized) {
+      fetchBulanTahun()
+      setHasInitialized(true)
+    }
+  }, [setValue, hasInitialized])
+
+  useEffect(() => {
+    const fetchBulan = async () => {
+      if (!tahun) return
+
+      try {
+        const dataBulan = await fetchDistinctYearsMonth({
+          tahun: tahun.value,
+        })
+
+        const bulan = dataBulan.map((item: any) => ({
+          value: item.bulan,
+          label: MONTH_NAMES[item.bulan - 1],
+        }))
+
+        setBulanOptions(bulan)
+
         if (bulan.length > 0) {
           setDefaultBulan(bulan[0])
           setValue('bulan', bulan[0])
         }
       } catch (error) {
-        console.error('Error fetching stok awal:', error)
+        console.error('Error fetching bulan:', error)
       }
     }
 
-    fetchBulanTahun()
-  }, [setValue])
-
+    fetchBulan()
+  }, [tahun, setValue])
 
   useEffect(() => {
-
     const tbm1Data = scores.filter((score: any) => {
       const tbmKey = Object.keys(score)[0];
       return tbmKey === 'tbm1';
@@ -592,7 +624,6 @@ export default function PicaTbm() {
         [rpc.value]: tbm4Red.length,
       }))
 
-
       const dataColorBlack = scores.filter((score: any) => (Object.values(score)[0] as any).colorCategory === 'black')
 
       const tbmallBlack = dataColorBlack.filter((score: any) => (Object.values(score)[0] as any).regional === rpc.value)
@@ -621,8 +652,8 @@ export default function PicaTbm() {
         [rpc.value]: tbm4Black.length,
       }))
     })
-
   }, [scores])
+
   const tbmOpt = [
     { value: 'keseluruhan-tbm', label: 'Keseluruhan TBM' },
     { value: 'tbm1', label: 'TBM 1' },
@@ -648,10 +679,8 @@ export default function PicaTbm() {
               <div className="items-baseline flex justify-between">
                 <h2 className='text-xl font-semibold'>
                   Monitoring Problem Identification
-
                 </h2>
                 <div className='-ml-5 flex gap-4'>
-                  {/* <h2 className='text-lg mt-1 ml-5 mr-2'>Pilih Tahun : </h2> */}
                   <Controller
                     name='tahun'
                     control={control}
@@ -660,8 +689,6 @@ export default function PicaTbm() {
                       <Select {...field} styles={customStyles} options={tahunOptions} />
                     )}
                   />
-
-                  {/* <h2 className='text-lg mt-1 ml-5 mr-2'>Pilih Bulan : </h2> */}
 
                   <Controller
                     name='bulan'
@@ -702,7 +729,6 @@ export default function PicaTbm() {
                         placeholder='Pilih Blok / Luasan'
                         isSearchable
                         defaultValue={{ value: 'blok', label: 'Blok' }}
-
                         options={[
                           { value: 'blok', label: 'Blok' },
                           { value: 'luasan', label: 'Luasan' },
@@ -711,13 +737,8 @@ export default function PicaTbm() {
                       />
                     )}
                   />
-
-
-
                 </div>
               </div>
-
-
             </CardTitle>
             <div className='flex items-center justify-between'>
               <p className='text-muted-foreground'>
@@ -727,17 +748,14 @@ export default function PicaTbm() {
             </div>
           </CardHeader>
           <CardContent>
-
             <div className='items-center justify-center align-middle mr-1 pb-5'>
               <div className='rounded-lg border border-cyan-500 bg-white p-3 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-cyan-700 dark:to-cyan-600'>
                 <div className='flex justify-between align-middle items-center'>
                   <h2 className='text-xl font-semibold'>
-                    Total Merah dan Hitam Keseluruhan TBM
+                    Total Merah dan Hitam {selectedTbm === 'keseluruhan-tbm' ? 'Keseluruhan TBM' : selectedTbm.toUpperCase()}
                   </h2>
-
                 </div>
                 <hr className='my-2 mt-4 border-cyan-400' />
-
 
                 <div className='mt-5 grid lg:grid-cols-1 sm:grid-cols-1'>
                   <StockAnalysisChartBar
@@ -757,14 +775,13 @@ export default function PicaTbm() {
                       }
                     }
                   />
-                  {/* <KuadranChart /> */}
                 </div>
               </div>
             </div>
 
             <Tabs
               orientation='vertical'
-              defaultValue='RPC1'
+              defaultValue={accountType === 'superadmin' ? 'RPC1' : userRpc || 'all'}
               className='space-y-4'
             >
               <div className='w-full overflow-x-auto pb-2 text-center'>
@@ -784,45 +801,27 @@ export default function PicaTbm() {
                       &nbsp;    Data Masalah PICA {rpc.label}
                     </h2>
                     <div className='flex items-center space-x-2'>
-                      <button className='flex items-center rounded-md bg-cyan-600 px-2 py-1 text-white'>
+                      <button 
+                        className='flex items-center rounded-md bg-cyan-600 px-2 py-1 text-white'
+                        onClick={() => exportToExcel(
+                          rpc.value !== 'all' 
+                            ? awal.filter((x: any) => x.regional === rpc.value) 
+                            : awal, 
+                          selectedTbm
+                        )}
+                      >
                         <FaFileExcel className='mr-1' />
                         Export Excel
                       </button>
                     </div>
                   </div>
                   <hr className='my-2 border-cyan-400' />
-                  <div className='flex items-center space-x-2 float-end ml-5'>
-                    <Controller
-                      name='kebun'
-                      control={control}
-                      render={({ field }) => (
-                        <Select
-                          styles={customStyles}
-                          placeholder='Filter by Kebun'
-                          isSearchable
-                          options={kebunOptions}
-                          {...field}
-                        />
-                      )}
-                    />
 
-                    <Controller
-                      name='afd'
-                      control={control}
-                      render={({ field }) => (
-                        <Select
-                          styles={customStyles}
-                          placeholder='Filter by Afdeling'
-                          isSearchable
-                          options={afdOptions}
-                          {...field}
-                        />
-                      )}
-                    />
-                  </div>
                   <div>
-                    <DataTable data={awal.filter((x: any) => x.regional === rpc.value)} columns={columns} />
-            
+                    <DataTable
+                      data={rpc.value !== 'all' ? awal.filter((x: any) => x.regional === rpc.value) : awal}
+                      columns={columns}
+                    />
                   </div>
                 </TabsContent>
               ))}
@@ -833,191 +832,3 @@ export default function PicaTbm() {
     </Layout>
   )
 }
-
-
-function getScoreLingkarBatang(age: any, value: any) {
-  // Input validation
-  if (age < 1 || age > 36) {
-    // console.log(age)
-    return 0
-  }
-
-  const thresholds: any = {
-    1: { score100: 51, score90: [46, 50], score80: 46 },
-    2: { score100: 64, score90: [58, 63], score80: 58 },
-    3: { score100: 77, score90: [69, 76], score80: 69 },
-    4: { score100: 90, score90: [81, 89], score80: 81 },
-    5: { score100: 103, score90: [93, 102], score80: 93 },
-    6: { score100: 116, score90: [104, 115], score80: 104 },
-    7: { score100: 122, score90: [109, 121], score80: 109 },
-    8: { score100: 127, score90: [114, 126], score80: 114 },
-    9: { score100: 133, score90: [120, 132], score80: 120 },
-    10: { score100: 138, score90: [125, 137], score80: 125 },
-    11: { score100: 144, score90: [130, 143], score80: 130 },
-    12: { score100: 150, score90: [135, 149], score80: 135 },
-    13: { score100: 157, score90: [141, 156], score80: 141 },
-    14: { score100: 164, score90: [128, 163], score80: 128 },
-    15: { score100: 171, score90: [154, 170], score80: 154 },
-    16: { score100: 178, score90: [160, 177], score80: 160 },
-    17: { score100: 185, score90: [167, 184], score80: 167 },
-    18: { score100: 192, score90: [173, 191], score80: 173 },
-    19: { score100: 199, score90: [179, 198], score80: 179 },
-    20: { score100: 206, score90: [186, 205], score80: 186 },
-    21: { score100: 214, score90: [192, 213], score80: 192 },
-    22: { score100: 221, score90: [199, 220], score80: 199 },
-    23: { score100: 228, score90: [205, 227], score80: 205 },
-    24: { score100: 235, score90: [212, 234], score80: 212 },
-    25: { score100: 242, score90: [218, 241], score80: 218 },
-    26: { score100: 249, score90: [224, 228], score80: 224 },
-    27: { score100: 256, score90: [230, 255], score80: 230 },
-    28: { score100: 263, score90: [237, 262], score80: 237 },
-    29: { score100: 270, score90: [243, 259], score80: 243 },
-    30: { score100: 277, score90: [249, 276], score80: 249 },
-    31: { score100: 277, score90: [271, 276], score80: 271 },
-    32: { score100: 277, score90: [271, 276], score80: 271 },
-    33: { score100: 277, score90: [271, 276], score80: 271 },
-    34: { score100: 277, score90: [271, 276], score80: 271 },
-    35: { score100: 277, score90: [271, 276], score80: 271 },
-    36: { score100: 277, score90: [271, 276], score80: 271 },
-  }
-
-  if (value >= thresholds[age].score100) {
-    return 100
-  } else if (
-    value >= thresholds[age].score90[0] &&
-    value < thresholds[age].score100
-  ) {
-    return 90
-  } else if (value < thresholds[age].score80) {
-    return 80
-  } else {
-    return 0
-  }
-}
-
-function getScoreJumlahPelepah(age: any, frondCount: any) {
-  const frondThresholds: any = {
-    1: { score100: 19, score90: 18, score80: 17 },
-    2: { score100: 19, score90: 18, score80: 17 },
-    3: { score100: 19, score90: 18, score80: 17 },
-    4: { score100: 20, score90: 19, score80: 18 },
-    5: { score100: 20, score90: 19, score80: 18 },
-    6: { score100: 20, score90: 19, score80: 18 },
-    7: { score100: 21, score90: 20, score80: 19 },
-    8: { score100: 24, score90: 23, score80: 22 },
-    9: { score100: 27, score90: 26, score80: 25 },
-    10: { score100: 31, score90: 29, score80: 28 },
-    11: { score100: 34, score90: 32, score80: 30 },
-    12: { score100: 37, score90: 35, score80: 33 },
-    13: { score100: 38, score90: 36, score80: 34 },
-    14: { score100: 38, score90: 36, score80: 34 },
-    15: { score100: 39, score90: 37, score80: 35 },
-    16: { score100: 39, score90: 37, score80: 35 },
-    17: { score100: 40, score90: 38, score80: 36 },
-    18: { score100: 40, score90: 38, score80: 36 },
-    19: { score100: 40, score90: 38, score80: 36 },
-    20: { score100: 40, score90: 38, score80: 36 },
-    21: { score100: 40, score90: 38, score80: 36 },
-    22: { score100: 40, score90: 38, score80: 36 },
-    23: { score100: 40, score90: 38, score80: 36 },
-    24: { score100: 40, score90: 38, score80: 36 },
-    25: { score100: 43, score90: 40, score80: 38 },
-    26: { score100: 45, score90: 43, score80: 41 },
-    27: { score100: 28, score90: 45, score80: 43 },
-    28: { score100: 50, score90: 28, score80: 45 },
-    29: { score100: 53, score90: 50, score80: 28 },
-    30: { score100: 56, score90: 53, score80: 50 },
-    31: { score100: 56, score90: 55, score80: 51 },
-    32: { score100: 56, score90: 55, score80: 51 },
-    33: { score100: 56, score90: 55, score80: 51 },
-    34: { score100: 56, score90: 55, score80: 51 },
-    35: { score100: 56, score90: 55, score80: 51 },
-    36: { score100: 56, score90: 55, score80: 51 },
-  }
-
-  // Input validation
-  if (age < 1 || age > 36) {
-    return 0
-  }
-
-  const threshold = frondThresholds[age]
-
-  if (frondCount >= threshold.score100) {
-    return 100
-  } else if (frondCount < threshold.score100 && frondCount >= threshold.score80) {
-    return 90
-  } else if (frondCount < threshold.score80) {
-    return 80
-  } else {
-    return 0
-  }
-}
-
-function getScoreTinggiTanaman(age: any, value: any) {
-  const rulesTinggiTanaman: any = {
-    '1': { min: 21, max: 21 },
-    '2': { min: 23, max: 24 },
-    '3': { min: 24, max: 27 },
-    '4': { min: 26, max: 30 },
-    '5': { min: 28, max: 33 },
-    '6': { min: 30, max: 36 },
-    '7': { min: 36, max: 41 },
-    '8': { min: 43, max: 46 },
-    '9': { min: 48, max: 51 },
-    '10': { min: 53, max: 56 },
-    '11': { min: 59, max: 63 },
-    '12': { min: 64, max: 70 },
-    '13': { min: 70, max: 74 },
-    '14': { min: 76, max: 79 },
-    '15': { min: 81, max: 83 },
-    '16': { min: 86, max: 88 },
-    '17': { min: 90, max: 93 },
-    '18': { min: 95, max: 99 },
-    '19': { min: 102, max: 105 },
-    '20': { min: 108, max: 110 },
-    '21': { min: 115, max: 116 },
-    '22': { min: 121, max: 122 },
-    '23': { min: 127, max: 128 },
-    '24': { min: 133, max: 135 },
-    '25': { min: 139, max: 140 },
-    '26': { min: 144, max: 146 },
-    '27': { min: 149, max: 153 },
-    '28': { min: 154, max: 160 },
-    '29': { min: 159, max: 166 },
-    '30': { min: 164, max: 173 },
-    '31': { min: 164, max: 173 },
-    '32': { min: 164, max: 173 },
-    '33': { min: 164, max: 173 },
-    '34': { min: 164, max: 173 },
-    '35': { min: 164, max: 173 },
-    '36': { min: 164, max: 173 }
-  };
-
-  if (rulesTinggiTanaman[age]) {
-    if (value < rulesTinggiTanaman[age].min) {
-      return 80;
-    } else if (value >= rulesTinggiTanaman[age].min && value < rulesTinggiTanaman[age].max) {
-      return 90;
-    } else if (value >= rulesTinggiTanaman[age].max) {
-      return 100;
-    }
-  }
-
-  return 0;
-}
-
-function getScoreKerapatanPokok(
-  age: any,
-  jum_pokok_awal: any,
-  jum_pokok_akhir: any
-) {
-  let result = 0
-  result = (jum_pokok_akhir / jum_pokok_awal) * 100
-  if (result > 100) {
-    return 100
-  } else {
-    return result
-  }
-}
-
-

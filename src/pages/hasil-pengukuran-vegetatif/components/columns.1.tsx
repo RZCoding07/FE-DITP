@@ -2,6 +2,18 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Vegetatif } from './columns'
 import { DataTableColumnHeader } from './data-table-column-header'
 
+const formatNumber = (value: any) => {
+  const num = parseFloat(value);
+  return isNaN(num) ? value : num.toFixed(2);
+};
+
+const getScoreColor = (score: number) => {
+  if (score >= 100) return 'bg-yellow-500 text-white';
+  if (score >= 90) return 'bg-green-500 text-white';
+  if (score >= 0) return 'bg-red-500 text-white';
+  return '';
+};
+
 export const columns: ColumnDef<Vegetatif>[] = [
   {
     id: 'number',
@@ -53,11 +65,11 @@ export const columns: ColumnDef<Vegetatif>[] = [
     cell: ({ row }) => <span>{row.getValue('varietas')}</span>,
   },
   {
-    accessorKey: 'luas_ha',
+    accessorKey: 'luas',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Luas (Ha)' />
     ),
-    cell: ({ row }) => <span>{row.getValue('luas_ha')}</span>,
+    cell: ({ row }) => <span>{row.getValue('luas')}</span>,
   },
   {
     accessorKey: 'jumlah_pokok_awal_tanam',
@@ -80,11 +92,10 @@ export const columns: ColumnDef<Vegetatif>[] = [
       />
     ),
     cell: ({ row }) => (
-      
       <span>{row.getValue('jumlah_pokok_sekarang')}</span>
     ),
-},
-{
+  },
+  {
     accessorKey: 'tinggi_tanaman_cm',
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -93,7 +104,7 @@ export const columns: ColumnDef<Vegetatif>[] = [
       />
     ),
     cell: ({ row }) => (
-      <span>{Number(row.getValue('tinggi_tanaman_cm')).toFixed(2)}</span>
+      <span className="px-2 py-1 rounded">{formatNumber(row.getValue('tinggi_tanaman_cm'))}</span>
     ),
   },
   {
@@ -105,7 +116,7 @@ export const columns: ColumnDef<Vegetatif>[] = [
       />
     ),
     cell: ({ row }) => (
-      <span>{Number(row.getValue('jumlah_pelepah_bh')).toFixed(2)}</span>
+      <span className="px-2 py-1 rounded">{formatNumber(row.getValue('jumlah_pelepah_bh'))}</span>
     ),
   },
   {
@@ -117,10 +128,78 @@ export const columns: ColumnDef<Vegetatif>[] = [
       />
     ),
     cell: ({ row }) => (
-      <span>{row.getValue('lingkar_batang_cm')}</span>
+      <span className="px-2 py-1 rounded">{formatNumber(row.getValue('lingkar_batang_cm'))}</span>
     ),
   },
-{
+  {
+    accessorKey: 'ascoreKerapatanPokok',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title='Skor Kerapatan Pokok'
+      />
+    ),
+    cell: ({ row }) => {
+      const score = parseFloat(row.getValue('ascoreKerapatanPokok')) || 0;
+      return (
+        <span className={`px-2 py-1 rounded ${getScoreColor(score)}`}>
+          {formatNumber(score)}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: 'ascoreTinggiBatang',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title='Skor Tinggi Tanaman'
+      />
+    ),
+    cell: ({ row }) => {
+      const score = parseFloat(row.getValue('ascoreTinggiBatang')) || 0;
+      return (
+        <span className={`px-2 py-1 rounded ${getScoreColor(score)}`}>
+          {formatNumber(score)}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: 'ascoreJumlahPelepah',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title='Skor Jumlah Pelepah'
+      />
+    ),
+    cell: ({ row }) => {
+      const score = parseFloat(row.getValue('ascoreJumlahPelepah')) || 0;
+      return (
+        <span className={`px-2 py-1 rounded ${getScoreColor(score)}`}>
+          {formatNumber(score)}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: 'ascoreLingkarBatang',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title='Skor Lingkar Batang'
+      />
+    ),
+    cell: ({ row }) => {
+      const score = parseFloat(row.getValue('ascoreLingkarBatang')) || 0;
+      return (
+        <span className={`px-2 py-1 rounded ${getScoreColor(score)}`}>
+          {formatNumber(score)}
+        </span>
+      );
+    },
+  },
+  {
     accessorKey: 'tahun',
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -129,7 +208,7 @@ export const columns: ColumnDef<Vegetatif>[] = [
       />
     ),
     cell: ({ row }) => (
-      <span>{row.getValue('tahun')}</span>
+      <span>{Number(row.getValue('tahun'))}</span>
     ),
   },
   {
@@ -141,8 +220,7 @@ export const columns: ColumnDef<Vegetatif>[] = [
       />
     ),
     cell: ({ row }) => (
-      <span>{row.getValue('bulan')}</span>
+      <span>{Number(row.getValue('bulan'))}</span>
     ),
   },
-
-]
+];

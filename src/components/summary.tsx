@@ -10,13 +10,14 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
+} from "@/components/ui/drawer";
 
 import PalmOilTable from './custom/palm-oil-table';
 
 import StackedBarChart from './custom/stacked-bar-chart';
 
 export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClick: (data: any) => void }) => {
+
   const tahunValue = dataProps?.dataTbm?.tahun?.value;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [isDrawerOpenB, setIsDrawerOpenB] = useState(false)
@@ -30,8 +31,8 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       name: 'Emas',
       type: 'color',
       val: 0,
-      progress: dataProps.data.gold == null ? 0 : dataProps.data.gold.toLocaleString('id-ID'),
-      progressLuas: dataProps.dataLuas.gold == null ? 0 : dataProps.dataLuas.gold.toLocaleString('id-ID'),
+      progress: dataProps.data.gold == null ? 0 : dataProps.data.gold,
+      progressLuas: dataProps.dataLuas.gold == null ? 0 : dataProps.dataLuas.gold,
       circular: 'gold',
       image: '/2.png',
       color: '#FFA500',
@@ -42,8 +43,8 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       name: 'Hijau',
       type: 'color',
       val: 1,
-      progress: dataProps.data.green == null ? 0 : dataProps.data.green.toLocaleString('id-ID'),
-      progressLuas: dataProps.dataLuas.green == null ? 0 : dataProps.dataLuas.green.toLocaleString('id-ID'),
+      progress: dataProps.data.green == null ? 0 : dataProps.data.green,
+      progressLuas: dataProps.dataLuas.green == null ? 0 : dataProps.dataLuas.green,
       circular: 'green',
       image: '/2.png',
       color: '#00a300',
@@ -53,8 +54,8 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       show: true,
       name: 'Merah',
       type: 'color',
-      progress: dataProps.data.red == null ? 0 : dataProps.data.red.toLocaleString('id-ID'),
-      progressLuas: dataProps.dataLuas.red == null ? 0 : dataProps.dataLuas.red.toLocaleString('id-ID'),
+      progress: dataProps.data.red == null ? 0 : dataProps.data.red,
+      progressLuas: dataProps.dataLuas.red == null ? 0 : dataProps.dataLuas.red,
       val: 2,
       circular: 'red',
       image: '/2.png',
@@ -66,8 +67,8 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       name: 'Hitam',
       type: 'color',
       val: 3,
-      progress: dataProps.data.black == null ? 0 : dataProps.data.black.toLocaleString('id-ID'),
-      progressLuas: dataProps.dataLuas.black == null ? 0 : dataProps.dataLuas.black.toLocaleString('id-ID'),
+      progress: dataProps.data.black == null ? 0 : dataProps.data.black,
+      progressLuas: dataProps.dataLuas.black == null ? 0 : dataProps.dataLuas.black,
       circular: 'black',
       image: '/2.png',
       color: '#000000',
@@ -81,7 +82,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       name: 'Emas',
       progress: 1,
       circular: 'gold',
-      rules: 'Kelas A : 97 - 100',
+      rules: 'Kelas A : > 92 - 100',
       image: '/2.png',
       color: '#FFA500',
       textColor: '#ffffff',
@@ -90,7 +91,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       show: true,
       name: 'Hijau',
       progress: 1,
-      rules: 'Kelas B : 90 - 96',
+      rules: 'Kelas B : > 87 - 92',
       circular: 'green',
       image: '/2.png',
       color: '#00a300',
@@ -100,7 +101,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       show: true,
       name: 'Merah',
       progress: 1,
-      rules: 'Kelas C : 81 - 89',
+      rules: 'Kelas C : 82 - 87',
       circular: 'red',
       image: '/2.png',
       color: '#FF0000',
@@ -109,7 +110,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
     {
       show: true,
       name: 'Hitam',
-      rules: 'Kelas D : < 80',
+      rules: 'Kelas D : < 82',
       progress: 1,
       circular: 'black',
       image: '/2.png',
@@ -125,7 +126,8 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       type: 'tbm',
       ctg: 'tbm1',
       val: 0,
-      progress: dataProps.dataTbm.tbm1 == null ? 0 : dataProps.dataTbm.tbm1.toLocaleString('id-ID'),
+      progress: dataProps.dataTbm.tbm1 == null ? 0 : dataProps.dataTbm.tbm1,
+      areal: dataProps.luasan[0],
       circular: 'all',
       image: '/2.png',
       color: '#00a300',
@@ -137,7 +139,8 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       name: 'TBM 2' + ' - TT ' + (tahunValue ? tahunValue - 2 : 0),
       ctg: 'tbm2',
       val: 1,
-      progress: dataProps.dataTbm.tbm2 == null ? 0 : dataProps.dataTbm.tbm2.toLocaleString('id-ID'),
+      progress: dataProps.dataTbm.tbm2 == null ? 0 : dataProps.dataTbm.tbm2,
+      areal: dataProps.luasan[1],
       circular: 'all',
       image: '/2.png',
       color: '#FFFF00',
@@ -149,7 +152,8 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       name: 'TBM 3' + ' - TT ' + (tahunValue ? tahunValue - 3 : 0),
       ctg: 'tbm3',
       val: 2,
-      progress: dataProps.dataTbm.tbm3 == null ? 0 : dataProps.dataTbm.tbm3.toLocaleString('id-ID'),
+      progress: dataProps.dataTbm.tbm3 == null ? 0 : dataProps.dataTbm.tbm3,
+      areal: dataProps.luasan[2],
       circular: 'all',
       image: '/2.png',
       color: '#FFA500',
@@ -161,7 +165,8 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       name: 'TBM > 3' + ' - TT > ' + (tahunValue ? tahunValue - 3 : 0),
       ctg: 'tbm4',
       val: 3,
-      progress: dataProps.dataTbm.tbm4 == null ? 0 : dataProps.dataTbm.tbm4.toLocaleString('id-ID'),
+      progress: dataProps.dataTbm.tbm4 == null ? 0 : dataProps.dataTbm.tbm4,
+      areal: dataProps.luasan[3],
       circular: 'all',
       image: '/2.png',
       color: '#000000',
@@ -175,24 +180,32 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
 
   const totalLuasFormat = Number(totalLuas).toLocaleString('id-ID');
 
+  const totalLuasTbm = dataTbm.reduce((acc: number, item: any) => {
+    if (item.show) {
+      return acc + Number.parseFloat(item.areal || "0");
+    }
+    return acc;
+  }
+  , 0).toFixed(2);
+
   return (
     <>
-    <style>{`
-    [data-vaul-drawer][data-vaul-drawer-direction=bottom]::after {
-    content: none; /* Menonaktifkan pseudo-elemen */
-    height: 0 !important; /* Menonaktifkan tingginya */
-    left: initial !important; /* Reset posisi kiri */
-    top: initial !important; /* Reset posisi atas */
-    right: initial !important; /* Reset posisi kanan */
-    bottom: initial !important; /* Reset posisi bawah */
-}
-    `}</style>
+      <style>{`
+      [data-vaul-drawer][data-vaul-drawer-direction=bottom]::after {
+      content: none; /* Menonaktifkan pseudo-elemen */
+      height: 0 !important; /* Menonaktifkan tingginya */
+      left: initial !important; /* Reset posisi kiri */
+      top: initial !important; /* Reset posisi atas */
+      right: initial !important; /* Reset posisi kanan */
+      bottom: initial !important; /* Reset posisi bawah */
+  }
+      `}</style>
       <div className='flex justify-start items-center space-x-4 pb-2 -mt-7'>
         <Drawer open={isDrawerOpenB} onOpenChange={setIsDrawerOpenB}>
           <DrawerTrigger asChild>
-          <h2 className='font-semibold underline underline-offset-4 underline-thickness-2'>
-          Luas TBM Total : {totalLuasFormat} HA
-        </h2>
+            <h2 className='font-semibold underline underline-offset-4 underline-thickness-2'>
+              Luas TBM Total : {totalLuasFormat} HA / {Number(totalLuasTbm).toLocaleString('id-ID')} HA ({((parseFloat(totalLuas) / parseFloat(totalLuasTbm)) * 100).toFixed(2)}%)
+            </h2>
           </DrawerTrigger>
           <DrawerContent className='overflow-y-auto h-[92vh]'>
             <DrawerHeader>
@@ -202,7 +215,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
             <div className="p-4">
               {/* Add your content for the Standard Vegetatif drawer here */}
               <StackedBarChart 
-              dataProps={dataProps}
+                dataProps={dataProps}
               />
             </div>
             <DrawerFooter>
@@ -226,7 +239,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
             </DrawerHeader>
             <div className="p-4">
               {/* Add your content for the Standard Vegetatif drawer here */}
-            <PalmOilTable />
+              <PalmOilTable />
             </div>
             <DrawerFooter>
               <DrawerClose asChild>
@@ -243,12 +256,9 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
               key={i}
               className={`py-1 shadow-md dark:from-slate-900 dark:via-slate-950 dark:to-transparent border hover:shadow-cyan-500 ${selectedCard === i ? '' : ''
                 }`}
-              onClick={() => {
-                setSelectedCard(i); // Set the clicked card as selected
-                setSelectedTbm(null); // Reset TBM selection
-                onCardClick(item); // Kirim data ke parent saat card di-klik
-              }}
+    
               style={{
+                
                 background: selectedCard === i ? `linear-gradient(135deg, ${item.color} 55%, ${item.color}29 45%)` :
                   `linear-gradient(135deg, ${item.color} 55%, ${item.color}29 45%)`,
                 borderColor: item.color,
@@ -257,9 +267,10 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
 
               }}
             >
-              <CardContent className='flex items-center px-2 py-1'>                <div className='relative mr-2 h-10 w-10'>
-                <img src={item.image} alt={item.name} />
-              </div>
+              <CardContent className='flex items-center px-2 py-1'>                
+                <div className='relative mr-2 h-10 w-10'>
+                  <img src={item.image} alt={item.name} />
+                </div>
                 <div className='grid grid-cols-2 py-0 my-0  align-middle items-center w-full'>
                   <p className='text-sm font-semibold capitalize' style={{ color: `${item.textColor}` }}>
                     {item.name}
@@ -270,7 +281,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
                     </p>
                     <br />
                     <p className='font-semibold float-end' style={{ color: `${item.textColor}` }}>
-                      {item.progressLuas} HA
+                      {(Math.round(item.progressLuas * 100) / 100).toLocaleString('id-ID')} HA
                     </p>
                   </div>
                 </div>
@@ -313,10 +324,9 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
                 setSelectedCard(null); // Reset color selection
                 onCardClick(item); // Kirim data ke parent saat TBM card di-klik
               }}
-              className={` py-2 shadow-md  border border-cyan-500 shadow-cyan-500 ${selectedTbm === i ? 'bg-blue-500 from-blue-500 to-blue-500 text-white' : ''
-                }`}
+              className={`py-2 shadow-md border border-cyan-500 shadow-cyan-500 ${dataProps.isReset ? '' : (selectedTbm === i ? 'bg-blue-500 from-blue-500 to-blue-500 text-white' : '')}`}
 
-              {...(selectedTbm === i ? { style: { background: 'linear-gradient(to right, #129bb0, #006d8e)' } } : {})}
+              {...(dataProps.isReset ? {} : (selectedTbm === i ? { style: { background: 'linear-gradient(to right, #129bb0, #006d8e)' } } : {}))}
             >
 
               <CardContent className='flex items-center px-2 py-1'>
@@ -330,7 +340,8 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
                 </div>
                 <div>
                   <p className='text-sm font-semibold capitalize'>{item.name}</p>
-                  <p className='font-semibold'>{(item.progress)} HA</p>
+                  <p className='font-semibold text-sm'>{(Math.round(item.progress * 100) / 100).toLocaleString('id-ID')} HA / {(Math.round(item.areal * 100) / 100).toLocaleString('id-ID')} HA (   {((parseFloat(item.progress.toString()) / parseFloat((Math.round(item.areal * 100) / 100).toString())) * 100).toFixed(2)}%)</p>
+             
                 </div>
               </CardContent>
             </Card>

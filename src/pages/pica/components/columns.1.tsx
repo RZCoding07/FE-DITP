@@ -3,9 +3,33 @@ import { Vegetatif } from './columns'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { Button } from '@/components/custom/button'
 import { Link } from 'react-router-dom'
-import { FaPencilAlt } from 'react-icons/fa'
+import { FaCheckCircle, FaPencilAlt } from 'react-icons/fa'
 
 export const columns: ColumnDef<Vegetatif>[] = [
+
+  {
+    accessorKey: 'pica_id',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Aksi' />
+    ),
+    cell: ({ row }) =>
+      <div className='flex space-x-2'>
+
+    {row.original.pica_id == null ? 
+        <Link to={`/isi-masalah/${row.original.id}/`}>
+          <Button size='sm' variant='default'>
+            <FaPencilAlt /> &nbsp; Identifikasi Maslaah
+          </Button>
+        </Link>
+        : <Link to={`/isi-masalah/${row.original.id}/`}>
+          <Button size='sm' variant='secondary' className='bg-green-700'>
+            <FaCheckCircle /> &nbsp; Sudah Terisi
+          </Button>
+        </Link>
+      }
+
+      </div>,
+  },
 
   {
     accessorKey: 'regional',
@@ -35,7 +59,7 @@ export const columns: ColumnDef<Vegetatif>[] = [
     ),
     cell: ({ row }) => <span>{row.getValue('blok')}</span>,
   },
-  
+
   {
     accessorKey: 'luas',
     header: ({ column }) => (
@@ -49,7 +73,19 @@ export const columns: ColumnDef<Vegetatif>[] = [
     ),
   },
   {
-    accessorKey: 'tahunTanam',
+    accessorKey: 'varietas',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title='Varietas'
+      />
+    ),
+    cell: ({ row }) => (
+      <span>{row.getValue('varietas')}</span>
+    ),
+  },
+  {
+    accessorKey: 'tahun_tanam',
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
@@ -57,7 +93,7 @@ export const columns: ColumnDef<Vegetatif>[] = [
       />
     ),
     cell: ({ row }) => (
-      <span>{row.getValue('tahunTanam')}</span>
+      <span>{row.getValue('tahun_tanam')}</span>
     ),
   },
 
@@ -102,7 +138,7 @@ export const columns: ColumnDef<Vegetatif>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Kategori Warna' />
     ),
-    cell: ({ row }) =>  {
+    cell: ({ row }) => {
       const color = row.getValue('colorCategory') as string
       return (
         <Button
@@ -117,22 +153,7 @@ export const columns: ColumnDef<Vegetatif>[] = [
         </Button>
       )
     },
-    
-  },
-  {
-    accessorKey: 'aksi',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Aksi' />
-    ),
-    cell: ({ row }) => 
-    <div className='flex space-x-2'>
-      <Link to={`/data-vegetatif/${row.original.id}`}>
-        <Button size='sm' variant='default'>
-          <FaPencilAlt /> &nbsp; IDENTIFIKASI MASALAH
-        </Button>
-      </Link>
-    </div>,
-  },
-  
+
+  }
 
 ]

@@ -91,6 +91,8 @@ const Body = React.forwardRef< HTMLDivElement, React.HTMLAttributes<HTMLDivEleme
         )}
         style={{
           filter: 'blur(5px)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       />
       
@@ -98,7 +100,7 @@ const Body = React.forwardRef< HTMLDivElement, React.HTMLAttributes<HTMLDivEleme
         ref={ref}
         data-layout='body'
         className={cn(
-          'relative z-10 min-h-screen p-6 px-4 py-6 md:overflow-hidden md:px-8 h-full',
+          'relative z-10 p-6 px-4 py-6 md:overflow-hidden md:px-8',
           contextVal && contextVal.fixed && 'flex-1',
           className
         )}
@@ -107,6 +109,60 @@ const Body = React.forwardRef< HTMLDivElement, React.HTMLAttributes<HTMLDivEleme
     </div>
   )
 })
+
+
+interface FooterProps extends React.HTMLAttributes<HTMLDivElement> {
+  message?: string
+}
+
+const Footer = React.forwardRef<HTMLDivElement, FooterProps>(({ 
+  className, 
+  message = "Jika ada gangguan teknis atau perlu penjelasan program EV4PALMS, silakan hubungi 0878-9719-1769 (Muhammad Rizky Lubis) IT Operasional Palm Co PT. Perkebunan Nusantara IV", 
+  ...props 
+}, ref) => {
+  const contextVal = React.useContext(LayoutContext)
+  if (contextVal === null) {
+    throw new Error(`Layout.Footer must be used within ${Layout.displayName}.`)
+  }
+
+  return (
+    <div
+      ref={ref}
+      data-layout='footer'
+      className={cn(
+        'z-10 dark:bg-slate-950 dark:text-white py-1 fixed bottom-0 left-0 right-0 border-t-2 shadow-lg border-cyan-800 p-4 md:px-8',
+        contextVal.fixed && 'flex-none',
+        className
+      )}
+      {...props}
+    >
+      <div className="overflow-hidden whitespace-nowrap">
+        <div
+          className="text-md font-bold inline-block animate-marquee"
+          style={{
+            animation: 'marquee 45s linear infinite',
+            minWidth: '100%',
+          }}
+        >
+          {message}
+        </div>
+        <style>
+          {`
+            @keyframes marquee {
+              0% { transform: translateX(100%); }
+              100% { transform: translateX(-100%); }
+            }
+          `}
+        </style>
+      </div>
+    </div>
+  )
+})
+Footer.displayName = 'Footer'
+
+// Add to Layout component
+Layout.Footer = Footer
+
 Body.displayName = 'Body'
 
 Layout.Header = Header

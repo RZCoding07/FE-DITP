@@ -1,14 +1,17 @@
 import { useForm, Controller } from 'react-hook-form'
 import { useState, useEffect } from 'react'
-import { fetchDistinctYears } from '@/utils/api_immature'
+import { fetchDistinctYears, fetchDistinctYearsMonth } from '@/utils/api_immature'
 import { MONTH_NAMES } from '@/utils/constants'
 import { SelectOption } from '@/utils/types'
+
+type KebunOption = SelectOption | null;
 
 export const useDashboardForm = () => {
   const [bulanOptions, setBulanOptions] = useState<SelectOption[]>([])
   const [tahunOptions, setTahunOptions] = useState<SelectOption[]>([])
   const [defaultBulan, setDefaultBulan] = useState<SelectOption | null>(null)
   const [defaultTahun, setDefaultTahun] = useState<SelectOption | null>(null)
+  const [hasInitialized, setHasInitialized] = useState(false)
 
   const {
     control,
@@ -18,7 +21,7 @@ export const useDashboardForm = () => {
   } = useForm({
     defaultValues: {
       rpc: { value: 'all', label: 'Semua RPC' },
-      kebun: null,
+      kebun: null as KebunOption,
       afd: null,
       blok: { value: 'luasan', label: 'Luasan' },
       tahun: null,
@@ -27,7 +30,7 @@ export const useDashboardForm = () => {
   })
 
   const rpc: any = watch('rpc')
-  const kebun: any = watch('kebun')
+  const kebun: KebunOption = watch('kebun')
   const afd: any = watch('afd')
   const blok: any = watch('blok')
   const bulan: any = watch('bulan')
@@ -43,29 +46,50 @@ export const useDashboardForm = () => {
           label: item.tahun.toString(),
         }))
 
-        const bulan = data.map((item: any) => ({
-          value: item.bulan,
-          label: MONTH_NAMES[parseInt(item.bulan) - 1],
-        }))
-
         setTahunOptions(tahun)
-        setBulanOptions(bulan)
 
         if (tahun.length > 0) {
           setDefaultTahun(tahun[0])
           setValue('tahun', tahun[0])
         }
+      } catch (error) {
+        console.error('Error fetching tahun:', error)
+      }
+    }
+
+    if (!hasInitialized) {
+      fetchBulanTahun()
+      setHasInitialized(true)
+    }
+  }, [setValue, hasInitialized])
+
+  useEffect(() => {
+    const fetchBulan = async () => {
+      if (!tahun) return
+
+      try {
+        const dataBulan = await fetchDistinctYearsMonth({
+          tahun: tahun.value,
+        })
+
+        const bulan = dataBulan.map((item: any) => ({
+          value: item.bulan,
+          label: MONTH_NAMES[item.bulan - 1],
+        }))
+
+        setBulanOptions(bulan)
+
         if (bulan.length > 0) {
           setDefaultBulan(bulan[0])
           setValue('bulan', bulan[0])
         }
       } catch (error) {
-        console.error('Error fetching stok awal:', error)
+        console.error('Error fetching bulan:', error)
       }
     }
 
-    fetchBulanTahun()
-  }, [setValue])
+    fetchBulan()
+  }, [tahun, setValue])
 
   return {
     control,
@@ -78,7 +102,7 @@ export const useDashboardForm = () => {
     defaultBulan,
     defaultTahun,
     rpc,
-    kebun,
+    kebun, // Sekarang kebun sudah bertipe KebunOption (SelectOption | null)
     afd,
     blok,
     bulan,

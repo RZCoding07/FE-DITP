@@ -57,7 +57,7 @@ const formSchema = z.object({
   password: z
     .string()
     .min(1, { message: 'Please enter your password' })
-    .min(5, { message: 'Password must be at least 7 characters long' }),
+    .min(3, { message: 'Password must be at least 3 characters long' }),
 })
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
@@ -80,6 +80,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         },
       });
       const data = response.data.payload;
+
+      localStorage.setItem("user", JSON.stringify(data));
       setUserData(data);
       toast.success("Login Successful!");
       cookie.set("user", JSON.stringify(data));

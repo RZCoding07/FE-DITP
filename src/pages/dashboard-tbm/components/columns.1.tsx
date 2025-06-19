@@ -158,11 +158,11 @@ export const columns: ColumnDef<Vegetatif>[] = [
     ),
   },
   {
-    accessorKey: 'jad_1_sisi',
+    accessorKey: 'jumlah_anak_daun',
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title='Jad 1 Sisi'
+        title='Jumlah Anak Daun'
       />
     ),
     cell: ({ row }) => (

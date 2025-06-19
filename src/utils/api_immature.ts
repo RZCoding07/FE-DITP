@@ -13,6 +13,22 @@ export const fetchDistinctYears = async () => {
       console.error(error)
     }
   }
+
+export const fetchDistinctYearsMonth = async (params: any) => {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/vegetatif-distinct-month`,
+        params,
+        {
+          headers: { 'Content-Type': 'application/json' },
+        },
+      )
+      const data = response.data
+        return data
+    } catch (error) {
+      console.error(error)
+    }
+  }
   
 
 export const fetchDistinctYearsSerapanBiaya = async () => {
@@ -31,14 +47,7 @@ export const fetchDistinctYearsSerapanBiaya = async () => {
 const cache = new Map();
 
 export const fetchVegetativeProc = async (params: any) => {
-  // Generate a cache key based on the params (can use a JSON string or a custom key generator)
-  const cacheKey = JSON.stringify(params);
 
-  // Check if the data is already in the cache
-  if (cache.has(cacheKey)) {
-    console.log('Returning cached data');
-    return cache.get(cacheKey); // Return the cached data
-  }
 
   // If the data is not cached, make the API request
   const url = `${API_BASE_URL}/vegetatif-proc`;
@@ -46,8 +55,15 @@ export const fetchVegetativeProc = async (params: any) => {
     headers: { 'Content-Type': 'application/json' },
   });
 
-  // Store the response data in the cache
-  cache.set(cacheKey, response.data);
+  // Return the data from the API
+  return response.data;
+};
+export const fetchVegetativeFinal = async (params: any) => {
+  // If the data is not cached, make the API request
+  const url = `${API_BASE_URL}/vegetatif-final`;
+  const response = await axios.post(url, params, {
+    headers: { 'Content-Type': 'application/json' },
+  });
 
   // Return the data from the API
   return response.data;
@@ -55,13 +71,6 @@ export const fetchVegetativeProc = async (params: any) => {
 
 export const fetchSerapanBiaya = async (params: any) => {
   // Generate a cache key based on the params (can use a JSON string or a custom key generator)
-  const cacheKey = JSON.stringify(params);
-
-  // Check if the data is already in the cache
-  if (cache.has(cacheKey)) {
-    console.log('Returning cached data');
-    return cache.get(cacheKey); // Return the cached data
-  }
 
   // If the data is not cached, make the API request
   const url = `${API_BASE_URL}/serapan-biaya-bulan-tahun`;
@@ -69,15 +78,10 @@ export const fetchSerapanBiaya = async (params: any) => {
     headers: { 'Content-Type': 'application/json' },
   });
 
-  // Store the response data in the cache
-  cache.set(cacheKey, response.data);
 
   // Return the data from the API
   return response.data;
 };
-
-
-
 
 export const fetchKebun = async (params: any) => {
   const url = `${API_BASE_URL}/get-kebun-where-reg-vegetatif`;
@@ -94,3 +98,4 @@ export const fetchAfd = async (params: any) => {
   });
   return response.data;
 }
+

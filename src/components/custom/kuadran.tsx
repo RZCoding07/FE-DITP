@@ -22,6 +22,7 @@ interface DataSerapanBiaya {
   persen_serapan: string
   total_luas: number
   total_rp_ha: number
+  calculated_tbm_from_areal?: string // Optional field for TBM calculation
 }
 
 interface ScoreKebunTBM {
@@ -38,7 +39,7 @@ interface ScatterChartProps {
     scoresKebunTBM: ScoreKebunTBM[]
     regions: any
     tbm: any
-    scoresKebun: any
+    scoresAllKebun: any
   }
 }
 
@@ -59,104 +60,100 @@ const ScatterChart = ({ dataprops }: ScatterChartProps) => {
   const [modalData, setModalData] = useState<any>(null)
   const [showModal, setShowModal] = useState<boolean>(false)
 
-
-
+console.log("dataprops", dataprops)
 
   // Function to merge objects based on kebun property
-  const mergeDataByKebun = () => {
-    if (
-      !dataprops?.dataSerapanBiaya ||
-      !dataprops?.scoresKebunTBM ||
-      !Array.isArray(dataprops.dataSerapanBiaya) ||
-      !Array.isArray(dataprops.scoresKebunTBM)
-    ) {
-      console.error("Invalid data structure", dataprops)
-      return []
-    }
-
-    const { dataSerapanBiaya, scoresKebunTBM, regions } = dataprops
-
-    const mergedData = []
-
-    if (dataprops.tbm === undefined || dataprops.tbm.value === "keseluruhan-tbm") {
-      for (const serapan of dataSerapanBiaya) {
-        const matchingScore = scoresKebunTBM.find((score) => score.kebun === serapan.kebun)
-
-        if (matchingScore) {
-          // Convert persen_serapan to number
-          const serapanBiaya = Number.parseFloat(serapan.persen_serapan)
-          // Use totalSeleksiKebun as vegetatif value
-          const vegetatif = matchingScore.totalSeleksiKebun
-
-          if (!isNaN(serapanBiaya) && !isNaN(vegetatif)) {
-            mergedData.push({
-              vegetatif,
-              // serapanBiaya: serapanBiaya > 100 ? -(serapanBiaya - 100) : serapanBiaya,
-              serapanBiaya: serapanBiaya,
-              region: matchingScore.regional,
-              kebun: serapan.kebun,
-              bulan: "Current", // Default value since it's not in the data
-              tahun: new Date().getFullYear(), // Current year as default
-              kode_kebun: serapan.kebun,
-            })
-          }
-        }
-      }
-    } else {
-      const tbm = dataprops.tbm.value
-      if (dataprops.scoresKebun !== undefined) {
-        const scoresKebun = dataprops.scoresKebun
-        let z: any = []
-        scoresKebun.filter((x: any) => {
-          if (Object.keys(x).includes(tbm)) {
-            z.push(Object.values(x)[0])
-          }
-        })
-
-        for (const serapan of dataSerapanBiaya) {
-          const matchingScore = z.find((score: any) => score.kebun === serapan.kebun)
-
-          if (matchingScore) {
-            // Convert persen_serapan to number
-            const serapanBiaya = Number.parseFloat(serapan.persen_serapan)
-            // Use totalSeleksiKebun as vegetatif value
-            const vegetatif = matchingScore.totalSeleksiKebun
-
-            if (!isNaN(serapanBiaya) && !isNaN(vegetatif)) {
-              mergedData.push({
-                vegetatif,
-                serapanBiaya: serapanBiaya > 100 ? -(serapanBiaya - 100) : serapanBiaya,
-                region: matchingScore.regional,
-                kebun: serapan.kebun,
-                bulan: "Current", // Default value since it's not in the data
-                tahun: new Date().getFullYear(), // Current year as default
-                kode_kebun: serapan.kebun,
-              })
-            }
-          }
-          }
-
-      }
-
-    }
-
-
-    if (regions !== undefined && regions !== null) {
-      const region = regions.value
-      return mergedData.filter((item) => item.region === region)
-    }
-
-    if (mergedData.length === 0) {
-      console.warn("No matching data found, using sample data")
-      return [
-
-      ]
-    }
-
-    return mergedData
+const mergeDataByKebun = () => {
+  if (
+    !dataprops?.dataSerapanBiaya ||
+    !Array.isArray(dataprops.dataSerapanBiaya)
+  ) {
+    console.error("Invalid data structure", dataprops);
+    return [];
   }
 
+  const { dataSerapanBiaya, regions } = dataprops;
+  const mergedData = [];
+
+  if (dataprops.tbm === undefined || dataprops.tbm.value === "keseluruhan-tbm") {
+    // Handle overall TBM case
+    if (!dataprops?.scoresKebunTBM || !Array.isArray(dataprops.scoresKebunTBM)) {
+      console.error("Missing scoresKebunTBM data");
+      return [];
+    }
+
+    for (const serapan of dataSerapanBiaya) {
+      const matchingScore = dataprops.scoresKebunTBM.find(
+        (score) => score.kebun === serapan.kebun
+      );
+
+      if (matchingScore) {
+        const serapanBiaya = Number.parseFloat(serapan.persen_serapan);
+        const vegetatif = matchingScore.totalSeleksiKebun;
+
+        if (!isNaN(serapanBiaya) && !isNaN(vegetatif)) {
+          mergedData.push({
+            vegetatif,
+            serapanBiaya,
+            region: matchingScore.regional,
+            kebun: serapan.kebun,
+            bulan: "Current",
+            tahun: new Date().getFullYear(),
+            kode_kebun: serapan.kebun,
+          });
+        }
+      }
+    }
+  } else {
+    // Handle specific TBM case
+    const tbm = dataprops.tbm.value;
+    if (!dataprops?.scoresAllKebun || !Array.isArray(dataprops.scoresAllKebun)) {
+      console.error("Missing scoresAllKebun data");
+      return [];
+    }
+
+    for (const serapan of dataSerapanBiaya) {
+      // First filter serapan data by calculated_tbm_from_areal if it exists
+      if (serapan.calculated_tbm_from_areal && serapan.calculated_tbm_from_areal !== tbm) {
+        continue;
+      }
+
+      const matchingScore = dataprops.scoresAllKebun.find(
+        (score: any) => 
+          score.kebun === serapan.kebun && 
+          score.vw_fase_tbm === tbm
+      );
+
+      if (matchingScore) {
+        const serapanBiaya = Number.parseFloat(serapan.persen_serapan);
+        const vegetatif = matchingScore.totalSeleksian;
+
+        if (!isNaN(serapanBiaya) && !isNaN(vegetatif)) {
+          mergedData.push({
+            vegetatif,
+            serapanBiaya,
+            region: matchingScore.regional,
+            kebun: serapan.kebun,
+            bulan: "Current",
+            tahun: new Date().getFullYear(),
+            kode_kebun: serapan.kebun,
+          });
+        }
+      }
+    }
+  }
+
+  // Filter by region if specified
+  if (regions !== undefined && regions !== null) {
+    const region = regions.value;
+    return mergedData.filter((item) => item.region === region);
+  }
+
+  return mergedData;
+};
   const chartData = mergeDataByKebun()
+
+  console.log("Chart Data:", chartData)
 
   const options = {
     chart: {
@@ -241,24 +238,11 @@ const ScatterChart = ({ dataprops }: ScatterChartProps) => {
           color: "#FFFFFF",
         },
       },
-      // min: -100,
-      // max: 100,
       min: 0,
       max: 200,
       tickInterval: 10,
       labels: {
         formatter: function (this: { value: number }): string {
-          // if (this.value === -10) return "110"
-          // if (this.value === -20) return "120"
-          // if (this.value === -30) return "130"
-          // if (this.value === -40) return "140"
-          // if (this.value === -50) return "150"
-          // if (this.value === -60) return "160"
-          // if (this.value === -70) return "170"
-          // if (this.value === -80) return "180"
-          // if (this.value === -90) return "190"
-          // if (this.value === -100) return "200"
-
           return Highcharts.numberFormat(Math.abs(this.value), 0, ",", ".")
         },
         style: {
@@ -384,7 +368,7 @@ const ScatterChart = ({ dataprops }: ScatterChartProps) => {
             <h3 className="text-lg font-bold mb-4">Detail Kebun: {modalData.kebun}</h3>
             <div className="space-y-2">
               <p>
-                <span className="font-medium">Nilai Vegetatif:</span> {modalData.vegetatif}
+                <span className="font-medium">Nilai Vegetatif:</span> {modalData.vegetatif.toFixed(2)}
               </p>
               <p>
                 <span className="font-medium">Serapan Biaya:</span>{" "}

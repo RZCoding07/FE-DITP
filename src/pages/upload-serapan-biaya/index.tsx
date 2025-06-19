@@ -24,11 +24,9 @@ export default function UploadUser() {
   interface SerapanBiaya {
     regional: string;
     kebun: string;
-    luas: number;
     real_sd: number;
     rkap_sd: number;
     persen_serapan: number;
-    rp_ha: number;
     bulan: string;
     tahun: number;
     tbm: string;
@@ -123,16 +121,14 @@ export default function UploadUser() {
       const uploadData = async () => {
         const mappedDataPromises = values.map(async (value) => {
           return {
-            regional: value[1],
-            kebun: value[2],
-            luas: value[3],
-            real_sd: value[4],
-            rkap_sd: value[5],
-            persen_serapan: value[6],
-            rp_ha: value[7],
-            bulan: value[8],
-            tahun: value[9],
-            tbm: value[10]
+            regional: value[0],
+            kebun: value[1],
+            real_sd: value[3],
+            rkap_sd: value[2],
+            persen_serapan: value[4],
+            bulan: value[5],
+            tahun: value[6],
+            tbm: value[7]
           }
         })
 

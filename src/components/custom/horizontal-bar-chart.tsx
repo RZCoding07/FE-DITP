@@ -1,80 +1,263 @@
-import React, { useState, useMemo, useCallback } from "react"
-import ReactApexChart from "react-apexcharts"
-import type { ApexOptions } from "apexcharts"
-import cookie from "js-cookie"
-import { useChartData } from "@/hooks/use-chart-data"
-import {
-  distinctKebunWhereFilterByRegional,
-  sumBlokByDistinctKebun,
-  sumLuasBlokByDistinctKebun,
-} from "@/utils/chartHelper"
+import React, { useState, useMemo } from "react";
+import ReactApexChart from "react-apexcharts";
+import type { ApexOptions } from "apexcharts";
+import cookie from "js-cookie";
 
 interface StockAnalysisChartProps {
-  dataprops: any
-  onEventClick: (data: any) => void
+  dataprops: any;
+  onEventClick: (data: any) => void;
 }
 
 export const StockAnalysisChart: React.FC<StockAnalysisChartProps> = React.memo(({ dataprops, onEventClick }) => {
-  const [isKebun, setIsKebun] = useState<boolean>(false)
-  const theme = cookie.get("theme") || "light"
+  let filteredTbm = dataprops.ctg;
+  let score = dataprops.scoreAll;
+  let kebunOptions = dataprops.kebunOptions;
+  let color = dataprops.color || "default"; // Default color if not provided
 
-  const categories = useMemo(() => ["RPC1", "RPC2", "RPC3", "RPC4", "RPC5", "RPC6", "RPC7", "RPC2N2", "RPC2N14"], [])
+  // Initialize variables
+  let categories: string[] = [];
+  let seriesData: number[] = [];
+  let missingInOptions: string[] = [];
 
-  const chartData = useChartData(dataprops, categories)
+  const getGradientColors = () => {
+    switch (color) {
+      case "gold":
+        return ["#FFD700", "#FFA500"]; // Gold to Orange gradient
+      case "green":
+        return ["#ABE5A1", "#2E8B57"]; // Light Green to Sea Green
+      case "red":
+        return ["#FF7F7F", "#FF0000"]; // Light Red to Red
+      case "black":
+        return ["#808080", "#000000"]; // Gray to Black
+      default: // "default" case
+        return ["#00b0ff", "#ABE5A1"]; // Original blue gradient
+    }
+  };
 
-  const handleChartClick = useCallback(
-    (selectedCategory: string) => {
-      setIsKebun(true)
-      const distinctKebun = distinctKebunWhereFilterByRegional(dataprops.dataset[dataprops.val], selectedCategory)
+  const gradientColors = getGradientColors();
 
-      const countBlok = distinctKebun.map((kebun: any) => ({
-        category: kebun,
-        filter: sumBlokByDistinctKebun(dataprops.dataset[dataprops.val], selectedCategory, kebun),
-      }))
+  if (dataprops.untuk === "luasan") {
+    if (filteredTbm !== 'tbm-all') {
+      score = score.filter((item: any) => item.vw_fase_tbm === dataprops.ctg);
+    }
 
-      const sumLuasBlok = distinctKebun.map((kebun: any) => ({
-        category: kebun,
-        filter: sumLuasBlokByDistinctKebun(
-          dataprops.dataset[dataprops.val],
-          selectedCategory,
-          kebun,
-          dataprops.val !== 4,
-        ),
-      }))
+    if (dataprops.rpc.value === 'all') {
+      categories = ["RPC1", "RPC2", "RPC3", "RPC4", "RPC5", "RPC6", "RPC7", "RPC2N2", "RPC2N14"];
+      const regionalMap = new Map<string, number>();
+      categories.forEach(reg => regionalMap.set(reg, 0));
 
-      const allData = dataprops.dataset[dataprops.val]
+      // Sum luas by regional
+      score.forEach((item: any) => {
+        if (regionalMap.has(item.regional)) {
+          regionalMap.set(item.regional, (regionalMap.get(item.regional) || 0) + item.luas);
+        }
+      });
 
-      const eventData = {
-        name: dataprops.title,
-        value: dataprops.val,
-        color: dataprops.color,
-        allData,
-        categories: distinctKebun,
-        countBlok,
-        sumLuasBlok,
-        selectedCategory,
-        // allData: dataprops.dataset[dataprops.val]
+      // Convert to series data in the correct order with 2 decimal places
+      seriesData = categories.map(reg => parseFloat((regionalMap.get(reg) || 0).toFixed(2)));
+
+    } else if (dataprops.rpc.value !== 'all' && dataprops.kebun == null) {
+      const filteredKebun = score.filter((item: any) => item.regional === dataprops.rpc.value);
+    
+      // Use Set to ensure uniqueness of kebun names
+      categories = Array.from(new Set(kebunOptions));
+    
+      const kebunMap = new Map<string, number>();
+      kebunOptions.forEach((kebun: string) => kebunMap.set(kebun, 0));
+    
+      filteredKebun.forEach((item: any) => {
+        if (item.kebun) {
+          kebunMap.set(item.kebun, (kebunMap.get(item.kebun) || 0) + item.luas);
+        }
+      });
+    
+      seriesData = categories.map((option: string) => parseFloat((kebunMap.get(option) || 0).toFixed(2))) as number[];
+    
+      // Check for missing kebun names in options
+      const missingInOptions = filteredKebun
+        .map((item: any) => item.kebun)
+        .filter((name: any) => !categories.includes(name));
+    
+      if (missingInOptions.length > 0) {
+        console.warn("Missing kebun options:", missingInOptions);
       }
-      onEventClick(eventData)
-    },
-    [dataprops, onEventClick],
-  )
+    }
+     else if (dataprops.kebun !== null && dataprops.afd == null) {
+
+      const filteredAfd = score.filter(
+        (item: any) =>
+          item.regional === dataprops.rpc.value &&
+          item.kebun === dataprops.kebun.value
+      );
+
+
+
+      console.log("filteredAfd", filteredAfd);
+
+      // Get unique afdeling names and sort them
+      const afdNames: string[] = Array.from(new Set(filteredAfd.map((item: any) => item.afdeling as string))) as string[];
+      categories = afdNames as string[];
+
+      // Sum luas by afdeling
+      const afdMap = new Map<string, number>();
+      afdNames.forEach(afd => afdMap.set(afd as string, 0));
+
+      filteredAfd.forEach((item: any) => {
+        afdMap.set(item.afdeling, (afdMap.get(item.afdeling) || 0) + item.luas);
+      });
+
+      // Convert to series data with 2 decimal places
+      seriesData = afdNames.map((afd: string) => parseFloat((afdMap.get(afd) || 0).toFixed(2))) as number[];
+
+    } else if (dataprops.afd !== null) {
+      // Group by blok within selected afdeling
+      const filteredBlok = score.filter(
+        (item: any) =>
+          item.afdeling === dataprops.afd.value &&
+          item.kebun === dataprops.kebun.value &&
+          item.regional === dataprops.rpc.value
+      );
+
+      // Get unique blok names and sort them
+      const blokNames: string[] = [...new Set<string>(filteredBlok.map((item: any) => item.blok as string))].sort();
+      categories = blokNames as string[];
+
+      // Sum luas by blok
+      const blokMap = new Map<string, number>();
+      blokNames.forEach(blok => blokMap.set(blok as string, 0));
+
+      filteredBlok.forEach((item: any) => {
+        blokMap.set(item.blok, (blokMap.get(item.blok) || 0) + item.luas);
+      });
+
+      // Convert to series data with 2 decimal places
+      seriesData = blokNames.map((blok: string) => parseFloat((blokMap.get(blok) || 0).toFixed(2))) as number[];
+    }
+  } else if (dataprops.untuk === 'blok') {
+    // Filter data based on TBM category
+    if (filteredTbm !== 'tbm-all') {
+      score = score.filter((item: any) => item.vw_fase_tbm === dataprops.ctg);
+    }
+
+    // Process data based on selection level
+    if (dataprops.rpc.value === 'all') {
+      // Count by regional
+      categories = ["RPC1", "RPC2", "RPC3", "RPC4", "RPC5", "RPC6", "RPC7", "RPC2N2", "RPC2N14"];
+
+      // Create a map for counting blocks per regional
+      const regionalCountMap = new Map<string, Set<string>>();
+      categories.forEach(reg => regionalCountMap.set(reg, new Set()));
+
+      // Count unique blocks per regional
+      score.forEach((item: any) => {
+        if (regionalCountMap.has(item.regional) && item.blok) {
+          const blockSet = regionalCountMap.get(item.regional)!;
+          blockSet.add(`${item.kebun}-${item.afdeling}-${item.blok}`);
+        }
+      });
+
+      // Convert to count data
+      seriesData = categories.map(reg => regionalCountMap.get(reg)?.size || 0);
+
+    } else if (dataprops.rpc.value !== 'all' && dataprops.kebun == null) {
+      // Count by kebun within selected regional
+      const filteredKebun = score.filter((item: any) => item.regional === dataprops.rpc.value);
+
+      // Create a map for counting blocks per kebun based on kebunOptions order
+      const kebunCountMap = new Map<string, Set<string>>();
+
+      // Initialize with kebunOptions to maintain correct order
+      kebunOptions.forEach((kebun: any) => kebunCountMap.set(kebun, new Set()));
+
+      // Count unique blocks per kebun
+      filteredKebun.forEach((item: any) => {
+        if (item.blok && item.kebun) {
+          const blockSet = kebunCountMap.get(item.kebun);
+          if (blockSet) {
+            // Use consistent format for block identification
+            blockSet.add(`${item.afdeling}-${item.blok}`);
+          }
+        }
+      });
+
+      // Find items in data that are not in kebunOptions
+      // Check for missing kebun names in options
+      const missingInOptions = filteredKebun
+        .map((item: any) => item.kebun)
+        .filter((name: any) => !kebunOptions.includes(name));
+
+      if (missingInOptions.length > 0) {
+        console.warn("Missing kebun options:", missingInOptions);
+      }
+      // Convert to count data in kebunOptions order
+      categories = kebunOptions;
+      seriesData = kebunOptions.map((kebun: any) => kebunCountMap.get(kebun)?.size || 0);
+    }
+    else if (dataprops.kebun !== null && dataprops.afd == null) {
+      // Count by afdeling within selected kebun
+      const filteredAfd = score.filter(
+        (item: any) =>
+          item.kebun === dataprops.kebun.value &&
+          item.regional === dataprops.rpc.value
+      );
+      const afdNames: string[] = [...new Set(filteredAfd.map((item: any) => item.afdeling))].sort() as string[];
+      categories = afdNames;
+
+      const afdCountMap = new Map<string, Set<string>>();
+      afdNames.forEach(afd => afdCountMap.set(afd, new Set()));
+
+      filteredAfd.forEach((item: any) => {
+        if (item.blok) {
+          const blockSet = afdCountMap.get(item.afdeling)!;
+          blockSet.add(item.blok);
+        }
+      });
+
+      seriesData = afdNames.map(afd => afdCountMap.get(afd)?.size || 0);
+
+    } else if (dataprops.afd !== null) {
+      const filteredBlok = score.filter(
+        (item: any) =>
+          item.afdeling === dataprops.afd.value &&
+          item.kebun === dataprops.kebun.value &&
+          item.regional === dataprops.rpc.value
+      );
+
+      // Get unique blok names and sort them
+      const blokNames: string[] = [...new Set(filteredBlok.map((item: any) => item.blok))].sort() as string[];
+      categories = blokNames;
+
+      // For block level, we just count the occurrences (1 per block)
+      const blokCountMap = new Map<string, number>();
+      blokNames.forEach(blok => blokCountMap.set(blok, 0));
+
+      filteredBlok.forEach((item: any) => {
+        if (item.blok) {
+          blokCountMap.set(item.blok, (blokCountMap.get(item.blok) || 0) + 1);
+        }
+      });
+
+      // Convert to count data
+      seriesData = blokNames.map(blok => blokCountMap.get(blok) || 0);
+    }
+  }
+
+  const theme = cookie.get("theme") || "light";
 
   const options: ApexOptions = useMemo(
     () => ({
       chart: {
         height: 426,
         type: "bar",
-        stacked: false,
-        events: {
-          dataPointSelection: (event, chartContext, { dataPointIndex }) => {
-            handleChartClick(categories[dataPointIndex])
-          },
-        },
+        mode: theme,
+        stacked: false
       },
       dataLabels: {
         enabled: true,
         offsetX: 5,
+        formatter: function (val: number) {
+          return dataprops.untuk === "luasan" ? parseFloat(val.toString()).toFixed(2) : val.toString();
+        },
       },
       stroke: {
         width: [1],
@@ -84,7 +267,10 @@ export const StockAnalysisChart: React.FC<StockAnalysisChartProps> = React.memo(
           borderRadius: 4,
           borderRadiusApplication: "end",
           horizontal: true,
+          
         },
+      
+
       },
       xaxis: {
         categories: categories,
@@ -96,7 +282,7 @@ export const StockAnalysisChart: React.FC<StockAnalysisChartProps> = React.memo(
           },
         },
         title: {
-          text: dataprops.untuk,
+          text: dataprops.untuk === "luasan" ? 'Luasan' : dataprops.untuk || "Count",
           style: {
             color: theme === "dark" ? "#ffffff" : "#000000",
           },
@@ -108,20 +294,26 @@ export const StockAnalysisChart: React.FC<StockAnalysisChartProps> = React.memo(
           show: true,
           color: theme === "dark" ? "#ffffff" : "#000000",
         },
+        
         labels: {
           style: {
             colors: theme === "dark" ? "#ffffff" : "#000000",
           },
+          
         },
         title: {
-          text: "Regional",
+          text: dataprops.rpc.value === 'all' ? 'Regional' :
+            (dataprops.kebun == null ? 'Kebun' :
+              (dataprops.afd == null ? 'Afdeling' : 'Blok')),
           style: {
             color: theme === "dark" ? "#ffffff" : "#000000",
           },
+          offsetX: 5,
         },
       },
       tooltip: {
-        enabled: false
+        enabled: true,
+        theme: theme,
       },
       fill: {
         type: "gradient",
@@ -129,7 +321,7 @@ export const StockAnalysisChart: React.FC<StockAnalysisChartProps> = React.memo(
           shade: "dark",
           type: "horizontal",
           shadeIntensity: 0.5,
-          gradientToColors: ["#ABE5A1"],
+          gradientToColors: [gradientColors[1]], // Second color for gradient
           inverseColors: true,
           opacityFrom: 1,
           opacityTo: 1,
@@ -141,20 +333,20 @@ export const StockAnalysisChart: React.FC<StockAnalysisChartProps> = React.memo(
         offsetX: 40,
       },
     }),
-    [categories, dataprops.untuk, theme, handleChartClick],
-  )
+    [categories, theme, dataprops.rpc.value, dataprops.kebun, dataprops.afd, dataprops.untuk, , color],
+  );
 
   const series = useMemo(
     () => [
       {
         name: "Total:",
         type: "bar",
-        data: chartData.map((item) => item.filter),
-        color: "#00b0ff",
+        data: seriesData,
+        color: gradientColors[0],
       },
     ],
-    [chartData],
-  )
+    [seriesData, gradientColors],
+  );
 
   return (
     <div id="chart">
@@ -175,16 +367,23 @@ export const StockAnalysisChart: React.FC<StockAnalysisChartProps> = React.memo(
           background-color: ${theme === "dark" ? "#555" : "#f0f0f0"} !important;
           color: ${theme === "dark" ? "#ffcc00" : "#007BFF"} !important;
         }
+
       `}</style>
 
-      <h2 className="text-xl font-semibold text-center">
-        {dataprops.untuk} {dataprops.title}
+      <h2 className="text-xl font-semibold text-center capitalize">
+        {dataprops.untuk === "luasan" ? `Total ${dataprops.untuk} ${dataprops.title}` : `Total Blok ${dataprops.title}`}
       </h2>
+
+      <small className="text-center dark:text-gray-300 text-gray-600 float-right -mt-5">
+        {missingInOptions.length > 0 ? (
+          <span className="text-red-500">Warning: Items ada di vegetatif tetapi tidak ada di areal statement SAP: {missingInOptions.join(", ")}</span>
+        ) : ''}
+        <br />
+      </small>
 
       <ReactApexChart options={options} series={series} type="bar" height={426} />
     </div>
-  )
-})
+  );
+});
 
-export default StockAnalysisChart
-
+export default StockAnalysisChart;

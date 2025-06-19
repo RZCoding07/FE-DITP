@@ -6,7 +6,7 @@ import SkipToMain from './skip-to-main'
 export default function AppShell() {
   const [isCollapsed, setIsCollapsed] = useIsCollapsed()
   return (
-    <div className='relative h-full overflow-hidden bg-background'>
+    <div className='relative h-full bg-background'>
       <SkipToMain />
       <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
       <main
