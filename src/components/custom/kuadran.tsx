@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Highcharts from "highcharts"
 import HighchartsReact from "highcharts-react-official"
+import QuadrantTable from "./quadrant-table"
 
 interface Point {
   x: number
@@ -22,7 +23,7 @@ interface DataSerapanBiaya {
   persen_serapan: string
   total_luas: number
   total_rp_ha: number
-  calculated_tbm_from_areal?: string // Optional field for TBM calculation
+  calculated_tbm_from_areal?: string
 }
 
 interface ScoreKebunTBM {
@@ -44,113 +45,108 @@ interface ScatterChartProps {
 }
 
 const areas = [
-  // { xRange: [90, 100], yRange: [60, 100], color: "rgba(255, 255, 0, 0.7)" },
   { xRange: [90, 100], yRange: [60, 200], color: "rgba(255, 255, 0, 0.7)" },
-  // { xRange: [90, 100], yRange: [-100, 60], color: "rgba(144, 238, 144, 0.7)" },
   { xRange: [90, 100], yRange: [0, 60], color: "rgba(144, 238, 144, 0.7)" },
-  // { xRange: [80, 90], yRange: [60, 100], color: "rgba(255, 99, 71, 0.7)" },
-  // { xRange: [80, 90], yRange: [-100, 60], color: "rgba(0, 0, 0, 0.7)" },
   { xRange: [80, 90], yRange: [0, 60], color: "rgba(0, 0, 0, 0.7)" },
-  // { xRange: [80, 90], yRange: [60, 100], color: "rgba(255, 99, 71, 0.7)" },
   { xRange: [80, 90], yRange: [60, 200], color: "rgba(255, 99, 71, 0.7)" },
-  { xRange: [80, 90], yRange: [100, 60], color: "rgba(0, 0, 0, 0.7)" },
 ]
 
-const ScatterChart = ({ dataprops }: ScatterChartProps) => {
+const EnhancedScatterChart = ({ dataprops }: ScatterChartProps) => {
   const [modalData, setModalData] = useState<any>(null)
   const [showModal, setShowModal] = useState<boolean>(false)
 
-console.log("dataprops", dataprops)
+  console.log("dataprops", dataprops)
 
   // Function to merge objects based on kebun property
-const mergeDataByKebun = () => {
-  if (
-    !dataprops?.dataSerapanBiaya ||
-    !Array.isArray(dataprops.dataSerapanBiaya)
-  ) {
-    console.error("Invalid data structure", dataprops);
-    return [];
-  }
-
-  const { dataSerapanBiaya, regions } = dataprops;
-  const mergedData = [];
-
-  if (dataprops.tbm === undefined || dataprops.tbm.value === "keseluruhan-tbm") {
-    // Handle overall TBM case
-    if (!dataprops?.scoresKebunTBM || !Array.isArray(dataprops.scoresKebunTBM)) {
-      console.error("Missing scoresKebunTBM data");
+  const mergeDataByKebun = () => {
+    if (
+      !dataprops?.dataSerapanBiaya ||
+      !Array.isArray(dataprops.dataSerapanBiaya)
+    ) {
+      console.error("Invalid data structure", dataprops);
       return [];
     }
 
-    for (const serapan of dataSerapanBiaya) {
-      const matchingScore = dataprops.scoresKebunTBM.find(
-        (score) => score.kebun === serapan.kebun
-      );
+    const { dataSerapanBiaya, regions } = dataprops;
+    const mergedData = [];
 
-      if (matchingScore) {
-        const serapanBiaya = Number.parseFloat(serapan.persen_serapan);
-        const vegetatif = matchingScore.totalSeleksiKebun;
+    if (dataprops.tbm === undefined || dataprops.tbm.value === "keseluruhan-tbm") {
+      // Handle overall TBM case
+      if (!dataprops?.scoresKebunTBM || !Array.isArray(dataprops.scoresKebunTBM)) {
+        console.error("Missing scoresKebunTBM data");
+        return [];
+      }
 
-        if (!isNaN(serapanBiaya) && !isNaN(vegetatif)) {
-          mergedData.push({
-            vegetatif,
-            serapanBiaya,
-            region: matchingScore.regional,
-            kebun: serapan.kebun,
-            bulan: "Current",
-            tahun: new Date().getFullYear(),
-            kode_kebun: serapan.kebun,
-          });
+      for (const serapan of dataSerapanBiaya) {
+        const matchingScore = dataprops.scoresKebunTBM.find(
+          (score) => score.kebun === serapan.kebun
+        );
+
+        if (matchingScore) {
+          const serapanBiaya = Number.parseFloat(serapan.persen_serapan);
+          const vegetatif = matchingScore.totalSeleksiKebun;
+
+          if (!isNaN(serapanBiaya) && !isNaN(vegetatif)) {
+            mergedData.push({
+              vegetatif,
+              serapanBiaya,
+              region: matchingScore.regional,
+              kebun: serapan.kebun,
+              bulan: "Current",
+              tahun: new Date().getFullYear(),
+              kode_kebun: serapan.kebun,
+            });
+          }
+        }
+      }
+    } else {
+      // Handle specific TBM case
+      const tbm = dataprops.tbm.value;
+      if (!dataprops?.scoresAllKebun || !Array.isArray(dataprops.scoresAllKebun)) {
+        console.error("Missing scoresAllKebun data");
+        return [];
+      }
+
+      for (const serapan of dataSerapanBiaya) {
+        // First filter serapan data by calculated_tbm_from_areal if it exists
+        if (serapan.calculated_tbm_from_areal && serapan.calculated_tbm_from_areal !== tbm) {
+          continue;
+        }
+
+        const matchingScore = dataprops.scoresAllKebun.find(
+          (score: any) => 
+            score.kebun === serapan.kebun && 
+            score.vw_fase_tbm === tbm
+        );
+
+        if (matchingScore) {
+          const serapanBiaya = Number.parseFloat(serapan.persen_serapan);
+          const vegetatif = matchingScore.totalSeleksian;
+
+          if (!isNaN(serapanBiaya) && !isNaN(vegetatif)) {
+            mergedData.push({
+              vegetatif,
+              serapanBiaya,
+              region: matchingScore.regional,
+              kebun: serapan.kebun,
+              bulan: "Current",
+              tahun: new Date().getFullYear(),
+              kode_kebun: serapan.kebun,
+            });
+          }
         }
       }
     }
-  } else {
-    // Handle specific TBM case
-    const tbm = dataprops.tbm.value;
-    if (!dataprops?.scoresAllKebun || !Array.isArray(dataprops.scoresAllKebun)) {
-      console.error("Missing scoresAllKebun data");
-      return [];
+
+    // Filter by region if specified
+    if (regions !== undefined && regions !== null) {
+      const region = regions.value;
+      return mergedData.filter((item) => item.region === region);
     }
 
-    for (const serapan of dataSerapanBiaya) {
-      // First filter serapan data by calculated_tbm_from_areal if it exists
-      if (serapan.calculated_tbm_from_areal && serapan.calculated_tbm_from_areal !== tbm) {
-        continue;
-      }
+    return mergedData;
+  };
 
-      const matchingScore = dataprops.scoresAllKebun.find(
-        (score: any) => 
-          score.kebun === serapan.kebun && 
-          score.vw_fase_tbm === tbm
-      );
-
-      if (matchingScore) {
-        const serapanBiaya = Number.parseFloat(serapan.persen_serapan);
-        const vegetatif = matchingScore.totalSeleksian;
-
-        if (!isNaN(serapanBiaya) && !isNaN(vegetatif)) {
-          mergedData.push({
-            vegetatif,
-            serapanBiaya,
-            region: matchingScore.regional,
-            kebun: serapan.kebun,
-            bulan: "Current",
-            tahun: new Date().getFullYear(),
-            kode_kebun: serapan.kebun,
-          });
-        }
-      }
-    }
-  }
-
-  // Filter by region if specified
-  if (regions !== undefined && regions !== null) {
-    const region = regions.value;
-    return mergedData.filter((item) => item.region === region);
-  }
-
-  return mergedData;
-};
   const chartData = mergeDataByKebun()
 
   console.log("Chart Data:", chartData)
@@ -353,49 +349,53 @@ const mergeDataByKebun = () => {
   }
 
   return (
-    <div className="p-4 rounded-lg">
-      <div id="chart" className="chart-container">
-        <HighchartsReact
-          highcharts={Highcharts}
-          options={options}
-          containerProps={{ style: { height: `800px`, width: "100%" } }}
-        />
+    <div className="space-y-6">
+      <div className="p-4 rounded-lg">
+        <div id="chart" className="chart-container">
+          <HighchartsReact
+            highcharts={Highcharts}
+            options={options}
+            containerProps={{ style: { height: `800px`, width: "100%" } }}
+          />
+        </div>
+
+        {showModal && modalData && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-lg max-w-md w-full">
+              <h3 className="text-lg font-bold mb-4">Detail Kebun: {modalData.kebun}</h3>
+              <div className="space-y-2">
+                <p>
+                  <span className="font-medium">Nilai Vegetatif:</span> {modalData.vegetatif.toFixed(2)}
+                </p>
+                <p>
+                  <span className="font-medium">Serapan Biaya:</span>{" "}
+                  {Highcharts.numberFormat(Math.abs(modalData.serapanBiaya), 0, ",", ".")} %
+                </p>
+                <p>
+                  <span className="font-medium">Bulan:</span> {modalData.bulan}
+                </p>
+                <p>
+                  <span className="font-medium">Tahun:</span> {modalData.tahun}
+                </p>
+                <p>
+                  <span className="font-medium">Kode Kebun:</span> {modalData.kode_kebun}
+                </p>
+              </div>
+              <button
+                onClick={() => setShowModal(false)}
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
-      {showModal && modalData && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-lg max-w-md w-full">
-            <h3 className="text-lg font-bold mb-4">Detail Kebun: {modalData.kebun}</h3>
-            <div className="space-y-2">
-              <p>
-                <span className="font-medium">Nilai Vegetatif:</span> {modalData.vegetatif.toFixed(2)}
-              </p>
-              <p>
-                <span className="font-medium">Serapan Biaya:</span>{" "}
-                {Highcharts.numberFormat(Math.abs(modalData.serapanBiaya), 0, ",", ".")} %
-              </p>
-              <p>
-                <span className="font-medium">Bulan:</span> {modalData.bulan}
-              </p>
-              <p>
-                <span className="font-medium">Tahun:</span> {modalData.tahun}
-              </p>
-              <p>
-                <span className="font-medium">Kode Kebun:</span> {modalData.kode_kebun}
-              </p>
-            </div>
-            <button
-              onClick={() => setShowModal(false)}
-              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              Tutup
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Add the QuadrantTable component below the chart */}
+      <QuadrantTable chartData={chartData} />
     </div>
   )
 }
 
-export default ScatterChart
-
+export default EnhancedScatterChart
