@@ -76,6 +76,7 @@ export default function PicaTbmEnhanced() {
     { value: "tbm1", label: "TBM 1" },
     { value: "tbm2", label: "TBM 2" },
     { value: "tbm3", label: "TBM 3" },
+    { value: "tbm4", label: "TBM > 3" },
   ]
   const [selectedRpc, setSelectedRpc] = useState<string | null>(null)
   const [selectedTbm, setSelectedTbm] = useState<string | null>(null)

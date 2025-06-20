@@ -13,6 +13,8 @@ type WeeklyData = {
   berkontrak: number | string
   landClearing: number | string
   menanam: number | string
+  x?: number | string
+  y?: number | string
 }
 
 export default function WeeklyReport() {
@@ -88,6 +90,8 @@ export default function WeeklyReport() {
               berkontrak: cleanNumber(row[6]),
               landClearing: cleanNumber(row[10]),
               menanam: cleanNumber(row[12]),
+              x: row[13] ? cleanNumber(row[13]) : undefined,
+              y: row[14] ? cleanNumber(row[14]) : undefined
             })
           }
 
@@ -262,6 +266,8 @@ export default function WeeklyReport() {
           <h1 className="text-4xl font-bold text-[#00695c] dark:text-[#35a39a]">Weekly Report</h1>
           <h2 className="text-xl text-[#689b2d] dark:text-white font-semibold">Periode: {periode}</h2>
           <br />
+          {/* Regional		RKAP	Procurement Process		Berkontrak		Procurement Process		Rencana Biaya 	Realisasi Biaya 	Land Clearing s.d Bi		Menanam S.d Bi	
+		(Ha)	(Ha)	%	(Ha)	%	Luas (Ha)	%	(Rp)	(Rp)	(Ha)	%	(Ha)	% */}
           <div className="overflow-x-auto">
             <table className="w-full border border-cyan-900 bg-white dark:bg-[#0a192f] dark:text-white">
               <thead className="bg-[#1ea297] text-white">
@@ -272,6 +278,8 @@ export default function WeeklyReport() {
                   <th className="px-4 py-2 border border-cyan-900">RKAP (Ha)</th>
                   <th className="px-4 py-2 border border-cyan-900">Berkontrak (Ha)</th>
                   <th className="px-4 py-2 border border-cyan-900">%</th>
+                  <th className="px-4 py-2 border border-cyan-900">Rencana Biaya</th>
+                  <th className="px-4 py-2 border border-cyan-900">Rencana Biaya</th>
                   <th className="px-4 py-2 border border-cyan-900">Land Clearing s.d Bi (Ha)</th>
                   <th className="px-4 py-2 border border-cyan-900">%</th>
                   <th className="px-4 py-2 border border-cyan-900">Menanam S.d Bi (Ha)</th>

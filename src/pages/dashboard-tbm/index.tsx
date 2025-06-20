@@ -1,6 +1,6 @@
 "use client"
-
-import { useEffect, useState, useMemo } from "react"
+import domtoimage from 'dom-to-image';
+import { useEffect, useState, useMemo, useRef } from "react"
 import { Controller } from "react-hook-form"
 import { Layout } from "@/components/custom/layout"
 import { Button } from "@/components/custom/button"
@@ -46,6 +46,7 @@ import { X } from "lucide-react"
 import PlanByTimeframe from "@/components/plan-time-frame"
 import ProgressByTimeframe from "@/components/progress-time-frame"
 import ProblemIdentificationChart from "@/components/pi-frame"
+import { TbmCorporateRecap } from "@/components/custom/tbm-recap-summary"
 
 export default function Dashboard() {
   // Di bagian awal component, setelah mendapatkan user data
@@ -718,6 +719,11 @@ export default function Dashboard() {
         href: '/dashboard-inspire',
         isActive: false,
       },
+      {
+        title: 'Dashboard Monev TU',
+        href: '/dashboard-monev',
+        isActive: false,
+      },
     ]
   }
 
@@ -1014,6 +1020,25 @@ export default function Dashboard() {
       }
     }
   }, [getRegionalKebun, rpc.value, selectedCard.ctg, account_type, userKebun, userRpc, scoresAll]);
+
+  const captureRef = useRef<HTMLDivElement | null>(null);
+  const handleDownloadCard = async () => {
+    if (captureRef.current) {
+      domtoimage.toPng(captureRef.current)
+        .then((dataUrl: any) => {
+          const link = document.createElement('a');
+          link.download = 'tbm-recap.png';
+          link.href = dataUrl;
+          link.click();
+        })
+        .catch((error: any) => {
+          console.error('Snapshot failed:', error);
+        });
+    } else {
+      console.error('Snapshot failed: captureRef.current is null');
+    }
+  };
+
 
   return (
     <Layout>
@@ -1322,7 +1347,7 @@ export default function Dashboard() {
                                 </thead>
                                 <tbody>
                                   {weightedAverages
-                                    
+
                                     .map((item: any, index: number) => {
                                       const getColorClass = (score: number) => {
                                         if (score > 92) return 'bg-gradient-to-br to-yellow-700 from-yellow-500';
@@ -1373,6 +1398,29 @@ export default function Dashboard() {
                             </div>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+            
+             <br/>
+
+                <div className="grid sm:grid-cols-1 lg:grid-cols-1">
+                  <div className="grid sm:grid-cols-1 lg:grid-cols-1">
+                    <div className="items-center justify-center align-middle">
+                      <div className="" ref={captureRef}>
+                        <TbmCorporateRecap
+                          scoresAll={scoresAll}
+                          rpc={rpc}
+                          kebun={kebun}
+                          afd={afd}
+                          selectedCard={selectedCard}
+                          bulan={bulan}
+                          tahun={tahun}
+                          handleDownload={handleDownloadCard}
+                        />
                       </div>
                     </div>
                   </div>
@@ -1462,7 +1510,7 @@ function DashboardHeader({
 }: {
   control: any
   fullname: string
-  tahunOptions: any[]
+  tahunOptions: any
   bulanOptions: any[]
   defaultTahun: any
   defaultBulan: any

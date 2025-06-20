@@ -47,7 +47,7 @@ export default function DashboardMasterpiece() {
   const [filters, setFilters] = useState<DashboardFilters>({
     dari_tanggal: format(subDays(new Date(), 30), "yyyy-MM-dd"),
     sampai_tanggal: format(new Date(), "yyyy-MM-dd"),
-    regional: "",
+    regional: "1",
     kode_unit: "",
     afdeling: "",
     blok: "",
@@ -58,7 +58,7 @@ export default function DashboardMasterpiece() {
     const newFilters: DashboardFilters = {
       dari_tanggal: searchParams.get('dari_tanggal') || format(subDays(new Date(), 30), "yyyy-MM-dd"),
       sampai_tanggal: searchParams.get('sampai_tanggal') || format(new Date(), "yyyy-MM-dd"),
-      regional: searchParams.get('regional') || "",
+      regional: searchParams.get('regional') || "2",
       kode_unit: searchParams.get('kode_unit') || searchParams.get('kebun') || "", // support both kode_unit and kebun params
       afdeling: searchParams.get('afdeling') || "",
       blok: searchParams.get('blok') || "",

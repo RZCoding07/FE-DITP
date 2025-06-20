@@ -38,7 +38,7 @@ export default function PlantationDashboardMasterpiece({
   const [filters, setFilters] = useState<DashboardFilters>(() => ({
     dari_tanggal: initialFilters.dari_tanggal ?? format(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), "yyyy-MM-dd"),
     sampai_tanggal: initialFilters.sampai_tanggal ?? format(new Date(), "yyyy-MM-dd"),
-    regional: initialFilters.regional ?? "",
+    regional: initialFilters.regional ?? "2",
     kode_unit: initialFilters.kode_unit ?? "",
     afdeling: initialFilters.afdeling ?? "",
     blok: initialFilters.blok ?? "",

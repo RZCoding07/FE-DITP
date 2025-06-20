@@ -823,7 +823,6 @@ const formatNumber = (value: number) => {
               <div className='w-full overflow-x-auto pb-2'>
                 <TabsList>
                   <TabsTrigger value='grafik'>Grafik</TabsTrigger>
-                  <TabsTrigger value='analytics'>Rekapitulasi</TabsTrigger>
                 </TabsList>
               </div>
               <TabsContent value='grafik'>
@@ -916,6 +915,11 @@ const topNav = [
   {
     title: 'Monev TU (Inspire-KKMV)',
     href: '/dashboard-inspire',
+    isActive: false,
+  },
+    {
+    title: 'Dashboard Monev TU',
+    href: '/dashboard-monev',
     isActive: false,
   },
 ]

@@ -84,7 +84,7 @@ export interface JobPositionData {
 export interface DashboardFilters {
   dari_tanggal: string
   sampai_tanggal: string
-  regional?: string
+  regional: string
   kode_unit?: string
   afdeling?: string
   blok?: string
