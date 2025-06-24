@@ -130,7 +130,7 @@ const Footer = React.forwardRef<HTMLDivElement, FooterProps>(({
       ref={ref}
       data-layout='footer'
       className={cn(
-        'z-10 dark:bg-slate-950 dark:text-white py-1 fixed bottom-0 left-0 right-0 border-t-2 shadow-lg border-cyan-800 p-4 md:px-8',
+        'z-10 bg-white dark:bg-slate-950 dark:text-white py-1 fixed bottom-0 left-0 right-0 border-t-2 shadow-lg border-cyan-800 p-4 md:px-8',
         contextVal.fixed && 'flex-none',
         className
       )}

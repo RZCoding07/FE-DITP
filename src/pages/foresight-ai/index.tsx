@@ -34,6 +34,8 @@ export default function ForeSightAI() {
             </p>
           </div>
         </div>
+        <br />
+        <br />
 
         {/* Main Card */}
         <Card className='p-6 rounded-lg shadow-lg  dark:from-slate-950 dark:to-slate-900 shadow-cyan-500'>

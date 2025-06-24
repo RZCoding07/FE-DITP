@@ -11,9 +11,21 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Link } from 'react-router-dom'
-import cookies from 'js-cookie' 
+import cookies from 'js-cookie'
+import toast from 'react-hot-toast'
 
+const removeAllCookies = () => {
+  document.cookie.split(';').forEach(function (c) {
+    document.cookie = c
+      .replace(/^ +/, '')
+      .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/')
+  })
+  toast.success('Berhasil logout')
 
+  setTimeout(() => {
+    window.location.href = '/sign-in' // Redirect ke halaman sign-in setelah 2 detik
+  }, 2500)
+}
 
 export function UserNav() {
   const user = cookies.get('user')
@@ -42,20 +54,19 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
             <Link to='/settings'>
-            Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-            </Link>
+          <DropdownMenuItem>
+              Profile
+              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
+            </Link>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Link to='/logout'>
-          Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-          </Link>
-        </DropdownMenuItem>
+        <a href="javascript:void(0)" onClick={removeAllCookies}>
+          <DropdownMenuItem>
+            Log out
+            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </a>
       </DropdownMenuContent>
     </DropdownMenu>
   )

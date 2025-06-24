@@ -38,7 +38,6 @@ async function fetchApi<T>(endpoint: string, body: any): Promise<T> {
 }
 
 export async function fetchPlantationData(filters: DashboardFilters): Promise<PlantationApiResponse> {
-  console.log("Fetching plantation data with filters:", filters)
   return fetchApi<PlantationApiResponse>("/d-monev-kebun", {
     region: filters.regional,
   })

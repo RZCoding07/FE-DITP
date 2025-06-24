@@ -32,11 +32,15 @@ import {
 import { processScoreData } from "@/utils/dashboard-helper"
 
 export default function PicaTbmEnhanced() {
+
   const user = JSON.parse(cookie.get("user") || "{}")
   const fullName = user.full_name
 
   const [rpc, setRpc] = useState<string | null>(null)
   const [kebun, setKebun] = useState<string | null>(null)
+
+  const theme = cookie.get("theme") || "system"
+  const isDarkMode = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)
 
   const {
     control,
@@ -559,9 +563,11 @@ export default function PicaTbmEnhanced() {
           </CardHeader>
           <CardContent>
             <div className="items-center justify-center align-middle mr-1 pb-5">
-              <div className="rounded-lg border border-cyan-500 bg-white p-3 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-cyan-700 dark:to-cyan-600">
                 <EnhancedScatterChart
+                            isDarkMode={isDarkMode}
+
                   dataprops={{
+                    
                     dataSerapanBiaya,
                     scoresKebunTBM,
                     regions: rpcVal,
@@ -569,7 +575,6 @@ export default function PicaTbmEnhanced() {
                     scoresAllKebun,
                   }}
                 />
-              </div>
             </div>
           </CardContent>
         </Card>

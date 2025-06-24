@@ -11,14 +11,14 @@ import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import type { DashboardFilters, Regional, Kebun, Afdeling } from "@/types/api"
+import type { DashboardFilters, DMonevRegion, DMonevUnit, DMonevAfdeling } from "@/types/api"
 
 interface DashboardFiltersEnhancedProps {
   filters: DashboardFilters
   onFiltersChange: (filters: DashboardFilters) => void
-  regionals: Regional[]
-  kebuns: Kebun[]
-  afdelings: Afdeling[]
+  regionals: DMonevRegion[]
+  kebuns: DMonevUnit[]
+  afdelings: DMonevAfdeling[]
   loading?: boolean
   onRefresh?: () => void
 }
@@ -44,7 +44,7 @@ export function DashboardFiltersEnhanced({
 
   const selectedRegional = regionals.find((r) => r.kode_regional === filters.regional)
   const selectedKebun = kebuns.find((k) => k.kode_unit === filters.kode_unit)
-  const selectedAfdeling = afdelings.find((a) => a.kode_afdeling === filters.afdeling)
+  const selectedAfdeling = afdelings.find((a) => a.afdeling === filters.afdeling)
 
   console.log("Selected Regional:", selectedRegional)
   console.log("Selected Kebun:", selectedKebun)
@@ -298,7 +298,7 @@ export function DashboardFiltersEnhanced({
                     disabled={!filters.kode_unit || afdelings.length === 0}
                     className="w-full justify-between border-slate-600 bg-slate-800 text-white hover:bg-slate-700 disabled:opacity-50"
                   >
-                    {selectedAfdeling ? selectedAfdeling.kode_afdeling : "Pilih Afdeling..."}
+                    {selectedAfdeling ? selectedAfdeling.afdeling : "Pilih Afdeling..."}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
@@ -310,12 +310,12 @@ export function DashboardFiltersEnhanced({
                       <CommandList>
                         {afdelings.map((afdeling) => (
                           <CommandItem
-                            key={afdeling.kode_afdeling}
-                            value={afdeling.kode_afdeling}
+                            key={afdeling.afdeling}
+                            value={afdeling.afdeling}
                             onSelect={() => {
                               onFiltersChange({
                                 ...filters,
-                                afdeling: afdeling.kode_afdeling,
+                                afdeling: afdeling.afdeling,
                                 blok: "",
                               })
                             }}
@@ -324,10 +324,10 @@ export function DashboardFiltersEnhanced({
                             <Check
                               className={cn(
                                 "mr-2 h-4 w-4",
-                                filters.afdeling === afdeling.kode_afdeling ? "opacity-100" : "opacity-0",
+                                filters.afdeling === afdeling.afdeling ? "opacity-100" : "opacity-0",
                               )}
                             />
-                            {afdeling.kode_afdeling}
+                            {afdeling.afdeling}
                           </CommandItem>
                         ))}
                       </CommandList>

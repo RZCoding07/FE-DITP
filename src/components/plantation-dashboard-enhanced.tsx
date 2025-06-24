@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { TreePine, AlertTriangle, RefreshCw, Download, Share2, Settings, Maximize2, BarChart3 } from "lucide-react"
+import { TreePine, AlertTriangle, RefreshCw, Download, Share2, Settings, Maximize2, BarChart3, Calendar } from "lucide-react"
 import { useDashboardDataEnhanced } from "@/hooks/use-dashboard-data"
 import { DashboardFiltersEnhanced } from "./dashboard-filters"
 import { SummaryCardsEnhanced } from "./summary-cards-enhanced"
@@ -15,10 +15,14 @@ import { CorrectiveActionChart } from "./charts/corrective-action-chart"
 import { PlantationAreaChart } from "./charts/plantation-area-chart"
 import { LoadingSpinner } from "./loading-spinner"
 import { ErrorBoundary } from "./error-boundary"
-import type { DashboardFilters } from "@/types/api"
-import { format } from "date-fns"
+import { MonevDetailTable } from "./MonevDetailTable"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Calendar as CalendarComponent } from "@/components/ui/calendar"
+import { cn } from "@/lib/utils"
+import { format, subDays } from "date-fns"
 import { id } from "date-fns/locale"
-
+import type { DashboardFilters } from "@/types/api"
+import type { DateRange } from "react-day-picker"
 interface PlantationDashboardMasterpieceProps {
   title?: string
   description?: string
@@ -44,6 +48,11 @@ export default function PlantationDashboardMasterpiece({
     blok: initialFilters.blok ?? "",
   }))
 
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: subDays(new Date(), 30),
+    to: new Date(),
+  })
+
   // Sync with external filter changes
   useEffect(() => {
     if (Object.keys(initialFilters).length > 0) {
@@ -53,6 +62,13 @@ export default function PlantationDashboardMasterpiece({
         dari_tanggal: initialFilters.dari_tanggal ?? prev.dari_tanggal,
         sampai_tanggal: initialFilters.sampai_tanggal ?? prev.sampai_tanggal
       }))
+      
+      if (initialFilters.dari_tanggal && initialFilters.sampai_tanggal) {
+        setDateRange({
+          from: new Date(initialFilters.dari_tanggal),
+          to: new Date(initialFilters.sampai_tanggal)
+        })
+      }
     }
   }, [initialFilters])
 
@@ -72,6 +88,18 @@ export default function PlantationDashboardMasterpiece({
     refreshData,
     setFilters: setDataFilters,
   } = useDashboardDataEnhanced(filters)
+
+  const handleDateRangeChange = (range: DateRange | undefined) => {
+    setDateRange(range)
+    if (range?.from && range?.to) {
+      const newFilters = {
+        ...filters,
+        dari_tanggal: format(range.from, "yyyy-MM-dd"),
+        sampai_tanggal: format(range.to, "yyyy-MM-dd")
+      }
+      handleFiltersChange(newFilters)
+    }
+  }
 
   const handleFiltersChange = (newFilters: DashboardFilters) => {
     console.log("Filters changed:", newFilters)
@@ -98,15 +126,10 @@ export default function PlantationDashboardMasterpiece({
   useEffect(() => {
     const interval = setInterval(() => {
       handleRefresh()
-    }, 500 * 60 * 1000)
+    }, 5000 * 60 * 1000)
 
     return () => clearInterval(interval)
   }, [])
-
-  // Debug effect
-  useEffect(() => {
-    console.log("Current filters state:", filters)
-  }, [filters])
 
   if (error) {
     return (
@@ -160,24 +183,7 @@ export default function PlantationDashboardMasterpiece({
             </div>
 
             <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleExport}
-                className="border-slate-600 text-slate-300 hover:bg-slate-700"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Export
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleShare}
-                className="border-slate-600 text-slate-300 hover:bg-slate-700"
-              >
-                <Share2 className="h-4 w-4 mr-2" />
-                Share
-              </Button>
+  
               <Button
                 variant="outline"
                 size="sm"
@@ -204,6 +210,90 @@ export default function PlantationDashboardMasterpiece({
             loading={loading}
             onRefresh={handleRefresh}
           />
+
+          {/* Date Range Picker for Monev Table */}
+          <div className="flex items-center gap-4">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date"
+                  variant="outline"
+                  className={cn(
+                    "w-[300px] justify-start text-left font-normal bg-slate-800 border-slate-700 hover:bg-slate-700",
+                    !dateRange && "text-muted-foreground"
+                  )}
+                >
+                  <Calendar className="mr-2 h-4 w-4" />
+                  {dateRange?.from ? (
+                    dateRange.to ? (
+                      <>
+                        {format(dateRange.from, "LLL dd, y")} -{" "}
+                        {format(dateRange.to, "LLL dd, y")}
+                      </>
+                    ) : (
+                      format(dateRange.from, "LLL dd, y")
+                    )
+                  ) : (
+                    <span>Pick a date range</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 bg-slate-800 border-slate-700" align="start">
+                <CalendarComponent
+                  initialFocus
+                  mode="range"
+                  defaultMonth={dateRange?.from}
+                  selected={dateRange}
+                  onSelect={handleDateRangeChange}
+                  numberOfMonths={2}
+                  className="bg-slate-800 text-white"
+                />
+              </PopoverContent>
+            </Popover>
+
+            <Button
+              variant="outline"
+              onClick={() => {
+                const newRange = {
+                  from: subDays(new Date(), 7),
+                  to: new Date(),
+                }
+                setDateRange(newRange)
+                handleDateRangeChange(newRange)
+              }}
+              className="bg-slate-800 border-slate-700 hover:bg-slate-700"
+            >
+              Last 7 days
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                const newRange = {
+                  from: subDays(new Date(), 30),
+                  to: new Date(),
+                }
+                setDateRange(newRange)
+                handleDateRangeChange(newRange)
+              }}
+              className="bg-slate-800 border-slate-700 hover:bg-slate-700"
+            >
+              Last 30 days
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                const newRange = {
+                  from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+                  to: new Date(),
+                }
+                setDateRange(newRange)
+                handleDateRangeChange(newRange)
+              }}
+              className="bg-slate-800 border-slate-700 hover:bg-slate-700"
+            >
+              This month
+            </Button>
+          </div>
 
           {loading && (
             <Card className="bg-gradient-to-r from-slate-900 to-slate-800 border-slate-700">
@@ -255,6 +345,12 @@ export default function PlantationDashboardMasterpiece({
                 </div>
               </div>
 
+              {/* Monev Detail Table */}
+              <MonevDetailTable
+                dateRange={dateRange}
+                onRefresh={handleRefresh}
+              />
+
               {/* Additional Insights */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <Card className="bg-gradient-to-br from-blue-900 to-blue-800 border-blue-700">
@@ -277,18 +373,6 @@ export default function PlantationDashboardMasterpiece({
                               monitoringData.length
                             ).toFixed(2)
                             : "0"}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-blue-200">Best Performer:</span>
-                        <span className="text-white font-semibold">
-                          {monitoringData.length > 0
-                            ? monitoringData
-                              .reduce((prev, current) =>
-                                prev.persentase_monev > current.persentase_monev ? prev : current,
-                              )
-                              .nama.replace("KEBUN ", "")
-                            : "N/A"}
                         </span>
                       </div>
                     </div>
@@ -315,16 +399,6 @@ export default function PlantationDashboardMasterpiece({
                             : "0 Ha"}
                         </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-green-200">Avg Block Size:</span>
-                        <span className="text-white font-semibold">
-                          {plantationData.length > 0
-                            ? (
-                              plantationData.reduce((sum, item) => sum + item.luas_blok_tu, 0) / plantationData.length
-                            ).toFixed(2) + " Ha"
-                            : "0 Ha"}
-                        </span>
-                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -343,10 +417,6 @@ export default function PlantationDashboardMasterpiece({
                       <div className="flex justify-between">
                         <span className="text-purple-200">Last Sync:</span>
                         <span className="text-white font-semibold">{format(lastUpdated, "HH:mm", { locale: id })}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-purple-200">Status:</span>
-                        <Badge className="bg-green-600 text-white">Online</Badge>
                       </div>
                     </div>
                   </CardContent>

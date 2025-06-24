@@ -23,7 +23,7 @@ const getCookie = (name: string) => {
 // Loader untuk autentikasi
 const requireAuth = async () => {
   const userCookie = getCookie('user')
-  if (!userCookie  || userCookie.length === 0) {
+  if (!userCookie || userCookie.length === 0) {
     throw redirect('/sign-in') // Redirect ke halaman sign-in jika tidak ada cookie
   }
   return null
@@ -32,9 +32,9 @@ const requireAuth = async () => {
 const regionalFilter = async () => {
   const account_type = user ? JSON.parse(user).account_type : ''
 
-  if(account_type !== 'Regional'){
-      toast.error('Anda tidak memiliki akses ke halaman ini, Fitur hanya untuk Regional')
-      throw redirect('/')
+  if (account_type !== 'Regional') {
+    toast.error('Anda tidak memiliki akses ke halaman ini, Fitur hanya untuk Regional')
+    throw redirect('/')
   } else {
     return null
   }
@@ -43,9 +43,9 @@ const regionalFilter = async () => {
 const superadminFilter = async () => {
   const account_type = user ? JSON.parse(user).account_type : ''
 
-  if(account_type !== 'Superadmin'){
-      toast.error('Anda tidak memiliki akses ke halaman ini, Fitur hanya untuk Superadmin')
-      throw redirect('/')
+  if (account_type !== 'Superadmin') {
+    toast.error('Anda tidak memiliki akses ke halaman ini, Fitur hanya untuk Superadmin')
+    throw redirect('/')
   } else {
     return null
   }
@@ -58,7 +58,11 @@ const removeAllCookies = () => {
       .replace(/^ +/, '')
       .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/')
   })
-  window.location.href = '/sign-in'
+  toast.success('Berhasil logout')
+
+  setTimeout(() => {
+    window.location.href = '/sign-in' // Redirect ke halaman sign-in setelah 2 detik
+  }, 1000)
 }
 
 requireAuth().catch((error) => {
@@ -76,14 +80,15 @@ const checkAuthPeriodically = () => {
     try {
       await requireAuth();
     } catch (error) {
-      toast.error('Sesi Anda telah berakhir. Silakan masuk kembali.');
-      window.location.reload();
+      removeAllCookies(); // Hapus semua cookie
+      window.location.href = '/sign-in'; // Redirect ke halaman sign-in
+
     }
   }, 1000); // Setiap 1 detik
 };
 
 
-if (currentUrl !== '/sign-in') { 
+if (currentUrl !== '/sign-in') {
   checkAuthPeriodically();
 }
 
@@ -119,7 +124,7 @@ let monicaRouter = [
     }),
     loader: async () => {
       return superadminFilter()
-    } 
+    }
   },
   {
     path: 'upload-paket-pekerjaan-monica',
@@ -325,43 +330,43 @@ let immatureRouter = [
     }
   },
   {
-    path : 'upload-pengukuran-vegetatif',
+    path: 'upload-pengukuran-vegetatif',
     lazy: async () => ({
       Component: (await import('./pages/upload-pengukuran-vegetatif')).default,
     }),
   },
   {
-    path : 'upload-problem-identification',
+    path: 'upload-problem-identification',
     lazy: async () => ({
       Component: (await import('./pages/upload-data-pi-tbm')).default,
     }),
   },
   {
-    path : 'upload-corrective-action',
+    path: 'upload-corrective-action',
     lazy: async () => ({
       Component: (await import('./pages/upload-data-ca-tbm')).default,
     }),
   },
   {
-    path : 'upload-serapan-biaya',
+    path: 'upload-serapan-biaya',
     lazy: async () => ({
       Component: (await import('./pages/upload-serapan-biaya')).default,
     }),
   },
   {
-    path : 'luas-areal',
+    path: 'luas-areal',
     lazy: async () => ({
       Component: (await import('./pages/luas-areal-statement')).default,
     }),
   },
-    {
+  {
     path: 'res-pica-tbm',
     lazy: async () => ({
       Component: (await import('./pages/result-pica')).default,
     }),
   },
   {
-    path : 'upload-areal-statement',
+    path: 'upload-areal-statement',
     lazy: async () => ({
       Component: (await import('./pages/upload-luas-areal')).default,
     }),
@@ -385,8 +390,8 @@ let immatureRouter = [
       Component: (await import('@/pages/input-data-ca')).default,
     }),
   },
-    {
-    path: 'weekly-pica-tbm/:id/:start_date/:end_date',
+  {
+    path: '/weekly-pica-tbm/:vegetativeId/:startDates/:endDates/:caNames?/:caValues?/:caBudgets?',
     lazy: async () => ({
       Component: (await import('./pages/weekly-progress-pica-immature')).default,
     }),
@@ -492,6 +497,18 @@ let allRouter = [
     path: 'dashboard-monev',
     lazy: async () => ({
       Component: (await import('./pages/dashboard-monev')).default,
+    }),
+  },
+  {
+    path: 'monev-detail/:monevId',
+    lazy: async () => ({
+      Component: (await import('./pages/dashboard-monev-v2/MonevDetailDashboard.tsx')).default,
+    }),
+  },
+  {
+    path: 'dashboard-monev-v2',
+    lazy: async () => ({
+      Component: (await import('./pages/dashboard-monev-v2/Dashboard.tsx')).default,
     }),
   },
   {
@@ -723,7 +740,7 @@ let allRouter = [
     }),
   },
   {
-    path: 'weekly-pica-tbm/:id/:start_date/:end_date',
+    path: '/weekly-pica-tbm/:vegetativeId/:startDates/:endDates/:caNames?/:caValues?/:caBudgets?',
     lazy: async () => ({
       Component: (await import('./pages/weekly-progress-pica-immature')).default,
     }),
@@ -777,37 +794,37 @@ let allRouter = [
     }
   },
   {
-    path : 'upload-pengukuran-vegetatif',
+    path: 'upload-pengukuran-vegetatif',
     lazy: async () => ({
       Component: (await import('./pages/upload-pengukuran-vegetatif')).default,
     }),
   },
   {
-    path : 'upload-problem-identification',
+    path: 'upload-problem-identification',
     lazy: async () => ({
       Component: (await import('./pages/upload-data-pi-tbm')).default,
     }),
   },
   {
-    path : 'upload-corrective-action',
+    path: 'upload-corrective-action',
     lazy: async () => ({
       Component: (await import('./pages/upload-data-ca-tbm')).default,
     }),
   },
   {
-    path : 'upload-serapan-biaya',
+    path: 'upload-serapan-biaya',
     lazy: async () => ({
       Component: (await import('./pages/upload-serapan-biaya')).default,
     }),
   },
   {
-    path : 'luas-areal',
+    path: 'luas-areal',
     lazy: async () => ({
       Component: (await import('./pages/luas-areal-statement')).default,
     }),
   },
   {
-    path : 'upload-areal-statement',
+    path: 'upload-areal-statement',
     lazy: async () => ({
       Component: (await import('./pages/upload-luas-areal')).default,
     }),
@@ -898,7 +915,7 @@ let allRouter = [
       },
     ]
   },
-  
+
 
 ]
 
@@ -940,6 +957,7 @@ let mainRouter = [
       Component: (await import('./pages/auth/sign-in')).default,
     }),
     loader: async () => {
+
       removeAllCookies();
     },
   },

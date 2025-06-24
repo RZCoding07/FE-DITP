@@ -124,17 +124,13 @@ export function MonitoringOverviewChart({ data, onDataPointClick }: MonitoringOv
 
   const series = [
     {
-      name: "Monitoring (%)",
+      name: "Persentase Monev (%)",
       data: chartData.map((item) => item.monitoring),
     },
     {
       name: "Nilai Rata-rata",
       data: chartData.map((item) => item.score),
-    },
-    {
-      name: "Kesesuaian (%)",
-      data: chartData.map((item) => item.compliance),
-    },
+    }
   ]
 
   return (

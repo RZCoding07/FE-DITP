@@ -7,7 +7,19 @@ import ThemeSwitch from "@/components/theme-switch"
 import { TopNav } from "@/components/top-nav"
 import PlantationDashboardMasterpiece from "@/components/plantation-dashboard-enhanced"
 import type { DashboardFilters } from "@/types/api"
+import { MonevDetailTable } from "@/components/MonevDetailTable"
+import { DateRange } from "react-day-picker"
 import { format, subDays } from "date-fns"
+import { Calendar } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Calendar as CalendarComponent } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
+
 
 const topNav = [
   {
@@ -35,7 +47,7 @@ const topNav = [
     href: '/dashboard-inspire',
     isActive: false,
   },
-    {
+  {
     title: 'Dashboard Monev TU',
     href: '/dashboard-monev',
     isActive: true,
@@ -47,7 +59,7 @@ export default function DashboardMasterpiece() {
   const [filters, setFilters] = useState<DashboardFilters>({
     dari_tanggal: format(subDays(new Date(), 30), "yyyy-MM-dd"),
     sampai_tanggal: format(new Date(), "yyyy-MM-dd"),
-    regional: "1",
+    regional: "2",
     kode_unit: "",
     afdeling: "",
     blok: "",
@@ -76,6 +88,41 @@ export default function DashboardMasterpiece() {
     setSearchParams(params)
   }
 
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: subDays(new Date(), 30),
+    to: new Date(),
+  })
+
+  // Initialize filters from URL params on component mount
+  useEffect(() => {
+    const dari_tanggal = searchParams.get('dari_tanggal')
+    const sampai_tanggal = searchParams.get('sampai_tanggal')
+
+    if (dari_tanggal && sampai_tanggal) {
+      setDateRange({
+        from: new Date(dari_tanggal),
+        to: new Date(sampai_tanggal),
+      })
+    }
+  }, [searchParams])
+
+  const handleDateRangeChange = (range: DateRange | undefined) => {
+    setDateRange(range)
+    // Update URL params
+    const params = new URLSearchParams(searchParams)
+    if (range?.from) {
+      params.set('dari_tanggal', format(range.from, "yyyy-MM-dd"))
+    } else {
+      params.delete('dari_tanggal')
+    }
+    if (range?.to) {
+      params.set('sampai_tanggal', format(range.to, "yyyy-MM-dd"))
+    } else {
+      params.delete('sampai_tanggal')
+    }
+    setSearchParams(params)
+  }
+
   return (
     <Layout className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white flex flex-col h-screen">
       <div className="flex-1 flex flex-col h-full">
@@ -100,6 +147,9 @@ export default function DashboardMasterpiece() {
           />
         </div>
       </div>
+
+  
+
     </Layout>
   )
 }

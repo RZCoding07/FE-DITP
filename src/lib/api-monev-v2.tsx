@@ -1,0 +1,191 @@
+import axios, { type AxiosError, type AxiosResponse } from "axios"
+import type {
+  PlantationApiResponse,
+  MonitoringApiResponse,
+  CorrectiveActionApiResponse,
+  JobPositionApiResponse,
+  DashboardFilters,
+} from "@/types/api"
+
+const API_BASE_URL = import.meta.env.VITE_API_REPLANTING + "/api"
+
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public status?: number,
+  ) {
+    super(message)
+    this.name = "ApiError"
+  }
+}
+
+async function fetchApi<T>(endpoint: string, body: any): Promise<T> {
+  try {
+    const response: AxiosResponse<T> = await axios.post(`${API_BASE_URL}${endpoint}`, body, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError.message || "API request failed", axiosError.response?.status)
+    }
+    throw new ApiError("Network error occurred")
+  }
+}
+
+// Additional API functions for comprehensive data
+export async function fetchPlantationDataRegional(filters: DashboardFilters): Promise<PlantationApiResponse> {
+  if (!filters.dari_tanggal || !filters.sampai_tanggal) {
+    throw new ApiError("Invalid date range")
+  }
+  return fetchApi<PlantationApiResponse>("/d-monev-reg", {
+    dari_tanggal: filters.dari_tanggal,
+    sampai_tanggal: filters.sampai_tanggal,
+  })
+}
+
+export async function fetchPlantationDataKebun(filters: DashboardFilters) {
+  return fetchApi("/d-monev-kebun", {
+    dari_tanggal: filters.dari_tanggal,
+    sampai_tanggal: filters.sampai_tanggal,
+    region: filters.regional,
+  })
+}
+
+export async function fetchPlantationDataAfd(filters: DashboardFilters): Promise<PlantationApiResponse> {
+  return fetchApi<PlantationApiResponse>("/d-monev-afd", {
+    start_date: filters.dari_tanggal,
+    end_date: filters.sampai_tanggal,
+    region: filters.regional,
+    kode_unit: filters.kode_unit,
+  })
+}
+export async function fetchPlantationDataBlok(filters: DashboardFilters): Promise<PlantationApiResponse> {
+  return fetchApi<PlantationApiResponse>("/d-monev-blok", {
+    start_date: filters.dari_tanggal,
+    end_date: filters.sampai_tanggal,
+    region: filters.regional,
+    kode_unit: filters.kode_unit,
+    afdeling: filters.afdeling,
+  })
+}
+
+// D MONEV Details
+export async function fetchPlantationDataDetail(filters: DashboardFilters): Promise<MonitoringApiResponse> {
+  return fetchApi<MonitoringApiResponse>("/d-monev-detail", {
+    start_date: filters.dari_tanggal,
+    end_date: filters.sampai_tanggal,
+    region: filters.regional,
+  })
+}
+
+
+
+export async function fetchMonitoringDatRegional(filters: DashboardFilters): Promise<MonitoringApiResponse> {
+  return fetchApi<MonitoringApiResponse>("/d-rekap-regional", {
+    start_date: filters.dari_tanggal,
+    end_date: filters.sampai_tanggal,
+  })
+}
+
+
+export async function fetchMonitoringDataKebun(filters: DashboardFilters): Promise<MonitoringApiResponse> {
+  return fetchApi<MonitoringApiResponse>("/d-rekap-unit", {
+    start_date: filters.dari_tanggal,
+    end_date: filters.sampai_tanggal,
+    region: filters.regional,
+  })
+}
+
+export async function fetchMonitoringDataAfd(filters: DashboardFilters): Promise<MonitoringApiResponse> {
+  return fetchApi<MonitoringApiResponse>("/d-rekap-afdeling", {
+    start_date: filters.dari_tanggal,
+    end_date: filters.sampai_tanggal,
+    region: filters.regional,
+    kode_unit: filters.kode_unit
+  })
+}
+
+export async function fetchMonitoringDataBlok(filters: DashboardFilters): Promise<MonitoringApiResponse> {
+  return fetchApi<MonitoringApiResponse>("/d-rekap-blok", {
+    start_date: filters.dari_tanggal,
+    end_date: filters.sampai_tanggal,
+    region: filters.regional,
+    kode_unit: filters.kode_unit,
+    afdeling: filters.afdeling,
+  })
+}
+
+export async function fetchCorrectiveActionDataRegional(filters: DashboardFilters): Promise<CorrectiveActionApiResponse> {
+  return fetchApi<CorrectiveActionApiResponse>("/d-rekap-ca-unit", {
+    start_date: filters.dari_tanggal,
+    end_date: filters.sampai_tanggal,
+    region: filters.regional,
+  })
+}
+
+export async function fetchCorrectiveActionDataKebun(filters: DashboardFilters): Promise<CorrectiveActionApiResponse> {
+  return fetchApi<CorrectiveActionApiResponse>("/d-rekap-ca-unit", {
+    start_date: filters.dari_tanggal,
+    end_date: filters.sampai_tanggal,
+    region: filters.regional,
+  })
+}
+
+export async function fetchCorrectiveActionDataAfd(filters: DashboardFilters): Promise<CorrectiveActionApiResponse> {
+  return fetchApi<CorrectiveActionApiResponse>("/d-rekap-ca-afdeling", {
+    start_date: filters.dari_tanggal,
+    end_date: filters.sampai_tanggal,
+    region: filters.regional,
+    kode_unit: filters.kode_unit,
+  })
+}
+
+export async function fetchCorrectiveActionDataBlok(filters: DashboardFilters): Promise<CorrectiveActionApiResponse> {
+  return fetchApi<CorrectiveActionApiResponse>("/d-rekap-ca-blok", {
+    start_date: filters.dari_tanggal,
+    end_date: filters.sampai_tanggal,
+    region: filters.regional,
+    kode_unit: filters.kode_unit,
+    afdeling: filters.afdeling,
+  })
+} 
+
+export async function fetchJobPositionData(
+  filters: DashboardFilters & { kode_unit?: string; afdeling?: string; blok?: string },
+): Promise<JobPositionApiResponse> {
+  return fetchApi<JobPositionApiResponse>("/d-rekap-jabatan", {
+    start_date: filters.dari_tanggal,
+    end_date: filters.sampai_tanggal,
+    region: filters.regional,
+    kode_unit: filters.kode_unit,
+    afdeling: filters.afdeling,
+    blok: filters.blok,
+  })
+}
+
+// delete d-monev-delete-detail
+export async function deleteMonitoringDetail(id: string): Promise<{ success: boolean; message: string }> {
+  try {
+    const response: AxiosResponse<{ success: boolean; message: string }> = await axios.delete(`${API_BASE_URL}/d-monev-delete-detail`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+        data: {
+            monev_id: id,
+        },  
+    })
+
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError.message || "API request failed", axiosError.response?.status)
+    }
+    throw new ApiError("Network error occurred")
+  }
+}

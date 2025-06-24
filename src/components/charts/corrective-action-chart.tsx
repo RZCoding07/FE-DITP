@@ -24,6 +24,9 @@ export function CorrectiveActionChart({ data, onDataPointClick }: CorrectiveActi
       original: item,
     }))
 
+
+    console.log("Chart Data:", chartData)
+
   const options: ApexOptions = {
     chart: {
       type: "donut",

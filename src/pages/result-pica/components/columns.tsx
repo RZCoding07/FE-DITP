@@ -204,8 +204,7 @@ export const columns: ColumnDef<VegetativeData>[] = [
     );
   },
 },
-
-  {
+{
     id: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
@@ -215,12 +214,25 @@ export const columns: ColumnDef<VegetativeData>[] = [
           variant='outline'
           className='w-full'
         >
-          <Link to={`/weekly-pica-tbm/${row.original.vegetatif_id}/${encodeBase64(`${actions.map((action: any) => action.startDate).join(', ')}`)}/${encodeBase64(`${actions.map((action: any) => action.endDate).join(', ')}`)}`}>
-          Detail Progress
+          <Link 
+            to={`/weekly-pica-tbm/${
+              row.original.vegetatif_id
+            }/${
+              encodeBase64(actions.map((action: any) => action.startDate).join(', '))
+            }/${
+              encodeBase64(actions.map((action: any) => action.endDate).join(', '))
+            }/${
+              encodeBase64(actions.map((action: any) => action.ca).join(', '))
+            }/${
+              encodeBase64(actions.map((action: any) => action.value).join(', '))
+            }/${
+              encodeBase64(actions.map((action: any) => action.budgetAvailable).join(', '))
+            }`}
+          >
+            Detail Progress
           </Link>
         </Button>
-
       );
     },
-  },
+},
 ];

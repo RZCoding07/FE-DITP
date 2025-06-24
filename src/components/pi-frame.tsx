@@ -15,8 +15,7 @@ import {
   LabelList,
 } from "recharts"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { AlertCircle, BarChart3 } from "lucide-react"
+import { AlertCircle } from "lucide-react"
 
 interface SelectOption {
   value: string
@@ -61,17 +60,7 @@ const ProblemIdentificationChart: React.FC<ProblemIdentificationChartProps> = ({
   }, [isDarkMode])
 
   useEffect(() => {
-    console.log("=== DEBUGGING PROBLEM IDENTIFICATION CHART ===")
-    console.log("Props received:", {
-      isDarkMode,
-      rpc,
-      kebun: typeof kebun === "object" ? kebun : kebun,
-      afd,
-      ctg,
-      bulan,
-      tahun,
-      picaResultsLength: picaResults?.length || 0,
-    })
+
 
     if (!picaResults || picaResults.length === 0) {
       console.log("❌ No picaResults data provided")
@@ -272,163 +261,147 @@ const ProblemIdentificationChart: React.FC<ProblemIdentificationChartProps> = ({
   }
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <BarChart3 className="h-5 w-5" />
-          Problem Identification Chart
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        {/* Debug Info Panel */}
-        {/* {process.env.NODE_ENV === "development" && (
-          <div className="mb-4 p-3 bg-gray-100 dark:bg-gray-800 rounded-md text-xs">
-            <h4 className="font-semibold mb-2">Debug Info:</h4>
-            <pre className="whitespace-pre-wrap">{JSON.stringify(debugInfo, null, 2)}</pre>
-          </div>
-        )} */}
-
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-          <div>
-            <h3 className="text-sm font-semibold tracking-tight mb-2">Tampilkan Data</h3>
-            <Select value={numProblems} onValueChange={setNumProblems}>
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Pilih jumlah masalah" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="5">5 Masalah Teratas</SelectItem>
-                <SelectItem value="10">10 Masalah Teratas</SelectItem>
-                <SelectItem value={chartData.length.toString()}>Semua Masalah ({chartData.length})</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Filter Kategori Warna</label>
-            <Select value={colorFilter} onValueChange={setColorFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Semua Kategori</SelectItem>
-                <SelectItem value="red">🔴 Merah (Kritis)</SelectItem>
-                <SelectItem value="black">⚫ Hitam (Sangat Buruk)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+    <>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+        <div>
+          <h3 className="text-sm font-semibold tracking-tight mb-2">Tampilkan Data</h3>
+          <Select value={numProblems} onValueChange={setNumProblems}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Pilih jumlah masalah" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="5">5 Masalah Teratas</SelectItem>
+              <SelectItem value="10">10 Masalah Teratas</SelectItem>
+              <SelectItem value={chartData.length.toString()}>Semua Masalah ({chartData.length})</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
-        {loading ? (
-          <div className="flex items-center justify-center py-10">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            <span className="ml-2">Memuat data...</span>
-          </div>
-        ) : chartData.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-10 text-center">
-            <AlertCircle className="h-12 w-12 text-gray-400 mb-4" />
-            <p className="text-lg font-medium mb-2">Tidak ada data yang tersedia</p>
-            <p className="text-sm text-gray-500 mb-4">Coba ubah filter atau periksa data sumber</p>
-            {debugInfo.filterSteps && (
-              <details className="text-xs text-left">
-                <summary className="cursor-pointer">Lihat detail filter</summary>
-                <ul className="mt-2 space-y-1">
-                  {debugInfo.filterSteps.map((step: string, idx: number) => (
-                    <li key={idx}>• {step}</li>
-                  ))}
-                </ul>
-              </details>
-            )}
-          </div>
-        ) : (
-          <div className="mt-6" style={{ height: 450 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 100 }}>
-                <defs>
-                  <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="#22d3ee" stopOpacity={0.2} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="name" height={100} tick={CustomXAxisTick} interval={0} tickLine={false}>
-                  <Label
-                    value="Problem Identifications"
-                    offset={-5}
-                    position="insideBottom"
-                    style={{
-                      textAnchor: "middle",
-                      fill: theme === "dark" ? "#ffffff" : "#808080",
-                    }}
-                  />
-                </XAxis>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Filter Kategori Warna</label>
+          <Select value={colorFilter} onValueChange={setColorFilter}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Semua Kategori</SelectItem>
+              <SelectItem value="red">🔴 Merah (Kritis)</SelectItem>
+              <SelectItem value="black">⚫ Hitam (Sangat Buruk)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
-                <YAxis
-                  label={{
-                    value: "Frekuensi",
-                    angle: -90,
-                    position: "insideLeft",
-                    style: {
-                      textAnchor: "middle",
-                      fill: theme === "dark" ? "#ffffff" : "#808080",
-                    },
+      {loading ? (
+        <div className="flex items-center justify-center py-10">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <span className="ml-2">Memuat data...</span>
+        </div>
+      ) : chartData.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-10 text-center">
+          <AlertCircle className="h-12 w-12 text-gray-400 mb-4" />
+          <p className="text-lg font-medium mb-2">Tidak ada data yang tersedia</p>
+          <p className="text-sm text-gray-500 mb-4">Coba ubah filter atau periksa data sumber</p>
+          {debugInfo.filterSteps && (
+            <details className="text-xs text-left">
+              <summary className="cursor-pointer">Lihat detail filter</summary>
+              <ul className="mt-2 space-y-1">
+                {debugInfo.filterSteps.map((step: string, idx: number) => (
+                  <li key={idx}>• {step}</li>
+                ))}
+              </ul>
+            </details>
+          )}
+        </div>
+      ) : (
+        <div className="mt-6" style={{ height: 450 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 100 }}>
+              <defs>
+                <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#22d3ee" stopOpacity={0.2} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="name" height={100} tick={CustomXAxisTick} interval={0} tickLine={false}>
+                <Label
+                  value="Problem Identifications"
+                  offset={-5}
+                  position="insideBottom"
+                  style={{
+                    textAnchor: "middle",
+                    fill: theme === "dark" ? "#ffffff" : "#808080",
                   }}
-                  domain={[0, "dataMax + 2"]}
                 />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend
-                  verticalAlign="top"
-                  height={36}
-                  formatter={() => (
-                    <span style={{ color: theme === "dark" ? "#ffffff" : "#000000" }}>Frekuensi Masalah</span>
-                  )}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="value"
-                  name="Frekuensi Masalah"
-                  stroke="#0ea5e9"
-                  fill="url(#colorValue)"
-                  fillOpacity={0.7}
-                  activeDot={{ r: 8, stroke: "#0ea5e9", strokeWidth: 2, fill: "#ffffff" }}
-                  dot={{ stroke: "#0ea5e9", strokeWidth: 2, r: 4, fill: "#ffffff" }}
-                >
-                  <LabelList content={<CustomizedLabel />} />
-                </Area>
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        )}
+              </XAxis>
 
-        {/* Data Summary */}
-        {chartData.length > 0 && (
-          <div className="-mt-10 p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
-            <h4 className="text-sm font-semibold mb-2">Ringkasan Data:</h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-              <div>
-                <span className="text-gray-500">Total Masalah:</span>
-                <div className="font-semibold">{chartData.length}</div>
-              </div>
-              <div>
-                <span className="text-gray-500">Ditampilkan:</span>
-                <div className="font-semibold">{data.length}</div>
-              </div>
-              <div>
-                <span className="text-gray-500">Total Kejadian:</span>
-                <div className="font-semibold">{chartData.reduce((sum, item) => sum + item.value, 0)}</div>
-              </div>
-              <div>
-                <span className="text-gray-500">Rata-rata:</span>
-                <div className="font-semibold">
-                  {chartData.length > 0
-                    ? Math.round(chartData.reduce((sum, item) => sum + item.value, 0) / chartData.length)
-                    : 0}
-                </div>
+              <YAxis
+                label={{
+                  value: "Frekuensi",
+                  angle: -90,
+                  position: "insideLeft",
+                  style: {
+                    textAnchor: "middle",
+                    fill: theme === "dark" ? "#ffffff" : "#808080",
+                  },
+                }}
+                domain={[0, "dataMax + 2"]}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend
+                verticalAlign="top"
+                height={36}
+                formatter={() => (
+                  <span style={{ color: theme === "dark" ? "#ffffff" : "#000000" }}>Frekuensi Masalah</span>
+                )}
+              />
+              <Area
+                type="monotone"
+                dataKey="value"
+                name="Frekuensi Masalah"
+                stroke="#0ea5e9"
+                fill="url(#colorValue)"
+                fillOpacity={0.7}
+                activeDot={{ r: 8, stroke: "#0ea5e9", strokeWidth: 2, fill: "#ffffff" }}
+                dot={{ stroke: "#0ea5e9", strokeWidth: 2, r: 4, fill: "#ffffff" }}
+              >
+                <LabelList content={<CustomizedLabel />} />
+              </Area>
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+
+      {/* Data Summary */}
+      {chartData.length > 0 && (
+        <div className="-mt-10 p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
+          <h4 className="text-sm font-semibold mb-2">Ringkasan Data:</h4>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div>
+              <span className="text-gray-500">Total Masalah:</span>
+              <div className="font-semibold">{chartData.length}</div>
+            </div>
+            <div>
+              <span className="text-gray-500">Ditampilkan:</span>
+              <div className="font-semibold">{data.length}</div>
+            </div>
+            <div>
+              <span className="text-gray-500">Total Kejadian:</span>
+              <div className="font-semibold">{chartData.reduce((sum, item) => sum + item.value, 0)}</div>
+            </div>
+            <div>
+              <span className="text-gray-500">Rata-rata:</span>
+              <div className="font-semibold">
+                {chartData.length > 0
+                  ? Math.round(chartData.reduce((sum, item) => sum + item.value, 0) / chartData.length)
+                  : 0}
               </div>
             </div>
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </div>
+      )}
+    </>
   )
 }
 

@@ -17,19 +17,23 @@ import type {
   PlantationData,
   JobPositionData,
   CorrectiveActionData,
-  Regional,
-  Kebun,
-  Afdeling,
 } from '@/types/api'
+
+import type {
+  DMonevRegion,
+  DMonevUnit,
+  DMonevAfdeling
+} from '@/types/api'
+import { fetchCorrectiveActionDataRegional, fetchMonitoringDatRegional, fetchPlantationDataRegional } from '@/lib/api-monev-v2'
 
 interface UseDashboardDataReturn {
   plantationData: any[]
   monitoringData: MonitoringData[]
   correctiveActionData: CorrectiveActionData[]
   jobPositionData: JobPositionData[]
-  regionals: Regional[]
-  kebuns: Kebun[]
-  afdelings: Afdeling[]
+  regionals: DMonevRegion[]
+  kebuns: DMonevUnit[]
+  afdelings: DMonevAfdeling[]
   loading: boolean
   error: string | null
   refetch: () => void
@@ -45,9 +49,9 @@ export function useDashboardDataEnhanced(
   const [monitoringData, setMonitoringData] = useState<MonitoringData[]>([])
   const [correctiveActionData, setCorrectiveActionData] = useState<CorrectiveActionData[]>([])
   const [jobPositionData, setJobPositionData] = useState<JobPositionData[]>([])
-  const [regionals, setRegionals] = useState<Regional[]>([])
-  const [kebuns, setKebuns] = useState<Kebun[]>([])
-  const [afdelings, setAfdelings] = useState<Afdeling[]>([])
+  const [regionals, setRegionals] = useState<DMonevRegion[]>([])
+  const [kebuns, setKebuns] = useState<DMonevUnit[]>([])
+  const [afdelings, setAfdelings] = useState<DMonevAfdeling[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 

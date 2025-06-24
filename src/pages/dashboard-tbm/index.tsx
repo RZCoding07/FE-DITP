@@ -1404,8 +1404,8 @@ export default function Dashboard() {
                 </div>
               </div>
               <div>
-            
-             <br/>
+
+                <br />
 
                 <div className="grid sm:grid-cols-1 lg:grid-cols-1">
                   <div className="grid sm:grid-cols-1 lg:grid-cols-1">
@@ -1478,17 +1478,17 @@ export default function Dashboard() {
                       <div className="mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950">
                         <h2 className="text-xl font-semibold">
                           Progress Corrective Action Berjangka
-
                         </h2>
                         <hr className="my-2 border-cyan-400" />
-
                         <ProgressByTimeframe isDarkMode={isDarkMode} />
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-
+              <br />
+              <br />
+              <br />
             </>
           </div>
         </>

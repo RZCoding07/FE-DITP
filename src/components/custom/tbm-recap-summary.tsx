@@ -305,7 +305,7 @@ export function TbmCorporateRecap({ scoresAll, rpc, kebun, afd, selectedCard, bu
             <span className="text-sm font-medium">C - Merah (Red)</span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 rounded bg-gradient-to-r from-gray-700 to-black"></div>Hitam
+            <div className="w-4 h-4 rounded bg-gradient-to-r from-gray-700 to-black"></div>D - Hitam
           </div>
         </div>
 

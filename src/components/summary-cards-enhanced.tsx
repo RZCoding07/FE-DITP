@@ -28,7 +28,7 @@ export function SummaryCardsEnhanced({
 
   const stats = {
     totalArea:
-      monitoringData.reduce((sum, item) => sum + Number(item.luas_areal_ha || 0), 0),
+      monitoringData.reduce((sum, item) => sum + Number(item.luas_tanam_ha_tu|| 0), 0),
 
     totalBlocks:
       monitoringData.reduce((sum, item) => sum + Number(item.jumlah_blok_tu || 0), 0),
@@ -72,7 +72,7 @@ export function SummaryCardsEnhanced({
 
   const cards = [
     {
-      title: "Total Luas Area",
+      title: "Total Luas Tanam Area TU",
       value: stats.totalArea.toLocaleString("id-ID"),
       unit: "Hektar",
       icon: <MapPin className="h-5 w-5" />,
@@ -166,9 +166,7 @@ export function SummaryCardsEnhanced({
             </div>
             <p className="text-xs text-slate-400">{card.description}</p>
             <div className="mt-2">
-              <Badge variant="outline" className="border-slate-600 text-slate-300 text-xs">
-                Real-time
-              </Badge>
+            
             </div>
           </CardContent>
         </Card>

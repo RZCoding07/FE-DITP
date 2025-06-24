@@ -35,6 +35,8 @@ interface ScoreKebunTBM {
 }
 
 interface ScatterChartProps {
+  isDarkMode: boolean
+  
   dataprops: {
     dataSerapanBiaya: DataSerapanBiaya[]
     scoresKebunTBM: ScoreKebunTBM[]
@@ -51,7 +53,7 @@ const areas = [
   { xRange: [80, 90], yRange: [60, 200], color: "rgba(255, 99, 71, 0.7)" },
 ]
 
-const EnhancedScatterChart = ({ dataprops }: ScatterChartProps) => {
+const EnhancedScatterChart = ({ dataprops, isDarkMode }: ScatterChartProps) => {
   const [modalData, setModalData] = useState<any>(null)
   const [showModal, setShowModal] = useState<boolean>(false)
 
@@ -114,8 +116,8 @@ const EnhancedScatterChart = ({ dataprops }: ScatterChartProps) => {
         }
 
         const matchingScore = dataprops.scoresAllKebun.find(
-          (score: any) => 
-            score.kebun === serapan.kebun && 
+          (score: any) =>
+            score.kebun === serapan.kebun &&
             score.vw_fase_tbm === tbm
         );
 
@@ -193,7 +195,7 @@ const EnhancedScatterChart = ({ dataprops }: ScatterChartProps) => {
     title: {
       text: "KUADRAN PICA KESELURUHAN TBM",
       style: {
-        color: "#FFFFFF",
+        color: isDarkMode ? "#FFFFFF" : "#000000",
         fontSize: "18px",
         fontWeight: "bold",
       },
@@ -205,7 +207,7 @@ const EnhancedScatterChart = ({ dataprops }: ScatterChartProps) => {
       title: {
         text: "Nilai Vegetatif",
         style: {
-          color: "#FFFFFF",
+          color: isDarkMode ? "#FFFFFF" : "#000000",
         },
       },
       min: 80,
@@ -213,14 +215,14 @@ const EnhancedScatterChart = ({ dataprops }: ScatterChartProps) => {
       tickInterval: 1,
       labels: {
         style: {
-          color: "#FFFFFF",
+          color: isDarkMode ? "#FFFFFF" : "#000000",
         },
       },
-      lineColor: "#FFFFFF",
-      gridLineColor: "#FFFFFF",
+      lineColor: isDarkMode ? "#FFFFFF" : "#000000",
+      gridLineColor: isDarkMode ? "#FFFFFF" : "#E5E7EB",
       plotLines: [
         {
-          color: "#FFFFFF",
+          color: isDarkMode ? "#FFFFFF" : "#000000",
           width: 1,
           value: 0,
           zIndex: 5,
@@ -231,7 +233,7 @@ const EnhancedScatterChart = ({ dataprops }: ScatterChartProps) => {
       title: {
         text: "Serapan Biaya (%)",
         style: {
-          color: "#FFFFFF",
+          color: isDarkMode ? "#FFFFFF" : "#000000",
         },
       },
       min: 0,
@@ -242,7 +244,7 @@ const EnhancedScatterChart = ({ dataprops }: ScatterChartProps) => {
           return Highcharts.numberFormat(Math.abs(this.value), 0, ",", ".")
         },
         style: {
-          color: "#FFFFFF",
+          color: isDarkMode ? "#FFFFFF" : "#000000",
         },
       },
       lineColor: "transparent",
@@ -264,10 +266,10 @@ const EnhancedScatterChart = ({ dataprops }: ScatterChartProps) => {
       backgroundColor: "transparent",
       borderWidth: 0,
       itemStyle: {
-        color: "#FFFFFF",
+        color: isDarkMode ? "#FFFFFF" : "#000000",
       },
       itemHoverStyle: {
-        color: "#D1D5DB",
+        color: isDarkMode ? "#D1D5DB" : "#6B7280",
       },
     },
     plotOptions: {
@@ -304,7 +306,7 @@ const EnhancedScatterChart = ({ dataprops }: ScatterChartProps) => {
           style: {
             fontSize: "11px",
             fontWeight: "bold",
-            color: "#FFFFFF",
+            color: isDarkMode ? "#FFFFFF" : "#000000",
           },
           verticalAlign: "bottom",
           align: "center",
@@ -334,7 +336,7 @@ const EnhancedScatterChart = ({ dataprops }: ScatterChartProps) => {
       {
         type: "scatter",
         name: "",
-        color: "#FFFFFF",
+        color: isDarkMode ? "#FFFFFF" : "#000000",
         showInLegend: false,
         data: chartData.map((item) => ({
           x: Number.parseFloat(item.vegetatif.toString()),
@@ -349,52 +351,58 @@ const EnhancedScatterChart = ({ dataprops }: ScatterChartProps) => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="p-4 rounded-lg">
-        <div id="chart" className="chart-container">
-          <HighchartsReact
-            highcharts={Highcharts}
-            options={options}
-            containerProps={{ style: { height: `800px`, width: "100%" } }}
-          />
+    <>
+    <div className="bg-gradient-to-br from-blue-100 to-blue-300 dark:from-sky-700 dark:to-cyan-600 p-4 rounded-lg mb-6">
+      <div className="space-y-6">
+        <div className="p-4 rounded-lg">
+          <div id="chart" className="chart-container">
+            <HighchartsReact
+              highcharts={Highcharts}
+              options={options}
+              containerProps={{ style: { height: `800px`, width: "100%" } }}
+            />
+          </div>
+
+          {showModal && modalData && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white dark:bg-slate-900 p-6 rounded-lg max-w-md w-full">
+                <h3 className="text-lg font-bold mb-4">Detail Kebun: {modalData.kebun}</h3>
+                <div className="space-y-2">
+                  <p>
+                    <span className="font-medium">Nilai Vegetatif:</span> {modalData.vegetatif.toFixed(2)}
+                  </p>
+                  <p>
+                    <span className="font-medium">Serapan Biaya:</span>{" "}
+                    {Highcharts.numberFormat(Math.abs(modalData.serapanBiaya), 0, ",", ".")} %
+                  </p>
+                  <p>
+                    <span className="font-medium">Bulan:</span> {modalData.bulan}
+                  </p>
+                  <p>
+                    <span className="font-medium">Tahun:</span> {modalData.tahun}
+                  </p>
+                  <p>
+                    <span className="font-medium">Kode Kebun:</span> {modalData.kode_kebun}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                >
+                  Tutup
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
-        {showModal && modalData && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-slate-900 p-6 rounded-lg max-w-md w-full">
-              <h3 className="text-lg font-bold mb-4">Detail Kebun: {modalData.kebun}</h3>
-              <div className="space-y-2">
-                <p>
-                  <span className="font-medium">Nilai Vegetatif:</span> {modalData.vegetatif.toFixed(2)}
-                </p>
-                <p>
-                  <span className="font-medium">Serapan Biaya:</span>{" "}
-                  {Highcharts.numberFormat(Math.abs(modalData.serapanBiaya), 0, ",", ".")} %
-                </p>
-                <p>
-                  <span className="font-medium">Bulan:</span> {modalData.bulan}
-                </p>
-                <p>
-                  <span className="font-medium">Tahun:</span> {modalData.tahun}
-                </p>
-                <p>
-                  <span className="font-medium">Kode Kebun:</span> {modalData.kode_kebun}
-                </p>
-              </div>
-              <button
-                onClick={() => setShowModal(false)}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
-                Tutup
-              </button>
-            </div>
-          </div>
-        )}
+        {/* Add the QuadrantTable component below the chart */}
       </div>
 
-      {/* Add the QuadrantTable component below the chart */}
+      </div>
       <QuadrantTable chartData={chartData} />
-    </div>
+
+    </>
   )
 }
 
