@@ -7,11 +7,12 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { CalendarIcon, Check, ChevronsUpDown, Filter, RefreshCw, X } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { format } from "date-fns"
+import { format, subDays } from "date-fns"
 import { id } from "date-fns/locale"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import type { DashboardFilters, DMonevRegion, DMonevUnit, DMonevAfdeling } from "@/types/api"
+import { DateRange } from "react-day-picker"
 
 interface DashboardFiltersEnhancedProps {
   filters: DashboardFilters
@@ -32,41 +33,29 @@ export function DashboardFiltersEnhanced({
   loading = false,
   onRefresh,
 }: DashboardFiltersEnhancedProps) {
-  const [fromDate, setFromDate] = useState<Date | undefined>(
-    filters.dari_tanggal ? new Date(filters.dari_tanggal) : undefined,
-  )
-  const [toDate, setToDate] = useState<Date | undefined>(
-    filters.sampai_tanggal ? new Date(filters.sampai_tanggal) : undefined,
-  )
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(() => {
+    if (filters.dari_tanggal && filters.sampai_tanggal) {
+      return {
+        from: new Date(filters.dari_tanggal),
+        to: new Date(filters.sampai_tanggal),
+      }
+    }
+    return undefined
+  })
   const [isExpanded, setIsExpanded] = useState(false)
-
-
 
   const selectedRegional = regionals.find((r) => r.kode_regional === filters.regional)
   const selectedKebun = kebuns.find((k) => k.kode_unit === filters.kode_unit)
   const selectedAfdeling = afdelings.find((a) => a.afdeling === filters.afdeling)
 
-  console.log("Selected Regional:", selectedRegional)
-  console.log("Selected Kebun:", selectedKebun)
-    console.log("Selected Afdeling:", selectedAfdeling)
-
-  const handleDateChange = (type: "from" | "to", date: Date | undefined) => {
-    if (type === "from") {
-      setFromDate(date)
-      if (date) {
-        onFiltersChange({
-          ...filters,
-          dari_tanggal: format(date, "yyyy-MM-dd"),
-        })
-      }
-    } else {
-      setToDate(date)
-      if (date) {
-        onFiltersChange({
-          ...filters,
-          sampai_tanggal: format(date, "yyyy-MM-dd"),
-        })
-      }
+  const handleDateRangeChange = (range: DateRange | undefined) => {
+    setDateRange(range)
+    if (range?.from && range?.to) {
+      onFiltersChange({
+        ...filters,
+        dari_tanggal: format(range.from, "yyyy-MM-dd"),
+        sampai_tanggal: format(range.to, "yyyy-MM-dd"),
+      })
     }
   }
 
@@ -126,59 +115,85 @@ export function DashboardFiltersEnhanced({
 
       <CardContent className="space-y-4">
         {/* Date Range - Always visible */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-300">Tanggal Mulai</label>
+        <div className="flex flex-col space-y-4">
+          <div className="flex items-center gap-4">
             <Popover>
               <PopoverTrigger asChild>
                 <Button
+                  id="date"
                   variant="outline"
                   className={cn(
-                    "w-full justify-start text-left font-normal border-slate-600 bg-slate-800 text-white hover:bg-slate-700",
-                    !fromDate && "text-slate-400",
+                    "w-[300px] justify-start text-left font-normal bg-slate-800 border-slate-700 hover:bg-slate-700",
+                    !dateRange && "text-muted-foreground"
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {fromDate ? format(fromDate, "PPP", { locale: id }) : "Pilih tanggal mulai"}
+                  {dateRange?.from ? (
+                    dateRange.to ? (
+                      <>
+                        {format(dateRange.from, "LLL dd, y", { locale: id })} -{" "}
+                        {format(dateRange.to, "LLL dd, y", { locale: id })}
+                      </>
+                    ) : (
+                      format(dateRange.from, "LLL dd, y", { locale: id })
+                    )
+                  ) : (
+                    <span>Pilih rentang tanggal</span>
+                  )}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 bg-slate-800 border-slate-600" align="start">
+              <PopoverContent className="w-auto p-0 bg-slate-800 border-slate-700" align="start">
                 <Calendar
-                  mode="single"
-                  selected={fromDate}
-                  onSelect={(date) => handleDateChange("from", date)}
                   initialFocus
+                  mode="range"
+                  defaultMonth={dateRange?.from}
+                  selected={dateRange}
+                  onSelect={handleDateRangeChange}
+                  numberOfMonths={2}
                   className="bg-slate-800 text-white"
                 />
               </PopoverContent>
             </Popover>
-          </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-300">Tanggal Akhir</label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal border-slate-600 bg-slate-800 text-white hover:bg-slate-700",
-                    !toDate && "text-slate-400",
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {toDate ? format(toDate, "PPP", { locale: id }) : "Pilih tanggal akhir"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 bg-slate-800 border-slate-600" align="start">
-                <Calendar
-                  mode="single"
-                  selected={toDate}
-                  onSelect={(date) => handleDateChange("to", date)}
-                  initialFocus
-                  className="bg-slate-800 text-white"
-                />
-              </PopoverContent>
-            </Popover>
+            <Button
+              variant="outline"
+              onClick={() => {
+                const newRange = {
+                  from: subDays(new Date(), 7),
+                  to: new Date(),
+                }
+                handleDateRangeChange(newRange)
+              }}
+              className="bg-slate-800 border-slate-700 hover:bg-slate-700"
+            >
+              7 Hari Terakhir
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                const newRange = {
+                  from: subDays(new Date(), 30),
+                  to: new Date(),
+                }
+                handleDateRangeChange(newRange)
+              }}
+              className="bg-slate-800 border-slate-700 hover:bg-slate-700"
+            >
+              30 Hari Terakhir
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                const newRange = {
+                  from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+                  to: new Date(),
+                }
+                handleDateRangeChange(newRange)
+              }}
+              className="bg-slate-800 border-slate-700 hover:bg-slate-700"
+            >
+              Bulan Ini
+            </Button>
           </div>
         </div>
 
