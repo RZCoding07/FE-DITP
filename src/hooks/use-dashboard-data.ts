@@ -24,7 +24,7 @@ import type {
   DMonevUnit,
   DMonevAfdeling
 } from '@/types/api'
-import { fetchCorrectiveActionDataRegional, fetchMonitoringDatRegional, fetchPlantationDataRegional } from '@/lib/api-monev-v2'
+
 
 interface UseDashboardDataReturn {
   plantationData: any[]
@@ -66,7 +66,7 @@ export function useDashboardDataEnhanced(
       return
     }
 
-    console.log("Fetching data with filters:", filters)
+    // console.log("Fetching data with filters:", filters)
     setLoading(true)
     setError(null)
 
@@ -78,9 +78,9 @@ export function useDashboardDataEnhanced(
       })
       setRegionals(Array.isArray(regionalsResponse) ? regionalsResponse : [])
 
-      console.log("Fetched regionals:", regionalsResponse)
+      // console.log("Fetched regionals:", regionalsResponse)
 
-      console.log("Filters for kebun data:", filters)
+      // console.log("Filters for kebun data:", filters)
       // Fetch all data in parallel
       const [
         plantationResponse,
@@ -170,7 +170,7 @@ export function useDashboardDataEnhanced(
   }, [filters])
 
   const setFilters = useCallback((newFilters: DashboardFilters) => {
-    console.log("Updating filters in useDashboardData:", newFilters)
+    // console.log("Updating filters in useDashboardData:", newFilters)
     setFiltersState(newFilters)
   }, [])
 

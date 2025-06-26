@@ -7,18 +7,9 @@ import ThemeSwitch from "@/components/theme-switch"
 import { TopNav } from "@/components/top-nav"
 import PlantationDashboardMasterpiece from "@/components/plantation-dashboard-enhanced"
 import type { DashboardFilters } from "@/types/api"
-import { MonevDetailTable } from "@/components/MonevDetailTable"
 import { DateRange } from "react-day-picker"
 import { format, subDays } from "date-fns"
-import { Calendar } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Calendar as CalendarComponent } from "@/components/ui/calendar"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
+
 
 
 const topNav = [
@@ -148,7 +139,7 @@ export default function DashboardMasterpiece() {
         </div>
       </div>
 
-  
+
 
     </Layout>
   )

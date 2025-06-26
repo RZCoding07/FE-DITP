@@ -22,6 +22,7 @@ import { ChevronDown, Filter, TrendingUp, Package, Building } from "lucide-react
 import { DataTable } from "./components/data-table"
 import { DataTablePekerjaan } from "./components/data-table-pekerjaan"
 import BarMonitoring from "./components/bar-monitoring"
+import ComponentPTable from "@/components/p-table"
 
 // Mock cookie for demo
 const user = { account_type: "superadmin" }
@@ -267,7 +268,7 @@ export default function Tasks() {
         dataPengadaan.push(item)
       }
     });
-    dataPbj = [...dataHps, ...dataPengadaan];
+    dataPbj = [...dataPengadaan];
     dataPenyusunanDokumen = [...dataUnit, ...dataTekpol];
     // console.log("reg", reg)
 
@@ -747,7 +748,13 @@ export default function Tasks() {
         )}
 
         {/* Bar Monitoring */}
-        <BarMonitoring   
+
+
+        <ComponentPTable
+        />
+
+<br />
+                <BarMonitoring   
         pbj={pbj}
         penyusunanDokumen={penyusunanDokumen}
         sppbj={sppbj}

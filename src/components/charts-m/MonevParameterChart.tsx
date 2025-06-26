@@ -6,26 +6,25 @@ import { Progress } from "@/components/ui/progress"
 import { CheckCircle, XCircle, AlertCircle } from "lucide-react"
 
 interface MonevParameterChartProps {
-  data: {
-    tahapan_id: string
+  data: Array<{
+    tahapan_id: number
     tahapan_name: string
-    subtahapans: {
-      sub_tahapan_id: string
+    subtahapans: Array<{
+      sub_tahapan_id: number
       sub_tahapan_name: string | null
-      parameters: {
-        parameter_id: string
+      parameters: Array<{
+        parameter_id: number
         parameter_name: string
-        pengamatans: {
-          pengamatan_id: string
+        pengamatans: Array<{
+          pengamatan_id: number
           pengamatan_name: string
           is_selected: boolean
-          value_description: string | null
-        }[]
-      }[]
-    }[]
-  }[]
+          value_description?: string | null
+        }>
+      }>
+    }>
+  }>
 }
-
 export function MonevParameterChart({ data }: MonevParameterChartProps) {
   // Flatten all parameters for analysis
   const allParameters = data.flatMap((stage) =>

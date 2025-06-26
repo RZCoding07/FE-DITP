@@ -16,19 +16,20 @@ import { PlantationAreaChart } from "./charts/plantation-area-chart"
 import { LoadingSpinner } from "./loading-spinner"
 import { ErrorBoundary } from "./error-boundary"
 import { MonevDetailTable } from "./MonevDetailTable"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Calendar as CalendarComponent } from "@/components/ui/calendar"
-import { cn } from "@/lib/utils"
 import { format, subDays } from "date-fns"
 import { id } from "date-fns/locale"
 import type { DashboardFilters } from "@/types/api"
 import type { DateRange } from "react-day-picker"
+import { apiService } from "@/services/api-monev-2"
+import { formatDate } from "@/lib/utils"
+
 interface PlantationDashboardMasterpieceProps {
   title?: string
   description?: string
   initialFilters?: Partial<DashboardFilters>
   onFiltersChange?: (filters: DashboardFilters) => void
 }
+import MonevDashboard from "./track-monev"
 
 export default function PlantationDashboardMasterpiece({
   title = "Dashboard Monitoring Perkebunan",
@@ -37,6 +38,9 @@ export default function PlantationDashboardMasterpiece({
   onFiltersChange,
 }: PlantationDashboardMasterpieceProps) {
   console.log("Initializing Plantation Dashboard with initial filters:", initialFilters)
+
+
+
 
   // Initialize state with proper fallbacks
   const [filters, setFilters] = useState<DashboardFilters>(() => ({
@@ -62,7 +66,7 @@ export default function PlantationDashboardMasterpiece({
         dari_tanggal: initialFilters.dari_tanggal ?? prev.dari_tanggal,
         sampai_tanggal: initialFilters.sampai_tanggal ?? prev.sampai_tanggal
       }))
-      
+
       if (initialFilters.dari_tanggal && initialFilters.sampai_tanggal) {
         setDateRange({
           from: new Date(initialFilters.dari_tanggal),
@@ -122,6 +126,9 @@ export default function PlantationDashboardMasterpiece({
     console.log("Sharing dashboard...")
   }
 
+  const [isLoading, setIsLoading] = useState(false)
+
+  const [monevDetailData, setMonevDetailData] = useState<any[]>([])
   // Auto-refresh every 5 minutes
   useEffect(() => {
     const interval = setInterval(() => {
@@ -130,6 +137,36 @@ export default function PlantationDashboardMasterpiece({
 
     return () => clearInterval(interval)
   }, [])
+
+
+  const fetchMonevDetailData = async () => {
+    if (!dateRange) return
+
+    setIsLoading(true)
+    try {
+      const data = await apiService.getMonevDetailByBelumMonev({
+        start_date: dateRange?.from ? formatDate(dateRange.from) : "2024-05-24",
+        end_date: dateRange?.to ? formatDate(dateRange.to) : "2025-06-23",
+        region: filters.regional,
+      })
+
+      console.log("Fetched Monev Detail Data:", data)
+
+      setMonevDetailData(data)
+
+
+    } catch (error) {
+      console.error("Error fetching Monev Detail Data:", error)
+      setMonevDetailData([])
+
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchMonevDetailData()
+  }, [dateRange])
 
   if (error) {
     return (
@@ -183,7 +220,7 @@ export default function PlantationDashboardMasterpiece({
             </div>
 
             <div className="flex items-center gap-3">
-  
+
               <Button
                 variant="outline"
                 size="sm"
@@ -240,10 +277,13 @@ export default function PlantationDashboardMasterpiece({
               {/* Charts Grid */}
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
                 <div className="xl:col-span-2">
-                  <MonitoringOverviewChart
-                    data={monitoringData}
-                    onDataPointClick={(data) => console.log("Monitoring clicked:", data)}
-                  />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <MonitoringOverviewChart
+                      data={monitoringData}
+                      onDataPointClick={(data) => console.log("Monitoring clicked:", data)}
+                    />
+
+                  </div>
                 </div>
 
                 <JobPositionChartWithDialog
@@ -252,7 +292,6 @@ export default function PlantationDashboardMasterpiece({
 
                 <CorrectiveActionChart
                   data={correctiveActionData}
-                  onDataPointClick={(data) => console.log("Corrective action clicked:", data)}
                 />
 
                 <div className="xl:col-span-2">

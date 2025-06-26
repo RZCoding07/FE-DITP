@@ -169,7 +169,6 @@ const filteredAndSortedData = useMemo(() => {
 
   return filtered
 }, [monevDetailData, searchTerm, sortConfig])
-
   const getJobBadgeColor = (job: string | null | undefined) => {
     const normalizedJob = (job || "").toUpperCase()
     switch (normalizedJob) {

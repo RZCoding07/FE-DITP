@@ -78,7 +78,7 @@ export interface JobPositionData {
   jumlah_monev: number
   rata_rata_nilai: number
   rata_rata_bobot: number
-  karyawans: Karyawan[]
+  karyawans: any[]
 }
 
 

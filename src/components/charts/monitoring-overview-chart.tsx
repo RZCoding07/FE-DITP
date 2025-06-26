@@ -130,7 +130,7 @@ export function MonitoringOverviewChart({ data, onDataPointClick }: MonitoringOv
     {
       name: "Nilai Rata-rata",
       data: chartData.map((item) => item.score),
-    }
+    },
   ]
 
   return (

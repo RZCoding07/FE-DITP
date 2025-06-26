@@ -14,6 +14,8 @@ interface JobPositionChartProps {
 
 export function JobPositionChartWithDialog({ data }: JobPositionChartProps) {
   const [selectedData, setSelectedData] = useState<JobPositionData | null>(null)
+
+  console.log("JobPositionChartWithDialog data:", data)
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const chartData = data
@@ -33,7 +35,7 @@ export function JobPositionChartWithDialog({ data }: JobPositionChartProps) {
   const options: ApexOptions = {
     chart: {
       type: "bar",
-      height: 400,
+      height: 300,
       background: "transparent",
       foreColor: "#94a3b8",
       toolbar: { show: false },
@@ -51,14 +53,13 @@ export function JobPositionChartWithDialog({ data }: JobPositionChartProps) {
       },
     },
     colors: ["#3b82f6", "#10b981"], // Warna biru untuk nilai, hijau untuk bobot
-    dataLabels: {
-      enabled: false,
-    },
+
     plotOptions: {
       bar: {
         horizontal: false,
         columnWidth: "70%",
         borderRadius: 4,
+        dataLabels: { position: "top" },
       },
     },
     xaxis: {
@@ -97,8 +98,31 @@ export function JobPositionChartWithDialog({ data }: JobPositionChartProps) {
       },
     },
     fill: {
-      opacity: 1,
+      type: "gradient",
+      gradient: {
+        shade: "dark",
+        type: "vertical",
+        shadeIntensity: 0.5,
+        gradientToColors: undefined,
+        inverseColors: false,
+        opacityFrom: 0.9,
+        opacityTo: 1,
+        stops: [0, 100],
+      },
     },
+    dataLabels: {
+      enabled: true,
+      formatter: (val: number) => val.toFixed(1) + "%",
+      style: {
+        fontSize: "10px",
+        fontWeight: "bold",
+        colors: ["#ffffff"],
+      },
+      offsetY: -20,
+    },
+
+
+
     stroke: {
       show: true,
       width: 1,
@@ -152,7 +176,7 @@ export function JobPositionChartWithDialog({ data }: JobPositionChartProps) {
         </CardHeader>
         <CardContent>
           {chartData.length > 0 ? (
-            <ReactApexChart options={options} series={series} type="bar" height={400} />
+            <ReactApexChart options={options} series={series} type="bar" height={300} />
           ) : (
             <div className="flex items-center justify-center h-64 text-slate-400">
               <div className="text-center">
