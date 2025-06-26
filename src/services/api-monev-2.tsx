@@ -306,6 +306,11 @@ class ApiService {
     async getMonevDetailByBelumMonev(request: any): Promise<any[]> {
         return this.makeRequest<any[]>("d-rekap-karyawan-belum-monev", request)
     }
+
+
+    async getMonevDetailBlokTU(request: any): Promise<any[]> {
+        return this.makeRequest<any[]>("d-rekap-blok-tu-dev", request)
+    }
 }
 
 export const apiService = new ApiService()

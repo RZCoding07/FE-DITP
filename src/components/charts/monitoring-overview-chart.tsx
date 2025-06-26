@@ -27,7 +27,7 @@ export function MonitoringOverviewChart({ data, onDataPointClick }: MonitoringOv
   const options: ApexOptions = {
     chart: {
       type: "bar",
-      height: 400,
+      height: "100%",
       background: "transparent",
       foreColor: "#94a3b8",
       toolbar: { show: false },
@@ -118,7 +118,6 @@ export function MonitoringOverviewChart({ data, onDataPointClick }: MonitoringOv
       position: "top",
       horizontalAlign: "left",
       labels: { colors: "#94a3b8" },
- 
     },
   }
 
@@ -134,7 +133,7 @@ export function MonitoringOverviewChart({ data, onDataPointClick }: MonitoringOv
   ]
 
   return (
-    <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700 shadow-2xl">
+    <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700 shadow-2xl h-full flex flex-col">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -154,11 +153,19 @@ export function MonitoringOverviewChart({ data, onDataPointClick }: MonitoringOv
           </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-1 min-h-[400px]">
         {chartData.length > 0 ? (
-          <ReactApexChart options={options} series={series} type="bar" height={400} />
+          <div className="h-full w-full">
+            <ReactApexChart 
+              options={options} 
+              series={series} 
+              type="bar" 
+              height="100%"
+              width="100%"
+            />
+          </div>
         ) : (
-          <div className="flex items-center justify-center h-64 text-slate-400">
+          <div className="flex items-center justify-center h-full text-slate-400">
             <div className="text-center">
               <TrendingUp className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p>Tidak ada data monitoring tersedia</p>

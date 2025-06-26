@@ -209,10 +209,10 @@ export default function Tasks() {
       const defaultCategories =
         kategori === "ditn"
           ? [
-              "Alat Pengangkutan (Transportasi)",
-              "Investasi Kecil (Alat Pertanian & Perlengkapan Kantor)",
-              "3. Mesin & Instalasi",
-            ]
+            "Alat Pengangkutan (Transportasi)",
+            "Investasi Kecil (Alat Pertanian & Perlengkapan Kantor)",
+            "3. Mesin & Instalasi",
+          ]
           : kategori === "dinf"
             ? ["Jalan, Jembatan & Saluran Air", "Bangunan Perumahan", "Bangunan Perusahaan"]
             : ["3. Mesin & Instalasi", "Bangunan Perumahan", "Alat Pengangkutan (Transportasi)"]
@@ -251,7 +251,7 @@ export default function Tasks() {
     let dataReg: any[] = [];
 
     filteredData.forEach((item: any[]) => {
-      
+
       if (item[24] !== undefined && !dataReg.includes(item[24])) {
         dataReg.push(item[24])
       }
@@ -753,13 +753,13 @@ export default function Tasks() {
         <ComponentPTable
         />
 
-<br />
-                <BarMonitoring   
-        pbj={pbj}
-        penyusunanDokumen={penyusunanDokumen}
-        sppbj={sppbj}
-        hps={hps}
-        reg={reg}
+        <br />
+        <BarMonitoring
+          pbj={pbj}
+          penyusunanDokumen={penyusunanDokumen}
+          sppbj={sppbj}
+          hps={hps}
+          reg={reg}
         />
 
         {/* Main Tabs */}
@@ -958,11 +958,11 @@ if (account_type === "superadmin") {
       href: "/dashboard-inspire",
       isActive: false,
     },
-        {
-    title: 'Dashboard Monev TU',
-    href: '/dashboard-monev',
-    isActive: false,
-  },
+    {
+      title: 'Dashboard Monev TU',
+      href: '/dashboard-monev',
+      isActive: false,
+    },
   ]
 } else {
   topNav = []

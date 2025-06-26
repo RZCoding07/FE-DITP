@@ -168,6 +168,39 @@ export default function PlantationDashboardMasterpiece({
     fetchMonevDetailData()
   }, [dateRange])
 
+
+  const [monevBlokTUData, setMonevBlokTUData] = useState<any[]>([])
+
+
+  const fetchMonev = async () => {
+    if (!dateRange) return
+
+    setIsLoading(true)
+    try {
+      const data = await apiService.getMonevDetailBlokTU({
+        start_date: dateRange?.from ? formatDate(dateRange.from) : "2024-05-24",
+        end_date: dateRange?.to ? formatDate(dateRange.to) : "2025-06-23",
+        region: filters.regional,
+      })
+
+      console.log("Fetched Monev Blok TU Data:", data)
+      setMonevBlokTUData(data)
+
+
+
+    } catch (error) {
+      console.error("Error fetching Monev Detail Data:", error)
+      setMonevBlokTUData([])
+
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchMonev()
+  }, [dateRange])
+
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white p-6">
@@ -248,6 +281,7 @@ export default function PlantationDashboardMasterpiece({
             onRefresh={handleRefresh}
           />
 
+
           {/* Date Range Picker for Monev Table */}
 
           {loading && (
@@ -282,7 +316,12 @@ export default function PlantationDashboardMasterpiece({
                       data={monitoringData}
                       onDataPointClick={(data) => console.log("Monitoring clicked:", data)}
                     />
-
+                    <MonevDashboard
+                      data={monevBlokTUData}
+                      regional={filters.regional}
+                      kode_unit={filters.kode_unit}
+                      afdeling={filters.afdeling}
+                    />
                   </div>
                 </div>
 
@@ -307,6 +346,8 @@ export default function PlantationDashboardMasterpiece({
                 dateRange={dateRange}
                 onRefresh={handleRefresh}
               />
+
+
 
               {/* Additional Insights */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

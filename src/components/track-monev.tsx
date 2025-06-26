@@ -4,7 +4,7 @@ import { CommandEmpty } from "@/components/ui/command"
 import SummaryStats from "./summary-stats-monev"
 
 import type React from "react"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import Chart from "react-apexcharts"
 import type { ApexOptions } from "apexcharts"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -64,6 +64,9 @@ interface MonevDashboardProps {
   data: DataItem[]
   title?: string
   height?: number
+  regional?: string // Optional, if you want to filter by regional
+  kode_unit?: string // Optional, if you want to filter by kode unit
+  afdeling?: string // Optional, if you want to filter by afdeling
 }
 
 interface ChartData {
@@ -85,6 +88,9 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
   data,
   title = "Dashboard Monitoring & Evaluasi",
   height = 400,
+  regional,
+  kode_unit,
+  afdeling,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedData, setSelectedData] = useState<ChartData | null>(null)
@@ -94,11 +100,24 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
     direction: "asc" | "desc"
   } | null>(null)
 
-  // Single selection filters
-  const [selectedRegional, setSelectedRegional] = useState<string>("")
-  const [selectedKodeUnit, setSelectedKodeUnit] = useState<string>("")
-  const [selectedAfdeling, setSelectedAfdeling] = useState<string>("")
+  // Single selection filters - initialize from props
+  const [selectedRegional, setSelectedRegional] = useState<string>(regional || "")
+  const [selectedKodeUnit, setSelectedKodeUnit] = useState<string>(kode_unit || "")
+  const [selectedAfdeling, setSelectedAfdeling] = useState<string>(afdeling || "")
   const [openPopover, setOpenPopover] = useState<string | null>(null)
+
+  // Sync filters with props when they change
+  useEffect(() => {
+    if (regional !== undefined) {
+      setSelectedRegional(regional)
+    }
+    if (kode_unit !== undefined) {
+      setSelectedKodeUnit(kode_unit)
+    }
+    if (afdeling !== undefined) {
+      setSelectedAfdeling(afdeling)
+    }
+  }, [regional, kode_unit, afdeling])
 
   // Get cascading filter options
   const filterOptions = useMemo(() => {
@@ -417,27 +436,43 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
   }
 
   const clearAllFilters = () => {
-    setSelectedRegional("")
-    setSelectedKodeUnit("")
-    setSelectedAfdeling("")
+    // Only clear filters that aren't controlled by props
+    if (regional === undefined) {
+      setSelectedRegional("")
+    }
+    if (kode_unit === undefined) {
+      setSelectedKodeUnit("")
+    }
+    if (afdeling === undefined) {
+      setSelectedAfdeling("")
+    }
   }
 
   // Handle cascading filter changes
   const handleRegionalChange = (value: string) => {
-    setSelectedRegional(value)
-    setSelectedKodeUnit("") // Reset dependent filters
-    setSelectedAfdeling("")
+    // Only update if not controlled by props
+    if (regional === undefined) {
+      setSelectedRegional(value)
+      setSelectedKodeUnit("") // Reset dependent filters
+      setSelectedAfdeling("")
+    }
     setOpenPopover(null)
   }
 
   const handleKodeUnitChange = (value: string) => {
-    setSelectedKodeUnit(value)
-    setSelectedAfdeling("") // Reset dependent filter
+    // Only update if not controlled by props
+    if (kode_unit === undefined) {
+      setSelectedKodeUnit(value)
+      setSelectedAfdeling("") // Reset dependent filter
+    }
     setOpenPopover(null)
   }
 
   const handleAfdelingChange = (value: string) => {
-    setSelectedAfdeling(value)
+    // Only update if not controlled by props
+    if (afdeling === undefined) {
+      setSelectedAfdeling(value)
+    }
     setOpenPopover(null)
   }
 
@@ -523,61 +558,13 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
 
   return (
     <div className="w-full bg-slate-900 text-white p-6 rounded-lg">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-center mb-2">{title}</h2>
-        <p className="text-slate-400 text-center">Klik pada bar chart untuk melihat detail monitoring</p>
-      </div>
-
       {/* Filter Section */}
-      <div className="mb-6 bg-slate-800 rounded-lg p-4">
-        <div className="flex flex-wrap items-center gap-4 mb-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-slate-300">Filter:</span>
-          </div>
+      <div className="pb-4">
 
-          <SingleSelectDropdown
-            type="regional"
-            options={filterOptions.regionals}
-            selected={selectedRegional}
-            onSelect={handleRegionalChange}
-            placeholder="Select Regional"
-          />
-
-          <SingleSelectDropdown
-            type="kode_unit"
-            options={filterOptions.kodeUnits}
-            selected={selectedKodeUnit}
-            onSelect={handleKodeUnitChange}
-            placeholder="Select Kebun"
-            disabled={!selectedRegional}
-          />
-
-          <SingleSelectDropdown
-            type="afdeling"
-            options={filterOptions.afdelings}
-            selected={selectedAfdeling}
-            onSelect={handleAfdelingChange}
-            placeholder="Select Afdeling"
-            disabled={!selectedKodeUnit}
-          />
-
-          {(selectedRegional || selectedKodeUnit || selectedAfdeling) && (
-            <Button
-              onClick={clearAllFilters}
-              variant="outline"
-              size="sm"
-              className="bg-red-600 hover:bg-red-700 border-red-600 text-white"
-            >
-              <RotateCcw className="h-4 w-4 mr-2" />
-              Reset
-            </Button>
-          )}
-        </div>
 
         {/* Breadcrumb */}
         {getFilterBreadcrumb().length > 0 && (
           <div className="flex items-center gap-2 text-sm">
-            <span className="text-slate-400">Current view:</span>
             <div className="flex items-center gap-2">
               {getFilterBreadcrumb().map((crumb, index) => (
                 <div key={index} className="flex items-center gap-2">
