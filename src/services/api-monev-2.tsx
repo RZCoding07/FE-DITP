@@ -306,6 +306,9 @@ class ApiService {
     async getMonevDetailByBelumMonev(request: any): Promise<any[]> {
         return this.makeRequest<any[]>("d-rekap-karyawan-belum-monev", request)
     }
+    async getPalmcoData(request: any): Promise<any[]> {
+        return this.makeRequest<any[]>("d-rekap-palmco", request)
+    }
 
 
     async getMonevDetailBlokTU(request: any): Promise<any[]> {

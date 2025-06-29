@@ -46,7 +46,7 @@ export default function PlantationDashboardMasterpiece({
   const [filters, setFilters] = useState<DashboardFilters>(() => ({
     dari_tanggal: initialFilters.dari_tanggal ?? format(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), "yyyy-MM-dd"),
     sampai_tanggal: initialFilters.sampai_tanggal ?? format(new Date(), "yyyy-MM-dd"),
-    regional: initialFilters.regional ?? "2",
+    regional: initialFilters.regional ?? "",
     kode_unit: initialFilters.kode_unit ?? "",
     afdeling: initialFilters.afdeling ?? "",
     blok: initialFilters.blok ?? "",
@@ -201,6 +201,34 @@ export default function PlantationDashboardMasterpiece({
     fetchMonev()
   }, [dateRange])
 
+  const [monevDataPalmco, setMonevDataPalmco] = useState<any[]>([])
+
+  const fetchMonevDataPalmco = async () => {
+    if (!dateRange) return
+
+    setIsLoading(true)
+    try {
+      const data = await apiService.getPalmcoData({
+        start_date: dateRange?.from ? formatDate(dateRange.from) : "2024-05-24",
+        end_date: dateRange?.to ? formatDate(dateRange.to) : "2025-06-23"
+      })
+
+      console.log("Fetched Monev Data Palmco:", data)
+      setMonevDataPalmco(data)
+
+    } catch (error) {
+      console.error("Error fetching Monev Data Palmco:", error)
+      setMonevDataPalmco([])
+
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  useEffect(() => {
+    fetchMonevDataPalmco()
+  }, [dateRange])
+
+
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white p-6">
@@ -302,6 +330,7 @@ export default function PlantationDashboardMasterpiece({
             <>
               {/* Summary Cards */}
               <SummaryCardsEnhanced
+                regionals={filters.regional}
                 monitoringData={monitoringData}
                 plantationData={plantationData}
                 jobPositionData={jobPositionData}
@@ -311,18 +340,34 @@ export default function PlantationDashboardMasterpiece({
               {/* Charts Grid */}
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
                 <div className="xl:col-span-2">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <MonitoringOverviewChart
-                      data={monitoringData}
-                      onDataPointClick={(data) => console.log("Monitoring clicked:", data)}
-                    />
-                    <MonevDashboard
-                      data={monevBlokTUData}
-                      regional={filters.regional}
-                      kode_unit={filters.kode_unit}
-                      afdeling={filters.afdeling}
-                    />
-                  </div>
+                  {filters.regional == "" && (
+                    <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
+
+                      <MonevDashboard
+                        data={monevBlokTUData}
+                        personnelData={monevDetailData}
+                        regional={filters.regional}
+                        kode_unit={filters.kode_unit}
+                        afdeling={filters.afdeling}
+                      />
+                    </div>
+                  )}
+                  {filters.regional != "" && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <MonitoringOverviewChart
+                        data={monitoringData}
+                        onDataPointClick={(data) => console.log("Monitoring clicked:", data)}
+                      />
+                      <MonevDashboard
+                        data={monevBlokTUData}
+                        personnelData={monevDetailData}
+                        regional={filters.regional}
+                        kode_unit={filters.kode_unit}
+                        afdeling={filters.afdeling}
+                      />
+                    </div>
+                  )}
+
                 </div>
 
                 <JobPositionChartWithDialog

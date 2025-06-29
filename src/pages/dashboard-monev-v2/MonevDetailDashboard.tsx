@@ -295,7 +295,7 @@ export default function MonevDetailDashboard() {
         {/* Performance Metrics */}
         {complianceStats && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="dark:bg-slate-950 border-emerald-500/30">
+            {/* <Card className="dark:bg-slate-950 border-emerald-500/30">
               <CardHeader className="pb-3">
                 <CardTitle className="text-emerald-100 text-sm flex items-center gap-2">
                   <CheckCircle className="h-4 w-4" />
@@ -344,7 +344,7 @@ export default function MonevDetailDashboard() {
                 />
                 <div className="text-xs text-purple-200">Combined compliance and completion score</div>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
         )}
 

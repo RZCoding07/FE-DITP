@@ -1,23 +1,19 @@
 "use client"
 
 import { CommandEmpty } from "@/components/ui/command"
-import SummaryStats from "./summary-stats-monev"
+import IntegratedSummaryStats from "./integrated-summary-stats"
+import PersonnelDetailTabs from "./personnel-detail-tabs"
 
 import type React from "react"
 import { useState, useMemo, useEffect } from "react"
 import Chart from "react-apexcharts"
 import type { ApexOptions } from "apexcharts"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Download, Search, ArrowUpDown } from "lucide-react"
 import Papa from "papaparse"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Command, CommandList, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command"
-import { Badge } from "@/components/ui/badge"
-import { Check, ChevronDown, Filter, RotateCcw } from "lucide-react"
+import { Check, ChevronDown, Filter } from "lucide-react"
 
 interface MonevItem {
   id: number
@@ -60,8 +56,27 @@ interface DataItem {
   list_monev: MonevItem[]
 }
 
+interface PersonnelData {
+  sap: string
+  name: string
+  gender: string
+  personnel_area: string
+  desc_personnel_area: string
+  personnel_subarea: string
+  region: string
+  desc_personnel_subarea: string
+  desc_org_unit: string
+  desc_position: string
+  desc_job: string
+  level: string
+  cost_center: string
+  afd_code: string | null
+  headerkertaskerja: any[]
+}
+
 interface MonevDashboardProps {
   data: DataItem[]
+  personnelData?: PersonnelData[]
   title?: string
   height?: number
   regional?: string // Optional, if you want to filter by regional
@@ -72,7 +87,7 @@ interface MonevDashboardProps {
 interface ChartData {
   regional: string
   kode_unit: string
-  afdeling: string
+  afdeling: string | null // Make this nullable for unit-level data
   sudah: number
   belum: number
   total: number
@@ -80,18 +95,24 @@ interface ChartData {
   percentage_belum: number
   displayLabel: string
   sortKey: string
-  items: DataItem[] // Add this line to fix the error
-  displayLevel?: string // Optional, as used in chartData mapping
+  items: DataItem[]
+  displayLevel?: string
 }
 
 const MonevDashboard: React.FC<MonevDashboardProps> = ({
   data,
+  personnelData = [],
   title = "Dashboard Monitoring & Evaluasi",
-  height = 400,
+  height = "100%",
   regional,
   kode_unit,
   afdeling,
 }) => {
+
+  // State for dialog and selected dat
+  console.log("Initializing MonevDashboard with data length:", data)
+
+
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedData, setSelectedData] = useState<ChartData | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
@@ -100,13 +121,12 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
     direction: "asc" | "desc"
   } | null>(null)
 
-  // Single selection filters - initialize from props
+
   const [selectedRegional, setSelectedRegional] = useState<string>(regional || "")
   const [selectedKodeUnit, setSelectedKodeUnit] = useState<string>(kode_unit || "")
   const [selectedAfdeling, setSelectedAfdeling] = useState<string>(afdeling || "")
   const [openPopover, setOpenPopover] = useState<string | null>(null)
 
-  // Sync filters with props when they change
   useEffect(() => {
     if (regional !== undefined) {
       setSelectedRegional(regional)
@@ -119,6 +139,23 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
     }
   }, [regional, kode_unit, afdeling])
 
+  // Regional name mapping
+  const getRegionalName = (regionalCode: string) => {
+    const regionalNames: Record<string, string> = {
+      "1": "Regional 1",
+      "2": "Regional 2",
+      "3": "Regional 3",
+      "4": "Regional 4",
+      "5": "Regional 5",
+      "6": "Regional 6",
+      "7": "Regional 7",
+      "8": "KSO Sulawesi",
+      M: "KSO Ex N2",
+    }
+    return regionalNames[regionalCode] || `Regional ${regionalCode}`
+  }
+
+
   // Get cascading filter options
   const filterOptions = useMemo(() => {
     // All regionals
@@ -127,31 +164,31 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
     // Kode units based on selected regional - fix deduplication
     const kodeUnits = selectedRegional
       ? (() => {
-          const uniqueUnits = new Map()
-          data
-            .filter((item) => item.regional === selectedRegional)
-            .forEach((item) => {
-              if (!uniqueUnits.has(item.kode_unit)) {
-                uniqueUnits.set(item.kode_unit, {
-                  kode: item.kode_unit,
-                  nama: item.nama_unit,
-                })
-              }
-            })
-          return Array.from(uniqueUnits.values()).sort((a, b) => a.kode.localeCompare(b.kode))
-        })()
+        const uniqueUnits = new Map()
+        data
+          .filter((item) => item.regional === selectedRegional)
+          .forEach((item) => {
+            if (!uniqueUnits.has(item.kode_unit)) {
+              uniqueUnits.set(item.kode_unit, {
+                kode: item.kode_unit,
+                nama: item.nama_unit,
+              })
+            }
+          })
+        return Array.from(uniqueUnits.values()).sort((a, b) => a.kode.localeCompare(b.kode))
+      })()
       : []
 
     // Afdelings based on selected regional and kode unit
     const afdelings =
       selectedRegional && selectedKodeUnit
         ? [
-            ...new Set(
-              data
-                .filter((item) => item.regional === selectedRegional && item.kode_unit === selectedKodeUnit)
-                .map((item) => item.afdeling),
-            ),
-          ].sort()
+          ...new Set(
+            data
+              .filter((item) => item.regional === selectedRegional && item.kode_unit === selectedKodeUnit)
+              .map((item) => item.afdeling),
+          ),
+        ].sort()
         : []
 
     return { regionals, kodeUnits, afdelings }
@@ -198,9 +235,9 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
       if (!acc[key]) {
         acc[key] = {
           regional: item.regional,
-          kode_unit: item.kode_unit,
-          afdeling: item.afdeling,
-          blok: item.blok,
+          kode_unit: displayLevel === "regional" ? "" : item.kode_unit, // Clear unit for regional level
+          afdeling: displayLevel === "regional" || displayLevel === "unit" ? null : item.afdeling, // Clear afdeling for regional/unit level
+          blok: displayLevel === "blok" ? item.blok : "",
           nama_unit: item.nama_unit,
           total_blok: 0,
           blok_sudah_monev: 0,
@@ -252,7 +289,7 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
         return {
           regional: group.regional,
           kode_unit: group.kode_unit,
-          afdeling: group.afdeling,
+          afdeling: group.afdeling, // This will be null for unit-level data
           blok: group.blok,
           nama_unit: group.nama_unit,
           sudah: sudah,
@@ -275,7 +312,16 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
       })
   }, [data, selectedRegional, selectedKodeUnit, selectedAfdeling])
 
-  // Chart configuration
+  let categories: string[] = []
+
+  categories = chartData.map((item) => {
+    if (item.displayLevel === "regional") {
+      return getRegionalName(item.regional)
+    }
+    return item.displayLabel
+  })
+
+
   const chartOptions: ApexOptions = {
     chart: {
       type: "bar",
@@ -290,6 +336,7 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
           setIsDialogOpen(true)
         },
       },
+      
       toolbar: {
         show: true,
         tools: {
@@ -329,7 +376,7 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
       },
     },
     xaxis: {
-      categories: chartData.map((item) => item.displayLabel),
+      categories: categories,
       labels: {
         style: {
           colors: "#94a3b8",
@@ -354,6 +401,19 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
       },
     },
     colors: ["#f97316", "#475569"],
+        fill: {
+      type: 'gradient',
+      gradient: {
+        shade: 'dark',
+        type: 'vertical',
+        shadeIntensity: 0.3,
+        gradientToColors: undefined, // Use default colors
+        inverseColors: true,
+        opacityFrom: 0.8,
+        opacityTo: 0.9,
+        stops: [0, 100],
+      },
+    },
     theme: {
       mode: "dark",
     },
@@ -435,155 +495,9 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
     document.body.removeChild(link)
   }
 
-  const clearAllFilters = () => {
-    // Only clear filters that aren't controlled by props
-    if (regional === undefined) {
-      setSelectedRegional("")
-    }
-    if (kode_unit === undefined) {
-      setSelectedKodeUnit("")
-    }
-    if (afdeling === undefined) {
-      setSelectedAfdeling("")
-    }
-  }
-
-  // Handle cascading filter changes
-  const handleRegionalChange = (value: string) => {
-    // Only update if not controlled by props
-    if (regional === undefined) {
-      setSelectedRegional(value)
-      setSelectedKodeUnit("") // Reset dependent filters
-      setSelectedAfdeling("")
-    }
-    setOpenPopover(null)
-  }
-
-  const handleKodeUnitChange = (value: string) => {
-    // Only update if not controlled by props
-    if (kode_unit === undefined) {
-      setSelectedKodeUnit(value)
-      setSelectedAfdeling("") // Reset dependent filter
-    }
-    setOpenPopover(null)
-  }
-
-  const handleAfdelingChange = (value: string) => {
-    // Only update if not controlled by props
-    if (afdeling === undefined) {
-      setSelectedAfdeling(value)
-    }
-    setOpenPopover(null)
-  }
-
-  const SingleSelectDropdown = ({
-    type,
-    options,
-    selected,
-    onSelect,
-    placeholder,
-    disabled = false,
-  }: {
-    type: string
-    options: any[]
-    selected: string
-    onSelect: (value: string) => void
-    placeholder: string
-    disabled?: boolean
-  }) => (
-    <Popover open={openPopover === type} onOpenChange={(open) => setOpenPopover(open ? type : null)}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          disabled={disabled}
-          className={`justify-between bg-slate-800 border-slate-600 text-white hover:bg-slate-700 min-w-[200px] ${
-            disabled ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4" />
-            {selected || placeholder}
-          </div>
-          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0 bg-slate-800 border-slate-600">
-        <Command className="bg-slate-800">
-          <CommandInput placeholder={`Search ${placeholder.toLowerCase()}...`} className="text-white" />
-          <CommandList>
-            <CommandEmpty>No options found.</CommandEmpty>
-            <CommandGroup className="max-h-64 overflow-auto">
-              {options.map((option) => {
-                const value = typeof option === "string" ? option : option.kode
-                const label =
-                  typeof option === "string"
-                    ? type === "regional"
-                      ? `Regional ${option}`
-                      : option
-                    : `${option.kode} - ${option.nama}`
-
-                return (
-                  <CommandItem key={value} onSelect={() => onSelect(value)} className="text-white hover:bg-slate-700">
-                    <Check className={`mr-2 h-4 w-4 ${selected === value ? "opacity-100" : "opacity-0"}`} />
-                    {label}
-                  </CommandItem>
-                )
-              })}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
-  )
-
-  const sudahMonevData = selectedData?.items?.filter((item) => item.status_monev === "Sudah") || []
-  const belumMonevData = selectedData?.items?.filter((item) => item.status_monev === "Belum") || []
-
-  // Get current filter breadcrumb
-  const getFilterBreadcrumb = () => {
-    const breadcrumb = []
-    if (selectedRegional) {
-      breadcrumb.push(`Regional ${selectedRegional}`)
-    }
-    if (selectedKodeUnit) {
-      const unitData = data.find((item) => item.kode_unit === selectedKodeUnit)
-      breadcrumb.push(unitData?.nama_unit || selectedKodeUnit)
-    }
-    if (selectedAfdeling) {
-      breadcrumb.push(selectedAfdeling)
-    }
-    return breadcrumb
-  }
-
   return (
-    <div className="w-full bg-slate-900 text-white p-6 rounded-lg">
-      {/* Filter Section */}
-      <div className="pb-4">
-
-
-        {/* Breadcrumb */}
-        {getFilterBreadcrumb().length > 0 && (
-          <div className="flex items-center gap-2 text-sm">
-            <div className="flex items-center gap-2">
-              {getFilterBreadcrumb().map((crumb, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  {index > 0 && <span className="text-slate-500">›</span>}
-                  <Badge variant="outline" className="bg-slate-700 border-slate-600 text-white">
-                    {crumb}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Summary Statistics */}
-      <SummaryStats data={data} filteredData={chartData} />
-
-      {/* Chart Section */}
-      <div className="bg-slate-800 rounded-lg p-4">
+    <div className="w-full text-white h-full rounded-lg">
+      <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg p-4 h-full min-h-[445px] border border-slate-700 shadow-lg flex flex-col ">
         {chartData.length > 0 ? (
           <Chart options={chartOptions} series={chartSeries} type="bar" height={height} />
         ) : (
@@ -598,124 +512,26 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-6xl max-h-[80vh] bg-slate-900 border-slate-700">
-          <DialogHeader>
-            <DialogTitle className="text-white">
-              Detail Monitoring - {selectedData?.regional} | {selectedData?.kode_unit} | {selectedData?.afdeling}
-            </DialogTitle>
-          </DialogHeader>
+        <DialogContent className="max-w-full h-full bg-slate-900 border-slate-700 justify-content-start">
 
-          <div className="flex items-center gap-4 mb-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
-              <Input
-                placeholder="Cari data..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-slate-800 border-slate-600 text-white"
-              />
-            </div>
-            <Button
-              onClick={() =>
-                exportToExcel(selectedData?.items || [], `monev-${selectedData?.kode_unit}-${selectedData?.afdeling}`)
-              }
-              className="bg-green-600 hover:bg-green-700"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Export Excel
-            </Button>
+          <div className="p-0 m-0 justify-normal align-top items-start">
+            <p>
+              Detail Monitoring - {selectedData?.regional} | {selectedData?.kode_unit}
+              {selectedData?.afdeling && ` | ${selectedData.afdeling}`}
+            </p>
+            <IntegratedSummaryStats data={data} filteredData={chartData} personnelData={personnelData} />
+
+            <PersonnelDetailTabs
+              selectedData={selectedData}
+              personnelData={personnelData}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              sortConfig={sortConfig}
+              handleSort={handleSort}
+              getFilteredAndSortedData={getFilteredAndSortedData}
+              exportToExcel={exportToExcel}
+            />
           </div>
-
-          <Tabs defaultValue="sudah" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-slate-800">
-              <TabsTrigger value="sudah" className="data-[state=active]:bg-slate-700">
-                Sudah Monev ({sudahMonevData.length})
-              </TabsTrigger>
-              <TabsTrigger value="belum" className="data-[state=active]:bg-slate-700">
-                Belum Monev ({belumMonevData.length})
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="sudah" className="mt-4">
-              <div className="overflow-auto max-h-96">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="border-slate-700">
-                      <TableHead
-                        className="text-slate-300 cursor-pointer hover:text-white"
-                        onClick={() => handleSort("blok")}
-                      >
-                        <div className="flex items-center gap-2">
-                          Blok
-                          <ArrowUpDown className="h-4 w-4" />
-                        </div>
-                      </TableHead>
-                      <TableHead className="text-slate-300">Status</TableHead>
-                      <TableHead className="text-slate-300">Jumlah Monev</TableHead>
-                      <TableHead className="text-slate-300">Terakhir Update</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {getFilteredAndSortedData(sudahMonevData).map((item, index) => (
-                      <TableRow key={index} className="border-slate-700">
-                        <TableCell className="text-white">{item.blok}</TableCell>
-                        <TableCell>
-                          <span className="px-2 py-1 bg-green-600 text-white rounded-full text-xs">
-                            {item.status_monev}
-                          </span>
-                        </TableCell>
-                        <TableCell className="text-white">{item.list_monev.length}</TableCell>
-                        <TableCell className="text-slate-300">
-                          {item.list_monev.length > 0
-                            ? new Date(item.list_monev[item.list_monev.length - 1].created_at).toLocaleDateString(
-                                "id-ID",
-                              )
-                            : "-"}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="belum" className="mt-4">
-              <div className="overflow-auto max-h-96">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="border-slate-700">
-                      <TableHead
-                        className="text-slate-300 cursor-pointer hover:text-white"
-                        onClick={() => handleSort("blok")}
-                      >
-                        <div className="flex items-center gap-2">
-                          Blok
-                          <ArrowUpDown className="h-4 w-4" />
-                        </div>
-                      </TableHead>
-                      <TableHead className="text-slate-300">Status</TableHead>
-                      <TableHead className="text-slate-300">Afdeling</TableHead>
-                      <TableHead className="text-slate-300">Unit</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {getFilteredAndSortedData(belumMonevData).map((item, index) => (
-                      <TableRow key={index} className="border-slate-700">
-                        <TableCell className="text-white">{item.blok}</TableCell>
-                        <TableCell>
-                          <span className="px-2 py-1 bg-red-600 text-white rounded-full text-xs">
-                            {item.status_monev}
-                          </span>
-                        </TableCell>
-                        <TableCell className="text-white">{item.afdeling}</TableCell>
-                        <TableCell className="text-slate-300">{item.nama_unit}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </TabsContent>
-          </Tabs>
         </DialogContent>
       </Dialog>
     </div>

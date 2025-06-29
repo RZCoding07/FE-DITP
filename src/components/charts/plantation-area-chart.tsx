@@ -15,7 +15,6 @@ export function PlantationAreaChart({ data, onDataPointClick }: PlantationAreaCh
   const chartData = data
     .filter((item) => item.luas_blok_tu > 0)
     .sort((a, b) => b.luas_blok_tu - a.luas_blok_tu)
-    .slice(0, 12)
     .map((item) => ({
       name: item.nama_unit.replace("KEBUN ", "").substring(0, 15),
       area: item.luas_blok_tu,
@@ -147,7 +146,7 @@ export function PlantationAreaChart({ data, onDataPointClick }: PlantationAreaCh
           <div>
             <CardTitle className="text-white text-xl">Luas Area & Jumlah Blok</CardTitle>
             <CardDescription className="text-slate-400">
-              Top 12 kebun berdasarkan luas area dan jumlah blok
+              Grafik kebun berdasarkan luas area dan jumlah blok
             </CardDescription>
           </div>
         </div>

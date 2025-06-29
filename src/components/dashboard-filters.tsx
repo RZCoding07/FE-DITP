@@ -63,7 +63,7 @@ export function DashboardFiltersEnhanced({
     const clearedFilters: DashboardFilters = {
       dari_tanggal: filters.dari_tanggal,
       sampai_tanggal: filters.sampai_tanggal,
-      regional: "2",
+      regional: "",
       kode_unit: "",
       afdeling: "",
       blok: "",

@@ -123,11 +123,11 @@ export function MonitoringOverviewChart({ data, onDataPointClick }: MonitoringOv
 
   const series = [
     {
-      name: "Persentase Monev (%)",
+      name: "Persentase Nilai Monev (%)",
       data: chartData.map((item) => item.monitoring),
     },
     {
-      name: "Nilai Rata-rata",
+      name: "Persentase Pekerjaan yang sudah di Monev (%)",
       data: chartData.map((item) => item.score),
     },
   ]
