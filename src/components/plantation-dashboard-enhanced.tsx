@@ -93,6 +93,17 @@ export default function PlantationDashboardMasterpiece({
     setFilters: setDataFilters,
   } = useDashboardDataEnhanced(filters)
 
+
+  console.log("Dashboard data loaded:", {
+    plantationData,
+    monitoringData,
+    correctiveActionData,
+    jobPositionData,
+    regionals,
+    kebuns,
+    afdelings,
+  })
+
   const handleDateRangeChange = (range: DateRange | undefined) => {
     setDateRange(range)
     if (range?.from && range?.to) {
@@ -116,14 +127,6 @@ export default function PlantationDashboardMasterpiece({
     console.log("Refreshing data...")
     await refreshData()
     setLastUpdated(new Date())
-  }
-
-  const handleExport = () => {
-    console.log("Exporting dashboard data...")
-  }
-
-  const handleShare = () => {
-    console.log("Sharing dashboard...")
   }
 
   const [isLoading, setIsLoading] = useState(false)
@@ -340,22 +343,12 @@ export default function PlantationDashboardMasterpiece({
               {/* Charts Grid */}
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
                 <div className="xl:col-span-2">
-                  {filters.regional == "" && (
-                    <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
-
-                      <MonevDashboard
-                        data={monevBlokTUData}
-                        personnelData={monevDetailData}
-                        regional={filters.regional}
-                        kode_unit={filters.kode_unit}
-                        afdeling={filters.afdeling}
-                      />
-                    </div>
-                  )}
-                  {filters.regional != "" && (
+         
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <MonitoringOverviewChart
                         data={monitoringData}
+                        region={filters.regional}
+                        kode_unit={filters.kode_unit}
                         onDataPointClick={(data) => console.log("Monitoring clicked:", data)}
                       />
                       <MonevDashboard
@@ -366,7 +359,6 @@ export default function PlantationDashboardMasterpiece({
                         afdeling={filters.afdeling}
                       />
                     </div>
-                  )}
 
                 </div>
 

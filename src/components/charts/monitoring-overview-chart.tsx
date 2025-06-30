@@ -5,24 +5,80 @@ import ReactApexChart from "react-apexcharts"
 import type { ApexOptions } from "apexcharts"
 import type { MonitoringData } from "@/types/api"
 import { TrendingUp, Eye } from "lucide-react"
+import { createDropdownMenuScope } from "@radix-ui/react-dropdown-menu"
 
 interface MonitoringOverviewChartProps {
-  data: MonitoringData[]
+  data: any[]
+  region?: string
+  kode_unit?: string
   onDataPointClick?: (data: MonitoringData) => void
 }
 
-export function MonitoringOverviewChart({ data, onDataPointClick }: MonitoringOverviewChartProps) {
+export function MonitoringOverviewChart({ data, region, kode_unit, onDataPointClick }: MonitoringOverviewChartProps) {
+
+console.log("Rendering Monitoring Overview Chart",data)
+
+
+  const regionalName =  [
+        {
+            "kode_regional": "1",
+            "regional": "Regional 1"
+        },
+        {
+            "kode_regional": "2",
+            "regional": "Regional 2"
+        },
+        {
+            "kode_regional": "3",
+            "regional": "Regional 3"
+        },
+        {
+            "kode_regional": "4",
+            "regional": "Regional 4"
+        },
+        {
+            "kode_regional": "5",
+            "regional": "Regional 5"
+        },
+        {
+            "kode_regional": "6",
+            "regional": "Regional 6"
+        },
+        {
+            "kode_regional": "7",
+            "regional": "Regional 7"
+        },
+        {
+            "kode_regional": "8",
+            "regional": "KSO Sulawesi"
+        },
+        {
+            "kode_regional": "M",
+            "regional": "KSO Ex N2"
+        }
+    ]
+
+    console.log("Data received for chart", data)
   const chartData = data
-    .filter((item) => item.persentase_monev > 0)
-    .sort((a, b) => b.persentase_monev - a.persentase_monev)
-    .slice(0, 15)
     .map((item) => ({
-      name: item.nama.replace("KEBUN ", "").substring(0, 15),
+      name: item.nama,
       monitoring: item.persentase_monev,
       score: item.rata_rata_nilai,
       compliance: item.persentase_kesesuaian,
       original: item,
     }))
+
+    console.log("Processed Chart Data", chartData)
+
+  // Function to get color based on monitoring percentage
+  const getColorByValue = (value: number) => {
+    if (value >= 80) return "#10b981" // Green
+    if (value >= 60) return "#f59e0b" // Yellow
+    return "#ef4444" // Red
+  }
+
+  // Create colors array based on monitoring values
+  const monitoringColors = chartData.map((item) => getColorByValue(item.score))
 
   const options: ApexOptions = {
     chart: {
@@ -50,12 +106,19 @@ export function MonitoringOverviewChart({ data, onDataPointClick }: MonitoringOv
         columnWidth: "60%",
         borderRadius: 8,
         dataLabels: { position: "top" },
+        distributed: true, // Enable distributed colors
       },
     },
-    colors: ["#3b82f6", "#10b981", "#f59e0b"],
+    colors: [...monitoringColors, "#3b82f6"], // First series uses conditional colors, second series uses blue
     dataLabels: {
       enabled: true,
-      formatter: (val: number) => val.toFixed(1) + "%",
+      formatter: (val: number, opts: any) => {
+        // Show percentage only for first series (monitoring)
+        if (opts.seriesIndex === 0) {
+          return val.toFixed(1) 
+        }
+        return val.toFixed(1) + "%"
+      },
       style: {
         fontSize: "10px",
         fontWeight: "bold",
@@ -79,12 +142,12 @@ export function MonitoringOverviewChart({ data, onDataPointClick }: MonitoringOv
     },
     yaxis: {
       title: {
-        text: "Persentase (%)",
+        text: "Nilai",
         style: { color: "#94a3b8" },
       },
       labels: {
         style: { colors: "#94a3b8" },
-        formatter: (val: number) => val.toFixed(0) + "%",
+        formatter: (val: number) => val.toFixed(0),
       },
     },
     fill: {
@@ -94,7 +157,6 @@ export function MonitoringOverviewChart({ data, onDataPointClick }: MonitoringOv
         shade: "dark",
         type: "vertical",
         shadeIntensity: 0.3,
-        gradientToColors: ["#1e40af", "#059669", "#d97706"],
         inverseColors: false,
         opacityFrom: 1,
         opacityTo: 0.8,
@@ -105,7 +167,13 @@ export function MonitoringOverviewChart({ data, onDataPointClick }: MonitoringOv
       shared: true,
       intersect: false,
       y: {
-        formatter: (val: number) => val.toFixed(2) + "%",
+        formatter: (val: number, opts: any) => {
+          // Show percentage only for first series (monitoring)
+          if (opts.seriesIndex === 0) {
+            return val.toFixed(2) + "%"
+          }
+          return val.toFixed(2)
+        },
       },
     },
     grid: {
@@ -123,12 +191,12 @@ export function MonitoringOverviewChart({ data, onDataPointClick }: MonitoringOv
 
   const series = [
     {
-      name: "Persentase Nilai Monev (%)",
-      data: chartData.map((item) => item.monitoring),
+      name: "Nilai Monev",
+      data: chartData.map((item) => item.score),
     },
     {
-      name: "Persentase Pekerjaan yang sudah di Monev (%)",
-      data: chartData.map((item) => item.score),
+      name: "Persentase jumlah blok yang sudah di Monev (%)",
+      data: chartData.map((item) => item.monitoring),
     },
   ]
 
@@ -141,9 +209,17 @@ export function MonitoringOverviewChart({ data, onDataPointClick }: MonitoringOv
               <TrendingUp className="h-5 w-5 text-white" />
             </div>
             <div>
-              <CardTitle className="text-white text-xl">Overview Monitoring Kebun</CardTitle>
+              {region ? (
+                <CardTitle className="text-white text-xl">
+                  Overview Monitoring Kebun {regionalName.find(r => r.kode_regional === region)?.regional}
+                </CardTitle>
+              ) : (
+                <CardTitle className="text-white text-xl">
+                  Overview Monitoring Regional
+                </CardTitle>
+              )}
               <CardDescription className="text-slate-400">
-                Top 15 kebun berdasarkan persentase monitoring
+                Grafik kebun berdasarkan persentase monitoring
               </CardDescription>
             </div>
           </div>
@@ -152,17 +228,27 @@ export function MonitoringOverviewChart({ data, onDataPointClick }: MonitoringOv
             <span className="text-sm">Klik untuk detail</span>
           </div>
         </div>
+
+        {/* Color Legend */}
+        <div className="flex items-center gap-4 mt-4 text-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-green-500 rounded"></div>
+            <span className="text-slate-300">80-100 (Baik)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-yellow-500 rounded"></div>
+            <span className="text-slate-300">60-79 (Sedang)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-red-500 rounded"></div>
+            <span className="text-slate-300">{"<60 (Kurang)"}</span>
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="flex-1 min-h-[400px]">
         {chartData.length > 0 ? (
           <div className="h-full w-full">
-            <ReactApexChart 
-              options={options} 
-              series={series} 
-              type="bar" 
-              height="100%"
-              width="100%"
-            />
+            <ReactApexChart options={options} series={series} type="bar" height="100%" width="100%" />
           </div>
         ) : (
           <div className="flex items-center justify-center h-full text-slate-400">

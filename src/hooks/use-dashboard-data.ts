@@ -10,6 +10,7 @@ import {
   fetchKebunData,
   fetchAfdelingData,
   ApiError,
+  fetchMonitoringDataReg,
 } from '@/lib/api-monev'
 import type {
   DashboardFilters,
@@ -19,12 +20,7 @@ import type {
   CorrectiveActionData,
 } from '@/types/api'
 
-import type {
-  DMonevRegion,
-  DMonevUnit,
-  DMonevAfdeling
-} from '@/types/api'
-
+import type { DMonevRegion, DMonevUnit, DMonevAfdeling } from '@/types/api'
 
 interface UseDashboardDataReturn {
   plantationData: any[]
@@ -47,7 +43,9 @@ export function useDashboardDataEnhanced(
   const [filters, setFiltersState] = useState<DashboardFilters>(initialFilters)
   const [plantationData, setPlantationData] = useState<PlantationData[]>([])
   const [monitoringData, setMonitoringData] = useState<MonitoringData[]>([])
-  const [correctiveActionData, setCorrectiveActionData] = useState<CorrectiveActionData[]>([])
+  const [correctiveActionData, setCorrectiveActionData] = useState<
+    CorrectiveActionData[]
+  >([])
   const [jobPositionData, setJobPositionData] = useState<JobPositionData[]>([])
   const [regionals, setRegionals] = useState<DMonevRegion[]>([])
   const [kebuns, setKebuns] = useState<DMonevUnit[]>([])
@@ -62,7 +60,7 @@ export function useDashboardDataEnhanced(
 
   const fetchAllData = useCallback(async () => {
     if (!filters.dari_tanggal || !filters.sampai_tanggal) {
-      console.warn("Skipping data fetch - missing date filters")
+      console.warn('Skipping data fetch - missing date filters')
       return
     }
 
@@ -78,10 +76,19 @@ export function useDashboardDataEnhanced(
       })
       setRegionals(Array.isArray(regionalsResponse) ? regionalsResponse : [])
 
-      // console.log("Fetched regionals:", regionalsResponse)
 
-      // console.log("Filters for kebun data:", filters)
-      // Fetch all data in parallel
+      const commonFetches = [
+        fetchPlantationData(filters),
+        fetchCorrectiveActionData(filters),
+        fetchJobPositionData(filters),
+        fetchKebunData(filters),
+      ]
+
+      const monitoringFetch =
+        filters.regional === ''
+          ? fetchMonitoringDataReg(filters)
+          : fetchMonitoringData(filters)
+
       const [
         plantationResponse,
         monitoringResponse,
@@ -89,79 +96,83 @@ export function useDashboardDataEnhanced(
         jobPositionResponse,
         kebunsResponse,
       ] = await Promise.allSettled([
-        fetchPlantationData(filters),
-        fetchMonitoringData(filters),
-        fetchCorrectiveActionData(filters),
-        fetchJobPositionData(filters),
-        fetchKebunData(filters),
+        ...commonFetches.slice(0, 1), // plantationData
+        monitoringFetch,
+        ...commonFetches.slice(1), // the rest
       ])
-
-       const extractData = (response: any): any[] => {
-    // If response has 'data' property, use that
-    if (response && 'data' in response && Array.isArray(response.data)) {
-      return response.data
-    }
-    // If response is already an array, use it directly (for APIs that return array directly)
-    if (Array.isArray(response)) {
-      return response
-    }
-    // Fallback to empty array
-    return []
-  }
+      const extractData = (response: any): any[] => {
+        // If response has 'data' property, use that
+        if (response && 'data' in response && Array.isArray(response.data)) {
+          return response.data
+        }
+        // If response is already an array, use it directly (for APIs that return array directly)
+        if (Array.isArray(response)) {
+          return response
+        }
+        // Fallback to empty array
+        return []
+      }
 
       // Process responses
- // Process responses using the extractData helper
+      // Process responses using the extractData helper
       if (plantationResponse.status === 'fulfilled') {
-        console.log("Plantation data fetched successfully:", plantationResponse)
+        console.log('Plantation data fetched successfully:', plantationResponse)
         setPlantationData(extractData(plantationResponse.value))
       } else {
-        console.error("Plantation data error:", plantationResponse.reason)
+        console.error('Plantation data error:', plantationResponse.reason)
       }
 
       if (monitoringResponse.status === 'fulfilled') {
-        console.log("Monitoring data fetched successfully:", monitoringResponse.value)
+        console.log(
+          'Monitoring data fetched successfully:',
+          monitoringResponse.value
+        )
         setMonitoringData(extractData(monitoringResponse.value))
       } else {
-        console.error("Monitoring data error:", monitoringResponse.reason)
+        console.error('Monitoring data error:', monitoringResponse.reason)
       }
 
       if (correctiveActionResponse.status === 'fulfilled') {
         setCorrectiveActionData(extractData(correctiveActionResponse.value))
       } else {
-        console.error("Corrective action data error:", correctiveActionResponse.reason)
+        console.error(
+          'Corrective action data error:',
+          correctiveActionResponse.reason
+        )
       }
 
       if (jobPositionResponse.status === 'fulfilled') {
         setJobPositionData(extractData(jobPositionResponse.value))
       } else {
-        console.error("Job position data error:", jobPositionResponse.reason)
+        console.error('Job position data error:', jobPositionResponse.reason)
       }
 
       if (kebunsResponse.status === 'fulfilled') {
         setKebuns(extractData(kebunsResponse.value))
       } else {
-        console.error("Kebuns data error:", kebunsResponse.reason)
+        console.error('Kebuns data error:', kebunsResponse.reason)
       }
 
       // Fetch afdelings if kebun is selected
       if (filters.kode_unit) {
         try {
           const afdelingsResponse = await fetchAfdelingData(filters)
-          setAfdelings(Array.isArray(afdelingsResponse) ? afdelingsResponse : [])
+          setAfdelings(
+            Array.isArray(afdelingsResponse) ? afdelingsResponse : []
+          )
         } catch (err) {
           console.warn('Failed to fetch afdelings:', err)
         }
       } else {
         setAfdelings([])
       }
-
     } catch (err) {
       console.error('Error fetching dashboard data:', err)
       setError(
-        err instanceof ApiError 
+        err instanceof ApiError
           ? `API Error: ${err.message}`
-          : err instanceof Error 
-            ? err.message 
+          : err instanceof Error
+            ? err.message
             : 'Failed to fetch dashboard data'
       )
     } finally {

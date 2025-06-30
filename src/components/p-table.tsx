@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { TrendingUpIcon, SearchIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
+
+import Papa from "papaparse"
 
 interface ProgressData {
   regional: string
@@ -380,9 +382,35 @@ const mockData: ProgressData[] = [
 export default function ComponentPTable() {
   const [searchTerm, setSearchTerm] = useState("")
 
-  const filteredData = mockData.filter((item) => 
+  const [csvData, setCsvData] = useState<any[]>([])
+
+
+  useEffect(() => {
+    fetch(
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSt5Slr9Cq2F8vMAe_qn75Wybt_oJgvkN5_JL-wL6JMSLXist0U3DTt14syyHiMUzq1WWUAqe-u6PC5/pub?gid=1930147889&single=true&output=csv"
+    )
+      .then((response) => response.text())
+      .then((csv) => {
+        Papa.parse(csv, {
+          header: false,  // Tidak mengatur header
+          skipEmptyLines: true,
+          complete: (result: any) => {
+
+            const filteredData = result.data.slice(8, 21); // Menghilangkan baris pertama
+            console.log("Parsed CSV Data:", filteredData);
+
+            setCsvData(filteredData);
+          },
+        });
+      });
+  }, []);
+
+
+  const filteredData = mockData.filter((item) =>
     item.regional.toLowerCase().includes(searchTerm.toLowerCase())
   )
+
+
 
   const getProgressColor = (progress: number) => {
     if (progress >= 90) return "bg-green-500"
@@ -414,14 +442,18 @@ export default function ComponentPTable() {
       <CardHeader className="bg-gradient-to-r from-slate-900 via-slate-950 to-slate-900 text-white rounded-t-lg border-b border-from-teal-600">
         <CardTitle className="text-2xl font-bold">
           <TrendingUpIcon className="inline-block mr-2 h-6 w-6 text-teal-400" />
-          
+
           Money Progress Capex Tahun 2025</CardTitle>
         <CardDescription className="text-slate-300">
-          Roleg 045 Mesin & Instalasi | Update: 17 Juni 2024
+          Rekg 045 Mesin & Instalasi | Update: {new Date().toLocaleDateString("id-ID", {
+            year: "numeric",
+            month: "long",
+            day: "numeric"  
+          })} 
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6 bg-slate-950">
-        <div className="flex items-center space-x-2 mb-6">
+        {/* <div className="flex items-center space-x-2 mb-6">
           <div className="relative flex-1 max-w-sm">
             <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
@@ -434,7 +466,7 @@ export default function ComponentPTable() {
           <Button variant="outline" className="bg-slate-900 border-2 border-from-teal-600 text-white hover:bg-from-teal-600">
             Export Data
           </Button>
-        </div>
+        </div> */}
 
         <div className="rounded-lg border-2 border-from-teal-600 overflow-hidden shadow-2xl">
           <Table>
@@ -444,11 +476,9 @@ export default function ComponentPTable() {
                 <TableHead colSpan={2} className="text-white font-bold text-center border-r border-slate-900">
                   RKAP 2025
                 </TableHead>
-                <TableHead colSpan={2} className="text-white font-bold text-center border-r border-slate-900">
-                  RKAP (sd BI)
-                </TableHead>
+
                 <TableHead colSpan={4} className="text-white font-bold text-center border-r border-slate-900">
-                  Real sd Hi 17 Juni
+                  Real sd Hi
                 </TableHead>
                 <TableHead colSpan={4} className="text-white font-bold text-center border-r border-slate-900">
                   %ProgressThdp RKAP setahun (%)
@@ -456,17 +486,13 @@ export default function ComponentPTable() {
                 <TableHead colSpan={3} className="text-white font-bold text-center border-r border-slate-900">
                   Total Paket (HPS+PBJ+SPPBJ)
                 </TableHead>
-                <TableHead colSpan={2} className="text-white font-bold text-center">
-                  Progress paket
-                </TableHead>
+
               </TableRow>
               <TableRow className="bg-gradient-to-r from-teal-600 to-teal-900 text-slate-200">
                 <TableHead colSpan={2} className="font-semibold text-center border-r border-from-teal-600 text-slate-200">
                   Setahun
                 </TableHead>
-                <TableHead colSpan={2} className="font-semibold text-center border-r border-from-teal-600 text-slate-200">
-                  Target sd Juni
-                </TableHead>
+
                 <TableHead className="font-semibold text-center border-r border-from-teal-600 text-slate-200">
                   HPS
                 </TableHead>
@@ -491,9 +517,7 @@ export default function ComponentPTable() {
                 <TableHead className="font-semibold text-center border-r border-from-teal-600 text-slate-200">
                   Progress
                 </TableHead>
-                <TableHead colSpan={2} className="font-semibold text-center text-slate-200">
-                  (HPS+PBJ+SPPBJ) (%)
-                </TableHead>
+
               </TableRow>
               <TableRow className="bg-gradient-to-r from-teal-600 to-teal-900 text-slate-200">
                 <TableHead className="font-semibold text-center border-r border-from-teal-600 text-slate-200">
@@ -502,12 +526,7 @@ export default function ComponentPTable() {
                 <TableHead className="font-semibold text-center border-r border-from-teal-600 text-slate-200">
                   Paket
                 </TableHead>
-                <TableHead className="font-semibold text-center border-r border-from-teal-600 text-slate-200">
-                  Rp (.M)
-                </TableHead>
-                <TableHead className="font-semibold text-center border-r border-from-teal-600 text-slate-200">
-                  Paket
-                </TableHead>
+
                 <TableHead className="font-semibold text-center border-r border-from-teal-600 text-slate-200">
                   Paket
                 </TableHead>
@@ -541,109 +560,85 @@ export default function ComponentPTable() {
                 <TableHead className="font-semibold text-center border-r border-from-teal-600 text-slate-200">
                   Rank
                 </TableHead>
-                <TableHead className="font-semibold text-center border-r border-from-teal-600 text-slate-200">
-                  H-1
-                </TableHead>
-                <TableHead className="font-semibold text-center text-slate-200">
-                  Growth
-                </TableHead>
+
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredData.map((item, index) => (
+              {csvData.map((row, index) => (
                 <TableRow
-                  key={item.regional}
+                  key={row[0] || index} // Using row[0] as key (regional) or fallback to index
                   className={cn(
                     "hover:bg-slate-900 transition-colors border-b border-from-teal-600",
                     index % 2 === 0 ? "bg-slate-800" : "bg-slate-750",
                   )}
                 >
+                  {/* Regional */}
                   <TableCell className="font-medium border-r border-from-teal-600 bg-slate-900 text-white">
-                    {item.regional}
+                    {row[0]}
                   </TableCell>
-                  
+
                   {/* RKAP 2025 Setahun */}
                   <TableCell className="text-center border-r border-from-teal-600 text-slate-200">
-                    {item.rkap2025.setahun.rp.toFixed(2)}
+                    {row[1] ? row[1] : 0}
                   </TableCell>
-                  <TableCell className="text-center border-r border-from-teal-600 text-slate-200">
-                    {item.rkap2025.setahun.paket}
-                  </TableCell>
-                  
+                  <TableCell className="text-center border-r border-from-teal-600 text-slate-200">{row[2] || "-"}</TableCell>
+
                   {/* RKAP sd BI */}
                   <TableCell className="text-center border-r border-from-teal-600 text-slate-200">
-                    {item.rkap2025.sdBi.rp.toFixed(2)}
+                    {row[3] ? row[3] : 0}
                   </TableCell>
-                  <TableCell className="text-center border-r border-from-teal-600 text-slate-200">
-                    {item.rkap2025.sdBi.paket}
-                  </TableCell>
-                  
+                  <TableCell className="text-center border-r border-from-teal-600 text-slate-200">{row[4] || "-"}</TableCell>
+
                   {/* Real Progress */}
+                  <TableCell className="text-center border-r border-from-teal-600 text-slate-200">{row[5] || "-"}</TableCell>
+                  <TableCell className="text-center border-r border-from-teal-600 text-slate-200">{row[6] || "-"}</TableCell>
                   <TableCell className="text-center border-r border-from-teal-600 text-slate-200">
-                    {item.realProgress.hps.paket || "-"}
+                    {row[7] ? row[7] : 0}
                   </TableCell>
-                  <TableCell className="text-center border-r border-from-teal-600 text-slate-200">
-                    {item.realProgress.pengadaan.paket || "-"}
-                  </TableCell>
-                  <TableCell className="text-center border-r border-from-teal-600 text-slate-200">
-                    {item.realProgress.sppbj.rp ? item.realProgress.sppbj.rp.toFixed(2) : "-"}
-                  </TableCell>
-                  <TableCell className="text-center border-r border-from-teal-600 text-slate-200">
-                    {item.realProgress.sppbj.paket || "-"}
-                  </TableCell>
-                  
+                  <TableCell className="text-center border-r border-from-teal-600 text-slate-200">{row[8] || "-"}</TableCell>
+
                   {/* Progress Info */}
                   <TableCell className="text-center border-r border-from-teal-600 text-slate-200">
-                    {item.progressInfo.hps ? item.progressInfo.hps.toFixed(2) : "-"}
+                    {row[9] ? row[9] : 0}
+                  </TableCell>
+                  <TableCell className="text-cent er border-r border-from-teal-600 text-slate-200">
+                    {row[10] ? row[10] : 0}
                   </TableCell>
                   <TableCell className="text-center border-r border-from-teal-600 text-slate-200">
-                    {item.progressInfo.pengadaan ? item.progressInfo.pengadaan.toFixed(2) : "-"}
-                  </TableCell>
-                  <TableCell className="text-center border-r border-from-teal-600 text-slate-200">
-                    {item.progressInfo.sppbj.rp ? item.progressInfo.sppbj.rp.toFixed(2) : "-"}
-                  </TableCell>
-                  <TableCell className="text-center border-r border-from-teal-600 text-slate-200">
-                    {item.progressInfo.sppbj.paket ? item.progressInfo.sppbj.paket.toFixed(2) : "-"}
-                  </TableCell>
-                  
-                  {/* Total Paket */}
-                  <TableCell className="text-center border-r border-from-teal-600 text-slate-200">
-                    {item.totalPaket.belumProses ? item.totalPaket.belumProses.toFixed(2) : "-"}
+                    {row[11] ? row[11] : 0}
                   </TableCell>
                   <TableCell className="text-center border-r border-from-teal-600 text-slate-200">
                     <div className="flex items-center justify-center">
-                      <div className={cn("h-3 w-16 rounded-full overflow-hidden bg-slate-700 mr-2")}>
-                        <div
-                          className={cn(
-                            "h-full",
-                            getProgressColor(item.totalPaket.sudahProses)
-                          )}
-                          style={{ width: `${item.totalPaket.sudahProses}%` }}
-                        />
-                      </div>
-                      {item.totalPaket.sudahProses ? item.totalPaket.sudahProses.toFixed(2) : "-"}
+                      {!isNaN(Number.parseFloat(row[12])) ? (
+                        <>
+                          <div className={cn("h-3 w-16 rounded-full overflow-hidden bg-slate-700 mr-2")}>
+                            <div
+                              className={cn("h-full", getProgressColor(Number.parseFloat(row[12])))}
+                              style={{ width: `${Number.parseFloat(row[12])}%` }}
+                            />
+                          </div>
+                          {Number.parseFloat(row[12]).toFixed(2)}
+                        </>
+                      ) : (
+                        "-"
+                      )}
                     </div>
                   </TableCell>
-                  <TableCell className="text-center border-r border-from-teal-600">
-                    {item.rank > 0 ? (
-                      <Badge
-                        variant="outline"
-                        className={cn("font-bold text-sm px-3 py-1", getRankBadgeColor(item.rank))}
-                      >
-                        #{item.rank}
-                      </Badge>
-                    ) : "-"}
-                  </TableCell>
-                  
-                  {/* Progress Paket */}
-                  <TableCell className="text-center border-r border-from-teal-600 text-slate-200">
-                    {typeof item.progressPaket.hMinus1 === 'number' ? 
-                      item.progressPaket.hMinus1.toFixed(2) : item.progressPaket.hMinus1}
-                  </TableCell>
-                  <TableCell className="text-center text-slate-200">
-                    {typeof item.progressPaket.growth === 'number' ? 
-                      formatGrowth(item.progressPaket.growth) : item.progressPaket.growth}
-                  </TableCell>
+
+                  {/* Total Paket */}
+                        <TableCell className="text-center border-r border-from-teal-600">
+            {row[13] && Number.parseInt(row[13]) > 0 ? (
+              <Badge
+                variant="outline"
+                className={cn("font-bold text-sm px-3 py-1", getRankBadgeColor(Number.parseInt(row[13])))}
+              >
+                #{row[13]}
+              </Badge>
+            ) : (
+              "-"
+            )}
+          </TableCell>
+
                 </TableRow>
               ))}
             </TableBody>

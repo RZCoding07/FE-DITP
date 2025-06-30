@@ -123,8 +123,8 @@ export default function UploadUser() {
           return {
             regional: value[0],
             kebun: value[1],
+            rkap_sd: value[2], 
             real_sd: value[3],
-            rkap_sd: value[2],
             persen_serapan: value[4],
             bulan: value[5],
             tahun: value[6],

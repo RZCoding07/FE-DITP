@@ -12,7 +12,7 @@ interface CorrectiveActionData {
 }
 
 interface CorrectiveActionChartProps {
-  data: CorrectiveActionData[]
+  data:any[]
 }
 
 interface ChartData {
@@ -30,7 +30,7 @@ export function CorrectiveActionChart({ data }: CorrectiveActionChartProps) {
 
     data.forEach((item) => {
       // Use nama_unit if available, otherwise use kode_unit as fallback
-      const unitName = item.nama_unit || item.kode_unit || "Unknown Unit"
+      const unitName = item.nama_unit?.replace("KEBUN ", "").substring(0, 15) ?? "Unknown Kebun"
 
       const totalActions = Number.parseInt(item.jumlah_corrective_action) || 0
       const completedActions = Number.parseInt(item.jumlah_corrective_action_selesai) || 0

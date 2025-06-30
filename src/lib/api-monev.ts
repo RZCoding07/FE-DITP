@@ -43,6 +43,13 @@ export async function fetchPlantationData(filters: DashboardFilters): Promise<Pl
   })
 }
 
+export async function fetchMonitoringDataReg(filters: DashboardFilters): Promise<MonitoringApiResponse> {
+  return fetchApi<MonitoringApiResponse>("/d-rekap-regional", {
+    start_date: filters.dari_tanggal,
+    end_date: filters.sampai_tanggal,
+    region: filters.regional,
+  })
+}
 export async function fetchMonitoringData(filters: DashboardFilters): Promise<MonitoringApiResponse> {
   return fetchApi<MonitoringApiResponse>("/d-rekap-unit", {
     start_date: filters.dari_tanggal,
