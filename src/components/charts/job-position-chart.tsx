@@ -19,7 +19,6 @@ export function JobPositionChartWithDialog({ data }: JobPositionChartProps) {
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const chartData = data
-    .sort((a, b) => b.rata_rata_nilai - a.rata_rata_nilai)
     .map((item) => ({
       jabatan: item.jabatan,
       nilai: item.rata_rata_nilai,
@@ -67,7 +66,7 @@ export function JobPositionChartWithDialog({ data }: JobPositionChartProps) {
       labels: {
         style: {
           colors: "#94a3b8",
-          fontSize: "11px",
+          fontSize: "12px",
         },
         rotate: -45,
       },

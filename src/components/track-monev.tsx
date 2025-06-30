@@ -103,7 +103,7 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
   data,
   personnelData = [],
   title = "Dashboard Monitoring & Evaluasi",
-  height = "100%",
+  height = "400px",
   regional,
   kode_unit,
   afdeling,
@@ -336,7 +336,7 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
           setIsDialogOpen(true)
         },
       },
-      
+
       toolbar: {
         show: true,
         tools: {
@@ -401,7 +401,7 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
       },
     },
     colors: ["#f97316", "#475569"],
-        fill: {
+    fill: {
       type: 'gradient',
       gradient: {
         shade: 'dark',
@@ -497,7 +497,9 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
 
   return (
     <div className="w-full text-white h-full rounded-lg">
-      <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg p-4 h-full min-h-[445px] border border-slate-700 shadow-lg flex flex-col ">
+      <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg p-4 h-full max-h-[600px] border border-slate-700 shadow-lg flex flex-col ">
+        <IntegratedSummaryStats data={data} filteredData={chartData} personnelData={personnelData} />
+
         {chartData.length > 0 ? (
           <Chart options={chartOptions} series={chartSeries} type="bar" height={height} />
         ) : (
@@ -519,7 +521,6 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
               Detail Monitoring - {selectedData?.regional} | {selectedData?.kode_unit}
               {selectedData?.afdeling && ` | ${selectedData.afdeling}`}
             </p>
-            <IntegratedSummaryStats data={data} filteredData={chartData} personnelData={personnelData} />
 
             <PersonnelDetailTabs
               selectedData={selectedData}

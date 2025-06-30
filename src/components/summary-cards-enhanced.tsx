@@ -69,7 +69,8 @@ export function SummaryCardsEnhanced({
         ? monitoringData.reduce((sum, item) => sum + Number(item.persentase_kesesuaian || 0), 0) / monitoringData.length
         : 0,
 
-    totalJobMonev: jobPositionData.reduce((sum, item) => sum + Number(item.jumlah_monev || 0), 0),
+    totalJobMonev: regionals ?
+      jobPositionData.reduce((sum, item) => sum + Number(item.jumlah_monev || 0), 0) : monitoringData.reduce((sum, item) => sum + Number(item.jumlah_monev || 0), 0),
 
     activePositions: jobPositionData.filter((item) => Number(item.jumlah_monev || 0) > 0).length,
 

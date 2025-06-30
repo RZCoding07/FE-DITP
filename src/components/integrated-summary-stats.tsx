@@ -21,7 +21,7 @@ interface IntegratedSummaryStatsProps {
 
 const IntegratedSummaryStats: React.FC<IntegratedSummaryStatsProps> = ({ data, filteredData, personnelData }) => {
   // Calculate blok statistics
-  console.log("Calculating Integrated Summary Statistics...", data.length, "total blocks" , data)
+  console.log("Calculating Integrated Summary Statistics...", data.length, "total blocks", data)
   const totalBlok = data.length
   const filteredTotalBlok = filteredData.reduce((sum, group) => sum + group.total, 0)
   const filteredSudahMonev = filteredData.reduce((sum, group) => sum + group.sudah, 0)
@@ -49,39 +49,39 @@ const IntegratedSummaryStats: React.FC<IntegratedSummaryStatsProps> = ({ data, f
   }, {} as any)
 
   return (
-    <div className="space-y-2 mb-5">
+    <div className=" mb-5">
 
       {/* Progress Comparison */}
-   
+
 
       {/* Job Breakdown */}
-          <CardTitle className="text-sm font-medium text-slate-300">Breakdown Personnel per Jabatan</CardTitle>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
-            {Object.entries(jobStats).map(([job, stats]: [string, any]) => {
-              const percentage = stats.total > 0 ? (stats.sudah / stats.total) * 100 : 0
-              return (
-                <div key={job} className="bg-slate-700 rounded-lg p-3">
-                  <div className="flex justify-between mb-2">
-                    <span className="text-sm font-medium text-white">{job}</span>
-                    <span className="text-xs text-blue-400 text-right"> {percentage.toFixed(1)}%</span>
-                  </div>
-                  <div className="flex justify-between text-xs mb-2">
-                    <span className="text-slate-400">Total: {stats.total}</span>
-                    <div className="flex gap-2">
-                      <span className="text-green-400">✓ {stats.sudah}</span>
-                      <span className="text-red-400">✗ {stats.belum}</span>
-                    </div>
-                  </div>
-                  <div className="w-full bg-slate-600 rounded-full h-1.5">
-                    <div
-                      className="bg-green-500 h-1.5 rounded-full transition-all duration-300"
-                      style={{ width: `${percentage}%` }}
-                    ></div>
-                  </div>
+      <CardTitle className="text-sm font-medium text-slate-300">Breakdown Personnel per Jabatan</CardTitle>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+        {Object.entries(jobStats).map(([job, stats]: [string, any]) => {
+          const percentage = stats.total > 0 ? (stats.sudah / stats.total) * 100 : 0
+          return (
+            <div key={job} className="bg-slate-700 rounded-lg p-3">
+              <div className="flex justify-between mb-2">
+                <span className="text-sm font-medium text-white">{job}</span>
+                <span className="text-xs text-blue-400 text-right"> {percentage.toFixed(1)}%</span>
+              </div>
+              <div className="flex justify-between text-xs mb-2">
+                <span className="text-slate-400">Total: {stats.total}</span>
+                <div className="flex gap-2">
+                  <span className="text-green-400">✓ {stats.sudah}</span>
+                  <span className="text-red-400">✗ {stats.belum}</span>
                 </div>
-              )
-            })}
-          </div>
+              </div>
+              <div className="w-full bg-slate-600 rounded-full h-1.5">
+                <div
+                  className="bg-green-500 h-1.5 rounded-full transition-all duration-300"
+                  style={{ width: `${percentage}%` }}
+                ></div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

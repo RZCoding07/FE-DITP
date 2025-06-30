@@ -5,13 +5,14 @@ import ReactApexChart from "react-apexcharts"
 import type { ApexOptions } from "apexcharts"
 
 interface CorrectiveActionData {
-  nama_unit: string
+  nama_unit: string | null
+  kode_unit: string
   jumlah_corrective_action: string
   jumlah_corrective_action_selesai: string
 }
 
 interface CorrectiveActionChartProps {
-  data: any[]
+  data: CorrectiveActionData[]
 }
 
 interface ChartData {
@@ -20,21 +21,60 @@ interface ChartData {
 }
 
 export function CorrectiveActionChart({ data }: CorrectiveActionChartProps) {
-  // Process data
-  const processData = (data: CorrectiveActionData[], key: keyof CorrectiveActionData): ChartData[] => {
-    return data
-      .filter((item) => Number.parseInt(item.jumlah_corrective_action) > 0)
-      .map((item) => ({
-        name: item.nama_unit.replace("KEBUN ", ""),
-        value: Number.parseInt(item[key] as string),
-      }))
+  // Process and aggregate data by unit/kebun
+  const processDataByUnit = (
+    data: CorrectiveActionData[],
+  ): { totalActions: ChartData[]; completedActions: ChartData[] } => {
+    // Create a Map to aggregate data by unit
+    const unitMap = new Map<string, { total: number; completed: number }>()
+
+    data.forEach((item) => {
+      // Use nama_unit if available, otherwise use kode_unit as fallback
+      const unitName = item.nama_unit || item.kode_unit || "Unknown Unit"
+
+      const totalActions = Number.parseInt(item.jumlah_corrective_action) || 0
+      const completedActions = Number.parseInt(item.jumlah_corrective_action_selesai) || 0
+
+      if (unitMap.has(unitName)) {
+        const existing = unitMap.get(unitName)!
+        unitMap.set(unitName, {
+          total: existing.total + totalActions,
+          completed: existing.completed + completedActions,
+        })
+      } else {
+        unitMap.set(unitName, {
+          total: totalActions,
+          completed: completedActions,
+        })
+      }
+    })
+
+    // Convert Map to arrays and filter out units with no actions
+    const totalActions: ChartData[] = []
+    const completedActions: ChartData[] = []
+
+    unitMap.forEach((values, unitName) => {
+      if (values.total > 0) {
+        totalActions.push({
+          name: unitName,
+          value: values.total,
+        })
+      }
+      if (values.completed > 0) {
+        completedActions.push({
+          name: unitName,
+          value: values.completed,
+        })
+      }
+    })
+
+    return { totalActions, completedActions }
   }
 
-  const totalActionData = processData(data, "jumlah_corrective_action")
-  const completedActionData = processData(data, "jumlah_corrective_action_selesai")
+  const { totalActions, completedActions } = processDataByUnit(data)
 
-  const totalActionsSum = totalActionData.reduce((sum, item) => sum + item.value, 0)
-  const completedActionsSum = completedActionData.reduce((sum, item) => sum + item.value, 0)
+  const totalActionsSum = totalActions.reduce((sum, item) => sum + item.value, 0)
+  const completedActionsSum = completedActions.reduce((sum, item) => sum + item.value, 0)
 
   const getChartOptions = (isCompleted = false): ApexOptions => ({
     chart: {
@@ -129,7 +169,7 @@ export function CorrectiveActionChart({ data }: CorrectiveActionChartProps) {
         opacity: 0.8,
       },
       background: {
-        enabled: false, 
+        enabled: false,
       },
     },
     stroke: {
@@ -200,16 +240,16 @@ export function CorrectiveActionChart({ data }: CorrectiveActionChartProps) {
       {/* Total Corrective Action Chart */}
       <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
         <CardHeader>
-          <CardTitle className="text-slate-100 text-center">Total Progress Corrective Actions</CardTitle>
+          <CardTitle className="text-slate-100 text-center">Total Corrective Actions by Unit</CardTitle>
         </CardHeader>
         <CardContent>
           {totalActionsSum > 0 ? (
             <ReactApexChart
               options={{
                 ...getChartOptions(false),
-                labels: totalActionData.map((item) => item.name),
+                labels: totalActions.map((item) => item.name),
               }}
-              series={totalActionData.map((item) => item.value)}
+              series={totalActions.map((item) => item.value)}
               type="donut"
               height={350}
             />
@@ -241,16 +281,16 @@ export function CorrectiveActionChart({ data }: CorrectiveActionChartProps) {
       {/* Completed Corrective Action Chart */}
       <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
         <CardHeader>
-          <CardTitle className="text-slate-100 text-center">Completed Corrective Actions</CardTitle>
+          <CardTitle className="text-slate-100 text-center">Completed Corrective Actions by Unit</CardTitle>
         </CardHeader>
         <CardContent>
           {completedActionsSum > 0 ? (
             <ReactApexChart
               options={{
                 ...getChartOptions(true),
-                labels: completedActionData.map((item) => item.name),
+                labels: completedActions.map((item) => item.name),
               }}
-              series={completedActionData.map((item) => item.value)}
+              series={completedActions.map((item) => item.value)}
               type="donut"
               height={350}
             />
