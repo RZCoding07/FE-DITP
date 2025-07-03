@@ -175,7 +175,7 @@ export function JobPositionChartWithDialog({ data }: JobPositionChartProps) {
         </CardHeader>
         <CardContent>
           {chartData.length > 0 ? (
-            <ReactApexChart options={options} series={series} type="bar" height={300} />
+            <ReactApexChart options={options} series={series} type="bar" />
           ) : (
             <div className="flex items-center justify-center h-64 text-slate-400">
               <div className="text-center">

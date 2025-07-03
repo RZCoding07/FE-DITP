@@ -42,13 +42,16 @@ import type { MonevDetailData } from "@/services/api-monev-2"
 
 interface MonevDetailTableProps {
   dateRange: DateRange | undefined
+  region?: string
+  kode_unit?: string
+  afdeling?: string
   onRefresh?: () => void
 }
 
 type SortDirection = "asc" | "desc" | "none"
 type SortableField = "tanggal" | "gis_id" | "createdby.name" | "nama_vendor" | "luas" | "mekanis" | "chemis"
 
-export function MonevDetailTable({ dateRange, onRefresh }: MonevDetailTableProps) {
+export function MonevDetailTable({ dateRange, onRefresh, region, kode_unit, afdeling }: MonevDetailTableProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [deletingId, setDeletingId] = useState<number | null>(null)
   const [monevDetailData, setMonevDetailData] = useState<MonevDetailData[]>([])
@@ -72,6 +75,9 @@ export function MonevDetailTable({ dateRange, onRefresh }: MonevDetailTableProps
       const data = await apiService.getMonevDetailData({
         start_date: dateRange?.from ? formatDate(dateRange.from) : "2024-05-24",
         end_date: dateRange?.to ? formatDate(dateRange.to) : "2025-06-23",
+        region: region || "",
+        kode_unit: kode_unit || "",
+        afdeling: afdeling || ""
       })
       setMonevDetailData(data)
     } catch (error) {

@@ -43,6 +43,8 @@ interface ScatterChartProps {
     regions: any
     tbm: any
     scoresAllKebun: any
+    bulan: string
+    tahun: number
   }
 }
 
@@ -229,35 +231,73 @@ const EnhancedScatterChart = ({ dataprops, isDarkMode }: ScatterChartProps) => {
         },
       ],
     },
-    yAxis: {
-      title: {
-        text: "Serapan Biaya (%)",
-        style: {
-          color: isDarkMode ? "#FFFFFF" : "#000000",
-        },
-      },
-      min: 0,
-      max: 200,
-      tickInterval: 10,
-      labels: {
-        formatter: function (this: { value: number }): string {
-          return Highcharts.numberFormat(Math.abs(this.value), 0, ",", ".")
-        },
-        style: {
-          color: isDarkMode ? "#FFFFFF" : "#000000",
-        },
-      },
-      lineColor: "transparent",
-      gridLineColor: "transparent",
-      plotLines: [
-        {
-          color: "red",
-          width: 1,
-          value: 0,
-          zIndex: 5,
-        },
-      ],
+yAxis: {
+  title: {
+    text: "Serapan Biaya (%)",
+    style: {
+      color: isDarkMode ? "#FFFFFF" : "#000000",
     },
+  },
+  min: 0,
+  max: 200,
+  tickInterval: 10,
+  labels: {
+    formatter: function (this: { value: number }): string {
+      return Highcharts.numberFormat(Math.abs(this.value), 0, ",", ".")
+    },
+    style: {
+      color: isDarkMode ? "#FFFFFF" : "#000000",
+    },
+  },
+  lineColor: "transparent",
+  gridLineColor: "transparent",
+  plotLines: [
+    {
+      color: "#000", // Warna garis merah
+      width: 2,     // Lebar garis
+      value: 120,   // Posisi y=120
+      zIndex: 5,    // Z-index untuk memastikan garis muncul di depan
+      dashStyle: 'dash', // Gaya garis (solid, dash, dot, etc.)
+      label: {
+        text: '', // Teks label
+        align: 'left',      // Posisi teks
+      
+        style: {
+          color: '#000',      // Warna teks
+          fontWeight: 'bold',
+        }
+      }
+    },
+    {
+      color: "red",
+      width: 1,
+      value: 0,
+      zIndex: 5,
+    },
+        {
+      color: "#000", // Warna garis merah
+      width: 0.5,     // Lebar garis
+      value: 100,   // Posisi y=120
+      zIndex: 5,    // Z-index untuk memastikan garis muncul di depan
+      dashStyle: 'solid', // Gaya garis (solid, dash, dot, etc.)
+      label: {
+        text: '', // Teks label
+        align: 'left',      // Posisi teks
+      
+        style: {
+          color: '#000',      // Warna teks
+          fontWeight: 'bold',
+        }
+      }
+    },
+    {
+      color: "red",
+      width: 1,
+      value: 0,
+      zIndex: 5,
+    },
+  ],
+},
     legend: {
       layout: "horizontal",
       align: "center",

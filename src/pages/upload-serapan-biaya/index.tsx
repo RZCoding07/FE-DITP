@@ -310,7 +310,7 @@ export default function UploadUser() {
                                  <button
                     className='cursor-pointer rounded-full bg-slate-600 px-5 py-[.675rem] text-center text-sm font-semibold text-white transition duration-300 ease-in-out hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300 disabled:cursor-not-allowed'
                   >
-                    <Link to='/replanting'>Kembali</Link>
+                    <Link to='/serapan-biaya'>Kembali</Link>
                   </button>
               </div>
             </div>

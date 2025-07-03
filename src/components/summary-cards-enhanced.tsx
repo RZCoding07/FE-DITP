@@ -39,9 +39,11 @@ export function SummaryCardsEnhanced({
       "jumlah_monev": 238,
       "persentase_monev": 13.404507710557533
     }];
-    plantationData = []; // Add empty array or default plantation data if needed
-    jobPositionData = []; // Add empty array or default job position data if needed
-    correctiveActionData = []; // Add empty array or default corrective action data if needed
+    plantationData = plantationData
+    jobPositionData = jobPositionData.map((item) => ({
+      ...item,
+      jumlah_monev: item.jumlah_monev || 0, // Ensure jumlah_monev is a number
+    }))
   }
 
   // Calculate summary statistics

@@ -82,7 +82,9 @@ const IntegratedSummaryStats: React.FC<IntegratedSummaryStatsProps> = ({ data, f
           )
         })}
       </div>
+
     </div>
+
   )
 }
 

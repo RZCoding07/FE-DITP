@@ -103,27 +103,34 @@ export default function PicaTbmEnhanced() {
     fetchSerapanBiayaDis()
   }, [])
 
-  useEffect(() => {
-    console.log("defaultTahun:", defaultTahun, "defaultBulan:", defaultBulan)
-    const tahun = defaultTahun?.value
-    const bulan = defaultBulan?.value
+useEffect(() => {
+  console.log("defaultTahun:", defaultTahun, "defaultBulan:", defaultBulan);
+  const tahun = defaultTahun?.value;
+  const bulan = defaultBulan?.value;
 
-    const AllFetchSerapanBiaya = async (tahun: any, bulan: any) => {
-      try {
-        console.log("Fetching data for tahun:", tahun, "bulan:", bulan)
+  const AllFetchSerapanBiaya = async (tahun: any, bulan: any) => {
+    try {
+      console.log("Fetching data for tahun:", tahun, "bulan:", bulan);
 
-        const response = await fetchSerapanBiaya({
-          tahun: tahun,
-          bulan: bulan,
-        })
-        setDataSerapanBiaya(response.data)
-      } catch (error) {
-        console.error("Error fetching data:", error)
-      }
+      const response = await fetchSerapanBiaya({
+        tahun: tahun,
+        bulan: bulan,
+      });
+      setDataSerapanBiaya(response.data);
+      
+      // Set nilai form setelah data selesai di-fetch
+      setValue("tahun", defaultTahun);
+      setValue("bulan", defaultBulan);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Gagal memuat data serapan biaya");
     }
+  };
 
-    AllFetchSerapanBiaya(tahun, bulan)
-  }, [defaultTahun, defaultBulan])
+  if (tahun && bulan) {
+    AllFetchSerapanBiaya(tahun, bulan);
+  }
+}, [defaultTahun, defaultBulan, setValue]);
 
   const handleRpcChange = (selectedOption: any) => {
     setSelectedRpc(selectedOption.value)
@@ -258,30 +265,31 @@ export default function PicaTbmEnhanced() {
             watch("bulan").value == 1 ||
             watch("bulan").value == 2 ||
             watch("bulan").value == 3 ||
-            watch("bulan").value == 4
-          ) {
-            bulanVegetatif = 12
-            tahunVegetatif = watch("tahun").value - 1
-          } else if (
+            watch("bulan").value == 4 ||
             watch("bulan").value == 5 ||
             watch("bulan").value == 6 ||
-            watch("bulan").value == 7 ||
-            watch("bulan").value == 8
+            watch("bulan").value == 7
           ) {
             bulanVegetatif = 4
             tahunVegetatif = watch("tahun").value
           } else if (
+
+            watch("bulan").value == 8 ||
             watch("bulan").value == 9 ||
             watch("bulan").value == 10 ||
-            watch("bulan").value == 11 ||
-            watch("bulan").value == 12
-          ) {
+            watch("bulan").value == 11) {
             bulanVegetatif = 8
             tahunVegetatif = watch("tahun").value
-          }
+          } else if (
+            watch("bulan").value == 12 && watch("tahun").value == new Date().getFullYear(
+            )
+          ) {
+            bulanVegetatif = 12
+            tahunVegetatif = watch("tahun").value
+          } 
         } else {
           bulanVegetatif = 12
-          tahunVegetatif = 2023
+          tahunVegetatif = watch("tahun")?.value - 1
         }
 
         const response = await fetchVegetativeProc({
@@ -459,7 +467,28 @@ export default function PicaTbmEnhanced() {
     if (tbmOpt.length > 0 && !watch("tbm")) {
       setValue("tbm", { value: "tbm1", label: "TBM 1" })
     }
-  }, [watch("tbm"), scores])  
+  }, [watch("tbm"), scores])
+
+  // Tambahkan useEffect untuk fetch serapanBiaya ketika bulan atau tahun berubah
+useEffect(() => {
+  const fetchSerapanBiayaData = async () => {
+    if (bulan && tahun) {
+      try {
+        const response = await fetchSerapanBiaya({
+          tahun: tahun.value,
+          bulan: bulan.value,
+        });
+        setDataSerapanBiaya(response.data);
+      } catch (error) {
+        console.error("Error fetching serapan biaya:", error);
+        toast.error("Gagal memuat data serapan biaya");
+      }
+    }
+  };
+
+  fetchSerapanBiayaData();
+}, [bulan, tahun]); // Jalankan efek ini setiap bulan atau tahun berubah
+
 
   return (
     <Layout>
@@ -563,18 +592,19 @@ export default function PicaTbmEnhanced() {
           </CardHeader>
           <CardContent>
             <div className="items-center justify-center align-middle mr-1 pb-5">
-                <EnhancedScatterChart
-                            isDarkMode={isDarkMode}
-
-                  dataprops={{
-                    
-                    dataSerapanBiaya,
-                    scoresKebunTBM,
-                    regions: rpcVal,
-                    tbm: tbmVal,
-                    scoresAllKebun,
-                  }}
-                />
+<EnhancedScatterChart
+  isDarkMode={isDarkMode}
+  dataprops={{
+    dataSerapanBiaya,
+    scoresKebunTBM,
+    regions: rpcVal,
+    tbm: tbmVal,
+    scoresAllKebun,
+    bulan: watch("bulan"), // Tambahkan bulan ke props
+    tahun: watch("tahun")  // Tambahkan tahun ke props
+  }}
+  key={`${watch("bulan")?.value}-${watch("tahun")?.value}`} // Force re-render ketika bulan/tahun berubah
+/>
             </div>
           </CardContent>
         </Card>

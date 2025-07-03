@@ -368,6 +368,10 @@ export default function PlantationDashboardMasterpiece({
 
                 <CorrectiveActionChart
                   data={correctiveActionData}
+                  start_date={dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : ""}
+                  end_date={dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : ""}
+                  region={filters.regional}
+          
                 />
 
                 <div className="xl:col-span-2">
@@ -382,13 +386,16 @@ export default function PlantationDashboardMasterpiece({
               <MonevDetailTable
                 dateRange={dateRange}
                 onRefresh={handleRefresh}
+                region={filters.regional}
+                kode_unit={filters.kode_unit}
+                afdeling={filters.afdeling}
               />
 
 
 
               {/* Additional Insights */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <Card className="bg-gradient-to-br from-blue-900 to-blue-800 border-blue-700">
+                {/* <Card className="bg-gradient-to-br from-blue-900 to-blue-800 border-blue-700">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
                       <BarChart3 className="h-6 w-6 text-blue-400" />
@@ -412,8 +419,8 @@ export default function PlantationDashboardMasterpiece({
                       </div>
                     </div>
                   </CardContent>
-                </Card>
-
+                </Card> */}
+{/* 
                 <Card className="bg-gradient-to-br from-green-900 to-green-800 border-green-700">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
@@ -455,7 +462,7 @@ export default function PlantationDashboardMasterpiece({
                       </div>
                     </div>
                   </CardContent>
-                </Card>
+                </Card> */}
               </div>
             </>
           )}

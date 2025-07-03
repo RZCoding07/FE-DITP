@@ -3,6 +3,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import ReactApexChart from "react-apexcharts"
 import type { ApexOptions } from "apexcharts"
+import { useEffect, useState } from "react"
+import axios from "axios"
 
 interface CorrectiveActionData {
   nama_unit: string | null
@@ -12,26 +14,32 @@ interface CorrectiveActionData {
 }
 
 interface CorrectiveActionChartProps {
-  data:any[]
+  data: any[]
+  showTop10?: boolean
+  region?: string // Tambahkan ini jika perlu
+  start_date?: string // Tambahkan ini jika perlu
+  end_date?: string // Tambahkan ini jika perlu
 }
 
 interface ChartData {
   name: string
-  value: number
+  total: number
+  completed: number
+  completionRate: number
+  kode_unit: string // Tambahkan ini
 }
 
-export function CorrectiveActionChart({ data }: CorrectiveActionChartProps) {
-  // Process and aggregate data by unit/kebun
-  const processDataByUnit = (
-    data: CorrectiveActionData[],
-  ): { totalActions: ChartData[]; completedActions: ChartData[] } => {
-    // Create a Map to aggregate data by unit
-    const unitMap = new Map<string, { total: number; completed: number }>()
+export function CorrectiveActionChart({ data, showTop10 = true, region, start_date, end_date }: CorrectiveActionChartProps) {
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [detailCa, setDetailCa] = useState([])
+
+  // Process data
+  const processDataByUnit = (data: CorrectiveActionData[]): ChartData[] => {
+    const unitMap = new Map<string, { total: number; completed: number; kode_unit: string }>()
 
     data.forEach((item) => {
-      // Use nama_unit if available, otherwise use kode_unit as fallback
       const unitName = item.nama_unit?.replace("KEBUN ", "").substring(0, 15) ?? "Unknown Kebun"
-
       const totalActions = Number.parseInt(item.jumlah_corrective_action) || 0
       const completedActions = Number.parseInt(item.jumlah_corrective_action_selesai) || 0
 
@@ -40,284 +48,224 @@ export function CorrectiveActionChart({ data }: CorrectiveActionChartProps) {
         unitMap.set(unitName, {
           total: existing.total + totalActions,
           completed: existing.completed + completedActions,
+          kode_unit: existing.kode_unit // Pertahankan kode_unit yang ada
         })
       } else {
         unitMap.set(unitName, {
           total: totalActions,
           completed: completedActions,
+          kode_unit: item.kode_unit // Simpan kode_unit bar
         })
       }
     })
 
-    // Convert Map to arrays and filter out units with no actions
-    const totalActions: ChartData[] = []
-    const completedActions: ChartData[] = []
-
+    const result: ChartData[] = []
     unitMap.forEach((values, unitName) => {
       if (values.total > 0) {
-        totalActions.push({
+        result.push({
           name: unitName,
-          value: values.total,
-        })
-      }
-      if (values.completed > 0) {
-        completedActions.push({
-          name: unitName,
-          value: values.completed,
+          total: values.total,
+          completed: values.completed,
+          completionRate: Math.round((values.completed / values.total) * 100),
+          kode_unit: values.kode_unit // Sertakan kode_unit
         })
       }
     })
 
-    return { totalActions, completedActions }
+    return result.sort((a, b) => b.total - a.total)
   }
 
-  const { totalActions, completedActions } = processDataByUnit(data)
 
-  const totalActionsSum = totalActions.reduce((sum, item) => sum + item.value, 0)
-  const completedActionsSum = completedActions.reduce((sum, item) => sum + item.value, 0)
+  const allData = processDataByUnit(data)
+  const chartData = showTop10 ? allData.slice(0, 10) : allData
 
-  const getChartOptions = (isCompleted = false): ApexOptions => ({
+  const chartOptions: ApexOptions = {
     chart: {
-      type: "donut",
-      height: 350,
+      type: 'bar',
+      height: 'auto',
       toolbar: { show: false },
+      background: 'transparent',
       animations: {
         enabled: true,
         speed: 800,
-        animateGradually: {
-          enabled: true,
-          delay: 150,
-        },
-        dynamicAnimation: {
-          enabled: true,
-          speed: 350,
-        },
+        dynamicAnimation: { speed: 400 }
+      },
+      dropShadow: {
+        enabled: true,
+        top: 3,
+        left: 2,
+        blur: 4,
+        opacity: 0.15,
+      },
+      events: {
+        dataPointSelection: (event, chartContext, config) => {
+          const index = config.dataPointIndex
+          const selected = chartData[index]
+          console.log('Clicked data point:', selected)
+
+          const apiUrl = import.meta.env.VITE_API_REPLANTING;
+
+          const datas = axios.post(`${apiUrl}/api/d-rekap-ca-detail`, {
+            kode_unit: selected.kode_unit,
+            region: region,
+            start_date: start_date,
+            end_date: end_date
+          }).then(response => {
+            setDetailCa(response.data)
+            console.log('Corrective action details:', response.data)
+          }).catch(error => {
+            console.error('Error fetching corrective action details:', error)
+          })
+          if (selected) {
+            // You can handle the selected data point here, e.g., show a modal or update state
+            console.log(`Selected unit: ${selected.name}, Total actions: ${selected.total}, Completed: ${selected.completed}, Rate: ${selected.completionRate}%`)
+          }
+
+
+        }
       },
     },
     plotOptions: {
-      pie: {
-        donut: {
-          size: "65%",
-          background: "transparent",
-          labels: {
-            show: true,
-            name: {
-              show: true,
-              fontSize: "16px",
-              fontWeight: 600,
-              color: "#94a3b8",
-              offsetY: -10,
-              formatter: (val) => val,
-            },
-            value: {
-              show: true,
-              fontSize: "24px",
-              fontWeight: 700,
-              color: "#ffffff",
-              offsetY: 5,
-              formatter: (val) => val.toString(),
-            },
-            total: {
-              show: true,
-              showAlways: true,
-              label: isCompleted ? "COMPLETED" : "TOTAL ACTIONS",
-              color: "#94a3b8",
-              fontSize: "12px",
-              fontWeight: 600,
-              formatter: (w) => {
-                const total = w.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0)
-                return total.toString()
-              },
-            },
-          },
+      bar: {
+        horizontal: true,
+        borderRadius: 6,
+        borderRadiusApplication: 'end',
+        barHeight: '80%',
+        columnWidth: '60%',
+        dataLabels: {
+          position: 'center',
+          hideOverflowingLabels: false,
         },
-        startAngle: -90,
-        endAngle: 270,
-        expandOnClick: false,
       },
     },
-    legend: {
-      position: "bottom",
-      horizontalAlign: "center",
-      floating: false,
-      fontSize: "14px",
-      markers: {
-        offsetX: -4,
-      },
-      itemMargin: {
-        horizontal: 8,
-        vertical: 4,
-      },
-      labels: {
-        colors: "#e2e8f0",
-        useSeriesColors: false,
-      },
-    },
+    colors: ['#3B82F6'], // Single color for all bars
     dataLabels: {
       enabled: true,
-      formatter: (val: number) => Math.round(val) + "%",
+      formatter: (val) => `${val}`,
       style: {
-        fontSize: "11px",
-        fontWeight: "bold",
-        colors: ["#fff"],
+        fontSize: '12px',
+        fontWeight: 'bold',
+        colors: ['#FFFFFF'],
       },
+      offsetX: 10,
       dropShadow: {
         enabled: true,
         top: 1,
         left: 1,
-        blur: 1,
+        blur: 2,
         opacity: 0.8,
-      },
-      background: {
-        enabled: false,
-      },
+      }
     },
     stroke: {
-      width: 2,
-      colors: ["#0f172a"],
+      width: 1,
+      colors: ['#0F172A'],
     },
-    colors: ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6", "#EC4899", "#14B8A6", "#F97316", "#06B6D4"],
+
+    xaxis: {
+      categories: chartData.map(item => item.name),
+      labels: {
+        style: {
+          colors: '#94A3B8',
+          fontSize: '12px',
+        },
+      },
+      axisBorder: { show: false },
+      axisTicks: { show: false },
+    },
+    yaxis: {
+      labels: {
+        style: {
+          colors: '#E2E8F0',
+          fontSize: '12px',
+        },
+      },
+    },
     tooltip: {
-      enabled: true,
-      fillSeriesColor: false,
-      style: {
-        fontSize: "14px",
-      },
       y: {
-        formatter: (value) => `${value} actions`,
+        formatter: (val) => `${val} actions`,
       },
+      style: {
+        fontSize: '14px',
+      },
+      marker: {
+        show: true,
+      },
+      custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+        const data = w.globals.initialSeries[0].data[dataPointIndex]
+        const completed = chartData[dataPointIndex].completed
+        const rate = chartData[dataPointIndex].completionRate
+        return `
+          <div class="p-2 bg-slate-800 rounded-lg shadow-lg border border-slate-700">
+            <div class="text-sm font-bold text-slate-200">${w.globals.labels[dataPointIndex]}</div>
+            <div class="text-sm text-slate-300">Total: ${data}</div>
+            <div class="text-sm text-slate-300">Completed: ${completed}</div>
+            <div class="text-sm text-slate-300">Completion: ${rate}%</div>
+          </div>
+        `
+      }
+    },
+    grid: {
+      borderColor: '#334155',
+      strokeDashArray: 4,
+      xaxis: { lines: { show: true } },
+      yaxis: { lines: { show: false } },
     },
     responsive: [
       {
         breakpoint: 768,
         options: {
-          chart: {
-            width: "100%",
-            height: 300,
-          },
-          legend: {
-            position: "bottom",
-          },
-          plotOptions: {
-            pie: {
-              donut: {
-                labels: {
-                  name: {
-                    fontSize: "14px",
-                  },
-                  value: {
-                    fontSize: "20px",
-                  },
-                  total: {
-                    fontSize: "10px",
-                  },
-                },
-              },
-            },
-          },
+          chart: { height: 500 },
+          plotOptions: { bar: { barHeight: '70%' } },
+          dataLabels: { enabled: false },
         },
       },
     ],
-    fill: {
-      type: "gradient",
-      gradient: {
-        shade: "dark",
-        type: "vertical",
-        shadeIntensity: 0.5,
-        gradientToColors: isCompleted
-          ? ["#60A5FA", "#34D399", "#FCD34D", "#FCA5A5", "#C4B5FD", "#F9A8D4", "#2DD4BF", "#FB923C", "#22D3EE"]
-          : ["#1D4ED8", "#059669", "#B45309", "#B91C1C", "#7E22CE", "#BE185D", "#0D9488", "#EA580C", "#0891B2"],
-        inverseColors: false,
-        opacityFrom: 1,
-        opacityTo: 0.8,
-        stops: [0, 100],
-      },
-    },
-  })
+  }
+
+  const series = [
+    { name: 'Total Actions', data: chartData.map(item => item.total) }
+  ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      {/* Total Corrective Action Chart */}
-      <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
-        <CardHeader>
-          <CardTitle className="text-slate-100 text-center">Total Corrective Actions by Unit</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {totalActionsSum > 0 ? (
-            <ReactApexChart
-              options={{
-                ...getChartOptions(false),
-                labels: totalActions.map((item) => item.name),
-              }}
-              series={totalActions.map((item) => item.value)}
-              type="donut"
-              height={350}
-            />
-          ) : (
-            <div className="flex flex-col items-center justify-center h-64 gap-2">
-              <div className="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#64748b"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <line x1="12" y1="8" x2="12" y2="12"></line>
-                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                </svg>
-              </div>
-              <p className="text-slate-400 text-center max-w-xs">No corrective actions found</p>
+    <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
+      <CardHeader>
+        <CardTitle className="text-slate-100 text-center font-bold text-lg">
+          {showTop10 ? 'Top 10 Corrective Actions by Unit' : 'Corrective Actions by Unit'}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {chartData.length > 0 ? (
+          <ReactApexChart
+            options={chartOptions}
+            series={series}
+            type="bar"
+            height={500}
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center h-64 gap-2">
+            <div className="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#64748b"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
             </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Completed Corrective Action Chart */}
-      <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
-        <CardHeader>
-          <CardTitle className="text-slate-100 text-center">Completed Corrective Actions by Unit</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {completedActionsSum > 0 ? (
-            <ReactApexChart
-              options={{
-                ...getChartOptions(true),
-                labels: completedActions.map((item) => item.name),
-              }}
-              series={completedActions.map((item) => item.value)}
-              type="donut"
-              height={350}
-            />
-          ) : (
-            <div className="flex flex-col items-center justify-center h-64 gap-2">
-              <div className="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#64748b"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <line x1="12" y1="8" x2="12" y2="12"></line>
-                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                </svg>
-              </div>
-              <p className="text-slate-400 text-center max-w-xs">No completed corrective actions found</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+            <p className="text-slate-400 text-center max-w-xs">
+              No corrective actions data available
+            </p>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   )
 }

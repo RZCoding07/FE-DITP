@@ -497,7 +497,7 @@ const MonevDashboard: React.FC<MonevDashboardProps> = ({
 
   return (
     <div className="w-full text-white h-full rounded-lg">
-      <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg p-4 h-full max-h-[600px] border border-slate-700 shadow-lg flex flex-col ">
+      <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg p-4 h-full max-h-[800px] border border-slate-700 shadow-lg flex flex-col ">
         <IntegratedSummaryStats data={data} filteredData={chartData} personnelData={personnelData} />
 
         {chartData.length > 0 ? (

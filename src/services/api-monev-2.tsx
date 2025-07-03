@@ -72,6 +72,9 @@ export interface CAUnitData {
 export interface DateRangeRequest {
     start_date: string
     end_date: string
+    region?: string
+    kode_unit?: string
+    afdeling?: string
 }
 
 export interface RegionalRequest extends DateRangeRequest { }
