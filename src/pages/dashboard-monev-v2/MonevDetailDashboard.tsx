@@ -134,6 +134,7 @@ export default function MonevDetailDashboard() {
                   obs.pengamatan_name.toLowerCase().includes("dipasang") ||
                   obs.pengamatan_name.toLowerCase().includes("bebas") ||
                   obs.pengamatan_name.toLowerCase().includes("tidak berpotensi") ||
+                  obs.pengamatan_name.toLowerCase().includes("diagonal arah barisan") ||
                   obs.pengamatan_name.toLowerCase().includes("tidak ada serangan") ||
                   obs.pengamatan_name.toLowerCase().includes("rutin")),
             )
@@ -439,6 +440,7 @@ export default function MonevDetailDashboard() {
                                 selectedObs.pengamatan_name.toLowerCase().includes("bebas") ||
                                 selectedObs.pengamatan_name.toLowerCase().includes("tidak berpotensi") ||
                                 selectedObs.pengamatan_name.toLowerCase().includes("tidak ada serangan") ||
+                                selectedObs.pengamatan_name.toLowerCase().includes("diagonal arah barisan") ||
                                 selectedObs.pengamatan_name.toLowerCase().includes("rutin")
                                 : false
 

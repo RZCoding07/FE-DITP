@@ -36,7 +36,7 @@ interface ScoreKebunTBM {
 
 interface ScatterChartProps {
   isDarkMode: boolean
-  
+
   dataprops: {
     dataSerapanBiaya: DataSerapanBiaya[]
     scoresKebunTBM: ScoreKebunTBM[]
@@ -49,11 +49,12 @@ interface ScatterChartProps {
 }
 
 const areas = [
-  { xRange: [90, 100], yRange: [60, 200], color: "rgba(255, 255, 0, 0.7)" },
-  { xRange: [90, 100], yRange: [0, 60], color: "rgba(144, 238, 144, 0.7)" },
-  { xRange: [80, 90], yRange: [0, 60], color: "rgba(0, 0, 0, 0.7)" },
-  { xRange: [80, 90], yRange: [60, 200], color: "rgba(255, 99, 71, 0.7)" },
+  { xRange: [90, 100], yRange: [60, 200], color: "rgba(255, 255, 0, 0.7)" }, // Kuning
+  { xRange: [90, 100], yRange: [0, 59.99999999], color: "rgba(144, 238, 144, 0.7)" }, // Hijau
+  { xRange: [80, 90], yRange: [0, 59.99999999], color: "rgba(0, 0, 0, 0.7)" }, // Hitam
+  { xRange: [80, 90], yRange: [60, 200], color: "rgba(255, 99, 71, 0.7)" }, // Merah
 ]
+
 
 const EnhancedScatterChart = ({ dataprops, isDarkMode }: ScatterChartProps) => {
   const [modalData, setModalData] = useState<any>(null)
@@ -231,73 +232,74 @@ const EnhancedScatterChart = ({ dataprops, isDarkMode }: ScatterChartProps) => {
         },
       ],
     },
-yAxis: {
-  title: {
-    text: "Serapan Biaya (%)",
-    style: {
-      color: isDarkMode ? "#FFFFFF" : "#000000",
-    },
-  },
-  min: 0,
-  max: 200,
-  tickInterval: 10,
-  labels: {
-    formatter: function (this: { value: number }): string {
-      return Highcharts.numberFormat(Math.abs(this.value), 0, ",", ".")
-    },
-    style: {
-      color: isDarkMode ? "#FFFFFF" : "#000000",
-    },
-  },
-  lineColor: "transparent",
-  gridLineColor: "transparent",
-  plotLines: [
-    {
-      color: "#000", // Warna garis merah
-      width: 2,     // Lebar garis
-      value: 120,   // Posisi y=120
-      zIndex: 5,    // Z-index untuk memastikan garis muncul di depan
-      dashStyle: 'dash', // Gaya garis (solid, dash, dot, etc.)
-      label: {
-        text: '', // Teks label
-        align: 'left',      // Posisi teks
-      
+    yAxis: {
+      title: {
+        text: "Serapan Biaya (%)",
         style: {
-          color: '#000',      // Warna teks
-          fontWeight: 'bold',
-        }
-      }
-    },
-    {
-      color: "red",
-      width: 1,
-      value: 0,
-      zIndex: 5,
-    },
+          color: isDarkMode ? "#FFFFFF" : "#000000",
+        },
+      },
+      min: 0,
+      max: 200,
+      tickInterval: 10,
+      labels: {
+        formatter: function (this: { value: number }): string {
+          return Highcharts.numberFormat(this.value, 2, ",", ".")
+
+        },
+        style: {
+          color: isDarkMode ? "#FFFFFF" : "#000000",
+        },
+      },
+      lineColor: "transparent",
+      gridLineColor: "transparent",
+      plotLines: [
         {
-      color: "#000", // Warna garis merah
-      width: 0.5,     // Lebar garis
-      value: 100,   // Posisi y=120
-      zIndex: 5,    // Z-index untuk memastikan garis muncul di depan
-      dashStyle: 'solid', // Gaya garis (solid, dash, dot, etc.)
-      label: {
-        text: '', // Teks label
-        align: 'left',      // Posisi teks
-      
-        style: {
-          color: '#000',      // Warna teks
-          fontWeight: 'bold',
-        }
-      }
+          color: "#000", // Warna garis merah
+          width: 2,     // Lebar garis
+          value: 120,   // Posisi y=120
+          zIndex: 5,    // Z-index untuk memastikan garis muncul di depan
+          dashStyle: 'dash', // Gaya garis (solid, dash, dot, etc.)
+          label: {
+            text: '', // Teks label
+            align: 'left',      // Posisi teks
+
+            style: {
+              color: '#000',      // Warna teks
+              fontWeight: 'bold',
+            }
+          }
+        },
+        {
+          color: "red",
+          width: 1,
+          value: 0,
+          zIndex: 5,
+        },
+        {
+          color: "#000", // Warna garis merah
+          width: 0.5,     // Lebar garis
+          value: 100,   // Posisi y=120
+          zIndex: 5,    // Z-index untuk memastikan garis muncul di depan
+          dashStyle: 'solid', // Gaya garis (solid, dash, dot, etc.)
+          label: {
+            text: '', // Teks label
+            align: 'left',      // Posisi teks
+
+            style: {
+              color: '#000',      // Warna teks
+              fontWeight: 'bold',
+            }
+          }
+        },
+        {
+          color: "red",
+          width: 1,
+          value: 0,
+          zIndex: 5,
+        },
+      ],
     },
-    {
-      color: "red",
-      width: 1,
-      value: 0,
-      zIndex: 5,
-    },
-  ],
-},
     legend: {
       layout: "horizontal",
       align: "center",
@@ -328,15 +330,16 @@ yAxis: {
             enabled: false,
           },
         },
-        tooltip: {
-          headerFormat: "<b>{series.name}</b><br>",
-          pointFormatter: function (this: Highcharts.Point & Point): string {
-            const xValue = this.x !== undefined ? this.x : "N/A"
-            const yValue = this.y !== undefined ? Math.floor(Number.parseFloat(this.y.toString())) : "N/A"
-            return `<strong>Kebun: ${this.kebun}</strong><br>Nilai Vegetatif: ${xValue}<br>Serapan Biaya: 
-            ${this.y < 0 ? `${Math.abs(Number(yValue)) + 100}%` : `${yValue}%`}`
-          },
-        },
+tooltip: {
+  headerFormat: "<b>{series.name}</b><br>",
+  pointFormatter: function (this: Highcharts.Point & Point): string {
+    const xValue = this.x !== undefined ? this.x : "N/A"
+    const yValue = this.y !== undefined ? this.y : "N/A"
+    return `<strong>Kebun: ${this.kebun}</strong><br>
+Nilai Vegetatif: ${Number(xValue).toFixed(2)}<br>
+Serapan Biaya: ${Highcharts.numberFormat(Number(yValue), 2, ",", ".")}%`
+  },
+},
         dataLabels: {
           enabled: true,
           formatter: function (this: { point: Point }) {
@@ -392,52 +395,52 @@ yAxis: {
 
   return (
     <>
-    <div className="bg-gradient-to-br from-blue-100 to-blue-300 dark:from-sky-700 dark:to-cyan-600 p-4 rounded-lg mb-6">
-      <div className="space-y-6">
-        <div className="p-4 rounded-lg">
-          <div id="chart" className="chart-container">
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={options}
-              containerProps={{ style: { height: `800px`, width: "100%" } }}
-            />
+      <div className="bg-gradient-to-br from-blue-100 to-blue-300 dark:from-sky-700 dark:to-cyan-600 p-4 rounded-lg mb-6">
+        <div className="space-y-6">
+          <div className="p-4 rounded-lg">
+            <div id="chart" className="chart-container">
+              <HighchartsReact
+                highcharts={Highcharts}
+                options={options}
+                containerProps={{ style: { height: `800px`, width: "100%" } }}
+              />
+            </div>
+
+            {showModal && modalData && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white dark:bg-slate-900 p-6 rounded-lg max-w-md w-full">
+                  <h3 className="text-lg font-bold mb-4">Detail Kebun: {modalData.kebun}</h3>
+                  <div className="space-y-2">
+                    <p>
+                      <span className="font-medium">Nilai Vegetatif:</span> {modalData.vegetatif.toFixed(2)}
+                    </p>
+                    <p>
+                      <span className="font-medium">Serapan Biaya:</span>{" "}
+                      {Highcharts.numberFormat(modalData.serapanBiaya, 2, ",", ".")} %
+                    </p>
+                    <p>
+                      <span className="font-medium">Bulan:</span> {modalData.bulan}
+                    </p>
+                    <p>
+                      <span className="font-medium">Tahun:</span> {modalData.tahun}
+                    </p>
+                    <p>
+                      <span className="font-medium">Kode Kebun:</span> {modalData.kode_kebun}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  >
+                    Tutup
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
-          {showModal && modalData && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white dark:bg-slate-900 p-6 rounded-lg max-w-md w-full">
-                <h3 className="text-lg font-bold mb-4">Detail Kebun: {modalData.kebun}</h3>
-                <div className="space-y-2">
-                  <p>
-                    <span className="font-medium">Nilai Vegetatif:</span> {modalData.vegetatif.toFixed(2)}
-                  </p>
-                  <p>
-                    <span className="font-medium">Serapan Biaya:</span>{" "}
-                    {Highcharts.numberFormat(Math.abs(modalData.serapanBiaya), 0, ",", ".")} %
-                  </p>
-                  <p>
-                    <span className="font-medium">Bulan:</span> {modalData.bulan}
-                  </p>
-                  <p>
-                    <span className="font-medium">Tahun:</span> {modalData.tahun}
-                  </p>
-                  <p>
-                    <span className="font-medium">Kode Kebun:</span> {modalData.kode_kebun}
-                  </p>
-                </div>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
-                  Tutup
-                </button>
-              </div>
-            </div>
-          )}
+          {/* Add the QuadrantTable component below the chart */}
         </div>
-
-        {/* Add the QuadrantTable component below the chart */}
-      </div>
 
       </div>
       <QuadrantTable chartData={chartData} />

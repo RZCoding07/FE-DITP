@@ -29,6 +29,8 @@ interface PersonnelDetailTabsProps {
   exportToExcel: (data: any[], filename: string) => void
 }
 
+
+
 const PersonnelDetailTabs: React.FC<PersonnelDetailTabsProps> = ({
   selectedData,
   personnelData,
@@ -39,15 +41,34 @@ const PersonnelDetailTabs: React.FC<PersonnelDetailTabsProps> = ({
   getFilteredAndSortedData,
   exportToExcel,
 }) => {
-  // Filter personnel berdasarkan selected data
-  const relevantPersonnel = personnelData.filter((person) => {
-    const regionalMatch = person.region === selectedData?.regional
-    const unitMatch = person.personnel_subarea === selectedData?.kode_unit
-    const afdelingMatch =
-      !selectedData?.afdeling || selectedData?.afdeling === "NO_AFD" || person.afd_code === selectedData?.afdeling
 
-    return regionalMatch && unitMatch && afdelingMatch
-  })
+  console.log("PersonnelDetailTabs rendered with selectedData:", selectedData)
+
+  console.log("PersonnelData length:", personnelData)
+  // Filter personnel berdasarkan selected data
+
+
+const relevantPersonnel = personnelData.filter((person) => {
+  // Jika tidak ada selectedData atau tidak ada regional, tampilkan semua
+  if (!selectedData || !selectedData.regional) return true;
+  
+  // Filter berdasarkan regional
+  const regionalMatch = person.region === selectedData.regional;
+  
+  // Jika kode_unit kosong, hanya filter berdasarkan regional
+  if (selectedData.kode_unit === '') return regionalMatch;
+  
+  // Jika ada kode_unit, filter berdasarkan regional dan kode_unit
+  const unitMatch = person.personnel_subarea === selectedData.kode_unit;
+  const afdelingMatch =
+    !selectedData.afdeling || 
+    selectedData.afdeling === "NO_AFD" || 
+    person.afd_code === selectedData.afdeling;
+
+  return regionalMatch && unitMatch && afdelingMatch;
+});
+
+
 
   const personnelSudahMonev = relevantPersonnel.filter((p) => p.headerkertaskerja.length > 0)
   const personnelBelumMonev = relevantPersonnel.filter((p) => p.headerkertaskerja.length === 0)
@@ -66,10 +87,10 @@ const PersonnelDetailTabs: React.FC<PersonnelDetailTabsProps> = ({
           Blok Belum ({belumMonevData.length})
         </TabsTrigger>
         <TabsTrigger value="personnel-aktif" className="data-[state=active]:bg-slate-700">
-          Personnel Aktif ({personnelSudahMonev.length})
+          Personil Aktif ({personnelSudahMonev.length})
         </TabsTrigger>
         <TabsTrigger value="personnel-belum" className="data-[state=active]:bg-slate-700">
-          Personnel Belum ({personnelBelumMonev.length})
+          Personil Belum ({personnelBelumMonev.length})
         </TabsTrigger>
       </TabsList>
 

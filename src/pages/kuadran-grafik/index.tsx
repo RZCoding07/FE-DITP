@@ -184,9 +184,6 @@ useEffect(() => {
   const [scoresKebunTBM, setScoresKebunTBM] = useState<any[]>([])
   const [scoresAllKebun, setScoresAllKebun] = useState<any[]>([])
   const [tbmRes, setTbmRes] = useState<any[]>([])
-  const [isKebun, setIsKebun] = useState<boolean>(false)
-  const [isAfd, setIsAfd] = useState<boolean>(false)
-  const [isTbm, setIsTbm] = useState<boolean>(true)
   const [regionalBlackBlockCount, setRegionalBlackBlockCount] = useState<any>({})
   const [colorData, setColorData] = useState({
     gold: 0,

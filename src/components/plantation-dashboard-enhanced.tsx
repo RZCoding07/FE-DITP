@@ -1,5 +1,6 @@
 "use client"
 
+import { useMemo } from "react"
 import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -22,6 +23,7 @@ import type { DashboardFilters } from "@/types/api"
 import type { DateRange } from "react-day-picker"
 import { apiService } from "@/services/api-monev-2"
 import { formatDate } from "@/lib/utils"
+import IntegratedSummaryStats from "./integrated-summary-stats"
 
 interface PlantationDashboardMasterpieceProps {
   title?: string
@@ -30,6 +32,7 @@ interface PlantationDashboardMasterpieceProps {
   onFiltersChange?: (filters: DashboardFilters) => void
 }
 import MonevDashboard from "./track-monev"
+import TBMContractStatusChart from "./custom/kontrak"
 
 export default function PlantationDashboardMasterpiece({
   title = "Dashboard Monitoring Perkebunan",
@@ -257,6 +260,125 @@ export default function PlantationDashboardMasterpiece({
     )
   }
 
+
+  const chartData = useMemo(() => {
+    // Apply filters
+    const filteredData = monevBlokTUData.filter((item) => {
+      const regionalMatch = !filters.regional || item.regional === filters.regional
+      const kodeUnitMatch = !filters.kode_unit || item.kode_unit === filters.kode_unit
+      const afdelingMatch = !filters.afdeling || item.afdeling === filters.afdeling
+
+      return regionalMatch && kodeUnitMatch && afdelingMatch
+    })
+
+    // Determine aggregation level based on filters
+    let displayLevel = ""
+
+    if (filters.afdeling) {
+      displayLevel = "blok" // Show individual bloks when afdeling is selected
+    } else if (filters.kode_unit) {
+      displayLevel = "afdeling" // Show afdelings when unit is selected
+    } else if (filters.regional) {
+      displayLevel = "unit" // Show units when regional is selected
+    } else {
+      displayLevel = "regional" // Show regionals when no filter
+    }
+
+    // Group data based on determined level
+    const grouped = filteredData.reduce((acc, item) => {
+      let key = ""
+
+      if (displayLevel === "regional") {
+        key = item.regional
+      } else if (displayLevel === "unit") {
+        key = `${item.regional}-${item.kode_unit}`
+      } else if (displayLevel === "afdeling") {
+        key = `${item.regional}-${item.kode_unit}-${item.afdeling}`
+      } else if (displayLevel === "blok") {
+        key = `${item.regional}-${item.kode_unit}-${item.afdeling}-${item.blok}`
+      }
+
+      if (!acc[key]) {
+        acc[key] = {
+          regional: item.regional,
+          kode_unit: displayLevel === "regional" ? "" : item.kode_unit, // Clear unit for regional level
+          afdeling: displayLevel === "regional" || displayLevel === "unit" ? null : item.afdeling, // Clear afdeling for regional/unit level
+          blok: displayLevel === "blok" ? item.blok : "",
+          nama_unit: item.nama_unit,
+          total_blok: 0,
+          blok_sudah_monev: 0,
+          blok_belum_monev: 0,
+          items: [],
+          displayLevel: displayLevel,
+        }
+      }
+
+      // Tambah total blok
+      acc[key].total_blok += 1
+      acc[key].items.push(item)
+
+      // Hitung berdasarkan status monev per blok
+      if (item.status_monev === "Sudah") {
+        acc[key].blok_sudah_monev += 1
+      } else {
+        acc[key].blok_belum_monev += 1
+      }
+
+      return acc
+    }, {} as any)
+
+    // Convert to array and calculate percentages
+    return Object.values(grouped)
+      .map((group: any) => {
+        const total = group.total_blok
+        const sudah = group.blok_sudah_monev
+        const belum = group.blok_belum_monev
+
+        // Determine display label based on level
+        let displayLabel = ""
+        let sortKey = ""
+
+        if (group.displayLevel === "regional") {
+          displayLabel = `Regional ${group.regional}`
+          sortKey = group.regional
+        } else if (group.displayLevel === "unit") {
+          displayLabel = group.nama_unit
+          sortKey = group.nama_unit
+        } else if (group.displayLevel === "afdeling") {
+          displayLabel = group.afdeling
+          sortKey = group.afdeling
+        } else if (group.displayLevel === "blok") {
+          displayLabel = group.blok
+          sortKey = group.blok
+        }
+
+        return {
+          regional: group.regional,
+          kode_unit: group.kode_unit,
+          afdeling: group.afdeling, // This will be null for unit-level data
+          blok: group.blok,
+          nama_unit: group.nama_unit,
+          sudah: sudah,
+          belum: belum,
+          total: total,
+          percentage_sudah: total > 0 ? (sudah / total) * 100 : 0,
+          percentage_belum: total > 0 ? (belum / total) * 100 : 0,
+          items: group.items,
+          displayLabel: displayLabel,
+          sortKey: sortKey,
+          displayLevel: group.displayLevel,
+        }
+      })
+      .sort((a, b) => {
+        // Sort by the appropriate key
+        if (a.displayLevel === "regional") {
+          return Number.parseInt(a.regional) - Number.parseInt(b.regional)
+        }
+        return a.sortKey.localeCompare(b.sortKey)
+      })
+  }, [monevBlokTUData, filters.regional, filters.kode_unit, filters.afdeling])
+
+
   return (
     <ErrorBoundary>
       <div className={`bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white ${isFullscreen ? "fixed inset-0 z-50" : "min-h-screen"}`}>
@@ -343,26 +465,50 @@ export default function PlantationDashboardMasterpiece({
               {/* Charts Grid */}
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
                 <div className="xl:col-span-2">
-         
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <MonitoringOverviewChart
-                        data={monitoringData}
-                        region={filters.regional}
-                        kode_unit={filters.kode_unit}
-                        onDataPointClick={(data) => console.log("Monitoring clicked:", data)}
-                      />
-                      <MonevDashboard
-                        data={monevBlokTUData}
-                        personnelData={monevDetailData}
-                        regional={filters.regional}
-                        kode_unit={filters.kode_unit}
-                        afdeling={filters.afdeling}
-                      />
+
+                  <div className="grid grid-cols-1 gap-6">
+                    <div className="w-full text-white h-full rounded-lg">
+                      <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg p-4 h-full border border-slate-700 shadow-lg">
+                        <div className="flex justify-between items-center mb-4"></div>
+                        <IntegratedSummaryStats filteredData={chartData}
+                          data={monevBlokTUData}
+                          personnelData={monevDetailData}
+                          regional={filters.regional}
+                          kode_unit={filters.kode_unit}
+                        />
+                      </div>
                     </div>
+                    <MonevDashboard
+                      data={monevBlokTUData}
+                      personnelData={monevDetailData}
+                      regional={filters.regional}
+                      kode_unit={filters.kode_unit}
+                      afdeling={filters.afdeling}
+                    />
+
+                    <TBMContractStatusChart
+                      data={monevBlokTUData}
+                      personnelData={monevDetailData}
+                      regional={filters.regional}
+                      kode_unit={filters.kode_unit}
+                      afdeling={filters.afdeling}
+                    />
+
+                    <MonitoringOverviewChart
+                      data={monitoringData}
+                      region={filters.regional}
+                      kode_unit={filters.kode_unit}
+                      onDataPointClick={(data) => console.log("Monitoring clicked:", data)}
+                    />
+
+                  </div>
 
                 </div>
 
                 <JobPositionChartWithDialog
+                regional={filters.regional}
+                kode_unit={filters.kode_unit}
+                afdeling={filters.afdeling}
                   data={jobPositionData}
                 />
 
@@ -371,7 +517,7 @@ export default function PlantationDashboardMasterpiece({
                   start_date={dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : ""}
                   end_date={dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : ""}
                   region={filters.regional}
-          
+
                 />
 
                 <div className="xl:col-span-2">
@@ -420,7 +566,7 @@ export default function PlantationDashboardMasterpiece({
                     </div>
                   </CardContent>
                 </Card> */}
-{/* 
+                {/* 
                 <Card className="bg-gradient-to-br from-green-900 to-green-800 border-green-700">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">

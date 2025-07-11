@@ -58,17 +58,15 @@ console.log("Rendering Monitoring Overview Chart",data)
         }
     ]
 
-    console.log("Data received for chart", data)
   const chartData = data
     .map((item) => ({
       name: item.nama,
       monitoring: item.persentase_monev,
       score: item.rata_rata_nilai,
-      compliance: item.persentase_kesesuaian,
+      compliance: item.rata_rata_bobot,
       original: item,
     }))
 
-    console.log("Processed Chart Data", chartData)
 
   // Function to get color based on monitoring percentage
   const getColorByValue = (value: number) => {
@@ -169,7 +167,7 @@ console.log("Rendering Monitoring Overview Chart",data)
       y: {
         formatter: (val: number, opts: any) => {
           // Show percentage only for first series (monitoring)
-          if (opts.seriesIndex === 0) {
+          if (opts.seriesIndex === 1) {
             return val.toFixed(2) + "%"
           }
           return val.toFixed(2)
@@ -195,7 +193,7 @@ console.log("Rendering Monitoring Overview Chart",data)
       data: chartData.map((item) => item.score),
     },
     {
-      name: "Persentase jumlah blok yang sudah di Monev (%)",
+      name: "Persentase item yang dinilai (%)",
       data: chartData.map((item) => item.monitoring),
     },
   ]
@@ -223,10 +221,7 @@ console.log("Rendering Monitoring Overview Chart",data)
               </CardDescription>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-slate-400">
-            <Eye className="h-4 w-4" />
-            <span className="text-sm">Klik untuk detail</span>
-          </div>
+    
         </div>
 
         {/* Color Legend */}

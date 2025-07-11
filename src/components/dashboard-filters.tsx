@@ -194,6 +194,20 @@ export function DashboardFiltersEnhanced({
             >
               Bulan Ini
             </Button>
+            {/*  sd bulan ini dari januari  */}
+            <Button
+              variant="outline"
+              onClick={() => {
+                const newRange = {
+                  from: new Date(new Date().getFullYear(), 0, 1),
+                  to: new Date(),
+                }
+                handleDateRangeChange(newRange)
+              }}
+              className="bg-slate-800 border-slate-700 hover:bg-slate-700"
+            >
+              SD Bulan Ini
+            </Button>
           </div>
         </div>
 

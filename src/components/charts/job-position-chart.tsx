@@ -10,6 +10,9 @@ import { EmployeeDialog } from "../employee-dialog"
 
 interface JobPositionChartProps {
   data: JobPositionData[]
+  regional?: string
+  kode_unit?: string
+  afdeling?: string
 }
 
 export function JobPositionChartWithDialog({ data }: JobPositionChartProps) {
@@ -148,11 +151,11 @@ export function JobPositionChartWithDialog({ data }: JobPositionChartProps) {
 
   const series = [
     {
-      name: "Rata-rata Nilai",
+      name: "Nilai Monev",
       data: chartData.map((item) => item.nilai),
     },
     {
-      name: "Rata-rata Bobot",
+      name: "Persentase item yang dinilai (%)",
       data: chartData.map((item) => item.bobot),
     },
   ]

@@ -49,6 +49,7 @@ export function MonevParameterChart({ data }: MonevParameterChartProps) {
       selectedObs.pengamatan_name.toLowerCase().includes("bebas") ||
       selectedObs.pengamatan_name.toLowerCase().includes("tidak berpotensi") ||
       selectedObs.pengamatan_name.toLowerCase().includes("tidak ada serangan") ||
+      selectedObs.pengamatan_name.toLowerCase().includes("diagonal arah barisan") ||
       selectedObs.pengamatan_name.toLowerCase().includes("rutin")
 
     return isCompliant ? "compliant" : "non-compliant"
