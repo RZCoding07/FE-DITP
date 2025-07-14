@@ -139,7 +139,8 @@ export default function DashboardMasterpiece() {
         </div>
       </div>
 
-
+     <Layout.Footer>
+      </Layout.Footer>
 
     </Layout>
   )

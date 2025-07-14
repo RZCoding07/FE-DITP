@@ -37,7 +37,6 @@ export function JobPositionChartWithDialog({ data }: JobPositionChartProps) {
   const options: ApexOptions = {
     chart: {
       type: "bar",
-      height: 300,
       background: "transparent",
       foreColor: "#94a3b8",
       toolbar: { show: false },
@@ -162,7 +161,7 @@ export function JobPositionChartWithDialog({ data }: JobPositionChartProps) {
 
   return (
     <>
-      <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700 shadow-2xl">
+      <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700 shadow-2xl h-full flex flex-col">
         <CardHeader>
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-600 rounded-lg">
@@ -178,7 +177,7 @@ export function JobPositionChartWithDialog({ data }: JobPositionChartProps) {
         </CardHeader>
         <CardContent>
           {chartData.length > 0 ? (
-            <ReactApexChart options={options} series={series} type="bar" />
+            <ReactApexChart options={options} series={series} type="bar" height={"400px"} />
           ) : (
             <div className="flex items-center justify-center h-64 text-slate-400">
               <div className="text-center">

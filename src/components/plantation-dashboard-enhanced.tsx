@@ -2,7 +2,6 @@
 
 import { useMemo } from "react"
 import { useState, useEffect } from "react"
-import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -23,6 +22,7 @@ import type { DashboardFilters } from "@/types/api"
 import type { DateRange } from "react-day-picker"
 import { apiService } from "@/services/api-monev-2"
 import { formatDate } from "@/lib/utils"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import IntegratedSummaryStats from "./integrated-summary-stats"
 
 interface PlantationDashboardMasterpieceProps {
@@ -33,6 +33,7 @@ interface PlantationDashboardMasterpieceProps {
 }
 import MonevDashboard from "./track-monev"
 import TBMContractStatusChart from "./custom/kontrak"
+import ParameterAnalysisChart from "./monev-pi"
 
 export default function PlantationDashboardMasterpiece({
   title = "Dashboard Monitoring Perkebunan",
@@ -234,6 +235,37 @@ export default function PlantationDashboardMasterpiece({
     fetchMonevDataPalmco()
   }, [dateRange])
 
+
+  const [monevPiData, setMonevPiData] = useState<any[]>([])
+
+  const fetchMonevPiData = async () => {
+    if (!dateRange) return
+
+    setIsLoading(true)
+    try {
+      const data = await apiService.getMonevPiData({
+        start_date: dateRange?.from ? formatDate(dateRange.from) : "2024-05-24",
+        end_date: dateRange?.to ? formatDate(dateRange.to) : "2025-06-23",
+        region: filters.regional,
+        kode_unit: filters.kode_unit,
+        afdeling: filters.afdeling
+      })
+
+      console.log("Fetched Monev PI Data:", data)
+      setMonevPiData(data)
+
+    } catch (error) {
+      console.error("Error fetching Monev PI Data:", error)
+      setMonevPiData([])
+
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchMonevPiData()
+  }, [dateRange, filters.regional, filters.kode_unit, filters.afdeling])
 
   if (error) {
     return (
@@ -505,12 +537,20 @@ export default function PlantationDashboardMasterpiece({
 
                 </div>
 
-                <JobPositionChartWithDialog
-                regional={filters.regional}
-                kode_unit={filters.kode_unit}
-                afdeling={filters.afdeling}
-                  data={jobPositionData}
+
+      <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
+        <CardHeader>
+          <CardTitle className="text-slate-100 text-center font-bold text-lg">Top 10 Problem Identification per Parameter</CardTitle>
+                </CardHeader>
+        <CardContent className="p-4">
+      <ParameterAnalysisChart
+                  data= {monevPiData}
                 />
+          
+        </CardContent>  
+      </Card>
+
+                {/* Corrective Action Chart */}
 
                 <CorrectiveActionChart
                   data={correctiveActionData}
@@ -520,6 +560,15 @@ export default function PlantationDashboardMasterpiece({
 
                 />
 
+
+                <div className="xl:col-span-2">
+                  <JobPositionChartWithDialog
+                    regional={filters.regional}
+                    kode_unit={filters.kode_unit}
+                    afdeling={filters.afdeling}
+                    data={jobPositionData}
+                  />
+                </div>
                 <div className="xl:col-span-2">
                   <PlantationAreaChart
                     data={plantationData}
@@ -527,6 +576,7 @@ export default function PlantationDashboardMasterpiece({
                   />
                 </div>
               </div>
+
 
               {/* Monev Detail Table */}
               <MonevDetailTable

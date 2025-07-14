@@ -913,6 +913,8 @@ export default function Dashboard() {
 
 
       </Layout.Body>
+           <Layout.Footer>
+            </Layout.Footer>
     </Layout>
   )
 }

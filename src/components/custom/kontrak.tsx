@@ -669,9 +669,9 @@ const TBMContractStatusChart: React.FC<MonevDashboardProps> = ({
     <div className="w-full text-white h-full rounded-lg">
       <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg p-4 h-full max-h-[800px] border border-slate-700 shadow-lg flex flex-col">
         {/* Header */}
-        <div className="mb-4">
+        <div className="-mb-7">
           <h2 className="text-xl font-medium text-slate-300 mb-2">
-            Status Kontrak TBM -{" "}
+            Status Kontrak Monev -{" "}
             {!selectedRegional || selectedRegional === "" ? "Palm Co" : getRegionalName(selectedRegional)}
           </h2>
           <p className="text-sm text-slate-400">

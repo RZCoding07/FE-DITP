@@ -317,6 +317,10 @@ class ApiService {
     async getMonevDetailBlokTU(request: any): Promise<any[]> {
         return this.makeRequest<any[]>("d-rekap-blok-tu-dev", request)
     }
+
+    async getMonevPiData(request: any): Promise<any[]> {
+        return this.makeRequest<any[]>("d-rekap-pi", request)
+    }
 }
 
 export const apiService = new ApiService()

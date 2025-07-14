@@ -389,7 +389,7 @@ export function CorrectiveActionChart({
       <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
         <CardHeader>
           <CardTitle className="text-slate-100 text-center font-bold text-lg">
-            {showTop10 ? "Top 10 Corrective Actions by Unit" : "Corrective Actions by Unit"}
+            {showTop10 ? "Top 10 Problem Identification Kebun" : "Problem Identification by Unit"}
           </CardTitle>
         </CardHeader>
         <CardContent>
