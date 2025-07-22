@@ -65,7 +65,7 @@ interface CorrectiveActionDetail {
 }
 
 interface CorrectiveActionChartProps {
-  data: CorrectiveActionData[]
+  data:any[]
   showTop10?: boolean
   region?: string
   start_date?: string
