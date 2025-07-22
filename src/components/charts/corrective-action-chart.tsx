@@ -504,7 +504,6 @@ export function CorrectiveActionChart({
                             Created By <SortIcon field="nama_pembuat" />
                           </Button>
                         </TableHead>
-                        <TableHead className="text-slate-300">Status</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -558,17 +557,7 @@ export function CorrectiveActionChart({
                               </div>
                               <div className="text-xs text-slate-500">{action.jabatan}</div>
                             </TableCell>
-                            <TableCell>
-                              {action.progress ? (
-                                <Badge variant="default" className="bg-green-900/30 text-green-400 border-green-600">
-                                  {action.progress}
-                                </Badge>
-                              ) : (
-                                <Badge variant="outline" className="border-red-600 text-red-400">
-                                  Pending
-                                </Badge>
-                              )}
-                            </TableCell>
+          
                           </TableRow>
                         ))
                       ) : (
