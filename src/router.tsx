@@ -919,6 +919,22 @@ let allRouter = [
 
 ]
 
+let monevRouter = [
+  {
+    index: true,
+    lazy: async () => ({
+      Component: (await import('./pages/dashboard-monev')).default,
+    }),
+  },
+    {
+    path: 'dashboard-monev',
+    lazy: async () => ({
+      Component: (await import('./pages/dashboard-monev')).default,
+    }),
+  }
+]
+
+
 // Define the children array dynamically based on app_type
 let childrenRoutes: ({ index: boolean; lazy: () => Promise<{ Component: () => JSX.Element }>; path?: undefined } | { path: string; lazy: () => Promise<{ Component: () => JSX.Element }>; index?: undefined })[] | { path: string; lazy: () => Promise<{ Component: () => JSX.Element }> }[] = [];
 
@@ -932,6 +948,8 @@ if (app_type === 'monica-ditn' || app_type === 'monica-infra' || app_type === 'm
   childrenRoutes = immatureRouter;
 } else if (app_type === 'all') {
   childrenRoutes = allRouter;
+} else if (app_type === 'monev') {
+  childrenRoutes = monevRouter; 
 }
 
 let mainRouter = [

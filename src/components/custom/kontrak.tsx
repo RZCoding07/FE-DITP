@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { Eye, FileText, Users, BarChart3, Filter } from "lucide-react"
+import { Eye, FileText, Users, BarChart3, Filter } from 'lucide-react'
 
 interface MonevItem {
   id: number
@@ -109,36 +109,11 @@ const TBMContractStatusChart: React.FC<MonevDashboardProps> = ({
   const [selectedUnit, setSelectedUnit] = useState<string | null>(kode_unit || null)
   const [selectedData, setSelectedData] = useState<ChartData | null>(null)
 
-  // Data kontrak TBM per regional
-  const regionalBerkontrakBlokData: Record<string, number> = {
-    "1": 121,
-    "2": 298,
-    "3": 19,
-    "4": 93,
-    "5": 172,
-    "6": 52,
-    "7": 0,
-    "8": 0,
-    M: 64,
-  }
-
-  const regionalBelumBerkontrakBlokData: Record<string, number> = {
-    "1": 415,
-    "2": 0,
-    "3": 84,
-    "4": 0,
-    "5": 8,
-    "6": 22,
-    "7": 0,
-    "8": 0,
-    M: 13,
-  }
-
   // Regional name mapping
   const getRegionalName = (regionalCode: string) => {
     const regionalNames: Record<string, string> = {
       "1": "Regional 1",
-      "2": "Regional 2",
+      "2": "Regional 2", 
       "3": "Regional 3",
       "4": "Regional 4",
       "5": "Regional 5",
@@ -156,8 +131,12 @@ const TBMContractStatusChart: React.FC<MonevDashboardProps> = ({
     { region: "1", unit: "1E06", afdeling: "AFD08" },
     { region: "1", unit: "1E29", afdeling: "AFD03" },
     { region: "1", unit: "1E19", afdeling: "AFD05" },
-    { region: "3", unit: "3E14", afdeling: "AFD02" },
+    { region: "5", unit: "5E14", afdeling: "AFD01" },
+    { region: "5", unit: "5E14", afdeling: "AFD02" },
+    { region: "3", unit: "3E14", afdeling: "AFD07" },
     { region: "3", unit: "3E14", afdeling: "AFD09" },
+    { region: "3", unit: "3E24", afdeling: "AFD01" },
+    { region: "3", unit: "3E08", afdeling: "AFD06" },
     { region: "6", unit: "6E16", afdeling: "AFD02" },
     { region: "6", unit: "6E16", afdeling: "AFD04" },
     { region: "6", unit: "6E16", afdeling: "AFD05" },
@@ -293,10 +272,51 @@ const TBMContractStatusChart: React.FC<MonevDashboardProps> = ({
     { region: "M", unit: "ME11", afdeling: "AFD04" },
   ]
 
+  // Helper function to check if an afdeling is contracted
+  const isAfdelingContracted = (regional: string, unit: string, afdeling: string): boolean => {
+    return datasAfdYgSudahBerkontrak.some(
+      (kontrak) => kontrak.region === regional && kontrak.unit === unit && kontrak.afdeling === afdeling
+    )
+  }
+
+  // Dynamic calculation for regional contract data
+  const dynamicRegionalContractData = useMemo(() => {
+    const regionalSummary: Record<string, { sudah: number; belum: number; total: number }> = {}
+
+    // Get unique afdeling combinations from actual data
+    const uniqueAfdelings = data.reduce((acc, item) => {
+      const key = `${item.regional}-${item.kode_unit}-${item.afdeling}`
+      if (!acc.has(key)) {
+        acc.set(key, {
+          regional: item.regional,
+          unit: item.kode_unit,
+          afdeling: item.afdeling,
+        })
+      }
+      return acc
+    }, new Map())
+
+    // Calculate contracted vs non-contracted for each regional
+    Array.from(uniqueAfdelings.values()).forEach(({ regional, unit, afdeling }) => {
+      if (!regionalSummary[regional]) {
+        regionalSummary[regional] = { sudah: 0, belum: 0, total: 0 }
+      }
+
+      if (isAfdelingContracted(regional, unit, afdeling)) {
+        regionalSummary[regional].sudah++
+      } else {
+        regionalSummary[regional].belum++
+      }
+      regionalSummary[regional].total++
+    })
+
+    return regionalSummary
+  }, [data])
+
   // Process data for Palm Co overall summary (single aggregated bar)
   const palmCoSummaryData = useMemo(() => {
-    const totalSudah = Object.values(regionalBerkontrakBlokData).reduce((sum, val) => sum + val, 0)
-    const totalBelum = Object.values(regionalBelumBerkontrakBlokData).reduce((sum, val) => sum + val, 0)
+    const totalSudah = Object.values(dynamicRegionalContractData).reduce((sum, val) => sum + val.sudah, 0)
+    const totalBelum = Object.values(dynamicRegionalContractData).reduce((sum, val) => sum + val.belum, 0)
     const total = totalSudah + totalBelum
 
     return [
@@ -315,29 +335,24 @@ const TBMContractStatusChart: React.FC<MonevDashboardProps> = ({
         displayLevel: "company",
       },
     ]
-  }, [data])
+  }, [data, dynamicRegionalContractData])
 
   // Process data for individual regional breakdown (when regional == "")
   const individualRegionalData = useMemo(() => {
     if (selectedRegional && selectedRegional !== "") return []
 
-    const regionals = Object.keys(regionalBerkontrakBlokData)
-    return regionals
-      .map((regional) => {
-        const sudah = regionalBerkontrakBlokData[regional] || 0
-        const belum = regionalBelumBerkontrakBlokData[regional] || 0
-        const total = sudah + belum
+    return Object.entries(dynamicRegionalContractData)
+      .map(([regional, stats]) => {
         const regionalItems = data.filter((item) => item.regional === regional)
-
         return {
           regional,
           kode_unit: "",
           afdeling: null,
-          sudah,
-          belum,
-          total,
-          percentage_sudah: total > 0 ? (sudah / total) * 100 : 0,
-          percentage_belum: total > 0 ? (belum / total) * 100 : 0,
+          sudah: stats.sudah,
+          belum: stats.belum,
+          total: stats.total,
+          percentage_sudah: stats.total > 0 ? (stats.sudah / stats.total) * 100 : 0,
+          percentage_belum: stats.total > 0 ? (stats.belum / stats.total) * 100 : 0,
           displayLabel: getRegionalName(regional),
           sortKey: regional,
           items: regionalItems,
@@ -349,13 +364,14 @@ const TBMContractStatusChart: React.FC<MonevDashboardProps> = ({
         if (b.regional === "M" || b.regional === "8") return -1
         return Number.parseInt(a.regional) - Number.parseInt(b.regional)
       })
-  }, [data, selectedRegional])
+  }, [data, selectedRegional, dynamicRegionalContractData])
 
   // Process data for regional-specific chart (when specific regional is selected)
   const regionalChartData = useMemo(() => {
     if (!selectedRegional || selectedRegional === "") return []
 
     const filteredDataByRegional = data.filter((item) => item.regional === selectedRegional)
+
     // Group by unit
     const unitGroups = filteredDataByRegional.reduce(
       (acc, item) => {
@@ -376,33 +392,27 @@ const TBMContractStatusChart: React.FC<MonevDashboardProps> = ({
 
     return Object.values(unitGroups)
       .map((unitGroup) => {
-        const sudahBerkontrak = unitGroup.items.filter((item) => {
-          return datasAfdYgSudahBerkontrak.some(
-            (kontrak) =>
-              kontrak.region === item.regional && kontrak.unit === item.kode_unit && kontrak.afdeling === item.afdeling,
-          )
-        })
+        // Get unique afdelings for this unit
+        const uniqueAfdelings = Array.from(
+          new Set(unitGroup.items.map(item => item.afdeling))
+        )
 
-        const belumBerkontrak = unitGroup.items.filter((item) => {
-          return !datasAfdYgSudahBerkontrak.some(
-            (kontrak) =>
-              kontrak.region === item.regional && kontrak.unit === item.kode_unit && kontrak.afdeling === item.afdeling,
-          )
-        })
+        const sudahCount = uniqueAfdelings.filter(afdeling => 
+          isAfdelingContracted(unitGroup.regional, unitGroup.kode_unit, afdeling)
+        ).length
 
-        const sudah = sudahBerkontrak.length
-        const belum = belumBerkontrak.length
-        const total = sudah + belum
+        const belumCount = uniqueAfdelings.length - sudahCount
+        const total = uniqueAfdelings.length
 
         return {
           regional: unitGroup.regional,
           kode_unit: unitGroup.kode_unit,
           afdeling: null,
-          sudah,
-          belum,
+          sudah: sudahCount,
+          belum: belumCount,
           total,
-          percentage_sudah: total > 0 ? (sudah / total) * 100 : 0,
-          percentage_belum: total > 0 ? (belum / total) * 100 : 0,
+          percentage_sudah: total > 0 ? (sudahCount / total) * 100 : 0,
+          percentage_belum: total > 0 ? (belumCount / total) * 100 : 0,
           displayLabel: unitGroup.nama_unit,
           sortKey: unitGroup.kode_unit,
           items: unitGroup.items,
@@ -415,27 +425,23 @@ const TBMContractStatusChart: React.FC<MonevDashboardProps> = ({
   // Filter data based on contract status
   const filteredData = useMemo(() => {
     let dataToFilter = data
+
     // Filter by selected regional if one is selected
     if (selectedRegional) {
       dataToFilter = data.filter((item) => item.regional === selectedRegional)
     }
+
     // Filter by selected unit if one is selected
     if (selectedUnit) {
       dataToFilter = dataToFilter.filter((item) => item.kode_unit === selectedUnit)
     }
 
     const sudahBerkontrak = dataToFilter.filter((item) => {
-      return datasAfdYgSudahBerkontrak.some(
-        (kontrak) =>
-          kontrak.region === item.regional && kontrak.unit === item.kode_unit && kontrak.afdeling === item.afdeling,
-      )
+      return isAfdelingContracted(item.regional, item.kode_unit, item.afdeling)
     })
 
     const belumBerkontrak = dataToFilter.filter((item) => {
-      return !datasAfdYgSudahBerkontrak.some(
-        (kontrak) =>
-          kontrak.region === item.regional && kontrak.unit === item.kode_unit && kontrak.afdeling === item.afdeling,
-      )
+      return !isAfdelingContracted(item.regional, item.kode_unit, item.afdeling)
     })
 
     return {
@@ -463,6 +469,7 @@ const TBMContractStatusChart: React.FC<MonevDashboardProps> = ({
   // Filter personnel data based on contract status
   const filteredPersonnelData = useMemo(() => {
     let personnelToFilter = personnelData
+
     // Filter by selected regional if one is selected
     if (selectedRegional) {
       personnelToFilter = personnelData.filter((person) => person.region === selectedRegional)
@@ -478,10 +485,7 @@ const TBMContractStatusChart: React.FC<MonevDashboardProps> = ({
 
     const sudahBerkontrakPersonnel = personnelToFilter.filter((person) => {
       const { unit, afdeling } = getPersonnelUnitAndAfdeling(person)
-      // Check if this exact combination exists in datasAfdYgSudahBerkontrak
-      return datasAfdYgSudahBerkontrak.some(
-        (kontrak) => kontrak.region === person.region && kontrak.unit === unit && kontrak.afdeling === afdeling,
-      )
+      return isAfdelingContracted(person.region, unit, afdeling)
     })
 
     const belumBerkontrakPersonnel = personnelToFilter.filter((person) => {
@@ -492,9 +496,7 @@ const TBMContractStatusChart: React.FC<MonevDashboardProps> = ({
       if (!person.region || !unit || !afdeling) {
         return false // Skip personnel with incomplete data
       }
-      return !datasAfdYgSudahBerkontrak.some(
-        (kontrak) => kontrak.region === person.region && kontrak.unit === unit && kontrak.afdeling === afdeling,
-      )
+      return !isAfdelingContracted(person.region, unit, afdeling)
     })
 
     return {
@@ -506,17 +508,17 @@ const TBMContractStatusChart: React.FC<MonevDashboardProps> = ({
   // Personnel summary by regional
   const personnelSummaryByRegional = useMemo(() => {
     const summary: Record<string, { sudah: number; belum: number; total: number }> = {}
+
     personnelData.forEach((person) => {
       const region = person.region
       if (!summary[region]) {
         summary[region] = { sudah: 0, belum: 0, total: 0 }
       }
+
       const { unit, afdeling } = getPersonnelUnitAndAfdeling(person)
       // Only count personnel with complete data
       if (region && unit && afdeling) {
-        const isContracted = datasAfdYgSudahBerkontrak.some(
-          (kontrak) => kontrak.region === person.region && kontrak.unit === unit && kontrak.afdeling === afdeling,
-        )
+        const isContracted = isAfdelingContracted(person.region, unit, afdeling)
         if (isContracted) {
           summary[region].sudah++
         } else {
@@ -525,6 +527,7 @@ const TBMContractStatusChart: React.FC<MonevDashboardProps> = ({
         summary[region].total++
       }
     })
+
     return summary
   }, [personnelData])
 
@@ -644,9 +647,9 @@ const TBMContractStatusChart: React.FC<MonevDashboardProps> = ({
           const item = chartData[dataIndex]
           const seriesIndex = opts.seriesIndex
           if (seriesIndex === 0) {
-            return `${item.sudah} ${item.displayLevel === "unit" ? "afdeling" : "blok"} dari ${item.total} total (${val.toFixed(1)}%)`
+            return `${item.sudah} ${item.displayLevel === "unit" ? "afdeling" : "afdeling"} dari ${item.total} total (${val.toFixed(1)}%)`
           } else {
-            return `${item.belum} ${item.displayLevel === "unit" ? "afdeling" : "blok"} dari ${item.total} total (${val.toFixed(1)}%)`
+            return `${item.belum} ${item.displayLevel === "unit" ? "afdeling" : "afdeling"} dari ${item.total} total (${val.toFixed(1)}%)`
           }
         },
       },
@@ -676,8 +679,8 @@ const TBMContractStatusChart: React.FC<MonevDashboardProps> = ({
           </h2>
           <p className="text-sm text-slate-400">
             {!selectedRegional || selectedRegional === ""
-              ? "Keseluruhan Perusahaan & Detail per Regional"
-              : `Detail Regional: ${getRegionalName(selectedRegional)}`}
+              ? "Keseluruhan Perusahaan & Detail per Regional (Dinamis berdasarkan data aktual)"
+              : `Detail Regional: ${getRegionalName(selectedRegional)} (Dinamis berdasarkan data aktual)`}
           </p>
         </div>
 
@@ -726,6 +729,7 @@ const TBMContractStatusChart: React.FC<MonevDashboardProps> = ({
                   )}
                 </div>
               </DialogHeader>
+
               <Tabs defaultValue="belum" className="w-full">
                 <TabsList className="grid w-full grid-cols-4 bg-slate-800">
                   <TabsTrigger value="belum" className="data-[state=active]:bg-red-600 data-[state=active]:text-white">
@@ -1104,8 +1108,8 @@ const TBMContractStatusChart: React.FC<MonevDashboardProps> = ({
         <div className="mt-4">
           <p className="text-sm text-slate-400">
             {!selectedRegional || selectedRegional === ""
-              ? "Menampilkan rekap keseluruhan Palm Co dan detail per regional"
-              : `Menampilkan persentase afdeling yang sudah dan belum berkontrak per unit di ${getRegionalName(selectedRegional)}`}
+              ? "Menampilkan rekap keseluruhan Palm Co dan detail per regional (Perhitungan dinamis berdasarkan data aktual)"
+              : `Menampilkan persentase afdeling yang sudah dan belum berkontrak per unit di ${getRegionalName(selectedRegional)} (Perhitungan dinamis)`}
             <span className="block text-xs text-slate-500 mt-1">
               💡 Klik pada chart untuk{" "}
               {!selectedRegional || selectedRegional === "" ? "drill down ke level regional" : "melihat detail data"}

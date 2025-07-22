@@ -18,7 +18,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChevronDown, Filter, TrendingUp, Package, Building } from "lucide-react"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { ChevronDown, Filter, TrendingUp, Package, Building, FileText, BarChart3 } from "lucide-react"
 import { DataTable } from "./components/data-table"
 import { DataTablePekerjaan } from "./components/data-table-pekerjaan"
 import BarMonitoring from "./components/bar-monitoring"
@@ -38,6 +39,7 @@ export default function Tasks() {
   const [countHundred, setCountHundred] = useState(0)
   const [data, setData] = useState<string[][]>([])
   const [dataRekbesar, setDataRekBesar] = useState<any[]>([])
+
   type RekapData = {
     sub_investasi: string
     hps: number
@@ -45,6 +47,7 @@ export default function Tasks() {
     pengadaan: number
     sppbj: number
   }
+
   const [dataRekap, setDataRekap] = useState<RekapData[]>([])
   const [progressmasters, setProgressmasters] = useState("")
   const [loading, setLoading] = useState(true)
@@ -80,6 +83,44 @@ export default function Tasks() {
   // State untuk regional dan links
   const [regionalOptions, setRegionalOptions] = useState<string[]>([])
   const [yangAdaLink, setYangAdaLink] = useState<any[]>([])
+
+  // State untuk Modal
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalData, setModalData] = useState<any[]>([])
+  const [modalTitle, setModalTitle] = useState("")
+  const [modalDescription, setModalDescription] = useState("")
+  const [modalLoading, setModalLoading] = useState(false)
+
+   const convertArrayToModalObject = (dataArray: any[][]) => {
+    return dataArray.map((row) => ({
+      rpc_code: row[0] || "",
+      rekening_besar: row[1] || "",
+      komoditi: row[2] || "",
+      unit_kerja_lokasi: row[3] || "",
+      program_kerja_impact: row[4] || "",
+      nama_investasi: row[5] || "",
+      status_anggaran: row[6] || "",
+      jumlah_total_fisik: row[7] || "",
+      satuan_fisik: row[8] || "",
+      nilai_anggaran_rkap: row[9] || "",
+      status_pelaksanaan: row[10] || "",
+      stasiun_pabrik: row[11] || "",
+      nomor_paket_pekerjaan: row[12] || "",
+      real_penamaan_paket: row[13] || "",
+      status_paket_pekerjaan: row[14] || "",
+      nilai_kontrak: row[15] || "",
+      nomor_kontrak: row[16] || "",
+      tanggal_mulai: row[17] || "",
+      tanggal_berakhir: row[18] || "",
+      progress_fisik: row[19] || "",
+      skala_prioritas: row[20] || "",
+      keterangan_1: row[21] || "",
+      keterangan_2: row[22] || "",
+      nilai: row[23] || "",
+      reg: row[24] || "",
+      kurva_s: row[25] || "",
+    }))
+  }
 
   // Manual commodity options
   const komoditasOptions = [
@@ -128,16 +169,72 @@ export default function Tasks() {
     return filteredData
   }
 
+  // Function untuk membuka modal dengan data yang sesuai
+  const handleOpenModal = (progressType: string) => {
+    setModalLoading(true)
+    setIsModalOpen(true)
+
+    // Get filtered data
+    const filteredData = getFilteredData(data, selectedKomoditas, activeTab)
+    let modalDataFiltered: any[] = []
+    let title = ""
+    let description = ""
+
+    // Filter data berdasarkan tipe progress
+    switch (progressType) {
+      case "pks":
+        modalDataFiltered = filteredData.filter(
+          (item: any[]) => item[14] === "Belum Diajukan" || item[14] === "Pembuatan Purchase Requisition (PR) SA",
+        )
+        title = "Progress di Unit"
+        description = "Daftar paket pekerjaan yang sedang dalam proses di tingkat unit"
+        break
+      case "tekpol":
+        modalDataFiltered = filteredData.filter(
+          (item: any[]) => item[14] === "Persetujuan Anggaran" || item[14] === "Pembuatan Paket Pekerjaan (PK) IPS",
+        )
+        title = "Progress di Tekpol"
+        description = "Daftar paket pekerjaan yang sedang dalam proses di tekpol"
+        break
+      case "hps":
+        modalDataFiltered = filteredData.filter((item: any[]) => item[14] === "Penetapan HPS")
+        title = "Progress di HPS"
+        description = "Daftar paket pekerjaan yang sedang dalam tahap penetapan HPS"
+        break
+      case "pengadaan":
+        modalDataFiltered = filteredData.filter((item: any[]) => item[14] === "Proses Pengadaan")
+        title = "Progress di Pengadaan"
+        description = "Daftar paket pekerjaan yang sedang dalam proses pengadaan"
+        break
+      case "sppbj":
+        modalDataFiltered = filteredData.filter(
+          (item: any[]) =>
+            item[14] === "Proses Pengerjaan (sudah Terbit Kontrak)" || item[14] === "Pekerjaan Selesai 100%",
+        )
+        title = "Terbit SPPBJ"
+        description = "Daftar paket pekerjaan yang sudah terbit SPPBJ"
+        break
+      default:
+        modalDataFiltered = filteredData
+        title = "Semua Data"
+        description = "Daftar semua paket pekerjaan"
+    }
+    // Convert array data to objects before setting modal data
+    const convertedModalData = convertArrayToModalObject(modalDataFiltered)
+    setModalData(convertedModalData)
+
+    setModalTitle(title)
+    setModalDescription(description)
+    setModalLoading(false)
+  }
+
   // Enhanced handleClick untuk tabs dengan filtering yang lebih baik
   const handleClickProgress = (progress: string) => {
     setActiveTab(progress)
-
     // Get filtered data
     const filteredData = getFilteredData(data, selectedKomoditas, progress)
-
     // Update progress counts dengan data yang sudah difilter
     updateProgressCountsDirectly(filteredData)
-
     // Update rekap data berdasarkan filter
     updateRekapData(filteredData, progress)
   }
@@ -145,13 +242,10 @@ export default function Tasks() {
   // Enhanced komoditas selection handler
   const handleKomoditasChange = (value: string) => {
     setSelectedKomoditas(value)
-
     // Get filtered data dengan komoditas baru
     const filteredData = getFilteredData(data, value, activeTab)
-
     // Update progress counts
     updateProgressCountsDirectly(filteredData)
-
     // Update rekap data
     updateRekapData(filteredData, activeTab)
   }
@@ -202,6 +296,16 @@ export default function Tasks() {
     } else if (kategori === "dinf") {
       const dinfCategories = ["Jalan, Jembatan & Saluran Air", "Bangunan Perumahan", "Bangunan Perusahaan"]
       rekapArray = rekapArray.filter((item: any) => dinfCategories.includes(item.sub_investasi))
+    } else if (kategori === "keseluruhan") {
+      const ditnCategories = [
+        "Alat Pengangkutan (Transportasi)",
+        "Investasi Kecil (Alat Pertanian & Perlengkapan Kantor)",
+        "3. Mesin & Instalasi",
+      ]
+      const dinfCategories = ["Jalan, Jembatan & Saluran Air", "Bangunan Perumahan", "Bangunan Perusahaan"]
+      rekapArray = rekapArray.filter(
+        (item: any) => ditnCategories.includes(item.sub_investasi) || dinfCategories.includes(item.sub_investasi),
+      )
     }
 
     // Jika tidak ada data, buat default dengan nilai 0
@@ -209,10 +313,10 @@ export default function Tasks() {
       const defaultCategories =
         kategori === "ditn"
           ? [
-            "Alat Pengangkutan (Transportasi)",
-            "Investasi Kecil (Alat Pertanian & Perlengkapan Kantor)",
-            "3. Mesin & Instalasi",
-          ]
+              "Alat Pengangkutan (Transportasi)",
+              "Investasi Kecil (Alat Pertanian & Perlengkapan Kantor)",
+              "3. Mesin & Instalasi",
+            ]
           : kategori === "dinf"
             ? ["Jalan, Jembatan & Saluran Air", "Bangunan Perumahan", "Bangunan Perusahaan"]
             : ["3. Mesin & Instalasi", "Bangunan Perumahan", "Alat Pengangkutan (Transportasi)"]
@@ -227,6 +331,7 @@ export default function Tasks() {
     }
 
     setDataRekap(rekapArray)
+    console.log("Rekap Data Updated:", rekapArray)
   }
 
   // Function untuk update progress counts langsung dari data yang sudah difilter
@@ -241,25 +346,25 @@ export default function Tasks() {
     let countSixty = 0
     let countNinety = 0
     let countHundred = 0
-    let dataSppbj: any[] = [];
-    let dataHps: any[] = [];
-    let dataUnit: any[] = [];
-    let dataTekpol: any[] = [];
-    let dataPengadaan: any[] = [];
-    let dataPbj: any[] = [];
-    let dataPenyusunanDokumen: any[] = [];
-    let dataReg: any[] = [];
+
+    const dataSppbj: any[] = []
+    const dataHps: any[] = []
+    const dataUnit: any[] = []
+    const dataTekpol: any[] = []
+    const dataPengadaan: any[] = []
+    let dataPbj: any[] = []
+    let dataPenyusunanDokumen: any[] = []
+    const dataReg: any[] = []
 
     filteredData.forEach((item: any[]) => {
-
       if (item[24] !== undefined && !dataReg.includes(item[24])) {
         dataReg.push(item[24])
       }
 
       if (item[14] === "Penetapan HPS") {
-        dataHps.push(item);
+        dataHps.push(item)
       } else if (item[14] === "Proses Pengerjaan (sudah Terbit Kontrak)" || item[14] === "Pekerjaan Selesai 100%") {
-        dataSppbj.push(item);
+        dataSppbj.push(item)
       } else if (item[14] === "Belum Diajukan" || item[14] === "Pembuatan Purchase Requisition (PR) SA") {
         dataUnit.push(item)
       } else if (item[14] === "Persetujuan Anggaran" || item[14] === "Pembuatan Paket Pekerjaan (PK) IPS") {
@@ -267,16 +372,14 @@ export default function Tasks() {
       } else if (item[14] === "Proses Pengadaan") {
         dataPengadaan.push(item)
       }
-    });
-    dataPbj = [...dataPengadaan];
-    dataPenyusunanDokumen = [...dataUnit, ...dataTekpol];
-    // console.log("reg", reg)
+    })
+
+    dataPbj = [...dataPengadaan]
+    dataPenyusunanDokumen = [...dataUnit, ...dataTekpol]
 
     filteredData.forEach((item: any[]) => {
       const status = item[14] // Status Paket Pekerjaan
       const progressStr = item[19] // Progress Fisik (%)
-      // const reg = item[24]
-      // console.log(reg)
       const progress = progressStr ? Number.parseInt(progressStr.toString().replace("%", "")) || 0 : 0
 
       // Kategorisasi berdasarkan status (column 14)
@@ -310,13 +413,11 @@ export default function Tasks() {
     setCountSixty(countSixty)
     setCountNinety(countNinety)
     setCountHundred(countHundred)
-
     setPbj(dataPbj)
     setPenyusunanDokumen(dataPenyusunanDokumen)
     setSppbj(dataSppbj)
     setHps(dataHps)
     setReg(dataReg)
-
   }
 
   // Fetch functions
@@ -326,13 +427,10 @@ export default function Tasks() {
       const response = await fetch(
         "https://docs.google.com/spreadsheets/d/e/2PACX-1vSt5Slr9Cq2F8vMAe_qn75Wybt_oJgvkN5_JL-wL6JMSLXist0U3DTt14syyHiMUzq1WWUAqe-u6PC5/pub?gid=693153178&single=true&output=csv",
       )
-
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`)
       }
-
       const csv = await response.text()
-
       // Manual CSV parsing since Papa Parse is causing issues
       const lines = csv.split("\n")
       const result = lines.map((line) => {
@@ -340,10 +438,8 @@ export default function Tasks() {
         const values = []
         let current = ""
         let inQuotes = false
-
         for (let i = 0; i < line.length; i++) {
           const char = line[i]
-
           if (char === '"') {
             inQuotes = !inQuotes
           } else if (char === "," && !inQuotes) {
@@ -353,26 +449,20 @@ export default function Tasks() {
             current += char
           }
         }
-
         // Add the last value
         if (current) {
           values.push(current.trim())
         }
-
         return values
       })
 
       const filteredData = result.slice(11) // Skip header rows
-
-      // console.log("Filtered Data:", filteredData)
-      // console.log(filteredData)
       setData(filteredData)
 
       // Initial calculation dengan filter default
       const initialFilteredData = getFilteredData(filteredData, selectedKomoditas, activeTab)
       updateProgressCountsDirectly(initialFilteredData)
       updateRekapData(initialFilteredData, activeTab)
-
       setLoading(false)
     } catch (error: any) {
       console.error("Failed to fetch progress:", error.message)
@@ -406,8 +496,8 @@ export default function Tasks() {
         sppbj: 0,
       },
     ]
-
     setDataRekap(mockRekapData)
+    console.log("Mock Rekap Data:", mockRekapData)
   }
 
   const getAllRecordsperRPCRekeningBesar = async (rekBesar: string) => {
@@ -416,7 +506,6 @@ export default function Tasks() {
       // Filter data berdasarkan rekening besar dan filter aktif
       const filteredByRekBesar = data.filter((item: any[]) => item[1] === rekBesar)
       const finalFilteredData = getFilteredData(filteredByRekBesar, selectedKomoditas, activeTab)
-
       setDataRekBesar(finalFilteredData)
       setLoading(false)
     } catch (error: any) {
@@ -495,8 +584,6 @@ export default function Tasks() {
     },
   ]
 
-
-  
   return (
     <Layout>
       {/* Header */}
@@ -521,8 +608,7 @@ export default function Tasks() {
               <p className="text-blue-100 mt-1">Monitoring Progress Investasi Off Farm</p>
             </div>
           </div>
-          <div className="flex space-x-2">
-          </div>
+          <div className="flex space-x-2"></div>
         </div>
 
         {/* Enhanced Filter Section */}
@@ -661,7 +747,7 @@ export default function Tasks() {
             <Card
               key={item.key}
               className="group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl border-0"
-              onClick={() => setProgressmasters(item.key)}
+              onClick={() => handleOpenModal(item.key)}
             >
               <CardContent className={`p-6 bg-gradient-to-br ${item.color} text-white rounded-lg`}>
                 <div className="flex items-center justify-between mb-4">
@@ -723,6 +809,58 @@ export default function Tasks() {
           ))}
         </div>
 
+        {/* Modal untuk Detail Progress */}
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogContent className="max-w-7xl max-h-[100vh] max-w-100 overflow-hidden flex flex-col">
+            <DialogHeader className="flex-shrink-0">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
+                    <BarChart3 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <DialogTitle className="text-xl font-bold">{modalTitle}</DialogTitle>
+                    <DialogDescription className="text-sm text-muted-foreground mt-1">
+                      {modalDescription}
+                    </DialogDescription>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="flex items-center gap-1">
+                    <FileText className="h-3 w-3" />
+                    {modalData.length} Paket
+                  </Badge>
+                </div>
+              </div>
+            </DialogHeader>
+
+            <div className="flex-1 overflow-hidden">
+              {modalLoading ? (
+                <div className="flex h-64 items-center justify-center">
+                  <Loading />
+                </div>
+              ) : modalData.length > 0 ? (
+                <div className=" overflow-auto">
+                  <DataTable data={modalData} columns={columns} />
+                </div>
+              ) : (
+                <div className="flex h-64 items-center justify-center">
+                  <div className="text-center">
+                    <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">Tidak ada data untuk ditampilkan</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex-shrink-0 flex justify-end pt-4 border-t">
+              <Button onClick={() => setIsModalOpen(false)} variant="outline">
+                Tutup
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* Detail Progress Master */}
         {progressmasters !== "" && (
           <Card className="mb-6">
@@ -750,19 +888,9 @@ export default function Tasks() {
         )}
 
         {/* Bar Monitoring */}
-
-
-        <ComponentPTable
-        />
-
+        <ComponentPTable />
         <br />
-        <BarMonitoring
-          pbj={pbj}
-          penyusunanDokumen={penyusunanDokumen}
-          sppbj={sppbj}
-          hps={hps}
-          reg={reg}
-        />
+        <BarMonitoring pbj={pbj} penyusunanDokumen={penyusunanDokumen} sppbj={sppbj} hps={hps} reg={reg} />
 
         {/* Main Tabs */}
         {progressmasters === "" && (
@@ -876,7 +1004,7 @@ export default function Tasks() {
                       <div className="mb-4">
                         <Popover>
                           <PopoverTrigger asChild>
-                            <Button variant="outline" className="w-[200px] justify-between">
+                            <Button variant="outline" className="w-[200px] justify-between bg-transparent">
                               {selectedRegional || "Pilih Regional"}
                               <ChevronDown className="ml-2 h-4 w-4" />
                             </Button>
@@ -898,7 +1026,6 @@ export default function Tasks() {
                           </PopoverContent>
                         </Popover>
                       </div>
-
                       {selectedRegional && (
                         <div className="mt-4">
                           <h3 className="text-xl font-semibold mb-4">
@@ -961,8 +1088,8 @@ if (account_type === "superadmin") {
       isActive: false,
     },
     {
-      title: 'Dashboard Monev TU',
-      href: '/dashboard-monev',
+      title: "Dashboard Monev TU",
+      href: "/dashboard-monev",
       isActive: false,
     },
   ]

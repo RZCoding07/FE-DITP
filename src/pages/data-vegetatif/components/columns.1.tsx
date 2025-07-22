@@ -78,6 +78,13 @@ export const columns: ColumnDef<Vegetatif>[] = [
     cell: ({ row }) => <span>{row.getValue('blok')}</span>,
   },
   {
+    accessorKey: 'bulan_tanam',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Bulan Tanam' />
+    ),
+    cell: ({ row }) => <span>{row.getValue('bulan_tanam')}</span>,
+  },
+  {
     accessorKey: 'tahun_tanam',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Tahun Tanam' />
@@ -194,7 +201,7 @@ export const columns: ColumnDef<Vegetatif>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title='Jumlah Anak Daun'
+        title='Jumlah Anak Daun 1 Sisi'
       />
     ),
     cell: ({ row }) => (
@@ -259,6 +266,22 @@ export const columns: ColumnDef<Vegetatif>[] = [
     ),
     cell: ({ row }) => (
       <span>{row.getValue('bulan')}</span>
+    ),
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title='Tanggal Update'
+      />
+    ),
+    cell: ({ row }) => (
+      <span>{new Date(row.getValue('updatedAt')).toLocaleDateString('id-ID', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      })}</span>
     ),
   },
   // {

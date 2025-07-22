@@ -19,7 +19,6 @@ export default function UploadUser() {
   const [isLoadingUpload, setIsLoadingUpload] = useState(false)
   const [isUploadingDone, setIsUploadingDone] = useState(false)
   const [progressValue, setProgressValue] = useState(0)
-  // Fullname	Regional	Username	Password	Kebun	PKS	Afd	Account Type	App Type
 
   interface UserData {
     fullname: string
@@ -37,17 +36,6 @@ export default function UploadUser() {
   const [values, setValues] = useState<any[]>([])
   const [fileName, setFileName] = useState(null)
   const [loading, setLoading] = useState(false)
-
-  const instanceId = useId()
-
-  const {
-    register,
-    handleSubmit,
-    control,
-    setValue,
-    watch,
-    formState: { errors, isSubmitting },
-  } = useForm()
 
   const handleDrop = async (event: any) => {
     event.preventDefault()

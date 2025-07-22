@@ -451,6 +451,37 @@ export const immatureSideLinks: SideLink[] = [
   },
 ]
 
+export const monevSideLinks: SideLink[] = [
+  {
+    title: 'Dashboard',
+    label: '',
+    href: '/dashboard',
+    icon: (
+      <img
+        width='20'
+        height='20'
+        src='https://img.icons8.com/color/28/doughnut-chart--v1.png'
+        alt='doughnut-chart--v1'
+      />
+    ),
+  },
+
+
+  {
+    title: 'Settings',
+    label: '',
+    href: '/settings',
+    icon: (
+      <img
+        width='20'
+        height='20'
+        src='https://img.icons8.com/3d-fluency/94/gear--v2.png'
+        alt='gear--v2'
+      />
+    ),
+  },
+]
+
 // Fungsi untuk memilih SideLink berdasarkan peran pengguna
 export const getSideLinks = (app_type: string): SideLink[] => {
   if (
@@ -463,7 +494,9 @@ export const getSideLinks = (app_type: string): SideLink[] => {
     return sidelinks
   } else if (app_type === 'immature') {
     return immatureSideLinks
+  } else if (app_type === 'monev') {
+    return monevSideLinks
   } else {
-    return []
+    return sidelinks
   }
 }

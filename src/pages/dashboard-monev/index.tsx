@@ -10,34 +10,33 @@ import type { DashboardFilters } from "@/types/api"
 import { DateRange } from "react-day-picker"
 import { format, subDays } from "date-fns"
 
+import cookie from "js-cookie"
 
 
-const topNav = [
-  {
-    title: 'Nursery',
-    href: '/dashboard-nursery',
-    isActive: false
-  },
-  {
-    title: 'Replanting (TU/TK/TB)',
-    href: '/dashboard-replanting',
-    isActive: false,
-  },
-  {
-    title: 'Immature',
-    href: '/dashboard-immature',
-    isActive: false,
-  },
-  {
-    title: 'Monica',
-    href: '/dashboard-monica',
-    isActive: false,
-  },
-  {
-    title: 'Monev TU (Inspire-KKMV)',
-    href: '/dashboard-inspire',
-    isActive: false,
-  },
+
+
+export default function DashboardMasterpiece() {
+
+
+  
+const user = cookie.get('user')
+const app_type = user ? JSON.parse(user).app_type : ''
+const account_type = user ? JSON.parse(user).account_type : ''
+
+
+interface TopNavLink {
+  title: string
+  isActive: boolean
+  href?: string
+  icon?: React.ReactNode
+}
+
+let topNav: TopNavLink[] = []
+
+
+
+if (app_type === 'monev' && account_type === 'Superadmin') {
+topNav = [
   {
     title: 'Dashboard Monev TU',
     href: '/dashboard-monev',
@@ -45,7 +44,8 @@ const topNav = [
   },
 ]
 
-export default function DashboardMasterpiece() {
+}
+
   const [searchParams, setSearchParams] = useSearchParams()
   const [filters, setFilters] = useState<DashboardFilters>({
     dari_tanggal: format(subDays(new Date(), 30), "yyyy-MM-dd"),

@@ -586,8 +586,6 @@ if (compareCaseInsensitive(varietas, "DP Yangambi") ||
   }
 }
 
-// ... (rest of the code remains the same)
-
 interface ColorCount {
   [key: string]: number
 }

@@ -485,7 +485,7 @@ export default function Editvegetatif() {
                     name='jumlah_anak_daun'
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Jumlah Anak Daun</FormLabel>
+                        <FormLabel>Jumlah Anak Daun 1 Sisi </FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>

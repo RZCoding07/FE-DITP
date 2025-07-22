@@ -209,7 +209,6 @@ export async function getScoreLingkarBatang(age: number, value: number, varietas
 }
 
 export async function getScoreKerapatanPokok(age: number, initial: number, current: number) {
-  // Example calculation for density score
   const criteria = 9 // Example criteria for vegetative standard
   const result = (current / initial) * 100
   return result > 100 ? 100 : result

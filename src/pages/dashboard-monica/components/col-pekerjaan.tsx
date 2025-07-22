@@ -33,7 +33,7 @@ export const columns: ColumnDef<any>[] = [
     header: "Nilai Anggaran (Rp)",
     cell: ({ row }) => {
       const value = row.getValue("9") as string;
-      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(Number(value.replace(/,/g, '')));
+      return 'Rp.' + value
     }
   },
   {
@@ -82,7 +82,7 @@ export const columns: ColumnDef<any>[] = [
     header: "Nilai Kontrak (Rp)",
     cell: ({ row }) => {
       const value = row.getValue("23") as string;
-      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(Number(value.replace(/,/g, '')));
+      return 'Rp.' + value
     }
   }
 ]

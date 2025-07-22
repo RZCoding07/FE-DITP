@@ -162,7 +162,7 @@ export const columns: ColumnDef<Vegetatif>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title='Jumlah Anak Daun'
+        title='Jumlah Anak Daun 1 Sisi'
       />
     ),
     cell: ({ row }) => (
