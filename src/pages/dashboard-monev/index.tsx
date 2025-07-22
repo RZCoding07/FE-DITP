@@ -22,12 +22,13 @@ export default function DashboardMasterpiece() {
   const user = cookie.get('user')
   const app_type = user ? JSON.parse(user).app_type : ''
   const account_type = user ? JSON.parse(user).account_type : ''
+  const rpc = user ? JSON.parse(user).rpc : ''
 
   console.log("User:", user)
   console.log("User:", user)
 
 
-let topNav: { title: string; href: string; isActive: boolean }[] = []
+  let topNav: { title: string; href: string; isActive: boolean }[] = []
 
   if (app_type === "all") {
     topNav = [
@@ -49,15 +50,15 @@ let topNav: { title: string; href: string; isActive: boolean }[] = []
       {
         title: "Monica",
         href: "/dashboard-monica",
-        isActive: true,
+        isActive: false,
       },
- 
+
       {
         title: "Monev TU by KKMV",
         href: "/dashboard-monev",
-        isActive: false,
+        isActive: true,
       },
-           {
+      {
         title: "Replanting Area",
         href: "/dashboard-inspire",
         isActive: false,
@@ -65,9 +66,12 @@ let topNav: { title: string; href: string; isActive: boolean }[] = []
     ]
   } else {
     topNav = [
-      
+
     ]
   } const [searchParams, setSearchParams] = useSearchParams()
+
+  
+
   const [filters, setFilters] = useState<DashboardFilters>({
     dari_tanggal: format(subDays(new Date(), 30), "yyyy-MM-dd"),
     sampai_tanggal: format(new Date(), "yyyy-MM-dd"),

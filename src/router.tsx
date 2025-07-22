@@ -12,7 +12,7 @@ import Preloader from '@/components/custom/preloader'; // Import komponen Preloa
 
 const user = cookie.get('user')
 const app_type = user ? JSON.parse(user).app_type : ''
-
+const rpc = user ? JSON.parse(user).rpc : ''
 
 // Helper untuk mendapatkan cookie
 const getCookie = (name: string) => {
@@ -926,7 +926,7 @@ let monevRouter = [
       Component: (await import('./pages/dashboard-monev')).default,
     }),
   },
-    {
+  {
     path: 'dashboard-monev',
     lazy: async () => ({
       Component: (await import('./pages/dashboard-monev')).default,
@@ -949,7 +949,7 @@ if (app_type === 'monica-ditn' || app_type === 'monica-infra' || app_type === 'm
 } else if (app_type === 'all') {
   childrenRoutes = allRouter;
 } else if (app_type === 'monev') {
-  childrenRoutes = monevRouter; 
+  childrenRoutes = monevRouter;
 }
 
 let mainRouter = [

@@ -24,6 +24,9 @@ import { apiService } from "@/services/api-monev-2"
 import { formatDate } from "@/lib/utils"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import IntegratedSummaryStats from "./integrated-summary-stats"
+import cookie from "js-cookie"
+
+
 
 interface PlantationDashboardMasterpieceProps {
   title?: string
@@ -44,17 +47,25 @@ export default function PlantationDashboardMasterpiece({
   console.log("Initializing Plantation Dashboard with initial filters:", initialFilters)
 
 
+  const user = cookie.get('user')
+  const app_type = user ? JSON.parse(user).app_type : ''
+  const account_type = user ? JSON.parse(user).account_type : ''
+  const rpc = user ? JSON.parse(user).rpc : ''
 
-
-  // Initialize state with proper fallbacks
-  const [filters, setFilters] = useState<DashboardFilters>(() => ({
-    dari_tanggal: initialFilters.dari_tanggal ?? format(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), "yyyy-MM-dd"),
-    sampai_tanggal: initialFilters.sampai_tanggal ?? format(new Date(), "yyyy-MM-dd"),
-    regional: initialFilters.regional ?? "",
-    kode_unit: initialFilters.kode_unit ?? "",
-    afdeling: initialFilters.afdeling ?? "",
-    blok: initialFilters.blok ?? "",
-  }))
+// Initialize state with proper fallbacks
+  const [filters, setFilters] = useState<DashboardFilters>(() => {
+    // If RPC is available in cookies, use it as the default regional filter
+    const defaultRegional = rpc !== '' ? rpc : initialFilters.regional ?? ""
+    
+    return {
+      dari_tanggal: initialFilters.dari_tanggal ?? format(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), "yyyy-MM-dd"),
+      sampai_tanggal: initialFilters.sampai_tanggal ?? format(new Date(), "yyyy-MM-dd"),
+      regional: defaultRegional,
+      kode_unit: initialFilters.kode_unit ?? "",
+      afdeling: initialFilters.afdeling ?? "",
+      blok: initialFilters.blok ?? "",
+    }
+  })
 
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: subDays(new Date(), 30),

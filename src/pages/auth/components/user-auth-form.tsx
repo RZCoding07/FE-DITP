@@ -19,6 +19,7 @@ import toast from 'react-hot-toast'
 import cookie from 'js-cookie'
 import { useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
+import { format, subDays } from "date-fns"
 
 export type UserData = {
   id: string;
@@ -50,7 +51,7 @@ type AuthContextType = {
   setIsLoading: (isLoading: boolean) => void;
 };
 
-interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> {}
+interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> { }
 
 const formSchema = z.object({
   identifier: z.string().min(1, { message: 'Please enter your email or username' }),
@@ -85,10 +86,24 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       setUserData(data);
       toast.success("Login Successful!");
       cookie.set("user", JSON.stringify(data));
+      const dari_tanggal = format(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), "yyyy-MM-dd");
+      const sampai_tanggal = format(new Date(), "yyyy-MM-dd");
+      const user = cookie.get('user')
+      const rpc = user ? JSON.parse(user).rpc : ''
+      const app_type = user ? JSON.parse(user).app_type : ''
+      const account_type = user ? JSON.parse(user).account_type : ''
+
       setTimeout(() => {
-        window.location.href = "/";
+        // ?dari_tanggal=2025-06-22&sampai_tanggal=2025-07-22&regional=1
+        if (rpc != '' && account_type === 'regional' && app_type == 'monev') {
+          window.location.href = `/?dari_tanggal=${dari_tanggal}&sampai_tanggal=${sampai_tanggal}&regional=${data.rpc}`;
+
+        } else {
+          window.location.href = `/`;
+        }
+
       }, 1000);
-      console.log(data);
+
     } catch (error) {
       console.error("Error fetching user data:", error);
     }

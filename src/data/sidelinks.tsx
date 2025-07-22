@@ -464,22 +464,7 @@ export const monevSideLinks: SideLink[] = [
         alt='doughnut-chart--v1'
       />
     ),
-  },
-
-
-  {
-    title: 'Settings',
-    label: '',
-    href: '/settings',
-    icon: (
-      <img
-        width='20'
-        height='20'
-        src='https://img.icons8.com/3d-fluency/94/gear--v2.png'
-        alt='gear--v2'
-      />
-    ),
-  },
+  }
 ]
 
 // Fungsi untuk memilih SideLink berdasarkan peran pengguna
