@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge"
 import { MapPin, BarChart3, Activity, Target, Users, CheckCircle, TrendingUp, TrendingDown, Minus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { MonitoringData, PlantationData, JobPositionData, CorrectiveActionData } from "@/types/api"
+import { link } from "fs"
+import { Link } from "react-router-dom"
 
 interface SummaryCardsEnhancedProps {
   regionals?: string
@@ -106,6 +108,7 @@ export function SummaryCardsEnhanced({
       color: "from-blue-600 to-blue-700",
       trend: getTrendIcon(stats.totalArea, 10000),
       description: `${plantationData.length} kebun aktif`,
+      link: "/dashboard-inspire",
     },
     // {
     //   title: "Total Blok",
@@ -168,28 +171,22 @@ export function SummaryCardsEnhanced({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {cards.map((card, index) => (
-        <Card
-          key={index}
-          className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105"
-        >
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-300">{card.title}</CardTitle>
-            <div className={cn("p-2 rounded-lg bg-gradient-to-r text-white", card.color)}>{card.icon}</div>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-3xl font-bold text-white">
-                {card.value}
-                <span className="text-lg font-normal text-slate-400 ml-1">{card.unit}</span>
+        <Link to={card.link ? card.link : "#"} key={index} className="no-underline">
+          <Card className={" bg-slate-800"}>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span className="text-lg font-semibold">{card.title}</span>
+                {card.trend}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col items-start">
+              <div className="text-2xl font-bold text-white">
+                {card.value} {card.unit}
               </div>
-              {card.trend}
-            </div>
-            <p className="text-xs text-slate-400">{card.description}</p>
-            <div className="mt-2">
-            
-            </div>
-          </CardContent>
-        </Card>
+              <div className="text-sm text-muted-foreground">{card.description}</div>
+            </CardContent>
+          </Card>
+        </Link>
       ))}
     </div>
   )

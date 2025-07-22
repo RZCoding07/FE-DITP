@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import ReactApexChart from "react-apexcharts"
 import type { ApexOptions } from "apexcharts"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import axios from "axios"
-import { ChevronUp, ChevronDown, Calendar, MapPin, FileText, User, AlertCircle } from "lucide-react"
+import { ChevronUp, ChevronDown, Calendar, MapPin, FileText, User, AlertCircle, Loader2 } from "lucide-react"
 
 interface CorrectiveActionData {
   nama_unit: string | null
@@ -19,61 +19,53 @@ interface CorrectiveActionData {
 }
 
 interface CorrectiveActionDetail {
+  id: number
+  tanggal: string
   kode_unit: string
-  created_at: string
-  parameter_id: string
-  corrective_action: string | null
-  parameter_name: string
-  pengamatan_name: string
-  tahapan_name: string
-  sub_tahapan_name: string
-  header_kertas_kerja_id: string
-  created_by: string
-  jabatan: string
   kode_afdeling: string
   kode_blok: string
-  progress: string | null
-  nama_pembuat: string
+  luas: string
+  mekanis: string
+  chemis: string
+  created_at: string
+  deleted_at: string | null
+  m_kertas_kerja_id: string
+  created_by: string
+  regional: string
+  kode_regional: string
+  gis_id: string
+  latitude: string
+  longitude: string
+  jabatan: string
+  catatan_tambahan: string | null
+  judul_pekerjaan: string
+  nama_vendor: string
+  job: string
+  preview_link: string
+  author_name: string
   nama_unit: string
-}
-
-interface DetailResponse {
-  message: {
-    en: string
-    id: string
-  }
-  data: Array<{
-    id: number
-    tanggal: string
+  corrective_actions: {
     kode_unit: string
+    created_at: string
+    parameter_id: string
+    corrective_action: string | null
+    parameter_name: string
+    pengamatan_name: string
+    tahapan_name: string
+    sub_tahapan_name: string
+    header_kertas_kerja_id: string
+    created_by: string
+    jabatan: string
     kode_afdeling: string
     kode_blok: string
-    luas: string
-    mekanis: string
-    chemis: string
-    created_at: string
-    deleted_at: string | null
-    m_kertas_kerja_id: string
-    created_by: string
-    regional: string
-    kode_regional: string
-    gis_id: string
-    latitude: string
-    longitude: string
-    jabatan: string
-    catatan_tambahan: string | null
-    judul_pekerjaan: string
-    nama_vendor: string
-    job: string
-    preview_link: string
-    author_name: string
+    progress: string | null
+    nama_pembuat: string
     nama_unit: string
-    corrective_actions: CorrectiveActionDetail[]
-  }>
+  }[]
 }
 
 interface CorrectiveActionChartProps {
-  data: any[]
+  data: CorrectiveActionData[]
   showTop10?: boolean
   region?: string
   start_date?: string
@@ -107,13 +99,13 @@ export function CorrectiveActionChart({
 }: CorrectiveActionChartProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [detailCa, setDetailCa] = useState<DetailResponse | null>(null)
+  const [detailCa, setDetailCa] = useState<CorrectiveActionDetail[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedUnit, setSelectedUnit] = useState<ChartData | null>(null)
   const [sortField, setSortField] = useState<SortField>("tanggal")
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
 
-  // Process data
+  // Process data for chart
   const processDataByUnit = (data: CorrectiveActionData[]): ChartData[] => {
     const unitMap = new Map<string, { total: number; completed: number; kode_unit: string }>()
 
@@ -158,82 +150,50 @@ export function CorrectiveActionChart({
   const chartData = showTop10 ? allData.slice(0, 10) : allData
 
   // Flatten corrective actions for table display
-  const flattenedActions = detailCa?.data
-    ? detailCa.data.flatMap((item) =>
-        item.corrective_actions.map((action) => ({
-          ...action,
-          tanggal: item.tanggal,
-          luas: item.luas,
-          nama_vendor: item.nama_vendor,
-          preview_link: item.preview_link,
-        }))
-      )
-    : []
+  const flattenedActions = useMemo(() => {
+    return detailCa.flatMap(item => 
+      item.corrective_actions.map(action => ({
+        ...action,
+        tanggal: item.tanggal,
+        nama_pembuat: item.author_name,
+        jabatan: item.jabatan
+      }))
+    )
+  }, [detailCa])
 
-  // Sort function
-  const sortedActions = [...flattenedActions].sort((a, b) => {
-    let aValue: string | number = ""
-    let bValue: string | number = ""
-
-    switch (sortField) {
-      case "tanggal":
-        aValue = new Date(a.tanggal).getTime()
-        bValue = new Date(b.tanggal).getTime()
-        break
-      case "kode_afdeling":
-        aValue = a.kode_afdeling || ""
-        bValue = b.kode_afdeling || ""
-        break
-      case "kode_blok":
-        aValue = a.kode_blok || ""
-        bValue = b.kode_blok || ""
-        break
-      case "parameter_name":
-        aValue = a.parameter_name || ""
-        bValue = b.parameter_name || ""
-        break
-      case "pengamatan_name":
-        aValue = a.pengamatan_name || ""
-        bValue = b.pengamatan_name || ""
-        break
-      case "corrective_action":
-        aValue = a.corrective_action || ""
-        bValue = b.corrective_action || ""
-        break
-      case "nama_pembuat":
-        aValue = a.nama_pembuat || ""
-        bValue = b.nama_pembuat || ""
-        break
-      default:
-        return 0
-    }
-
-    if (typeof aValue === "string" && typeof bValue === "string") {
-      aValue = aValue.toLowerCase()
-      bValue = bValue.toLowerCase()
-    }
-
-    if (sortDirection === "asc") {
-      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0
-    } else {
-      return aValue > bValue ? -1 : aValue < bValue ? 1 : 0
-    }
-  })
-
+  // Handle sorting
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc")
     } else {
       setSortField(field)
-      setSortDirection("asc")
+      setSortDirection("desc")
     }
   }
 
+  const sortedActions = useMemo(() => {
+    return [...flattenedActions].sort((a, b) => {
+      const aValue = a[sortField] ?? ""
+      const bValue = b[sortField] ?? ""
+      
+      if (sortDirection === "asc") {
+        return String(aValue).localeCompare(String(bValue))
+      } else {
+        return String(bValue).localeCompare(String(aValue))
+      }
+    })
+  }, [flattenedActions, sortField, sortDirection])
+
   const SortIcon = ({ field }: { field: SortField }) => {
-    if (sortField !== field) return <ChevronUp className="w-4 h-4 opacity-30" />
-    return sortDirection === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+    if (sortField !== field) return null
+    return sortDirection === "asc" ? (
+      <ChevronUp className="ml-1 h-4 w-4" />
+    ) : (
+      <ChevronDown className="ml-1 h-4 w-4" />
+    )
   }
 
+  // Chart configuration
   const chartOptions: ApexOptions = {
     chart: {
       type: "bar",
@@ -265,7 +225,7 @@ export function CorrectiveActionChart({
 
             try {
               const apiUrl = import.meta.env.VITE_API_REPLANTING
-              const response = await axios.post(`${apiUrl}/api/d-rekap-ca-detail`, {
+              const response = await axios.post<CorrectiveActionDetail[]>(`${apiUrl}/api/d-rekap-ca-detail`, {
                 kode_unit: selected.kode_unit,
                 region: region,
                 start_date: start_date,
@@ -273,11 +233,9 @@ export function CorrectiveActionChart({
               })
 
               setDetailCa(response.data)
-
-              console.log("Corrective Action Details:", response.data)
             } catch (error) {
               console.error("Error fetching corrective action details:", error)
-              setError("Failed to fetch details")
+              setError("Failed to fetch details. Please try again later.")
             } finally {
               setLoading(false)
             }
@@ -417,7 +375,7 @@ export function CorrectiveActionChart({
 
           {loading ? (
             <div className="flex items-center justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400"></div>
+              <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
               <span className="ml-2 text-slate-400">Loading details...</span>
             </div>
           ) : error ? (

@@ -18,35 +18,56 @@ import cookie from "js-cookie"
 export default function DashboardMasterpiece() {
 
 
-  
-const user = cookie.get('user')
-const app_type = user ? JSON.parse(user).app_type : ''
-const account_type = user ? JSON.parse(user).account_type : ''
+
+  const user = cookie.get('user')
+  const app_type = user ? JSON.parse(user).app_type : ''
+  const account_type = user ? JSON.parse(user).account_type : ''
+
+  console.log("User:", user)
+  console.log("User:", user)
 
 
-interface TopNavLink {
-  title: string
-  isActive: boolean
-  href?: string
-  icon?: React.ReactNode
-}
+let topNav: { title: string; href: string; isActive: boolean }[] = []
 
-let topNav: TopNavLink[] = []
-
-
-
-if (app_type === 'monev' && account_type === 'Superadmin') {
-topNav = [
-  {
-    title: 'Dashboard Monev TU',
-    href: '/dashboard-monev',
-    isActive: true,
-  },
-]
-
-}
-
-  const [searchParams, setSearchParams] = useSearchParams()
+  if (app_type === "all") {
+    topNav = [
+      {
+        title: "Nursery",
+        href: "/dashboard-nursery",
+        isActive: false,
+      },
+      {
+        title: "Replanting (TU/TK/TB)",
+        href: "/dashboard-replanting",
+        isActive: false,
+      },
+      {
+        title: "Immature",
+        href: "/dashboard-immature",
+        isActive: false,
+      },
+      {
+        title: "Monica",
+        href: "/dashboard-monica",
+        isActive: true,
+      },
+ 
+      {
+        title: "Monev TU by KKMV",
+        href: "/dashboard-monev",
+        isActive: false,
+      },
+           {
+        title: "Replanting Area",
+        href: "/dashboard-inspire",
+        isActive: false,
+      },
+    ]
+  } else {
+    topNav = [
+      
+    ]
+  } const [searchParams, setSearchParams] = useSearchParams()
   const [filters, setFilters] = useState<DashboardFilters>({
     dari_tanggal: format(subDays(new Date(), 30), "yyyy-MM-dd"),
     sampai_tanggal: format(new Date(), "yyyy-MM-dd"),
@@ -139,7 +160,7 @@ topNav = [
         </div>
       </div>
 
-     <Layout.Footer>
+      <Layout.Footer>
       </Layout.Footer>
 
     </Layout>

@@ -485,7 +485,7 @@ export default function DashboardMonev() {
                         <Link to={`/dashboard-monev?dari_tanggal=${format(fromDate, "yyyy-MM-dd")}&sampai_tanggal=${format(toDate, "yyyy-MM-dd")}&regional=${selectedRegional?.kode_regional || ''}&kebun=${selectedKebun?.kode_unit || ''}&afdeling=${selectedAfdeling?.kode_afdeling || ''}`}>
                           <Button variant="secondary" className="w-full bg-sky-950 font-semibold">
                             <img width="22" height="22" src="https://img.icons8.com/3d-fluency/94/analytics.png" alt="analytics" />
-                            Dashboard Monev TU
+                            Monev TU by KKMV
                           </Button>
                         </Link>
                       </div>
@@ -585,14 +585,15 @@ const topNav = [
     href: '/dashboard-monica',
     isActive: false,
   },
-  {
-    title: 'Monev TU (Inspire-KKMV)',
-    href: '/dashboard-inspire',
-    isActive: true,
-  },
-  {
-    title: 'Dashboard Monev TU',
+    {
+    title: 'Monev TU by KKMV',
     href: '/dashboard-monev',
     isActive: false,
   },
+  {
+    title: 'Replanting Area',
+    href: '/dashboard-inspire',
+    isActive: true,
+  },
+
 ]

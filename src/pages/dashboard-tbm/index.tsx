@@ -714,14 +714,15 @@ export default function Dashboard() {
         href: "/dashboard-monica",
         isActive: false,
       },
+   
       {
-        title: 'Monev TU (Inspire-KKMV)',
-        href: '/dashboard-inspire',
+        title: 'Monev TU by KKMV',
+        href: '/dashboard-monev',
         isActive: false,
       },
-      {
-        title: 'Dashboard Monev TU',
-        href: '/dashboard-monev',
+         {
+        title: 'Replanting Area',
+        href: '/dashboard-inspire',
         isActive: false,
       },
     ]

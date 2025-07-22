@@ -44,15 +44,16 @@ const topNav = [
     href: "/dashboard-monica",
     isActive: false,
   },
+
   {
-    title: "Monev TU (Inspire-KKMV)",
-    href: "/dashboard-inspire",
-    isActive: false,
-  },
-  {
-    title: "Dashboard Monev TU",
+    title: "Monev TU by KKMV",
     href: "/dashboard-monev",
     isActive: true,
+  },
+    {
+    title: "Replanting Area",
+    href: "/dashboard-inspire",
+    isActive: false,
   },
 ]
 

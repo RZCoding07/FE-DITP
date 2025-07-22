@@ -1082,14 +1082,15 @@ if (account_type === "superadmin") {
       href: "/dashboard-monica",
       isActive: true,
     },
+
     {
-      title: "Monev TU (Inspire-KKMV)",
-      href: "/dashboard-inspire",
+      title: "Monev TU by KKMV",
+      href: "/dashboard-monev",
       isActive: false,
     },
-    {
-      title: "Dashboard Monev TU",
-      href: "/dashboard-monev",
+        {
+      title: "Replanting Area",
+      href: "/dashboard-inspire",
       isActive: false,
     },
   ]

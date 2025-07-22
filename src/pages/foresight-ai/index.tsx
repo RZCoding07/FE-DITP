@@ -25,7 +25,7 @@ export default function ForeSightAI() {
 
       <Layout.Body>
         <div className='mb-2 flex w-full items-center justify-between rounded-lg border-2 bg-slate-50 bg-gradient-to-br p-4 shadow-md  dark:from-slate-950 dark:to-slate-900 shadow-cyan-500'>
-          <div className='space-y-0.5'> 
+          <div className='space-y-0.5'>
             <h2 className='text-2xl font-semibold tracking-tight'>
               Forecasting Optimized Resource Estimation & Strategy Innovation for Growth and Harvest Trends PTPN-IV
             </h2>
@@ -46,7 +46,7 @@ export default function ForeSightAI() {
                 <CardContent>
                   <h4 className='text-lg font-medium'>{category}</h4>
                   <p className='text-sm text-muted-foreground'>
-                    Analysis and insights for {category} problems and corrective actions. 
+                    Analysis and insights for {category} problems and corrective actions.
                   </p>
                 </CardContent>
               </Card>
@@ -62,10 +62,10 @@ export default function ForeSightAI() {
                 Weighted moving average for growth and harvest trends.
               </p>
             </CardContent>
-             
 
-                      
-        </Card>
+
+
+          </Card>
         </Card>
       </Layout.Body>
     </Layout>
