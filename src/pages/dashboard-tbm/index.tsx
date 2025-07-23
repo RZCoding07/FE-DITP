@@ -536,6 +536,8 @@ export default function Dashboard() {
         "Blok",
         "Varietas",
         "Luasan",
+        "Bulan Tanam",
+        "Tahun Tanam",
         "Umur",
         "Jumlah Pokok Awal Tanam",
         "Jumlah Pokok Sekarang",
@@ -566,6 +568,8 @@ export default function Dashboard() {
           data.blok,
           data.varietas,
           data.luas,
+          data.bulan_tanam,
+          data.tahun_tanam,
           data.umur,
           data.jumlah_pokok_awal_tanam,
           data.jumlah_pokok_sekarang,
@@ -690,9 +694,9 @@ export default function Dashboard() {
     }
   }
 
-  // Navigation links
+  // Navigation linksDO
   let topNav: { title: string; href: string; isActive: boolean }[] = []
-  if (account_type === "superadmin") {
+  if (account_type === "Superadmin") {
     topNav = [
       {
         title: "Nursery",

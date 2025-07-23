@@ -256,7 +256,7 @@ export default function PalmOilTable() {
             <TableHead rowSpan={2} className="text-white border-r">
               Umur
             </TableHead>
-            <TableHead colSpan={8} className="text-center text-white border-b">
+            <TableHead colSpan={9} className="text-center text-white border-b">
               Parameter
             </TableHead>
           </TableRow>
@@ -284,6 +284,9 @@ export default function PalmOilTable() {
             </TableHead>
             <TableHead className="text-center text-white bg-[#3B7137]">
               Lebar Anak Daun
+            </TableHead>
+            <TableHead className="text-center text-white bg-[#3B7137]">
+              Panjang Rachis
             </TableHead>
           </TableRow>
         </>
@@ -327,6 +330,7 @@ export default function PalmOilTable() {
           <TableCell className="border-r text-center">{row.jumlahAnakDaun || ""}</TableCell>
           <TableCell className="border-r text-center">{row.panjangAnakDaun || ""}</TableCell>
           <TableCell className="border-r text-center">{row.lebarAnakDaun || ""}</TableCell>
+          <TableCell className="border-r text-center">{row.panjangRachis || ""}</TableCell>
         </TableRow>
       ))
     }
@@ -391,7 +395,7 @@ export default function PalmOilTable() {
             <TableBody className="text-[13px] text-center">{renderTableRows()}</TableBody>
           </Table>
         </div>
-        <div className={bulan === "4" ? "flex-col" : "grid grid-cols-2"}>
+        <div className={bulan === "4" ? "flex-col" : "grid grid-cols-2 gap-2"}>
           <div>
             <h2>Perumusan Perhitungan Pengukuran Vegetatif</h2>
             <p className="text-[13px] my-2">

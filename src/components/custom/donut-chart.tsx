@@ -15,6 +15,7 @@ const DonutChart = ({
   let greenCount = 0;
   let redCount = 0;
   let blackCount = 0;
+  let totalValue = 0; // For calculating percentages based on area or count
 
   // Filter data based on TBM category if needed
   let filteredData = dataprops.scoreAll;
@@ -35,23 +36,45 @@ const DonutChart = ({
     }
   }
 
-  // Count items in each color category
-  filteredData.forEach((item: any) => {
-    switch (item.colorCategory) {
-      case 'gold':
-        goldCount++;
-        break;
-      case 'green':
-        greenCount++;
-        break;
-      case 'red':
-        redCount++;
-        break;
-      case 'black':
-        blackCount++;
-        break;
-    }
-  });
+  // Count items based on dataprops.untuk
+  if (dataprops.untuk === "luasan") {
+    filteredData.forEach((item: any) => {
+      const luas = item.luas || 0;
+      totalValue += luas;
+      switch (item.colorCategory) {
+        case 'gold':
+          goldCount += luas;
+          break;
+        case 'green':
+          greenCount += luas;
+          break;
+        case 'red':
+          redCount += luas;
+          break;
+        case 'black':
+          blackCount += luas;
+          break;
+      }
+    });
+  } else { // Default to "blok" count
+    filteredData.forEach((item: any) => {
+      totalValue += 1;
+      switch (item.colorCategory) {
+        case 'gold':
+          goldCount++;
+          break;
+        case 'green':
+          greenCount++;
+          break;
+        case 'red':
+          redCount++;
+          break;
+        case 'black':
+          blackCount++;
+          break;
+      }
+    });
+  }
 
   // Prepare data for the chart
   const series = [goldCount, greenCount, redCount, blackCount];
@@ -71,17 +94,33 @@ const DonutChart = ({
       },
       dataLabels: {
         enabled: true,
-        formatter: (val: number) => `${Math.round(val)}%`,
+        formatter: function(val: number) {
+          return `${parseFloat(val.toString()).toFixed(1)}%`; // Menampilkan persentase dengan 1 desimal
+        },
         style: {
           colors: ['#fff'],
+          fontSize: '12px',
+          fontFamily: 'Arial, sans-serif'
         },
+        dropShadow: {
+          enabled: true,
+          top: 1,
+          left: 1,
+          blur: 1,
+          color: '#000',
+          opacity: 0.45
+        }
       },
       fill: {
         type: "gradient",
       },
       tooltip: {
         y: {
-          formatter: (val: number) => `${val.toFixed(0)}`,
+          formatter: (val: number) => {
+            return dataprops.untuk === "luasan" 
+              ? `${val.toFixed(2)} ha (${((val / totalValue) * 100).toFixed(1)}%)` 
+              : `${Math.round(val)} blok (${((val / totalValue) * 100).toFixed(1)}%)`;
+          },
         },
       },
       responsive: [
@@ -98,31 +137,44 @@ const DonutChart = ({
         pie: {
           donut: {
             size: '65%',
+            labels: {
+              show: true,
+              name: {
+                show: true,
+                fontSize: '14px',
+                color: '#fff'
+              },
+              value: {
+                show: true,
+                fontSize: '16px',
+                color: '#fff',
+                formatter: function(val: string) {
+                  return `${dataprops.untuk === "luasan" ? parseFloat(val).toFixed(2) : parseFloat(val).toFixed(0)} ${dataprops.untuk === "luasan" ? 'ha' : 'blok'}`;
+                }
+              },
+              total: {
+                show: true,
+                label: 'Total',
+                color: '#fff',
+                formatter: function(w: any) {
+                  return dataprops.untuk === "luasan" 
+                    ? `${totalValue.toFixed(2)} ha` 
+                    : `${Math.round(totalValue)} blok`;
+                }
+              }
+            }
           }
         }
       }
     }),
-    []
+    [dataprops.untuk, totalValue]
   )
-
 
   return (
     <>
      <div style={{ position: 'relative', width: '100%', height: '270px' }}>
        <ReactApexChart options={options} series={series} type="donut" height={270} />
-       <img
-         src="/images/1.png" // Replace with your image URL
-         alt="Center Image"
-         style={{
-           position: 'absolute',
-           top: '50%',
-           left: '43.5%',
-           transform: 'translate(-50%, -50%)',
-           width: '90px', // Adjust size as needed
-           height: '90px', // Adjust size as needed
-           zIndex: 10,
-         }}
-       />
+     
      </div>
     </>
   )

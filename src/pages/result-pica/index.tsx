@@ -95,7 +95,7 @@ export default function Awal() {
         <div className="mb-2 flex w-full items-center justify-between rounded-lg border-2 bg-slate-50 bg-gradient-to-br p-4 shadow-md transition-shadow hover:shadow-lg dark:from-slate-950 dark:to-slate-900">
           <div className="space-y-0.5">
             <h2 className="text-2xl font-semibold tracking-tight">Monitoring PICA TBM</h2>
-            <p className="text-muted-foreground">Here&apos;s a list of all the Serapan Biaya PICA TBM</p>
+            <p className="text-muted-foreground">Here&apos;s a list of all the PICA TBM</p>
           </div>
         </div>
 

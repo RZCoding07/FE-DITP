@@ -42,6 +42,7 @@ interface ScoreItem {
   luas: number
   jumPelepah: number
   varietas: string
+  bulan_tanam: string
   tahun_tanam: string
   umur: string
   fase_tbm: string // Added fase_tbm property
@@ -343,6 +344,7 @@ if (compareCaseInsensitive(varietas, "DP Yangambi") ||
         totalSeleksian,
         colorCategory,
         luas,
+        bulan_tanam: item.bulan,
         varietas,
         jumPelepah,
         fase_tbm: item.fase_tbm,
