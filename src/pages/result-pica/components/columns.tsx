@@ -33,7 +33,7 @@ const encodeBase64 = (str: string): string => {
 
 export const columns: ColumnDef<VegetativeData>[] = [
 
-   {
+  {
     id: "number",
     header: "No.",
     cell: ({ row, table }) => {
@@ -96,143 +96,195 @@ export const columns: ColumnDef<VegetativeData>[] = [
     header: 'Keterangan',
     cell: ({ row }) => <span>{row.getValue('keterangan') || '-'}</span>,
   },
-  // Corrective Actions Group
   {
     accessorKey: 'corrective_actions',
     header: 'Action',
     cell: ({ row }) => {
-      const actions = JSON.parse(row.getValue('corrective_actions'));
-      return (
-        <div>
-          {actions.map((action: any) => action.ca).join(', ')}
-        </div>
-      );
+      try {
+        const actions = row.getValue('corrective_actions') ? JSON.parse(row.getValue('corrective_actions')) : [];
+        return (
+          <div>
+            {actions.length > 0 
+              ? actions.map((action: any) => action.ca).join(', ')
+              : '-'}
+          </div>
+        );
+      } catch (e) {
+        return '-';
+      }
     },
   },
   {
     id: 'ca_value',
     header: 'Value',
     cell: ({ row }) => {
-      const actions = JSON.parse(row.getValue('corrective_actions'));
-      return (
-        <div>
-          {actions.map((action: any) => action.value).join(', ')}
-        </div>
-      );
+      try {
+        const actions = row.getValue('corrective_actions') ? JSON.parse(row.getValue('corrective_actions')) : [];
+        return (
+          <div>
+            {actions.length > 0 
+              ? actions.map((action: any) => action.value).join(', ')
+              : '-'}
+          </div>
+        );
+      } catch (e) {
+        return '-';
+      }
     },
   },
   {
     id: 'ca_start_date',
     header: 'Start Date',
     cell: ({ row }) => {
-      const actions = JSON.parse(row.getValue('corrective_actions'));
-      return (
-        <div>
-          {actions.map((action: any) => action.startDate).join(', ')}
-        </div>
-      );
+      try {
+        const actions = row.getValue('corrective_actions') ? JSON.parse(row.getValue('corrective_actions')) : [];
+        return (
+          <div>
+            {actions.length > 0 
+              ? actions.map((action: any) => action.startDate).join(', ')
+              : '-'}
+          </div>
+        );
+      } catch (e) {
+        return '-';
+      }
     },
   },
   {
     id: 'ca_end_date',
     header: 'End Date',
     cell: ({ row }) => {
-      const actions = JSON.parse(row.getValue('corrective_actions'));
-      return (
-        <div>
-          {actions.map((action: any) => action.endDate).join(', ')}
-        </div>
-      );
+      try {
+        const actions = row.getValue('corrective_actions') ? JSON.parse(row.getValue('corrective_actions')) : [];
+        return (
+          <div>
+            {actions.length > 0 
+              ? actions.map((action: any) => action.endDate).join(', ')
+              : '-'}
+          </div>
+        );
+      } catch (e) {
+        return '-';
+      }
     },
   },
   {
     id: 'ca_budget',
     header: 'Budget',
     cell: ({ row }) => {
-      const actions = JSON.parse(row.getValue('corrective_actions'));
-      return (
-        <div>
-          {actions.map((action: any) => action.budgetAvailable == 'tersedia' ? 'Tersedia' : 'Tidak Tersedia').join(', ')}
-        </div>
-      );
+      try {
+        const actions = row.getValue('corrective_actions') ? JSON.parse(row.getValue('corrective_actions')) : [];
+        return (
+          <div>
+            {actions.length > 0 
+              ? actions.map((action: any) => action.budgetAvailable == 'tersedia' ? 'Tersedia' : 'Tidak Tersedia').join(', ')
+              : '-'}
+          </div>
+        );
+      } catch (e) {
+        return '-';
+      }
     },
   },
   {
     id: 'ca_images',
     header: 'Images',
     cell: ({ row }) => {
-      const actions = JSON.parse(row.getValue('corrective_actions'));
+      try {
+        const actions = row.getValue('corrective_actions') ? JSON.parse(row.getValue('corrective_actions')) : [];
+        return (
+          <div>
+            {actions.length > 0 
+              ? actions.map((action: any, actionIndex: number) => 
+                  action.images?.length 
+                    ? (
+                        <div key={actionIndex}>
+                          {action.images.map((image: any, imageIndex: number) => (
+                            <img 
+                              key={imageIndex} 
+                              src={image.file} 
+                              alt={image.name} 
+                              style={{ width: '600px', height: 'auto', margin: '5px' }} 
+                            />
+                          ))}
+                        </div>
+                      )
+                    : <span key={actionIndex}>None</span>
+                )
+              : '-'}
+          </div>
+        );
+      } catch (e) {
+        return '-';
+      }
+    },
+  },
+  {
+    id: 'max_progress_percentage',
+    header: 'Progress',
+    accessorKey: 'max_progress_percentage',
+    cell: ({ row }) => {
+      const rawPercentage = row.getValue('max_progress_percentage') || 0;
+
       return (
-        <div>
-          {actions.map((action:any, actionIndex:any) => 
-            action.images?.length ? (
-              <div key={actionIndex}>
-                {action.images.map((image:any, imageIndex:any) => (
-                  <img 
-                    key={imageIndex} 
-                    src={image.file} 
-                    alt={image.name} 
-                    style={{ width: '600px', height: 'auto', margin: '5px' }} 
-                  />
-                ))}
-              </div>
-            ) : (
-              <span key={actionIndex}>None</span>
-            )
-          )}
+        <div className="flex items-center gap-2">
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+            <div
+              className="bg-green-600 h-2.5 rounded-full"
+              style={{ width: `${rawPercentage}%` }}
+            />
+          </div>
+          <span className="text-sm">{`${rawPercentage}%`}</span>
         </div>
       );
     },
   },
-{
-  id: 'max_progress_percentage',
-  header: 'Progress',
-  accessorKey: 'max_progress_percentage',
-  cell: ({ row }) => {
-    const rawPercentage = row.getValue('max_progress_percentage') || 0;
-
-    return (
-      <div className="flex items-center gap-2">
-        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-          <div
-            className="bg-green-600 h-2.5 rounded-full"
-            style={{ width: `${rawPercentage}%` }}
-          />
-        </div>
-        <span className="text-sm">{`${rawPercentage}%`}</span>
-      </div>
-    );
-  },
-},
-{
+  {
     id: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
-      const actions = JSON.parse(row.getValue('corrective_actions'));
-      return (
-        <Button
-          variant='outline'
-          className='w-full'
-        >
-          <Link 
-            to={`/weekly-pica-tbm/${
-              row.original.vegetatif_id
-            }/${
-              encodeBase64(actions.map((action: any) => action.startDate).join(', '))
-            }/${
-              encodeBase64(actions.map((action: any) => action.endDate).join(', '))
-            }/${
-              encodeBase64(actions.map((action: any) => action.ca).join(', '))
-            }/${
-              encodeBase64(actions.map((action: any) => action.value).join(', '))
-            }/${
-              encodeBase64(actions.map((action: any) => action.budgetAvailable).join(', '))
-            }`}
+      try {
+        const actions = row.getValue('corrective_actions') ? JSON.parse(row.getValue('corrective_actions')) : [];
+        const hasActions = actions.length > 0;
+        
+        return (
+          <Button
+            variant='outline'
+            className='w-full'
+            disabled={!hasActions}
           >
-            Detail Progress
-          </Link>
-        </Button>
-      );
+            <Link 
+              to={hasActions 
+                ? `/weekly-pica-tbm/${
+                    row.original.vegetatif_id
+                  }/${
+                    encodeBase64(actions.map((action: any) => action.startDate).join(', '))
+                  }/${
+                    encodeBase64(actions.map((action: any) => action.endDate).join(', '))
+                  }/${
+                    encodeBase64(actions.map((action: any) => action.ca).join(', '))
+                  }/${
+                    encodeBase64(actions.map((action: any) => action.value).join(', '))
+                  }/${
+                    encodeBase64(actions.map((action: any) => action.budgetAvailable).join(', '))
+                  }`
+                : '#'}
+            >
+              {hasActions ? 'Detail Progress' : 'No Actions'}
+            </Link>
+          </Button>
+        );
+      } catch (e) {
+        return (
+          <Button
+            variant='outline'
+            className='w-full'
+            disabled
+          >
+            <Link to="#">Invalid Data</Link>
+          </Button>
+        );
+      }
     },
-},
+  },
 ];
