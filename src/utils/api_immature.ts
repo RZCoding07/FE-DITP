@@ -83,6 +83,21 @@ export const fetchSerapanBiaya = async (params: any) => {
   return response.data;
 };
 
+
+export const fetchSerapanBiayaRegional = async (params: any) => {
+  // Generate a cache key based on the params (can use a JSON string or a custom key generator)
+
+  // If the data is not cached, make the API request
+  const url = `${API_BASE_URL}/serapan-biaya-bulan-tahun-regional`;
+  const response = await axios.post(url, params, {
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+
+  // Return the data from the API
+  return response.data;
+};
+
 export const fetchKebun = async (params: any) => {
   const url = `${API_BASE_URL}/get-kebun-where-reg-vegetatif`;
   const response = await axios.post(url, params, {

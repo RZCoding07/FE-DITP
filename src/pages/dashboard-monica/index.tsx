@@ -221,6 +221,7 @@ export default function Tasks() {
     }
     // Convert array data to objects before setting modal data
     const convertedModalData = convertArrayToModalObject(modalDataFiltered)
+
     setModalData(convertedModalData)
 
     setModalTitle(title)
@@ -497,7 +498,6 @@ export default function Tasks() {
       },
     ]
     setDataRekap(mockRekapData)
-    console.log("Mock Rekap Data:", mockRekapData)
   }
 
   const getAllRecordsperRPCRekeningBesar = async (rekBesar: string) => {
@@ -507,6 +507,16 @@ export default function Tasks() {
       const filteredByRekBesar = data.filter((item: any[]) => item[1] === rekBesar)
       const finalFilteredData = getFilteredData(filteredByRekBesar, selectedKomoditas, activeTab)
       setDataRekBesar(finalFilteredData)
+      console.log("Filtered Rekening Besar Data:", finalFilteredData)
+      const obj = convertArrayToModalObject(finalFilteredData)
+
+      if(obj.length > 0) {
+        const filter = obj.filter((item :any) => item.kurva_s && item.kurva_s !== "0")
+
+        console.log("Filtered Yang Ada Link:", filter)
+      }
+
+
       setLoading(false)
     } catch (error: any) {
       console.error("Failed to fetch records:", error.message)

@@ -63,7 +63,7 @@ const [Awal, setAwal] = useState([])
               Here&apos;s a list of all the Serapan Biaya
             </p>
           </div>
-          {account_type === 'superadmin' && (
+          {account_type === 'Superadmin' && (
 
           <div className='ml-auto flex space-x-2'>
             <Link to='/upload-serapan-biaya'>

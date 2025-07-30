@@ -113,6 +113,20 @@ export const columns: ColumnDef<Vegetatif>[] = [
     cell: ({ row }) => <span>{formatNumber(row.getValue('luas_ha'))}</span>,
   },
   {
+    accessorKey: 'pkk_ha_awal_tanam',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='PKK (Ha) Awal Tanam' />
+    ),
+    cell: ({ row }) => <span>{formatNumber(row.getValue('pkk_ha_awal_tanam'))}</span>,
+  },
+  {
+    accessorKey: 'pkk_ha_saat_ini',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='PKK (Ha) Saat Ini' />
+    ),
+    cell: ({ row }) => <span>{formatNumber(row.getValue('pkk_ha_saat_ini'))}</span>,
+  },
+  {
     accessorKey: 'jumlah_pokok_awal_tanam',
     header: ({ column }) => (
       <DataTableColumnHeader

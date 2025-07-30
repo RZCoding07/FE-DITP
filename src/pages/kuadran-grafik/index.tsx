@@ -103,34 +103,34 @@ export default function PicaTbmEnhanced() {
     fetchSerapanBiayaDis()
   }, [])
 
-useEffect(() => {
-  console.log("defaultTahun:", defaultTahun, "defaultBulan:", defaultBulan);
-  const tahun = defaultTahun?.value;
-  const bulan = defaultBulan?.value;
+  useEffect(() => {
+    console.log("defaultTahun:", defaultTahun, "defaultBulan:", defaultBulan);
+    const tahun = defaultTahun?.value;
+    const bulan = defaultBulan?.value;
 
-  const AllFetchSerapanBiaya = async (tahun: any, bulan: any) => {
-    try {
-      console.log("Fetching data for tahun:", tahun, "bulan:", bulan);
+    const AllFetchSerapanBiaya = async (tahun: any, bulan: any) => {
+      try {
+        console.log("Fetching data for tahun:", tahun, "bulan:", bulan);
 
-      const response = await fetchSerapanBiaya({
-        tahun: tahun,
-        bulan: bulan,
-      });
-      setDataSerapanBiaya(response.data);
-      
-      // Set nilai form setelah data selesai di-fetch
-      setValue("tahun", defaultTahun);
-      setValue("bulan", defaultBulan);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Gagal memuat data serapan biaya");
+        const response = await fetchSerapanBiaya({
+          tahun: tahun,
+          bulan: bulan,
+        });
+        setDataSerapanBiaya(response.data);
+
+        // Set nilai form setelah data selesai di-fetch
+        setValue("tahun", defaultTahun);
+        setValue("bulan", defaultBulan);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Gagal memuat data serapan biaya");
+      }
+    };
+
+    if (tahun && bulan) {
+      AllFetchSerapanBiaya(tahun, bulan);
     }
-  };
-
-  if (tahun && bulan) {
-    AllFetchSerapanBiaya(tahun, bulan);
-  }
-}, [defaultTahun, defaultBulan, setValue]);
+  }, [defaultTahun, defaultBulan, setValue]);
 
   const handleRpcChange = (selectedOption: any) => {
     setSelectedRpc(selectedOption.value)
@@ -213,11 +213,9 @@ useEffect(() => {
     black: "",
   })
 
-  // Main data fetching effect
   useEffect(() => {
     const fetchProcVegetatifDefault = async () => {
       try {
-        // Reset all values to zero
         setTbmRes([])
         setScores([])
         setScoresKebun([])
@@ -283,7 +281,7 @@ useEffect(() => {
           ) {
             bulanVegetatif = 12
             tahunVegetatif = watch("tahun").value
-          } 
+          }
         } else {
           bulanVegetatif = 12
           tahunVegetatif = watch("tahun")?.value - 1
@@ -449,7 +447,7 @@ useEffect(() => {
       { black: 0, red: 0, green: 0, gold: 0 },
     )
 
-    setColorDataLuas(colorDataLuas)
+    setColorDataLuas(colorDataLuas) 
     setColorData(colorData)
   }, [scores])
 
@@ -459,32 +457,30 @@ useEffect(() => {
       setValue("tbm", { value: "tbm1", label: "TBM 1" })
 
     }
-
-    // triggqer tbm change when tbmOpt is not empty
     if (tbmOpt.length > 0 && !watch("tbm")) {
       setValue("tbm", { value: "tbm1", label: "TBM 1" })
     }
   }, [watch("tbm"), scores])
 
   // Tambahkan useEffect untuk fetch serapanBiaya ketika bulan atau tahun berubah
-useEffect(() => {
-  const fetchSerapanBiayaData = async () => {
-    if (bulan && tahun) {
-      try {
-        const response = await fetchSerapanBiaya({
-          tahun: tahun.value,
-          bulan: bulan.value,
-        });
-        setDataSerapanBiaya(response.data);
-      } catch (error) {
-        console.error("Error fetching serapan biaya:", error);
-        toast.error("Gagal memuat data serapan biaya");
+  useEffect(() => {
+    const fetchSerapanBiayaData = async () => {
+      if (bulan && tahun) {
+        try {
+          const response = await fetchSerapanBiaya({
+            tahun: tahun.value,
+            bulan: bulan.value,
+          });
+          setDataSerapanBiaya(response.data);
+        } catch (error) {
+          console.error("Error fetching serapan biaya:", error);
+          toast.error("Gagal memuat data serapan biaya");
+        }
       }
-    }
-  };
+    };
 
-  fetchSerapanBiayaData();
-}, [bulan, tahun]); // Jalankan efek ini setiap bulan atau tahun berubah
+    fetchSerapanBiayaData();
+  }, [bulan, tahun]); // Jalankan efek ini setiap bulan atau tahun berubah
 
 
   return (
@@ -589,19 +585,19 @@ useEffect(() => {
           </CardHeader>
           <CardContent>
             <div className="items-center justify-center align-middle mr-1 pb-5">
-<EnhancedScatterChart
-  isDarkMode={isDarkMode}
-  dataprops={{
-    dataSerapanBiaya,
-    scoresKebunTBM,
-    regions: rpcVal,
-    tbm: tbmVal,
-    scoresAllKebun,
-    bulan: watch("bulan"), // Tambahkan bulan ke props
-    tahun: watch("tahun")  // Tambahkan tahun ke props
-  }}
-  key={`${watch("bulan")?.value}-${watch("tahun")?.value}`} // Force re-render ketika bulan/tahun berubah
-/>
+              <EnhancedScatterChart
+                isDarkMode={isDarkMode}
+                dataprops={{
+                  dataSerapanBiaya,
+                  scoresKebunTBM,
+                  regions: rpcVal,
+                  tbm: tbmVal,
+                  scoresAllKebun,
+                  bulan: watch("bulan"), // Tambahkan bulan ke props
+                  tahun: watch("tahun")  // Tambahkan tahun ke props
+                }}
+                key={`${watch("bulan")?.value}-${watch("tahun")?.value}`} // Force re-render ketika bulan/tahun berubah
+              />
             </div>
           </CardContent>
         </Card>

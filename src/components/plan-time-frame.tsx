@@ -98,9 +98,6 @@ const PlanByTimeframe = ({ isDarkMode }: PlanByTimeframeProps) => {
                 },
             ],
         },
-
-
-
     }
 
     useEffect(() => {

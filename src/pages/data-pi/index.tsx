@@ -64,7 +64,7 @@ export default function Awal() {
             </p>
           </div>
           {/* {(account_type === 'HO PalmCo' || account_type === 'Superadmin' ) && ( */}
-          {account_type === 'superadmin' && (
+          {account_type === 'Superadmin' && (
             <div className='ml-auto flex space-x-2'>
               <Link to='/upload-problem-identification'>
                 <Button>Upload Data</Button>

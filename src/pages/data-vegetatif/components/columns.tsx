@@ -14,6 +14,8 @@ export interface Vegetatif {
   panjang_rachis_cm: string
   lebar_petiola_cm: string
   tebal_petiola_cm: string
+  pkk_ha_awal_tanam: string
+  pkk_ha_saat_ini: string
   jad_1_sisi: string
   rerata_panjang_anak_daun: string
   rerata_lebar_anak_daun: string

@@ -53,7 +53,7 @@ export default function Tasks() {
               Data Luas Areal Statement
             </h2>
           </div>
-      {account_type === 'superadmin' && (
+      {account_type === 'Superadmin' && (
       
           <div className='ml-auto flex space-x-2'>
             <Link to='/upload-areal-statement'>

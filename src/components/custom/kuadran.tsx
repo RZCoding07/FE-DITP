@@ -330,16 +330,16 @@ const EnhancedScatterChart = ({ dataprops, isDarkMode }: ScatterChartProps) => {
             enabled: false,
           },
         },
-tooltip: {
-  headerFormat: "<b>{series.name}</b><br>",
-  pointFormatter: function (this: Highcharts.Point & Point): string {
-    const xValue = this.x !== undefined ? this.x : "N/A"
-    const yValue = this.y !== undefined ? this.y : "N/A"
-    return `<strong>Kebun: ${this.kebun}</strong><br>
+        tooltip: {
+          headerFormat: "<b>{series.name}</b><br>",
+          pointFormatter: function (this: Highcharts.Point & Point): string {
+            const xValue = this.x !== undefined ? this.x : "N/A"
+            const yValue = this.y !== undefined ? this.y : "N/A"
+            return `<strong>Kebun: ${this.kebun}</strong><br>
 Nilai Vegetatif: ${Number(xValue).toFixed(2)}<br>
 Serapan Biaya: ${Highcharts.numberFormat(Number(yValue), 2, ",", ".")}%`
-  },
-},
+          },
+        },
         dataLabels: {
           enabled: true,
           formatter: function (this: { point: Point }) {

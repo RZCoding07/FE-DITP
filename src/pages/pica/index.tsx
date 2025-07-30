@@ -83,7 +83,7 @@ export default function PicaTbm() {
       { value: "RPC2N14", label: "RPC2N14" },
     ]
 
-    if (accountType === 'superadmin') {
+    if (accountType === 'Superadmin') {
       return allRpcOptions
     } else if (accountType === 'regional') {
       return allRpcOptions.filter(option => 
@@ -100,7 +100,7 @@ export default function PicaTbm() {
 
   // Filter data based on user role
   const filterDataByRole = (data: any[]) => {
-    if (accountType === 'superadmin') {
+    if (accountType === 'Superadmin') {
       return data
     } else if (accountType === 'regional') {
       return data.filter(item => item.regional === userRpc)
@@ -781,7 +781,7 @@ export default function PicaTbm() {
 
             <Tabs
               orientation='vertical'
-              defaultValue={accountType === 'superadmin' ? 'RPC1' : userRpc || 'all'}
+              defaultValue={accountType === 'Superadmin' ? 'RPC1' : userRpc || 'all'}
               className='space-y-4'
             >
               <div className='w-full overflow-x-auto pb-2 text-center'>

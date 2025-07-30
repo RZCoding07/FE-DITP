@@ -25,8 +25,7 @@ export default function Awal() {
 
   const apiUrl = import.meta.env.VITE_API_IMMATURE
   const user = cookies.get("user")
-  const fullname = user ? JSON.parse(user).fullname : "user"
-  const account_type = user ? JSON.parse(user).account_type : "user"
+
   const rpc = user ? JSON.parse(user).rpc : "user"
   const kebun = user ? JSON.parse(user).kebun : "user"
 
@@ -47,7 +46,6 @@ export default function Awal() {
         regional: rpc,
       }
 
-      // Only add search if it's not empty
       if (newSearchTerm && newSearchTerm.trim() !== "") {
         params.search = newSearchTerm.trim()
       }

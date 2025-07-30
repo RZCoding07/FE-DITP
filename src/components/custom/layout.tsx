@@ -86,7 +86,7 @@ const Body = React.forwardRef< HTMLDivElement, React.HTMLAttributes<HTMLDivEleme
     <div className="relative min-h-screen sm:min-h-[120vh] md:min-h-[140vh] lg:min-h-[160vh] xl:min-h-[180vh]">
       <div
         className={cn(
-          'absolute opacity-50 inset-0 bg-gray-50 bg-[url("/bginvestasi.jpeg")] bg-cover bg-center  dark:bg-gradient dark:from-slate-950 dark:to-slate-900 ',
+          'absolute opacity-30 inset-0 bg-gray-50 bg-[url("/image.png")] bg-cover bg-center  dark:bg-gradient dark:from-slate-950 dark:to-slate-900 ',
           contextVal && contextVal.fixed && 'fixed'
         )}
         style={{

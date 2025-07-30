@@ -55,59 +55,59 @@ export default function Awal() {
     fetchInvesAwal()
   }, [])
 
-const exportToExcel = () => {
-  if (Awal.length === 0) return
+  const exportToExcel = () => {
+    if (Awal.length === 0) return
 
-  // Filter and transform data
-  const filteredData = Awal.map((item: any) => {
-    const { 
-      status, 
-      approval, 
-      cal_jumlah_pelepah, 
-      cal_lingkar_batang, 
-      cal_tinggi_tanaman,
-      vw_fase_tbm,
-      ...rest 
-    } = item as Record<string, any>
-    
-    // Transform vw_fase_tbm
-    let formattedFase: string = vw_fase_tbm || ''
-    formattedFase = formattedFase.toString().toUpperCase()
-    if (formattedFase === 'TBM4') {
-      formattedFase = 'TBM>3'
-    }
+    // Filter and transform data
+    const filteredData = Awal.map((item: any) => {
+      const {
+        status,
+        approval,
+        cal_jumlah_pelepah,
+        cal_lingkar_batang,
+        cal_tinggi_tanaman,
+        vw_fase_tbm,
+        ...rest
+      } = item as Record<string, any>
 
-    return {
-      ...rest,
-      vw_fase_tbm: formattedFase
-    }
-  })
+      // Transform vw_fase_tbm
+      let formattedFase: string = vw_fase_tbm || ''
+      formattedFase = formattedFase.toString().toUpperCase()
+      if (formattedFase === 'TBM4') {
+        formattedFase = 'TBM>3'
+      }
 
-  // Create worksheet from filtered data
-  const worksheet = XLSX.utils.json_to_sheet(filteredData)
+      return {
+        ...rest,
+        vw_fase_tbm: formattedFase
+      }
+    })
 
-  // Create workbook and add worksheet
-  const workbook = XLSX.utils.book_new()
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Data Vegetatif')
+    // Create worksheet from filtered data
+    const worksheet = XLSX.utils.json_to_sheet(filteredData)
 
-  // Set column widths (optional)
-  const wscols = [
-    { wch: 20 }, // column 1 width
-    { wch: 30 }, // column 2 width
-    // adjust as needed for your columns
-  ]
-  worksheet['!cols'] = wscols
+    // Create workbook and add worksheet
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Data Vegetatif')
 
-  // Generate Excel file buffer
-  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })
+    // Set column widths (optional)
+    const wscols = [
+      { wch: 20 }, // column 1 width
+      { wch: 30 }, // column 2 width
+      // adjust as needed for your columns
+    ]
+    worksheet['!cols'] = wscols
 
-  // Create blob from buffer
-  const data = new Blob([excelBuffer], { type: 'application/octet-stream' })
+    // Generate Excel file buffer
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })
 
-  // Save file with desired name
-  const fileName = `Data_Vegetatif_${new Date().toLocaleDateString()}.xlsx`
-  saveAs(data, fileName)
-}
+    // Create blob from buffer
+    const data = new Blob([excelBuffer], { type: 'application/octet-stream' })
+
+    // Save file with desired name
+    const fileName = `Data_Vegetatif_${new Date().toLocaleDateString()}.xlsx`
+    saveAs(data, fileName)
+  }
 
   return (
     <Layout>
@@ -144,7 +144,7 @@ const exportToExcel = () => {
               Nama Varietas harus menyesuaikan dengan template Excel yang diunduh
             </p>
           </div>
-          {(account_type === 'HO PalmCo' || account_type === 'superadmin' || account_type == 'kebun') && (
+          {(account_type === 'HO PalmCo' || account_type === 'Superadmin' || account_type == 'kebun') && (
             <div className='ml-auto flex space-x-2'>
               <a
                 className='flex cursor-pointer rounded-full bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300'
@@ -165,13 +165,13 @@ const exportToExcel = () => {
                 </span>
 
               </Link>
-    <button
-      onClick={exportToExcel}
-      className='flex cursor-pointer rounded-full bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-800 focus:outline-none focus:ring-4 focus:ring-orange-300'
-    >
-      <FaFileExcel className='mr-2 h-5 w-5' />
-      Export Excel
-    </button>
+              <button
+                onClick={exportToExcel}
+                className='flex cursor-pointer rounded-full bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-800 focus:outline-none focus:ring-4 focus:ring-orange-300'
+              >
+                <FaFileExcel className='mr-2 h-5 w-5' />
+                Export Excel
+              </button>
 
             </div>
           )}
