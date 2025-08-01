@@ -198,7 +198,8 @@ const filteredAndSortedData = useMemo(() => {
   }
 
   return (
-    <Card className="bg-black/20 border-white/10 backdrop-blur-sm">
+<>
+    <Card className="bg-gradient-to-br from-slate-900 to-slate-800  border-white/10 backdrop-blur-sm">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
@@ -481,6 +482,13 @@ const filteredAndSortedData = useMemo(() => {
           </div>
         </div>
       </CardContent>
+
+
     </Card>
+    <br/>
+<br/>
+<br/>
+
+</>
   )
 }

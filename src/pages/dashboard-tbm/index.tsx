@@ -21,10 +21,20 @@ import * as XLSX from "xlsx-js-style"
 import toast from "react-hot-toast"
 import { FaSync } from "react-icons/fa"
 import {
+  
   getScoreJumlahPelepah,
   getScoreKerapatanPokok,
   getScoreLingkarBatang,
   getScoreTinggiTanaman,
+
+  getScorePanjangRachis,
+  getScoreLebarPetiola,
+  getScoreTebalPetiola,
+  getScoreJumlahAnakDaun,
+  getScorePanjangAnakDaun,
+  getScoreLebarAnakDaun,
+    
+
   getColorJumlahPelepah,
   getColorLingkarBatang,
   getColorTinggiTanaman,
@@ -329,13 +339,16 @@ export default function Dashboard() {
 
         // Group data by TBM phase
         const groupedData = response.data.reduce((acc: Record<string, any[]>, item: any) => {
-          const tbmPhase = `tbm${item.vw_fase_tbm}`;
+          const tbmPhase = `${item.vw_fase_tbm}`;
           if (!acc[tbmPhase]) {
             acc[tbmPhase] = [];
           }
           acc[tbmPhase].push(item);
           return acc;
         }, {});
+
+
+        console.log("groupedData", groupedData);
 
         // Process data for each TBM phase
         const tbmResults = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 };
@@ -366,10 +379,12 @@ export default function Dashboard() {
             scoreLingkarBatangResultsUpdate,
           } = processScoreData({
             data: groupedData[tbmPhase],
+            
             getScoreLingkarBatang,
             getScoreJumlahPelepah,
             getScoreTinggiTanaman,
             getScoreKerapatanPokok,
+
             getColorJumlahPelepah,
             getColorLingkarBatang,
             getColorTinggiTanaman,
@@ -522,7 +537,6 @@ export default function Dashboard() {
     })
 
     console.log("scores", scoresKebun)
-
     try {
       // Create workbook
       const wb = XLSX.utils.book_new()
@@ -1096,7 +1110,9 @@ export default function Dashboard() {
             {/* {selectedCard.type !== "color" && ( */}
             <>
               <div className="grid sm:grid-cols-1 lg:grid-cols-[50%_50%] mt-5">
-                <h2 className="text-2xl font-bold mt-3">
+                <h2 className="text-2xl font-bold mt-3
+                  bg-clip-text text-transparent bg-gradient-to-r from-yellow-50 to-white
+                ">
                   PICA Cluster {selectedCard.name} <br />
                   {rpc ? "" + rpc.label : ""} {kebun ? " - " + kebun.label : ""} {afd ? " - " + afd.label : ""}
                   <strong>
@@ -1525,9 +1541,10 @@ function DashboardHeader({
     <div className="mb-2 flex items-center justify-between space-y-2">
       <div className="flex items-center space-x-2">
         <FcDoughnutChart size={40} style={{ animation: "spin 4s linear infinite" }} />
-        <h1 className="text-xl font-bold tracking-tight">Dashboard PICA Immature</h1>
+        <h1 className="text-xl font-bold tracking-tight   bg-clip-text text-transparent bg-gradient-to-r from-yellow-100 to-white">Dashboard PICA Immature</h1>
       </div>
-      <h1 className="text-xl">Hi, Welcome back {fullname}👋</h1>
+      <h1 className="text-xl
+      ">Hi, Welcome back {fullname}👋</h1>
       <div className="lg:flex sm:grid sm:grid-cols-1 items-center space-x-2">
         <Controller
           name="tahun"

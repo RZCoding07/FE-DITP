@@ -313,7 +313,7 @@ const IntegratedSummaryStats: React.FC<IntegratedSummaryStatsProps> = ({
   return (
     <div className="mb-5">
       {/* Job Breakdown */}
-      <CardTitle className="text-xl font-medium text-slate-300 mb-3">Breakdown Personil per Jabatan</CardTitle>
+      <CardTitle className="text-xl font-medium dark:text-slate-300 mb-3">Breakdown Personil per Jabatan</CardTitle>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-3">
         {Object.entries(jobStats).map(([job, stats]: [string, any]) => {
           const percentage = stats.total > 0 ? (stats.sudah / stats.total) * 100 : 0
@@ -342,7 +342,7 @@ const IntegratedSummaryStats: React.FC<IntegratedSummaryStatsProps> = ({
       </div>
 
       {/* Total Berkontrak Section */}
-      <CardTitle className="text-xl font-medium text-slate-300 mb-3 mt-6">
+      <CardTitle className="text-xl font-medium dark:text-slate-300 mb-3 mt-6">
         Total Karyawan Berkontrak {regional ? `Regional ${regional}` : ''}
       </CardTitle>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">

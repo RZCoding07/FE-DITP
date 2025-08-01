@@ -436,7 +436,7 @@ export default function PalmOilTable() {
                 <h3 className="my-2 text-[13px]">9. Panjang Anak Daun</h3>
                 <p className="text-[13px] my-2">Bobot Nilai Panjang Anak Daun = (Nilai Pengukuran / Nilai Parameter) × 5%</p>
                 <h3 className="my-2 text-[13px]">10. Lebar Anak Daun</h3>
-                <p className="text-[13px] my-2">Bobot Nilai Lebar Anak Daun = (Nilai Pengukuran / Nilai Parameter) × 5%</p>
+              <p className="text-[13px] my-2">Bobot Nilai Lebar Anak Daun = (Nilai Pengukuran / Nilai Parameter) × 5%</p>
               </>
             )}
           </div>

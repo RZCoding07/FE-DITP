@@ -172,7 +172,7 @@ export function SummaryCardsEnhanced({
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {cards.map((card, index) => (
         <Link to={card.link ? card.link : "#"} key={index} className="no-underline">
-          <Card className={" bg-slate-800"}>
+          <Card className={" bg-slate-800 text-white"}>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span className="text-lg font-semibold">{card.title}</span>

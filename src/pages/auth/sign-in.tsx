@@ -69,7 +69,7 @@ export default function SignIn() {
               </blockquote>
             </div>
             <p className='text-right font-semibold text-lg'>
-              EV4PALMS V.2.0
+              EV4PALMS V.2.0 
             </p>
           </div>
 

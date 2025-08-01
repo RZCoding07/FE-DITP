@@ -1,26 +1,50 @@
-import { dataOne, dataTwo, dataThree, dataFour, dataFive } from "@/data/tbm-params"
+import {
+  dataOne,
+  dataTwo,
+  dataThree,
+  dataFour,
+  dataFive,
+} from '@/data/tbm-params'
+
+import {
+  dataNewOne,
+  dataNewTwo,
+  dataNewThree,
+  dataNewFour,
+  dataNewFive,
+} from '@/data/tbm-params'
 
 interface ScoreDataItem {
-  tahun_tanam: string
   id: string
-  lingkar_batang_cm: string
-  jumlah_pelepah_bh: string
-  tinggi_tanaman_cm: string
-  jumlah_pokok_awal_tanam: string
-  jumlah_pokok_sekarang: string
   regional: string
   kebun: string
   afdeling: string
+  bulan_tanam: string
   blok: string
+  tahun_tanam: string
+  varietas: string
   luas_ha: string
+  jumlah_pokok_awal_tanam: string
+  jumlah_pokok_sekarang: string
+  umur_saat_ini_bulan: string
+  jumlah_anak_daun: string
+  tinggi_tanaman_cm: string
+  jumlah_pelepah_bh: string
+  panjang_rachis_cm: string
+  lebar_petiola_cm: string
+  tebal_petiola_cm: string
+  rerata_panjang_anak_daun: string
+  rerata_lebar_anak_daun: string
+  lingkar_batang_cm: string
+  tahun: string
+  bulan: string
+  status: null | string
+  approval: null | string
   cal_jumlah_pelepah: string
   cal_lingkar_batang: string
-  umur_saat_ini_bulan: string
-  varietas: string
-  bulan: string
-  tahun: string
-  fase_tbm: string // Added fase_tbm property
-  vw_fase_tbm: string // Added fase_tbm property
+  cal_tinggi_tanaman: string
+  vw_fase_tbm: string
+  pica_id: null | string
 }
 
 interface ScoreItem {
@@ -29,7 +53,7 @@ interface ScoreItem {
   kebun: string
   afdeling: string
   blok: string
-  lingkar_batang_cm: string 
+  lingkar_batang_cm: string
   tinggi_tanaman_cm: string
   jumlah_pokok_awal_tanam: string
   jumlah_pokok_sekarang: string
@@ -45,9 +69,9 @@ interface ScoreItem {
   bulan_tanam: string
   tahun_tanam: string
   umur: string
-  fase_tbm: string // Added fase_tbm property
+  fase_tbm: string
   vw_fase_tbm: string
-  pica_id?: string // Optional property for PICA ID
+  pica_id?: string
 }
 
 interface ScoreItemAll {
@@ -112,7 +136,6 @@ interface ProcessedKebunScore {
   calculatedTbm: string
 }
 
-
 interface ScoreItemAllRegional {
   id: string
   regional: string
@@ -133,7 +156,6 @@ interface ScoreItemAllRegional {
   colorScoreTinggiBatang: string
 }
 
-
 interface ProcessedRegionalScore {
   regional: string
   totalSeleksiRegional: number
@@ -145,7 +167,6 @@ interface ScoreResults {
   score80: number
   total: number
 }
-
 
 interface ScoreItemAllKebun {
   id: string
@@ -181,19 +202,19 @@ interface ProcessScoreDataResult {
   scoreLingkarBatangResultsUpdate: ScoreResults
 }
 
-type ScoreRange = {
-  skor100: string | number
-  skor90: string | number
-  skor80: string | number
-}
+// type ScoreRange = {
+//   skor100: string | number
+//   skor90: string | number
+//   skor80: string | number
+// }
 
-type PlantData = {
-  fase: string
-  umur: number
-  lingkarBatang: ScoreRange
-  jumlahPelepah: ScoreRange
-  tinggiTanaman: ScoreRange
-}
+// type PlantData = {
+//   fase: string
+//   umur: number
+//   lingkarBatang: ScoreRange
+//   jumlahPelepah: ScoreRange
+//   tinggiTanaman: ScoreRange
+// }
 
 export function processScoreData({
   data,
@@ -201,18 +222,172 @@ export function processScoreData({
   getScoreJumlahPelepah,
   getScoreTinggiTanaman,
   getScoreKerapatanPokok,
+
   getColorLingkarBatang,
   getColorJumlahPelepah,
   getColorTinggiTanaman,
+
+  getScorePanjangRachis,
+  getScoreLebarPetiola,
+  getScoreTebalPetiola,
+  getScoreJumlahAnakDaun,
+  getScorePanjangAnakDaun,
+  getScoreLebarAnakDaun,
+
+  getColorPanjangRachis,
+  getColorLebarPetiola,
+  getColorTebalPetiola,
+  getColorJumlahAnakDaun,
+  getColorPanjangAnakDaun,
+  getColorLebarAnakDaun,
 }: {
   data: { [key: string]: ScoreDataItem }
-  getScoreLingkarBatang: (dataset: PlantData[], age: number, value: number) => number
-  getScoreJumlahPelepah: (dataset: PlantData[], age: number, value: number) => number
-  getScoreTinggiTanaman: (dataset: PlantData[], age: number, value: number) => number
-  getScoreKerapatanPokok: (age: number, initial: number, current: number) => number
-  getColorLingkarBatang: (dataset: PlantData[], age: number, value: number) => string
-  getColorJumlahPelepah: (dataset: PlantData[], age: number, value: number) => string
-  getColorTinggiTanaman: (dataset: PlantData[], age: number, value: number) => string
+  getScoreLingkarBatang: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => number
+
+  getScoreJumlahPelepah: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => number
+
+  getScoreTinggiTanaman: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => number
+
+  getScoreKerapatanPokok: (
+    age: number,
+    initial: number,
+    current: number,
+    bV: number,
+    tV: number
+  ) => number
+
+  getScorePanjangRachis: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => number
+  getScoreLebarPetiola: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => number
+  getScoreTebalPetiola: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => number
+
+  getScoreJumlahAnakDaun: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => number
+
+  getScorePanjangAnakDaun: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => number
+  getScoreLebarAnakDaun: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => number
+
+  getColorLingkarBatang: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => string
+
+  getColorJumlahPelepah: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => string
+
+  getColorTinggiTanaman: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => string
+  getColorPanjangRachis: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => string
+
+  getColorLebarPetiola: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => string
+
+  getColorTebalPetiola: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => string
+
+  getColorJumlahAnakDaun: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => string
+  getColorPanjangAnakDaun: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => string
+
+  getColorLebarAnakDaun: (
+    dataset: any[],
+    age: number,
+    value: number,
+    bV: number,
+    tV: number
+  ) => string
 }): ProcessScoreDataResult {
   const newScores: Array<{ [key: string]: ScoreItem }> = []
   const newScoresKebun: { [key: string]: KebunScore } = {}
@@ -221,7 +396,7 @@ export function processScoreData({
   const newRegionalBlackBlockCount: { [key: string]: number } = {}
 
   // Process each item in the data
-  Object.values(data).forEach((item:any) => {
+  Object.values(data).forEach((item: any) => {
     let age = Number.parseInt(item.umur_saat_ini_bulan)
     if (age > 36) {
       age = 36
@@ -232,75 +407,489 @@ export function processScoreData({
 
     // Set data rules based on varietas
 
-
     function compareCaseInsensitive(str1: string, str2: string): boolean {
-  return str1.toLowerCase() === str2.toLowerCase();
-}
+      return str1.toLowerCase() === str2.toLowerCase()
+    }
 
-    let dataRules: PlantData[] = []
+    let dataRules: any[] = []
 
+    let bulanInt = Number.parseInt(item.bulan)
+    let tahunInt = Number.parseInt(item.tahun)
 
-if (compareCaseInsensitive(varietas, "DP Yangambi") || 
-    compareCaseInsensitive(varietas, "DP PPKS 718") || 
-    compareCaseInsensitive(varietas, "DP 239")) {
-  dataRules = dataOne;
-} else if (compareCaseInsensitive(varietas, "DP Langkat")) {
-  dataRules = dataTwo;
-} else if (
-  compareCaseInsensitive(varietas, "DP Simalungun") ||
-  compareCaseInsensitive(varietas, "DP Avros") ||
-  compareCaseInsensitive(varietas, "DP 540") ||
-  compareCaseInsensitive(varietas, "Lonsum") ||
-  compareCaseInsensitive(varietas, "Dami Mas") ||
-  compareCaseInsensitive(varietas, "Bina Sawit Makmur") ||
-  compareCaseInsensitive(varietas, "Sarana Inti Pratama") ||
-  compareCaseInsensitive(varietas, "Panca Surya Garden")
-) {
-  dataRules = dataThree;
-} else if (
-  compareCaseInsensitive(varietas, "SF Lame") ||
-  compareCaseInsensitive(varietas, "SF MTG") ||
-  compareCaseInsensitive(varietas, "SF Yangambi") ||
-  compareCaseInsensitive(varietas, "Bakrie") ||
-  compareCaseInsensitive(varietas, "Topaz") ||
-  compareCaseInsensitive(varietas, "Sriwijaya Sampoerna") ||
-  compareCaseInsensitive(varietas, "Verdant")
-) {
-  dataRules = dataFour;
-} else if (compareCaseInsensitive(varietas, "DP 239")) {
-  dataRules = dataFive;
-}
+    if (bulanInt == 4 && tahunInt == 2025) {
+      if (
+        compareCaseInsensitive(varietas, 'DP Yangambi') ||
+        compareCaseInsensitive(varietas, 'DP PPKS 718') ||
+        compareCaseInsensitive(varietas, 'DP 239')
+      ) {
+        dataRules = dataOne
+      } else if (compareCaseInsensitive(varietas, 'DP Langkat')) {
+        dataRules = dataTwo
+      } else if (
+        compareCaseInsensitive(varietas, 'DP Simalungun') ||
+        compareCaseInsensitive(varietas, 'DP Avros') ||
+        compareCaseInsensitive(varietas, 'DP 540') ||
+        compareCaseInsensitive(varietas, 'Lonsum') ||
+        compareCaseInsensitive(varietas, 'Dami Mas') ||
+        compareCaseInsensitive(varietas, 'Bina Sawit Makmur') ||
+        compareCaseInsensitive(varietas, 'Sarana Inti Pratama') ||
+        compareCaseInsensitive(varietas, 'Panca Surya Garden')
+      ) {
+        dataRules = dataThree
+      } else if (
+        compareCaseInsensitive(varietas, 'SF Lame') ||
+        compareCaseInsensitive(varietas, 'SF MTG') ||
+        compareCaseInsensitive(varietas, 'SF Yangambi') ||
+        compareCaseInsensitive(varietas, 'Bakrie') ||
+        compareCaseInsensitive(varietas, 'Topaz') ||
+        compareCaseInsensitive(varietas, 'Sriwijaya Sampoerna') ||
+        compareCaseInsensitive(varietas, 'Verdant')
+      ) {
+        dataRules = dataFour
+      } else if (compareCaseInsensitive(varietas, 'DP 239')) {
+        dataRules = dataFive
+      }
+    } else {
+      if (
+        compareCaseInsensitive(varietas, 'DP Yangambi') ||
+        compareCaseInsensitive(varietas, 'DP PPKS 718') ||
+        compareCaseInsensitive(varietas, 'DP 239')
+      ) {
+        dataRules = dataNewOne
+      } else if (compareCaseInsensitive(varietas, 'DP Langkat')) {
+        dataRules = dataNewTwo
+      } else if (
+        compareCaseInsensitive(varietas, 'DP Simalungun') ||
+        compareCaseInsensitive(varietas, 'DP Avros') ||
+        compareCaseInsensitive(varietas, 'DP 540') ||
+        compareCaseInsensitive(varietas, 'Lonsum') ||
+        compareCaseInsensitive(varietas, 'Dami Mas') ||
+        compareCaseInsensitive(varietas, 'Bina Sawit Makmur') ||
+        compareCaseInsensitive(varietas, 'Sarana Inti Pratama') ||
+        compareCaseInsensitive(varietas, 'Panca Surya Garden')
+      ) {
+        dataRules = dataNewThree
+      } else if (
+        compareCaseInsensitive(varietas, 'SF Lame') ||
+        compareCaseInsensitive(varietas, 'SF MTG') ||
+        compareCaseInsensitive(varietas, 'SF Yangambi') ||
+        compareCaseInsensitive(varietas, 'Bakrie') ||
+        compareCaseInsensitive(varietas, 'Topaz') ||
+        compareCaseInsensitive(varietas, 'Sriwijaya Sampoerna') ||
+        compareCaseInsensitive(varietas, 'Verdant')
+      ) {
+        dataRules = dataNewFour
+      } else if (compareCaseInsensitive(varietas, 'DP 239')) {
+        dataRules = dataNewFive
+      }
+    }
+    let scoreLingkarBatang = 0
+    let scoreJumlahPelepah = 0
+    let scoreTinggiBatang = 0
+    let scoreKerapatanPokok = 0
 
-    // Calculate scores
-    const scoreLingkarBatang = getScoreLingkarBatang(dataRules, age, Number.parseFloat(item.lingkar_batang_cm)) * 0.4
-    const scoreJumlahPelepah = getScoreJumlahPelepah(dataRules, age, Number.parseFloat(item.jumlah_pelepah_bh)) * 0.2
-    const scoreTinggiBatang = getScoreTinggiTanaman(dataRules, age, Number.parseFloat(item.tinggi_tanaman_cm)) * 0.1
-    const scoreKerapatanPokok =
-      getScoreKerapatanPokok(
+    // 8 - 12
+    let scorePanjangRachis = 0
+    let scoreLebarPetiola = 0
+    let scoreTebalPetiola = 0
+    let scoreJumlahAnakDaun = 0
+    let scorePanjangAnakDaun = 0
+    let scoreLebarAnakDaun = 0
+
+    let ascoreLingkarBatang = 0
+    let ascoreJumlahPelepah = 0
+    let ascoreTinggiBatang = 0
+    let ascoreKerapatanPokok = 0
+
+    // 8 - 12
+    let ascorePanjangRachis = 0
+    let ascoreLebarPetiola = 0
+    let ascoreTebalPetiola = 0
+    let ascoreJumlahAnakDaun = 0
+    let ascorePanjangAnakDaun = 0
+    let ascoreLebarAnakDaun = 0
+
+    let colorScoreLingkarBatang = ''
+    let colorScoreJumlahPelepah = ''
+    let colorScoreTinggiBatang = ''
+
+    // 8 - 12
+    let colorScorePanjangRachis = ''
+    let colorScoreLebarPetiola = ''
+    let colorScoreTebalPetiola = ''
+    let colorScoreJumlahAnakDaun = ''
+    let colorScorePanjangAnakDaun = ''
+    let colorScoreLebarAnakDaun = ''
+
+    let totalSeleksian = 0
+
+    if (bulanInt == 4 && tahunInt == 2025) {
+      // Calculate the scores
+      scoreLingkarBatang =
+        getScoreLingkarBatang(
+          dataRules,
+          age,
+          Number.parseFloat(item.lingkar_batang_cm),
+          Number.parseInt(item.bulan),
+          Number.parseInt(item.tahun)
+        ) * 0.4
+
+      scoreJumlahPelepah =
+        getScoreJumlahPelepah(
+          dataRules,
+          age,
+          Number.parseFloat(item.jumlah_pelepah_bh),
+          Number.parseInt(item.bulan),
+          Number.parseInt(item.tahun)
+        ) * 0.2
+
+      scoreTinggiBatang =
+        getScoreTinggiTanaman(
+          dataRules,
+          age,
+          Number.parseFloat(item.tinggi_tanaman_cm),
+          Number.parseInt(item.bulan),
+          Number.parseInt(item.tahun)
+        ) * 0.1
+
+      scoreKerapatanPokok =
+        getScoreKerapatanPokok(
+          age,
+          Number.parseFloat(item.jumlah_pokok_awal_tanam),
+          Number.parseFloat(item.jumlah_pokok_sekarang),
+          Number.parseInt(item.bulan),
+          Number.parseInt(item.tahun)
+        ) * 0.3
+
+      ascoreLingkarBatang = getScoreLingkarBatang(
+        dataRules,
+        age,
+        Number.parseFloat(item.lingkar_batang_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      ascoreJumlahPelepah = getScoreJumlahPelepah(
+        dataRules,
+        age,
+        Number.parseFloat(item.jumlah_pelepah_bh),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      ascoreTinggiBatang = getScoreTinggiTanaman(
+        dataRules,
+        age,
+        Number.parseFloat(item.tinggi_tanaman_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      ascoreKerapatanPokok = getScoreKerapatanPokok(
         age,
         Number.parseFloat(item.jumlah_pokok_awal_tanam),
         Number.parseFloat(item.jumlah_pokok_sekarang),
-      ) * 0.3
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
 
-    const ascoreLingkarBatang = getScoreLingkarBatang(dataRules, age, Number.parseFloat(item.lingkar_batang_cm))
-    const ascoreJumlahPelepah = getScoreJumlahPelepah(dataRules, age, Number.parseFloat(item.jumlah_pelepah_bh))
-    const ascoreTinggiBatang = getScoreTinggiTanaman(dataRules, age, Number.parseFloat(item.tinggi_tanaman_cm))
-    const ascoreKerapatanPokok = getScoreKerapatanPokok(
-      age,
-      Number.parseFloat(item.jumlah_pokok_awal_tanam),
-      Number.parseFloat(item.jumlah_pokok_sekarang),
-    )
+      colorScoreLingkarBatang = getColorLingkarBatang(
+        dataRules,
+        age,
+        Number.parseFloat(item.lingkar_batang_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
 
-    const colorScoreLingkarBatang = getColorLingkarBatang(dataRules, age, Number.parseFloat(item.lingkar_batang_cm))
-    const colorScoreJumlahPelepah = getColorJumlahPelepah(dataRules, age, Number.parseFloat(item.jumlah_pelepah_bh))
-    const colorScoreTinggiBatang = getColorTinggiTanaman(dataRules, age, Number.parseFloat(item.tinggi_tanaman_cm))
+      colorScoreJumlahPelepah = getColorJumlahPelepah(
+        dataRules,
+        age,
+        Number.parseFloat(item.jumlah_pelepah_bh),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
 
-    const totalSeleksian = scoreLingkarBatang + scoreJumlahPelepah + scoreTinggiBatang + scoreKerapatanPokok
+      colorScoreTinggiBatang = getColorTinggiTanaman(
+        dataRules,
+        age,
+        Number.parseFloat(item.tinggi_tanaman_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      totalSeleksian =
+        scoreLingkarBatang +
+        scoreJumlahPelepah +
+        scoreTinggiBatang +
+        scoreKerapatanPokok
+    } else {
+      scoreKerapatanPokok =
+        getScoreKerapatanPokok(
+          age,
+          Number.parseFloat(item.jumlah_pokok_awal_tanam),
+          Number.parseFloat(item.jumlah_pokok_sekarang),
+          Number.parseInt(item.bulan),
+          Number.parseInt(item.tahun)
+        ) * 0.15
+
+      scoreLingkarBatang =
+        getScoreLingkarBatang(
+          dataRules,
+          age,
+          Number.parseFloat(item.lingkar_batang_cm),
+          Number.parseInt(item.bulan),
+          Number.parseInt(item.tahun)
+        ) * 0.25
+
+      scoreJumlahPelepah =
+        getScoreJumlahPelepah(
+          dataRules,
+          age,
+          Number.parseFloat(item.jumlah_pelepah_bh),
+          Number.parseInt(item.bulan),
+          Number.parseInt(item.tahun)
+        ) * 0.15
+
+      scoreTinggiBatang =
+        getScoreTinggiTanaman(
+          dataRules,
+          age,
+          Number.parseFloat(item.tinggi_tanaman_cm),
+          Number.parseInt(item.bulan),
+          Number.parseInt(item.tahun)
+        ) * 0.1
+
+      scorePanjangRachis =
+        getScorePanjangRachis(
+          dataRules,
+          age,
+          Number.parseFloat(item.pangjang_rachis_cm),
+          Number.parseInt(item.bulan),
+          Number.parseInt(item.tahun)
+        ) * 0.05
+
+      scoreLebarPetiola =
+        getScoreLebarPetiola(
+          dataRules,
+          age,
+          Number.parseFloat(item.lebar_petiola_cm),
+          Number.parseInt(item.bulan),
+          Number.parseInt(item.tahun)
+        ) * 0.05
+
+      scoreTebalPetiola =
+        getScoreTebalPetiola(
+          dataRules,
+          age,
+          Number.parseFloat(item.tebal_petiola_cm),
+          Number.parseInt(item.bulan),
+          Number.parseInt(item.tahun)
+        ) * 0.05
+
+      scoreJumlahAnakDaun =
+        getScoreJumlahAnakDaun(
+          dataRules,
+          age,
+          Number.parseFloat(item.jumlah_anak_daun),
+          Number.parseInt(item.bulan),
+          Number.parseInt(item.tahun)
+        ) * 0.1
+
+      scorePanjangAnakDaun =
+        getScorePanjangAnakDaun(
+          dataRules,
+          age,
+          Number.parseFloat(item.rerata_panjang_anak_daun),
+          Number.parseInt(item.bulan),
+          Number.parseInt(item.tahun)
+        ) * 0.05
+
+      scoreLebarAnakDaun =
+        getScoreLebarAnakDaun(
+          dataRules,
+          age,
+          Number.parseFloat(item.rerata_lebar_anak_daun),
+          Number.parseInt(item.bulan),
+          Number.parseInt(item.tahun)
+        ) * 0.05
+
+      // color
+
+      ascoreLingkarBatang = getScoreLingkarBatang(
+        dataRules,
+        age,
+        Number.parseFloat(item.lingkar_batang_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      ascoreJumlahPelepah = getScoreJumlahPelepah(
+        dataRules,
+        age,
+        Number.parseFloat(item.jumlah_pelepah_bh),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      ascoreTinggiBatang = getScoreTinggiTanaman(
+        dataRules,
+        age,
+        Number.parseFloat(item.tinggi_tanaman_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      ascoreKerapatanPokok = getScoreKerapatanPokok(
+        age,
+        Number.parseFloat(item.jumlah_pokok_awal_tanam),
+        Number.parseFloat(item.jumlah_pokok_sekarang),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      ascorePanjangRachis = getScorePanjangRachis(
+        dataRules,
+        age,
+        Number.parseFloat(item.pangjang_rachis_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      ascoreLebarPetiola = getScoreLebarPetiola(
+        dataRules,
+        age,
+        Number.parseFloat(item.lebar_petiola_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      ascoreTebalPetiola = getScoreTebalPetiola(
+        dataRules,
+        age,
+        Number.parseFloat(item.tebal_petiola_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      ascoreJumlahAnakDaun = getScoreJumlahAnakDaun(
+        dataRules,
+        age,
+        Number.parseFloat(item.jumlah_anak_daun),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      ascorePanjangAnakDaun = getScorePanjangAnakDaun(
+        dataRules,
+        age,
+        Number.parseFloat(item.panjang_anak_daun_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      ascoreLebarAnakDaun = getScoreLebarAnakDaun(
+        dataRules,
+        age,
+        Number.parseFloat(item.lebar_anak_daun_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      colorScoreLingkarBatang = getColorLingkarBatang(
+        dataRules,
+        age,
+        Number.parseFloat(item.lingkar_batang_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      colorScoreJumlahPelepah = getColorJumlahPelepah(
+        dataRules,
+        age,
+        Number.parseFloat(item.jumlah_pelepah_bh),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      colorScoreTinggiBatang = getColorTinggiTanaman(
+        dataRules,
+        age,
+        Number.parseFloat(item.tinggi_tanaman_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      colorScorePanjangRachis = getColorPanjangRachis(
+        dataRules,
+        age,
+        Number.parseFloat(item.panjang_rachis_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      colorScoreLebarPetiola = getColorLebarPetiola(
+        dataRules,
+        age,
+        Number.parseFloat(item.lebar_petiola_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+      colorScoreTebalPetiola = getColorTebalPetiola(
+        dataRules,
+        age,
+        Number.parseFloat(item.tebal_petiola_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+      colorScoreTebalPetiola = getColorTinggiTanaman(
+        dataRules,
+        age,
+        Number.parseFloat(item.tinggi_tanaman_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      colorScoreJumlahAnakDaun = getColorJumlahAnakDaun(
+        dataRules,
+        age,
+        Number.parseFloat(item.jumlah_anak_daun),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      colorScorePanjangAnakDaun = getColorPanjangAnakDaun(
+        dataRules,
+        age,
+        Number.parseFloat(item.panjang_anak_daun_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      colorScoreLebarAnakDaun = getColorLebarAnakDaun(
+        dataRules,
+        age,
+        Number.parseFloat(item.lebar_anak_daun_cm),
+        Number.parseInt(item.bulan),
+        Number.parseInt(item.tahun)
+      )
+
+      totalSeleksian =
+        scoreLingkarBatang +
+        scoreJumlahPelepah +
+        scoreTinggiBatang +
+        scoreKerapatanPokok +
+        scorePanjangRachis +
+        scoreLebarPetiola +
+        scoreTebalPetiola +
+        scoreJumlahAnakDaun +
+        scorePanjangAnakDaun +
+        scoreLebarAnakDaun
+    }
 
     // Determine color category
-    let colorCategory = ""
+    let colorCategory = ''
     if (totalSeleksian < 80) {
-      colorCategory = "black"
+      colorCategory = 'black'
       // Count black blocks by regional
       const regional = item.regional
       if (newRegionalBlackBlockCount[regional]) {
@@ -309,13 +898,13 @@ if (compareCaseInsensitive(varietas, "DP Yangambi") ||
         newRegionalBlackBlockCount[regional] = 1
       }
     } else if (totalSeleksian > 92) {
-      colorCategory = "gold"
+      colorCategory = 'gold'
     } else if (totalSeleksian > 87) {
-      colorCategory = "green"
+      colorCategory = 'green'
     } else if (totalSeleksian > 82) {
-      colorCategory = "red"
+      colorCategory = 'red'
     } else {
-      colorCategory = "black"
+      colorCategory = 'black'
     }
     // Extract data
     const luas = Number.parseFloat(item.luas_ha)
@@ -337,10 +926,12 @@ if (compareCaseInsensitive(varietas, "DP Yangambi") ||
         jumlah_pokok_sekarang: item.jumlah_pokok_sekarang,
         afdeling: item.afdeling,
         blok: item.blok,
+
         scoreLingkarBatang,
         scoreJumlahPelepah,
         scoreTinggiBatang,
         scoreKerapatanPokok,
+
         totalSeleksian,
         colorCategory,
         luas,
@@ -397,11 +988,9 @@ if (compareCaseInsensitive(varietas, "DP Yangambi") ||
       }
     }
 
-    // Add weighted score to kebun
     newScoresKebun[kebun].totalSeleksiKebun += totalSeleksian * luas
     newScoresKebun[kebun].totalLuas += luas
 
-    // Process regional data
     if (!newScoresRegional[regional]) {
       newScoresRegional[regional] = {
         regional,
@@ -437,22 +1026,32 @@ if (compareCaseInsensitive(varietas, "DP Yangambi") ||
     })
 
     // Calculate weighted averages
-    const avgAscoreLingkarBatang = totalLuas > 0 ? totalAscoreLingkarBatang / totalLuas : 0
-    const avgAscoreJumlahPelepah = totalLuas > 0 ? totalAscoreJumlahPelepah / totalLuas : 0
-    const avgAscoreTinggiBatang = totalLuas > 0 ? totalAscoreTinggiBatang / totalLuas : 0
-    const avgAscoreKerapatanPokok = totalLuas > 0 ? totalAscoreKerapatanPokok / totalLuas : 0
+    const avgAscoreLingkarBatang =
+      totalLuas > 0 ? totalAscoreLingkarBatang / totalLuas : 0
+    const avgAscoreJumlahPelepah =
+      totalLuas > 0 ? totalAscoreJumlahPelepah / totalLuas : 0
+    const avgAscoreTinggiBatang =
+      totalLuas > 0 ? totalAscoreTinggiBatang / totalLuas : 0
+    const avgAscoreKerapatanPokok =
+      totalLuas > 0 ? totalAscoreKerapatanPokok / totalLuas : 0
 
     // Determine color scores for kebun (using the first item's data rules as reference)
     const firstKebunItem = kebunItems[0]
-    let colorScoreLingkarBatang = "default"
-    let colorScoreJumlahPelepah = "default"
-    let colorScoreTinggiBatang = "default"
+    let colorScoreLingkarBatang = 'default'
+    let colorScoreJumlahPelepah = 'default'
+    let colorScoreTinggiBatang = 'default'
 
     if (firstKebunItem) {
       // Use the most common color for each metric in the kebun
-      const lingkarBatangColors = kebunItems.map((item) => item.colorScoreLingkarBatang)
-      const jumlahPelepahColors = kebunItems.map((item) => item.colorScoreJumlahPelepah)
-      const tinggiBatangColors = kebunItems.map((item) => item.colorScoreTinggiBatang)
+      const lingkarBatangColors = kebunItems.map(
+        (item) => item.colorScoreLingkarBatang
+      )
+      const jumlahPelepahColors = kebunItems.map(
+        (item) => item.colorScoreJumlahPelepah
+      )
+      const tinggiBatangColors = kebunItems.map(
+        (item) => item.colorScoreTinggiBatang
+      )
 
       // Helper function to get most common color
       const getMostCommonColor = (colors: string[]) => {
@@ -473,19 +1072,19 @@ if (compareCaseInsensitive(varietas, "DP Yangambi") ||
     }
 
     const totalSeleksiKebun = newScoresKebun[kebun].totalSeleksiKebun
-    let colorCategory = "black"
+    let colorCategory = 'black'
     if (totalSeleksiKebun >= 90) {
-      colorCategory = "gold"
+      colorCategory = 'gold'
     } else if (totalSeleksiKebun >= 85 && totalSeleksiKebun < 90) {
-      colorCategory = "green"
+      colorCategory = 'green'
     } else if (totalSeleksiKebun >= 80 && totalSeleksiKebun < 85) {
-      colorCategory = "red"
+      colorCategory = 'red'
     } else {
-      colorCategory = "black"
+      colorCategory = 'black'
     }
     // Use the first item's fase_tbm as the key (you might need to adjust this based on your requirements)
     const firstItem = Object.values(data).find((item) => item.kebun === kebun)
-    const faseTbm = firstItem ? firstItem.vw_fase_tbm : "default"
+    const faseTbm = firstItem ? firstItem.vw_fase_tbm : 'default'
 
     processedScoresKebun.push({
       [faseTbm]: {
@@ -507,15 +1106,20 @@ if (compareCaseInsensitive(varietas, "DP Yangambi") ||
   })
 
   // Calculate average scores for regional
-  const processedScoresRegional: Array<{ [key: string]: ProcessedRegionalScore }> = []
+  const processedScoresRegional: Array<{
+    [key: string]: ProcessedRegionalScore
+  }> = []
   Object.keys(newScoresRegional).forEach((regional) => {
     if (newScoresRegional[regional].totalLuas > 0) {
-      newScoresRegional[regional].totalSeleksiRegional /= newScoresRegional[regional].totalLuas
+      newScoresRegional[regional].totalSeleksiRegional /=
+        newScoresRegional[regional].totalLuas
     }
 
     // Use the first item's fase_tbm as the key (you might need to adjust this based on your requirements)
-    const firstItem = Object.values(data).find((item) => item.regional === regional)
-    const faseTbm = firstItem ? firstItem.vw_fase_tbm : "default"
+    const firstItem = Object.values(data).find(
+      (item) => item.regional === regional
+    )
+    const faseTbm = firstItem ? firstItem.vw_fase_tbm : 'default'
 
     processedScoresRegional.push({
       [faseTbm]: {
@@ -572,7 +1176,7 @@ if (compareCaseInsensitive(varietas, "DP Yangambi") ||
 
   const newScoresAllKebun = processScoreDataAllKebun(newScoresAll)
 
-  const newScoresAllRegional = processScoreDataAllRegional(newScoresAll);
+  const newScoresAllRegional = processScoreDataAllRegional(newScoresAll)
 
   return {
     newScores,
@@ -592,7 +1196,9 @@ interface ColorCount {
   [key: string]: number
 }
 
-export function countColorCategories(data: Array<{ colorCategory: string }>): ColorCount {
+export function countColorCategories(
+  data: Array<{ colorCategory: string }>
+): ColorCount {
   return data.reduce((acc: ColorCount, item) => {
     const color = item.colorCategory
     acc[color] = (acc[color] || 0) + 1
@@ -604,7 +1210,9 @@ interface LuasByColor {
   [key: string]: number
 }
 
-export function sumLuasByColorCategory(data: Array<{ colorCategory: string; luas: number }>): LuasByColor {
+export function sumLuasByColorCategory(
+  data: Array<{ colorCategory: string; luas: number }>
+): LuasByColor {
   return data.reduce((acc: LuasByColor, item) => {
     const color = item.colorCategory
     acc[color] = (acc[color] || 0) + item.luas
@@ -614,16 +1222,19 @@ export function sumLuasByColorCategory(data: Array<{ colorCategory: string; luas
 
 export function processRegionalData(
   data: Array<{ regional: string }>,
-  rpcOptions: string[],
+  rpcOptions: string[]
 ): { [key: string]: Array<{ regional: string }> } {
   // Group data by regional
-  const regionalData = data.reduce((acc: { [key: string]: Array<{ regional: string }> }, item) => {
-    if (!acc[item.regional]) {
-      acc[item.regional] = []
-    }
-    acc[item.regional].push(item)
-    return acc
-  }, {})
+  const regionalData = data.reduce(
+    (acc: { [key: string]: Array<{ regional: string }> }, item) => {
+      if (!acc[item.regional]) {
+        acc[item.regional] = []
+      }
+      acc[item.regional].push(item)
+      return acc
+    },
+    {}
+  )
 
   // Ensure all RPCs are represented
   rpcOptions.forEach((rpc) => {
@@ -644,22 +1255,27 @@ interface TbmResults {
   avgLingkarBatang: number
 }
 
-export function calculateTbmResults(data: { [key: string]: ScoreDataItem }): TbmResults {
-  const totalLuasHa = Object.values(data).reduce((acc, curr) => acc + Number.parseFloat(curr.luas_ha), 0)
+export function calculateTbmResults(data: {
+  [key: string]: ScoreDataItem
+}): TbmResults {
+  const totalLuasHa = Object.values(data).reduce(
+    (acc, curr) => acc + Number.parseFloat(curr.luas_ha),
+    0
+  )
 
   const totalPokokSekarang = Object.values(data).reduce(
     (acc, curr) => acc + Number.parseFloat(curr.jumlah_pokok_sekarang),
-    0,
+    0
   )
 
   const totalCalJumlahPelepah = Object.values(data).reduce(
     (acc, curr) => acc + Number.parseFloat(curr.cal_jumlah_pelepah),
-    0,
+    0
   )
 
   const totalCalLingkarBatang = Object.values(data).reduce(
     (acc, curr) => acc + Number.parseFloat(curr.cal_lingkar_batang),
-    0,
+    0
   )
 
   return {
@@ -683,8 +1299,8 @@ export function processColorData(scores: any[]) {
   const data = scores.map((item) => {
     let key = Object.keys(item)[0]
     const data = item[key]
-    if (key === "tbm4") {
-      key = "TBM > 3"
+    if (key === 'tbm4') {
+      key = 'TBM > 3'
     }
     return [
       key.toUpperCase(),
@@ -714,7 +1330,7 @@ export function processColorData(scores: any[]) {
       }
       return acc
     },
-    { black: 0, red: 0, green: 0, gold: 0 },
+    { black: 0, red: 0, green: 0, gold: 0 }
   )
 
   // Calculate color data areas
@@ -729,14 +1345,19 @@ export function processColorData(scores: any[]) {
       }
       return acc
     },
-    { black: 0, red: 0, green: 0, gold: 0 },
+    { black: 0, red: 0, green: 0, gold: 0 }
   )
 
   return { colorData, colorDataLuas }
 }
 
 export function processScoreDataByTbmLevel(data: any, scoreFunctions: any) {
-  const { getScoreLingkarBatang, getScoreJumlahPelepah, getScoreTinggiTanaman, getScoreKerapatanPokok } = scoreFunctions
+  const {
+    getScoreLingkarBatang,
+    getScoreJumlahPelepah,
+    getScoreTinggiTanaman,
+    getScoreKerapatanPokok,
+  } = scoreFunctions
 
   // Initialize result objects
   const tbmResults = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 }
@@ -768,7 +1389,7 @@ export function processScoreDataByTbmLevel(data: any, scoreFunctions: any) {
     const scoreJumlahPelepah = getScoreJumlahPelepah(/* params */)
 
     // Update score results for TBM1-3
-    if (tbmLevel === "tbm1" || tbmLevel === "tbm2" || tbmLevel === "tbm3") {
+    if (tbmLevel === 'tbm1' || tbmLevel === 'tbm2' || tbmLevel === 'tbm3') {
       // Update jumlah pelepah scores
       if (scoreJumlahPelepah === 100) {
         scoreJumlahPelepahResults[tbmLevel].score100++
@@ -810,9 +1431,9 @@ export function processScoreDataByTbmLevel(data: any, scoreFunctions: any) {
   }
 }
 
-
-
-export function processScoreDataAllKebun(newScoresAll: ScoreItemAll[]): ScoreItemAllKebun[] {
+export function processScoreDataAllKebun(
+  newScoresAll: ScoreItemAll[]
+): ScoreItemAllKebun[] {
   // Group by kebun
   const kebunMap: { [key: string]: ScoreItemAllKebun } = {}
 
@@ -853,34 +1474,40 @@ export function processScoreDataAllKebun(newScoresAll: ScoreItemAll[]): ScoreIte
   })
 
   // Finalize averages and determine colors
-  const kebunScores: ScoreItemAllKebun[] = Object.values(kebunMap).map((kebun) => {
-    if (kebun.luas > 0) {
-      kebun.ascoreLingkarBatang /= kebun.luas
-      kebun.ascoreJumlahPelepah /= kebun.luas
-      kebun.ascoreTinggiBatang /= kebun.luas
-      kebun.ascoreKerapatanPokok /= kebun.luas
-      kebun.totalSeleksian /= kebun.luas
+  const kebunScores: ScoreItemAllKebun[] = Object.values(kebunMap).map(
+    (kebun) => {
+      if (kebun.luas > 0) {
+        kebun.ascoreLingkarBatang /= kebun.luas
+        kebun.ascoreJumlahPelepah /= kebun.luas
+        kebun.ascoreTinggiBatang /= kebun.luas
+        kebun.ascoreKerapatanPokok /= kebun.luas
+        kebun.totalSeleksian /= kebun.luas
+      }
+
+      // Determine color category based on total score
+      if (kebun.totalSeleksian > 92) {
+        kebun.colorCategory = 'gold'
+      } else if (kebun.totalSeleksian > 87) {
+        kebun.colorCategory = 'green'
+      } else if (kebun.totalSeleksian > 82) {
+        kebun.colorCategory = 'red'
+      } else {
+        kebun.colorCategory = 'black'
+      }
+
+      // Determine color scores (you'll need to implement your color logic here)
+      // This is a placeholder - adjust according to your actual color determination logic
+      kebun.colorScoreLingkarBatang = getColorForValue(
+        kebun.ascoreLingkarBatang
+      )
+      kebun.colorScoreJumlahPelepah = getColorForValue(
+        kebun.ascoreJumlahPelepah
+      )
+      kebun.colorScoreTinggiBatang = getColorForValue(kebun.ascoreTinggiBatang)
+
+      return kebun
     }
-
-    // Determine color category based on total score
-    if (kebun.totalSeleksian > 92) {
-      kebun.colorCategory = 'gold'
-    } else if (kebun.totalSeleksian > 87) {
-      kebun.colorCategory = 'green'
-    } else if (kebun.totalSeleksian > 82) {
-      kebun.colorCategory = 'red'
-    } else {
-      kebun.colorCategory = 'black'
-    }
-
-    // Determine color scores (you'll need to implement your color logic here)
-    // This is a placeholder - adjust according to your actual color determination logic
-    kebun.colorScoreLingkarBatang = getColorForValue(kebun.ascoreLingkarBatang)
-    kebun.colorScoreJumlahPelepah = getColorForValue(kebun.ascoreJumlahPelepah)
-    kebun.colorScoreTinggiBatang = getColorForValue(kebun.ascoreTinggiBatang)
-
-    return kebun
-  })
+  )
 
   return kebunScores
 }
@@ -892,9 +1519,9 @@ function getColorForValue(value: number): string {
   return 'red'
 }
 
-
-
-export function processScoreDataAllRegional(newScoresAll: ScoreItemAll[]): ScoreItemAllRegional[] {
+export function processScoreDataAllRegional(
+  newScoresAll: ScoreItemAll[]
+): ScoreItemAllRegional[] {
   // Group by regional
   const regionalMap: { [key: string]: ScoreItemAllRegional } = {}
 
@@ -934,1402 +1561,41 @@ export function processScoreDataAllRegional(newScoresAll: ScoreItemAll[]): Score
   })
 
   // Finalize averages and determine colors
-  const regionalScores: ScoreItemAllRegional[] = Object.values(regionalMap).map((regional) => {
-    if (regional.luas > 0) {
-      regional.ascoreLingkarBatang /= regional.luas
-      regional.ascoreJumlahPelepah /= regional.luas
-      regional.ascoreTinggiBatang /= regional.luas
-      regional.ascoreKerapatanPokok /= regional.luas
-      regional.totalSeleksian /= regional.luas
+  const regionalScores: ScoreItemAllRegional[] = Object.values(regionalMap).map(
+    (regional) => {
+      if (regional.luas > 0) {
+        regional.ascoreLingkarBatang /= regional.luas
+        regional.ascoreJumlahPelepah /= regional.luas
+        regional.ascoreTinggiBatang /= regional.luas
+        regional.ascoreKerapatanPokok /= regional.luas
+        regional.totalSeleksian /= regional.luas
+      }
+
+      // Determine color category based on total score
+      if (regional.totalSeleksian > 92) {
+        regional.colorCategory = 'gold'
+      } else if (regional.totalSeleksian > 87) {
+        regional.colorCategory = 'green'
+      } else if (regional.totalSeleksian > 82) {
+        regional.colorCategory = 'red'
+      } else {
+        regional.colorCategory = 'black'
+      }
+
+      // Determine color scores - adjust according to your actual color determination logic
+      regional.colorScoreLingkarBatang = getColorForValue(
+        regional.ascoreLingkarBatang
+      )
+      regional.colorScoreJumlahPelepah = getColorForValue(
+        regional.ascoreJumlahPelepah
+      )
+      regional.colorScoreTinggiBatang = getColorForValue(
+        regional.ascoreTinggiBatang
+      )
+
+      return regional
     }
-
-    // Determine color category based on total score
-    if (regional.totalSeleksian > 92) {
-      regional.colorCategory = 'gold'
-    } else if (regional.totalSeleksian > 87) {
-      regional.colorCategory = 'green'
-    } else if (regional.totalSeleksian > 82) {
-      regional.colorCategory = 'red'
-    } else {
-      regional.colorCategory = 'black'
-    }
-
-    // Determine color scores - adjust according to your actual color determination logic
-    regional.colorScoreLingkarBatang = getColorForValue(regional.ascoreLingkarBatang)
-    regional.colorScoreJumlahPelepah = getColorForValue(regional.ascoreJumlahPelepah)
-    regional.colorScoreTinggiBatang = getColorForValue(regional.ascoreTinggiBatang)
-
-    return regional
-  })
+  )
 
   return regionalScores
 }
-
-
-
-////////////////////////////
-
-// // dashboard-helper
-// import { dataOne, dataTwo, dataThree, dataFour, dataFive } from "@/data/tbm-params"
-// import { dataNewOne, dataNewTwo, dataNewThree, dataNewFour, dataNewFive } from "@/data/tbm-params"
-
-// interface ScoreDataItem {
-//   tahun_tanam: string
-//   id: string
-//   lingkar_batang_cm: string
-//   jumlah_pelepah_bh: string
-//   tinggi_tanaman_cm: string
-//   jumlah_pokok_awal_tanam: string
-//   jumlah_pokok_sekarang: string
-//   regional: string
-//   kebun: string
-//   afdeling: string
-//   blok: string
-//   luas_ha: string
-//   cal_jumlah_pelepah: string
-//   cal_lingkar_batang: string
-//   umur_saat_ini_bulan: string
-//   varietas: string
-//   bulan: string
-//   tahun: string
-//   fase_tbm: string
-//   vw_fase_tbm: string
-//   // Optional properties for 8-12 month scenario
-//   lebar_petiola?: string
-//   tebal_petiola?: string
-//   jumlah_anak_daun?: string
-//   panjang_anak_daun?: string
-//   lebar_anak_daun?: string
-//   panjang_rachis?: string
-//   pica_id?: string
-// }
-
-// interface ScoreItem {
-//   id: string
-//   regional: string
-//   kebun: string
-//   afdeling: string
-//   blok: string
-//   lingkar_batang_cm: string
-//   tinggi_tanaman_cm: string
-//   jumlah_pokok_awal_tanam: string
-//   jumlah_pokok_sekarang: string
-//   scoreLingkarBatang: number
-//   scoreJumlahPelepah: number
-//   scoreTinggiBatang: number
-//   scoreKerapatanPokok: number
-//   totalSeleksian: number
-//   colorCategory: string
-//   luas: number
-//   jumPelepah: number
-//   varietas: string
-//   bulan_tanam: string
-//   tahun_tanam: string
-//   umur: string
-//   fase_tbm: string
-//   vw_fase_tbm: string
-//   pica_id?: string
-// }
-
-// interface ScoreItemAll {
-//   id: string
-//   regional: string
-//   kebun: string
-//   afdeling: string
-//   blok: string
-//   ascoreLingkarBatang: number
-//   ascoreJumlahPelepah: number
-//   ascoreTinggiBatang: number
-//   ascoreKerapatanPokok: number
-//   jumlah_pokok_awal_tanam: string
-//   jumlah_pokok_sekarang: string
-//   tinggi_tanaman_cm: number
-//   jumlah_pelepah_bh: string
-//   lingkar_batang_cm: string
-//   totalSeleksian: number
-//   colorCategory: string
-//   luas: number
-//   jumPelepah: number
-//   varietas: string
-//   tahun_tanam: string
-//   umur: string
-//   tbm: string
-//   bulan: number
-//   tahun: number
-//   fase_tbm: string
-//   vw_fase_tbm: string
-//   colorScoreJumlahPelepah: string
-//   colorScoreLingkarBatang: string
-//   colorScoreTinggiBatang: string
-//   pica_id?: string
-//   // Optional properties for 8-12 month scenario
-//   lebar_petiola?: string | number
-//   tebal_petiola?: string | number
-//   jumlah_anak_daun?: string | number
-//   panjang_anak_daun?: string | number
-//   lebar_anak_daun?: string | number
-//   panjang_rachis?: string | number
-//   ascoreLebarPetiola?: number
-//   ascoreTebalPetiola?: number
-//   ascoreJumlahAnakDaun?: number
-//   ascorePanjangAnakDaun?: number
-//   ascoreLebarAnakDaun?: number
-//   ascorePanjangRachis?: number
-//   colorScoreLebarPetiola?: string
-//   colorScoreTebalPetiola?: string
-//   colorScoreJumlahAnakDaun?: string
-//   colorScorePanjangAnakDaun?: string
-//   colorScoreLebarAnakDaun?: string
-//   colorScorePanjangRachis?: string
-// }
-
-// interface KebunScore {
-//   regional: string
-//   kebun: string
-//   totalSeleksiKebun: number
-//   totalLuas: number
-// }
-
-// interface RegionalScore {
-//   regional: string
-//   totalSeleksiRegional: number
-//   totalLuas: number
-// }
-
-// interface ProcessedKebunScore {
-//   regional: string
-//   kebun: string
-//   luas: number
-//   totalSeleksiKebun: number
-//   colorCategory: string
-//   ascoreLingkarBatang: number
-//   ascoreJumlahPelepah: number
-//   ascoreTinggiBatang: number
-//   ascoreKerapatanPokok: number
-//   colorScoreJumlahPelepah: string
-//   colorScoreLingkarBatang: string
-//   colorScoreTinggiBatang: string
-//   calculatedTbm: string
-//   // Optional properties for 8-12 month scenario
-//   ascoreLebarPetiola?: number
-//   ascoreTebalPetiola?: number
-//   ascoreJumlahAnakDaun?: number
-//   ascorePanjangAnakDaun?: number
-//   ascoreLebarAnakDaun?: number
-//   ascorePanjangRachis?: number
-//   colorScoreLebarPetiola?: string
-//   colorScoreTebalPetiola?: string
-//   colorScoreJumlahAnakDaun?: string
-//   colorScorePanjangAnakDaun?: string
-//   colorScoreLebarAnakDaun?: string
-//   colorScorePanjangRachis?: string
-// }
-
-// interface ScoreItemAllRegional {
-//   id: string
-//   regional: string
-//   ascoreLingkarBatang: number
-//   ascoreJumlahPelepah: number
-//   ascoreTinggiBatang: number
-//   ascoreKerapatanPokok: number
-//   totalSeleksian: number
-//   colorCategory: string
-//   luas: number
-//   varietas: string
-//   tahun_tanam: string
-//   umur: string
-//   fase_tbm: string
-//   vw_fase_tbm: string
-//   colorScoreJumlahPelepah: string
-//   colorScoreLingkarBatang: string
-//   colorScoreTinggiBatang: string
-// }
-
-// interface ProcessedRegionalScore {
-//   regional: string
-//   totalSeleksiRegional: number
-// }
-
-// interface ScoreResults {
-//   score100: number
-//   score90: number
-//   score80: number
-//   total: number
-// }
-
-// interface ScoreItemAllKebun {
-//   id: string
-//   regional: string
-//   kebun: string
-//   ascoreLingkarBatang: number
-//   ascoreJumlahPelepah: number
-//   ascoreTinggiBatang: number
-//   ascoreKerapatanPokok: number
-//   totalSeleksian: number
-//   colorCategory: string
-//   luas: number
-//   varietas: string
-//   tahun_tanam: string
-//   umur: string
-//   fase_tbm: string
-//   vw_fase_tbm: string
-//   colorScoreJumlahPelepah: string
-//   colorScoreLingkarBatang: string
-//   colorScoreTinggiBatang: string
-// }
-
-// interface ProcessScoreDataResult {
-//   newScores: Array<{ [key: string]: ScoreItem }>
-//   newScoresKebun: Array<{ [key: string]: ProcessedKebunScore }>
-//   newScoresRegional: Array<{ [key: string]: ProcessedRegionalScore }>
-//   newScoresAll: ScoreItemAll[]
-//   newScoresAllKebun: ScoreItemAllKebun[]
-//   newScoresAllRegional: ScoreItemAllRegional[]
-//   newRegionalBlackBlockCount: { [key: string]: number }
-//   tbmResultsUpdate: { [key: string]: number }
-//   scoreJumlahPelepahResultsUpdate: ScoreResults
-//   scoreLingkarBatangResultsUpdate: ScoreResults
-// }
-
-// export function processScoreData({
-//   data,
-//   getScoreLingkarBatang,
-//   getScoreJumlahPelepah,
-//   getScoreTinggiTanaman,
-//   getScoreKerapatanPokok,
-//   getScoreLebarPetiola,
-//   getScoreTebalPetiola,
-//   getScoreJumlahAnakDaun,
-//   getScorePanjangAnakDaun,
-//   getScoreLebarAnakDaun,
-//   getScorePanjangRachis,
-//   getColorLingkarBatang,
-//   getColorJumlahPelepah,
-//   getColorTinggiTanaman,
-//   getColorLebarPetiola,
-//   getColorTebalPetiola,
-//   getColorJumlahAnakDaun,
-//   getColorPanjangAnakDaun,
-//   getColorLebarAnakDaun,
-//   getColorPanjangRachis,
-// }: {
-//   data: { [key: string]: ScoreDataItem } | ScoreDataItem[]
-//   getScoreLingkarBatang: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => number
-//   getScoreJumlahPelepah: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => number
-//   getScoreTinggiTanaman: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => number
-//   getScoreKerapatanPokok: (age: number, initial: number, current: number) => number
-//   getScoreLebarPetiola?: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => number
-//   getScoreTebalPetiola?: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => number
-//   getScoreJumlahAnakDaun?: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => number
-//   getScorePanjangAnakDaun?: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => number
-//   getScoreLebarAnakDaun?: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => number
-//   getScorePanjangRachis?: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => number
-//   getColorLingkarBatang: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => string
-//   getColorJumlahPelepah: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => string
-//   getColorTinggiTanaman: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => string
-//   getColorLebarPetiola?: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => string
-//   getColorTebalPetiola?: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => string
-//   getColorJumlahAnakDaun?: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => string
-//   getColorPanjangAnakDaun?: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => string
-//   getColorLebarAnakDaun?: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => string
-//   getColorPanjangRachis?: (
-//     dataset: any[],
-//     age: number,
-//     value: number,
-//     bulanvegetatif: number,
-//     tahunVegetatif: number,
-//   ) => string
-// }): ProcessScoreDataResult {
-//   const newScores: Array<{ [key: string]: ScoreItem }> = []
-//   const newScoresKebun: { [key: string]: KebunScore } = {}
-//   const newScoresAll: ScoreItemAll[] = []
-//   const newScoresRegional: { [key: string]: RegionalScore } = {}
-//   const newRegionalBlackBlockCount: { [key: string]: number } = {}
-
-//   // Convert data to array if it's an object
-//   const dataArray = Array.isArray(data) ? data : Object.values(data)
-
-//   // Process each item in the data
-//   dataArray.forEach((item: ScoreDataItem) => {
-//     let age = Number.parseInt(item.umur_saat_ini_bulan)
-//     if (age > 36) {
-//       age = 36
-//     }
-
-//     const varietas = item.varietas
-//     const faseTbm = item.vw_fase_tbm
-
-//     // Set data rules based on varietas
-//     function compareCaseInsensitive(str1: string, str2: string): boolean {
-//       return str1.toLowerCase() === str2.toLowerCase()
-//     }
-
-//     let dataRules: any[] = []
-//     if (item.bulan == "4") {
-//       if (
-//         compareCaseInsensitive(varietas, "DP Yangambi") ||
-//         compareCaseInsensitive(varietas, "DP PPKS 718") ||
-//         compareCaseInsensitive(varietas, "DP 239")
-//       ) {
-//         dataRules = dataOne
-//       } else if (compareCaseInsensitive(varietas, "DP Langkat")) {
-//         dataRules = dataTwo
-//       } else if (
-//         compareCaseInsensitive(varietas, "DP Simalungun") ||
-//         compareCaseInsensitive(varietas, "DP Avros") ||
-//         compareCaseInsensitive(varietas, "DP 540") ||
-//         compareCaseInsensitive(varietas, "Lonsum") ||
-//         compareCaseInsensitive(varietas, "Dami Mas") ||
-//         compareCaseInsensitive(varietas, "Bina Sawit Makmur") ||
-//         compareCaseInsensitive(varietas, "Sarana Inti Pratama") ||
-//         compareCaseInsensitive(varietas, "Panca Surya Garden")
-//       ) {
-//         dataRules = dataThree
-//       } else if (
-//         compareCaseInsensitive(varietas, "SF Lame") ||
-//         compareCaseInsensitive(varietas, "SF MTG") ||
-//         compareCaseInsensitive(varietas, "SF Yangambi") ||
-//         compareCaseInsensitive(varietas, "Bakrie") ||
-//         compareCaseInsensitive(varietas, "Topaz") ||
-//         compareCaseInsensitive(varietas, "Sriwijaya Sampoerna") ||
-//         compareCaseInsensitive(varietas, "Verdant")
-//       ) {
-//         dataRules = dataFour
-//       } else if (compareCaseInsensitive(varietas, "DP 239")) {
-//         dataRules = dataFive
-//       }
-//     } else {
-//       if (
-//         compareCaseInsensitive(varietas, "DP Yangambi") ||
-//         compareCaseInsensitive(varietas, "DP PPKS 718") ||
-//         compareCaseInsensitive(varietas, "DP 239")
-//       ) {
-//         dataRules = dataNewOne
-//       } else if (compareCaseInsensitive(varietas, "DP Langkat")) {
-//         dataRules = dataNewTwo
-//       } else if (
-//         compareCaseInsensitive(varietas, "DP Simalungun") ||
-//         compareCaseInsensitive(varietas, "DP Avros") ||
-//         compareCaseInsensitive(varietas, "DP 540") ||
-//         compareCaseInsensitive(varietas, "Lonsum") ||
-//         compareCaseInsensitive(varietas, "Dami Mas") ||
-//         compareCaseInsensitive(varietas, "Bina Sawit Makmur") ||
-//         compareCaseInsensitive(varietas, "Sarana Inti Pratama") ||
-//         compareCaseInsensitive(varietas, "Panca Surya Garden")
-//       ) {
-//         dataRules = dataNewThree
-//       } else if (
-//         compareCaseInsensitive(varietas, "SF Lame") ||
-//         compareCaseInsensitive(varietas, "SF MTG") ||
-//         compareCaseInsensitive(varietas, "SF Yangambi") ||
-//         compareCaseInsensitive(varietas, "Bakrie") ||
-//         compareCaseInsensitive(varietas, "Topaz") ||
-//         compareCaseInsensitive(varietas, "Sriwijaya Sampoerna") ||
-//         compareCaseInsensitive(varietas, "Verdant")
-//       ) {
-//         dataRules = dataNewFour
-//       } else if (compareCaseInsensitive(varietas, "DP 239")) {
-//         dataRules = dataNewFive
-//       }
-//     }
-
-//     // Initialize all scores to 0
-//     let scoreLingkarBatang = 0
-//     let scoreJumlahPelepah = 0
-//     let scoreTinggiBatang = 0
-//     let scoreKerapatanPokok = 0
-//     let ascoreLingkarBatang = 0
-//     let ascoreJumlahPelepah = 0
-//     let ascoreTinggiBatang = 0
-//     let ascoreKerapatanPokok = 0
-
-//     // Initialize additional scores for 8-12 month scenario
-//     let scoreLebarPetiola = 0
-//     let scoreTebalPetiola = 0
-//     let scoreJumlahAnakDaun = 0
-//     let scorePanjangAnakDaun = 0
-//     let scoreLebarAnakDaun = 0
-//     let scorePanjangRachis = 0
-//     let ascoreLebarPetiola = 0
-//     let ascoreTebalPetiola = 0
-//     let ascoreJumlahAnakDaun = 0
-//     let ascorePanjangAnakDaun = 0
-//     let ascoreLebarAnakDaun = 0
-//     let ascorePanjangRachis = 0
-
-//     const bulanInt = Number.parseInt(item.bulan)
-//     const tahunInt = Number.parseInt(item.tahun)
-
-//     if (bulanInt == 4) {
-//       // April scoring logic (existing)
-//       scoreLingkarBatang =
-//         getScoreLingkarBatang(dataRules, age, Number.parseFloat(item.lingkar_batang_cm), bulanInt, tahunInt) * 0.4
-
-//       scoreJumlahPelepah =
-//         getScoreJumlahPelepah(dataRules, age, Number.parseFloat(item.jumlah_pelepah_bh), bulanInt, tahunInt) * 0.2
-
-//       scoreTinggiBatang =
-//         getScoreTinggiTanaman(dataRules, age, Number.parseFloat(item.tinggi_tanaman_cm), bulanInt, tahunInt) * 0.1
-
-//       scoreKerapatanPokok =
-//         getScoreKerapatanPokok(
-//           age,
-//           Number.parseFloat(item.jumlah_pokok_awal_tanam),
-//           Number.parseFloat(item.jumlah_pokok_sekarang),
-//         ) * 0.3
-
-//       // Actual scores without weighting
-//       ascoreLingkarBatang = getScoreLingkarBatang(
-//         dataRules,
-//         age,
-//         Number.parseFloat(item.lingkar_batang_cm),
-//         bulanInt,
-//         tahunInt,
-//       )
-
-//       ascoreJumlahPelepah = getScoreJumlahPelepah(
-//         dataRules,
-//         age,
-//         Number.parseFloat(item.jumlah_pelepah_bh),
-//         bulanInt,
-//         tahunInt,
-//       )
-
-//       ascoreTinggiBatang = getScoreTinggiTanaman(
-//         dataRules,
-//         age,
-//         Number.parseFloat(item.tinggi_tanaman_cm),
-//         bulanInt,
-//         tahunInt,
-//       )
-
-//       ascoreKerapatanPokok = getScoreKerapatanPokok(
-//         age,
-//         Number.parseFloat(item.jumlah_pokok_awal_tanam),
-//         Number.parseFloat(item.jumlah_pokok_sekarang),
-//       )
-//     } else {
-//       // Non-April scoring logic with additional parameters
-//       scoreLingkarBatang =
-//         getScoreLingkarBatang(dataRules, age, Number.parseFloat(item.lingkar_batang_cm), bulanInt, tahunInt) * 0.25
-
-//       scoreJumlahPelepah =
-//         getScoreJumlahPelepah(dataRules, age, Number.parseFloat(item.jumlah_pelepah_bh), bulanInt, tahunInt) * 0.15
-
-//       scoreTinggiBatang =
-//         getScoreTinggiTanaman(dataRules, age, Number.parseFloat(item.tinggi_tanaman_cm), bulanInt, tahunInt) * 0.1
-
-//       scoreKerapatanPokok =
-//         getScoreKerapatanPokok(
-//           age,
-//           Number.parseFloat(item.jumlah_pokok_awal_tanam),
-//           Number.parseFloat(item.jumlah_pokok_sekarang),
-//         ) * 0.15
-
-//       // Additional parameters scoring
-//       if (getScoreLebarPetiola) {
-//         scoreLebarPetiola =
-//           getScoreLebarPetiola(dataRules, age, Number.parseFloat(item.lebar_petiola || "0"), bulanInt, tahunInt) * 0.05
-
-//         ascoreLebarPetiola = getScoreLebarPetiola(
-//           dataRules,
-//           age,
-//           Number.parseFloat(item.lebar_petiola || "0"),
-//           bulanInt,
-//           tahunInt,
-//         )
-//       }
-
-//       if (getScoreTebalPetiola) {
-//         scoreTebalPetiola =
-//           getScoreTebalPetiola(dataRules, age, Number.parseFloat(item.tebal_petiola || "0"), bulanInt, tahunInt) * 0.05
-
-//         ascoreTebalPetiola = getScoreTebalPetiola(
-//           dataRules,
-//           age,
-//           Number.parseFloat(item.tebal_petiola || "0"),
-//           bulanInt,
-//           tahunInt,
-//         )
-//       }
-
-//       if (getScoreJumlahAnakDaun) {
-//         scoreJumlahAnakDaun =
-//           getScoreJumlahAnakDaun(dataRules, age, Number.parseFloat(item.jumlah_anak_daun || "0"), bulanInt, tahunInt) *
-//           0.1
-
-//         ascoreJumlahAnakDaun = getScoreJumlahAnakDaun(
-//           dataRules,
-//           age,
-//           Number.parseFloat(item.jumlah_anak_daun || "0"),
-//           bulanInt,
-//           tahunInt,
-//         )
-//       }
-
-//       if (getScorePanjangAnakDaun) {
-//         scorePanjangAnakDaun =
-//           getScorePanjangAnakDaun(
-//             dataRules,
-//             age,
-//             Number.parseFloat(item.panjang_anak_daun || "0"),
-//             bulanInt,
-//             tahunInt,
-//           ) * 0.05
-
-//         ascorePanjangAnakDaun = getScorePanjangAnakDaun(
-//           dataRules,
-//           age,
-//           Number.parseFloat(item.panjang_anak_daun || "0"),
-//           bulanInt,
-//           tahunInt,
-//         )
-//       }
-
-//       if (getScoreLebarAnakDaun) {
-//         scoreLebarAnakDaun =
-//           getScoreLebarAnakDaun(dataRules, age, Number.parseFloat(item.lebar_anak_daun || "0"), bulanInt, tahunInt) *
-//           0.05
-
-//         ascoreLebarAnakDaun = getScoreLebarAnakDaun(
-//           dataRules,
-//           age,
-//           Number.parseFloat(item.lebar_anak_daun || "0"),
-//           bulanInt,
-//           tahunInt,
-//         )
-//       }
-
-//       if (getScorePanjangRachis) {
-//         scorePanjangRachis =
-//           getScorePanjangRachis(dataRules, age, Number.parseFloat(item.panjang_rachis || "0"), bulanInt, tahunInt) *
-//           0.05
-
-//         ascorePanjangRachis = getScorePanjangRachis(
-//           dataRules,
-//           age,
-//           Number.parseFloat(item.panjang_rachis || "0"),
-//           bulanInt,
-//           tahunInt,
-//         )
-//       }
-
-//       // Actual scores without weighting
-//       ascoreLingkarBatang = getScoreLingkarBatang(
-//         dataRules,
-//         age,
-//         Number.parseFloat(item.lingkar_batang_cm),
-//         bulanInt,
-//         tahunInt,
-//       )
-
-//       ascoreJumlahPelepah = getScoreJumlahPelepah(
-//         dataRules,
-//         age,
-//         Number.parseFloat(item.jumlah_pelepah_bh),
-//         bulanInt,
-//         tahunInt,
-//       )
-
-//       ascoreTinggiBatang = getScoreTinggiTanaman(
-//         dataRules,
-//         age,
-//         Number.parseFloat(item.tinggi_tanaman_cm),
-//         bulanInt,
-//         tahunInt,
-//       )
-
-//       ascoreKerapatanPokok = getScoreKerapatanPokok(
-//         age,
-//         Number.parseFloat(item.jumlah_pokok_awal_tanam),
-//         Number.parseFloat(item.jumlah_pokok_sekarang),
-//       )
-//     }
-
-//     // Get color scores
-//     const colorScoreLingkarBatang = getColorLingkarBatang(
-//       dataRules,
-//       age,
-//       Number.parseFloat(item.lingkar_batang_cm),
-//       bulanInt,
-//       tahunInt,
-//     )
-
-//     const colorScoreJumlahPelepah = getColorJumlahPelepah(
-//       dataRules,
-//       age,
-//       Number.parseFloat(item.jumlah_pelepah_bh),
-//       bulanInt,
-//       tahunInt,
-//     )
-
-//     const colorScoreTinggiBatang = getColorTinggiTanaman(
-//       dataRules,
-//       age,
-//       Number.parseFloat(item.tinggi_tanaman_cm),
-//       bulanInt,
-//       tahunInt,
-//     )
-
-//     // Calculate total score
-//     const totalSeleksian =
-//       scoreLingkarBatang +
-//       scoreJumlahPelepah +
-//       scoreTinggiBatang +
-//       scoreKerapatanPokok +
-//       scoreLebarPetiola +
-//       scoreTebalPetiola +
-//       scoreJumlahAnakDaun +
-//       scorePanjangAnakDaun +
-//       scoreLebarAnakDaun +
-//       scorePanjangRachis
-
-//     // Determine color category
-//     let colorCategory = ""
-//     if (totalSeleksian < 80) {
-//       colorCategory = "black"
-//       const regional = item.regional
-//       if (newRegionalBlackBlockCount[regional]) {
-//         newRegionalBlackBlockCount[regional] += 1
-//       } else {
-//         newRegionalBlackBlockCount[regional] = 1
-//       }
-//     } else if (totalSeleksian > 92) {
-//       colorCategory = "gold"
-//     } else if (totalSeleksian > 87) {
-//       colorCategory = "green"
-//     } else if (totalSeleksian > 82) {
-//       colorCategory = "red"
-//     } else {
-//       colorCategory = "black"
-//     }
-
-//     // Extract data
-//     const luas = Number.parseFloat(item.luas_ha)
-//     const regional = item.regional
-//     const kebun = item.kebun
-//     const jumPelepah = Number.parseFloat(item.jumlah_pelepah_bh)
-
-//     // Add to scores array
-//     newScores.push({
-//       [faseTbm]: {
-//         id: item.id,
-//         regional,
-//         kebun,
-//         tahun_tanam: item.tahun_tanam,
-//         umur: item.umur_saat_ini_bulan,
-//         jumlah_pokok_awal_tanam: item.jumlah_pokok_awal_tanam,
-//         jumlah_pokok_sekarang: item.jumlah_pokok_sekarang,
-//         afdeling: item.afdeling,
-//         blok: item.blok,
-//         scoreLingkarBatang,
-//         scoreJumlahPelepah,
-//         scoreTinggiBatang,
-//         scoreKerapatanPokok,
-//         totalSeleksian,
-//         colorCategory,
-//         luas,
-//         bulan_tanam: item.bulan,
-//         varietas,
-//         jumPelepah,
-//         fase_tbm: item.fase_tbm,
-//         vw_fase_tbm: item.vw_fase_tbm,
-//         lingkar_batang_cm: item.lingkar_batang_cm,
-//         tinggi_tanaman_cm: item.tinggi_tanaman_cm,
-//         pica_id: item.pica_id,
-//       },
-//     })
-
-//     // Add to all scores array with additional parameters
-//     const scoreAllItem: ScoreItemAll = {
-//       id: item.id,
-//       regional,
-//       kebun,
-//       tahun_tanam: item.tahun_tanam,
-//       umur: item.umur_saat_ini_bulan,
-//       jumlah_pelepah_bh: item.jumlah_pelepah_bh,
-//       lingkar_batang_cm: item.lingkar_batang_cm,
-//       tinggi_tanaman_cm: Number.parseFloat(item.tinggi_tanaman_cm),
-//       afdeling: item.afdeling,
-//       blok: item.blok,
-//       ascoreLingkarBatang,
-//       ascoreJumlahPelepah,
-//       ascoreTinggiBatang,
-//       ascoreKerapatanPokok,
-//       totalSeleksian,
-//       colorCategory,
-//       luas,
-//       varietas,
-//       jumPelepah,
-//       tbm: faseTbm,
-//       jumlah_pokok_awal_tanam: item.jumlah_pokok_awal_tanam,
-//       jumlah_pokok_sekarang: item.jumlah_pokok_sekarang,
-//       bulan: bulanInt,
-//       tahun: tahunInt,
-//       fase_tbm: item.fase_tbm,
-//       vw_fase_tbm: item.vw_fase_tbm,
-//       colorScoreJumlahPelepah,
-//       colorScoreLingkarBatang,
-//       colorScoreTinggiBatang,
-//       pica_id: item.pica_id,
-//     }
-
-//     // Add additional parameters if they exist
-//     if (item.lebar_petiola) {
-//       scoreAllItem.lebar_petiola = item.lebar_petiola
-//       scoreAllItem.ascoreLebarPetiola = ascoreLebarPetiola
-//       if (getColorLebarPetiola) {
-//         scoreAllItem.colorScoreLebarPetiola = getColorLebarPetiola(
-//           dataRules,
-//           age,
-//           Number.parseFloat(item.lebar_petiola),
-//           bulanInt,
-//           tahunInt,
-//         )
-//       }
-//     }
-
-//     if (item.tebal_petiola) {
-//       scoreAllItem.tebal_petiola = item.tebal_petiola
-//       scoreAllItem.ascoreTebalPetiola = ascoreTebalPetiola
-//       if (getColorTebalPetiola) {
-//         scoreAllItem.colorScoreTebalPetiola = getColorTebalPetiola(
-//           dataRules,
-//           age,
-//           Number.parseFloat(item.tebal_petiola),
-//           bulanInt,
-//           tahunInt,
-//         )
-//       }
-//     }
-
-//     if (item.jumlah_anak_daun) {
-//       scoreAllItem.jumlah_anak_daun = item.jumlah_anak_daun
-//       scoreAllItem.ascoreJumlahAnakDaun = ascoreJumlahAnakDaun
-//       if (getColorJumlahAnakDaun) {
-//         scoreAllItem.colorScoreJumlahAnakDaun = getColorJumlahAnakDaun(
-//           dataRules,
-//           age,
-//           Number.parseFloat(item.jumlah_anak_daun),
-//           bulanInt,
-//           tahunInt,
-//         )
-//       }
-//     }
-
-//     if (item.panjang_anak_daun) {
-//       scoreAllItem.panjang_anak_daun = item.panjang_anak_daun
-//       scoreAllItem.ascorePanjangAnakDaun = ascorePanjangAnakDaun
-//       if (getColorPanjangAnakDaun) {
-//         scoreAllItem.colorScorePanjangAnakDaun = getColorPanjangAnakDaun(
-//           dataRules,
-//           age,
-//           Number.parseFloat(item.panjang_anak_daun),
-//           bulanInt,
-//           tahunInt,
-//         )
-//       }
-//     }
-
-//     if (item.lebar_anak_daun) {
-//       scoreAllItem.lebar_anak_daun = item.lebar_anak_daun
-//       scoreAllItem.ascoreLebarAnakDaun = ascoreLebarAnakDaun
-//       if (getColorLebarAnakDaun) {
-//         scoreAllItem.colorScoreLebarAnakDaun = getColorLebarAnakDaun(
-//           dataRules,
-//           age,
-//           Number.parseFloat(item.lebar_anak_daun),
-//           bulanInt,
-//           tahunInt,
-//         )
-//       }
-//     }
-
-//     if (item.panjang_rachis) {
-//       scoreAllItem.panjang_rachis = item.panjang_rachis
-//       scoreAllItem.ascorePanjangRachis = ascorePanjangRachis
-//       if (getColorPanjangRachis) {
-//         scoreAllItem.colorScorePanjangRachis = getColorPanjangRachis(
-//           dataRules,
-//           age,
-//           Number.parseFloat(item.panjang_rachis),
-//           bulanInt,
-//           tahunInt,
-//         )
-//       }
-//     }
-
-//     newScoresAll.push(scoreAllItem)
-
-//     // Process kebun data
-//     if (!newScoresKebun[kebun]) {
-//       newScoresKebun[kebun] = {
-//         regional,
-//         kebun,
-//         totalSeleksiKebun: 0,
-//         totalLuas: 0,
-//       }
-//     }
-
-//     newScoresKebun[kebun].totalSeleksiKebun += totalSeleksian * luas
-//     newScoresKebun[kebun].totalLuas += luas
-
-//     // Process regional data
-//     if (!newScoresRegional[regional]) {
-//       newScoresRegional[regional] = {
-//         regional,
-//         totalSeleksiRegional: 0,
-//         totalLuas: 0,
-//       }
-//     }
-
-//     newScoresRegional[regional].totalSeleksiRegional += totalSeleksian * luas
-//     newScoresRegional[regional].totalLuas += luas
-//   })
-
-//   // Calculate average scores for kebun
-//   const processedScoresKebun: Array<{ [key: string]: ProcessedKebunScore }> = []
-//   Object.keys(newScoresKebun).forEach((kebun) => {
-//     const totalLuas = newScoresKebun[kebun].totalLuas
-
-//     // Find all items for this kebun to calculate weighted average scores
-//     const kebunItems = newScoresAll.filter((item) => item.kebun === kebun)
-
-//     let totalAscoreLingkarBatang = 0
-//     let totalAscoreJumlahPelepah = 0
-//     let totalAscoreTinggiBatang = 0
-//     let totalAscoreKerapatanPokok = 0
-//     let totalAscoreLebarPetiola = 0
-//     let totalAscoreTebalPetiola = 0
-//     let totalAscoreJumlahAnakDaun = 0
-//     let totalAscorePanjangAnakDaun = 0
-//     let totalAscoreLebarAnakDaun = 0
-//     let totalAscorePanjangRachis = 0
-
-//     kebunItems.forEach((item) => {
-//       const itemLuas = item.luas
-//       totalAscoreLingkarBatang += item.ascoreLingkarBatang * itemLuas
-//       totalAscoreJumlahPelepah += item.ascoreJumlahPelepah * itemLuas
-//       totalAscoreTinggiBatang += item.ascoreTinggiBatang * itemLuas
-//       totalAscoreKerapatanPokok += item.ascoreKerapatanPokok * itemLuas
-
-//       if (item.ascoreLebarPetiola) totalAscoreLebarPetiola += item.ascoreLebarPetiola * itemLuas
-//       if (item.ascoreTebalPetiola) totalAscoreTebalPetiola += item.ascoreTebalPetiola * itemLuas
-//       if (item.ascoreJumlahAnakDaun) totalAscoreJumlahAnakDaun += item.ascoreJumlahAnakDaun * itemLuas
-//       if (item.ascorePanjangAnakDaun) totalAscorePanjangAnakDaun += item.ascorePanjangAnakDaun * itemLuas
-//       if (item.ascoreLebarAnakDaun) totalAscoreLebarAnakDaun += item.ascoreLebarAnakDaun * itemLuas
-//       if (item.ascorePanjangRachis) totalAscorePanjangRachis += item.ascorePanjangRachis * itemLuas
-//     })
-
-//     // Calculate weighted averages
-//     const avgAscoreLingkarBatang = totalLuas > 0 ? totalAscoreLingkarBatang / totalLuas : 0
-//     const avgAscoreJumlahPelepah = totalLuas > 0 ? totalAscoreJumlahPelepah / totalLuas : 0
-//     const avgAscoreTinggiBatang = totalLuas > 0 ? totalAscoreTinggiBatang / totalLuas : 0
-//     const avgAscoreKerapatanPokok = totalLuas > 0 ? totalAscoreKerapatanPokok / totalLuas : 0
-//     const avgAscoreLebarPetiola = totalLuas > 0 ? totalAscoreLebarPetiola / totalLuas : 0
-//     const avgAscoreTebalPetiola = totalLuas > 0 ? totalAscoreTebalPetiola / totalLuas : 0
-//     const avgAscoreJumlahAnakDaun = totalLuas > 0 ? totalAscoreJumlahAnakDaun / totalLuas : 0
-//     const avgAscorePanjangAnakDaun = totalLuas > 0 ? totalAscorePanjangAnakDaun / totalLuas : 0
-//     const avgAscoreLebarAnakDaun = totalLuas > 0 ? totalAscoreLebarAnakDaun / totalLuas : 0
-//     const avgAscorePanjangRachis = totalLuas > 0 ? totalAscorePanjangRachis / totalLuas : 0
-
-//     if (newScoresKebun[kebun].totalLuas > 0) {
-//       newScoresKebun[kebun].totalSeleksiKebun /= newScoresKebun[kebun].totalLuas
-//     }
-
-//     const totalSeleksiKebun = newScoresKebun[kebun].totalSeleksiKebun
-//     let colorCategory = "black"
-//     if (totalSeleksiKebun >= 90) {
-//       colorCategory = "gold"
-//     } else if (totalSeleksiKebun >= 85 && totalSeleksiKebun < 90) {
-//       colorCategory = "green"
-//     } else if (totalSeleksiKebun >= 80 && totalSeleksiKebun < 85) {
-//       colorCategory = "red"
-//     } else {
-//       colorCategory = "black"
-//     }
-
-//     const firstItem = dataArray.find((item) => item.kebun === kebun)
-//     const faseTbm = firstItem ? firstItem.vw_fase_tbm : "default"
-
-//     const processedKebun: ProcessedKebunScore = {
-//       regional: newScoresKebun[kebun].regional,
-//       kebun,
-//       luas: newScoresKebun[kebun].totalLuas,
-//       totalSeleksiKebun,
-//       colorCategory,
-//       calculatedTbm: faseTbm,
-//       ascoreLingkarBatang: avgAscoreLingkarBatang,
-//       ascoreJumlahPelepah: avgAscoreJumlahPelepah,
-//       ascoreTinggiBatang: avgAscoreTinggiBatang,
-//       ascoreKerapatanPokok: avgAscoreKerapatanPokok,
-//       colorScoreLingkarBatang: "default",
-//       colorScoreJumlahPelepah: "default",
-//       colorScoreTinggiBatang: "default",
-//     }
-
-//     // Add additional parameters if they exist
-//     if (avgAscoreLebarPetiola > 0) {
-//       processedKebun.ascoreLebarPetiola = avgAscoreLebarPetiola
-//       processedKebun.colorScoreLebarPetiola = "default"
-//     }
-//     if (avgAscoreTebalPetiola > 0) {
-//       processedKebun.ascoreTebalPetiola = avgAscoreTebalPetiola
-//       processedKebun.colorScoreTebalPetiola = "default"
-//     }
-//     if (avgAscoreJumlahAnakDaun > 0) {
-//       processedKebun.ascoreJumlahAnakDaun = avgAscoreJumlahAnakDaun
-//       processedKebun.colorScoreJumlahAnakDaun = "default"
-//     }
-//     if (avgAscorePanjangAnakDaun > 0) {
-//       processedKebun.ascorePanjangAnakDaun = avgAscorePanjangAnakDaun
-//       processedKebun.colorScorePanjangAnakDaun = "default"
-//     }
-//     if (avgAscoreLebarAnakDaun > 0) {
-//       processedKebun.ascoreLebarAnakDaun = avgAscoreLebarAnakDaun
-//       processedKebun.colorScoreLebarAnakDaun = "default"
-//     }
-//     if (avgAscorePanjangRachis > 0) {
-//       processedKebun.ascorePanjangRachis = avgAscorePanjangRachis
-//       processedKebun.colorScorePanjangRachis = "default"
-//     }
-
-//     processedScoresKebun.push({
-//       [faseTbm]: processedKebun,
-//     })
-//   })
-
-//   // Calculate average scores for regional
-//   const processedScoresRegional: Array<{ [key: string]: ProcessedRegionalScore }> = []
-//   Object.keys(newScoresRegional).forEach((regional) => {
-//     if (newScoresRegional[regional].totalLuas > 0) {
-//       newScoresRegional[regional].totalSeleksiRegional /= newScoresRegional[regional].totalLuas
-//     }
-
-//     const firstItem = dataArray.find((item) => item.regional === regional)
-//     const faseTbm = firstItem ? firstItem.vw_fase_tbm : "default"
-
-//     processedScoresRegional.push({
-//       [faseTbm]: {
-//         regional,
-//         totalSeleksiRegional: newScoresRegional[regional].totalSeleksiRegional,
-//       },
-//     })
-//   })
-
-//   // Calculate TBM results
-//   const tbmResultsUpdate: { [key: string]: number } = {}
-//   dataArray.forEach((item) => {
-//     const faseTbm = item.vw_fase_tbm
-//     const luas = Number.parseFloat(item.luas_ha)
-//     if (tbmResultsUpdate[faseTbm]) {
-//       tbmResultsUpdate[faseTbm] += luas
-//     } else {
-//       tbmResultsUpdate[faseTbm] = luas
-//     }
-//   })
-
-//   // Calculate score results
-//   const scoreJumlahPelepahResultsUpdate: ScoreResults = {
-//     score100: 0,
-//     score90: 0,
-//     score80: 0,
-//     total: newScores.length,
-//   }
-
-//   const scoreLingkarBatangResultsUpdate: ScoreResults = {
-//     score100: 0,
-//     score90: 0,
-//     score80: 0,
-//     total: newScores.length,
-//   }
-
-//   const newScoresAllKebun = processScoreDataAllKebun(newScoresAll)
-//   const newScoresAllRegional = processScoreDataAllRegional(newScoresAll)
-
-//   return {
-//     newScores,
-//     newScoresKebun: processedScoresKebun,
-//     newScoresAll,
-//     newScoresAllKebun,
-//     newScoresAllRegional,
-//     newScoresRegional: processedScoresRegional,
-//     newRegionalBlackBlockCount,
-//     tbmResultsUpdate,
-//     scoreJumlahPelepahResultsUpdate,
-//     scoreLingkarBatangResultsUpdate,
-//   }
-// }
-
-// // Keep existing helper functions
-// export function countColorCategories(data: Array<{ colorCategory: string }>): { [key: string]: number } {
-//   return data.reduce((acc: { [key: string]: number }, item) => {
-//     const color = item.colorCategory
-//     acc[color] = (acc[color] || 0) + 1
-//     return acc
-//   }, {})
-// }
-
-// export function sumLuasByColorCategory(data: Array<{ colorCategory: string; luas: number }>): {
-//   [key: string]: number
-// } {
-//   return data.reduce((acc: { [key: string]: number }, item) => {
-//     const color = item.colorCategory
-//     acc[color] = (acc[color] || 0) + item.luas
-//     return acc
-//   }, {})
-// }
-
-// export function processRegionalData(
-//   data: Array<{ regional: string }>,
-//   rpcOptions: string[],
-// ): { [key: string]: Array<{ regional: string }> } {
-//   const regionalData = data.reduce((acc: { [key: string]: Array<{ regional: string }> }, item) => {
-//     if (!acc[item.regional]) {
-//       acc[item.regional] = []
-//     }
-//     acc[item.regional].push(item)
-//     return acc
-//   }, {})
-
-//   rpcOptions.forEach((rpc) => {
-//     if (!regionalData[rpc]) {
-//       regionalData[rpc] = []
-//     }
-//   })
-
-//   return regionalData
-// }
-
-// export function calculateTbmResults(data: { [key: string]: ScoreDataItem }): {
-//   totalLuasHa: number
-//   totalPokokSekarang: number
-//   totalCalJumlahPelepah: number
-//   totalCalLingkarBatang: number
-//   avgPelepah: number
-//   avgLingkarBatang: number
-// } {
-//   const totalLuasHa = Object.values(data).reduce((acc, curr) => acc + Number.parseFloat(curr.luas_ha), 0)
-//   const totalPokokSekarang = Object.values(data).reduce(
-//     (acc, curr) => acc + Number.parseFloat(curr.jumlah_pokok_sekarang),
-//     0,
-//   )
-//   const totalCalJumlahPelepah = Object.values(data).reduce(
-//     (acc, curr) => acc + Number.parseFloat(curr.cal_jumlah_pelepah),
-//     0,
-//   )
-//   const totalCalLingkarBatang = Object.values(data).reduce(
-//     (acc, curr) => acc + Number.parseFloat(curr.cal_lingkar_batang),
-//     0,
-//   )
-
-//   return {
-//     totalLuasHa,
-//     totalPokokSekarang,
-//     totalCalJumlahPelepah,
-//     totalCalLingkarBatang,
-//     avgPelepah: totalCalJumlahPelepah / totalPokokSekarang,
-//     avgLingkarBatang: totalCalLingkarBatang / totalPokokSekarang,
-//   }
-// }
-
-// export function processColorData(scores: any[]) {
-//   if (scores.length === 0) {
-//     return {
-//       colorData: { black: 0, red: 0, green: 0, gold: 0 },
-//       colorDataLuas: { black: 0, red: 0, green: 0, gold: 0 },
-//     }
-//   }
-
-//   const data = scores.map((item) => {
-//     let key = Object.keys(item)[0]
-//     const data = item[key]
-//     if (key === "tbm4") {
-//       key = "TBM > 3"
-//     }
-//     return [
-//       key.toUpperCase(),
-//       data.regional,
-//       data.kebun,
-//       data.afdeling,
-//       data.blok,
-//       data.luas,
-//       data.jumPelepah,
-//       data.scoreLingkarBatang,
-//       data.scoreJumlahPelepah,
-//       data.scoreTinggiBatang,
-//       data.scoreKerapatanPokok,
-//       data.totalSeleksian,
-//       data.colorCategory,
-//     ]
-//   })
-
-//   const colorData = data.reduce(
-//     (acc, item) => {
-//       const colorCategory = item[12] as keyof typeof acc
-//       if (colorCategory in acc) {
-//         acc[colorCategory] += 1
-//       } else {
-//         acc[colorCategory] = 1
-//       }
-//       return acc
-//     },
-//     { black: 0, red: 0, green: 0, gold: 0 },
-//   )
-
-//   const colorDataLuas = data.reduce(
-//     (acc, item) => {
-//       const colorCategory = item[12] as keyof typeof acc
-//       const luas = item[5]
-//       if (colorCategory in acc) {
-//         acc[colorCategory] += luas
-//       } else {
-//         acc[colorCategory] = luas
-//       }
-//       return acc
-//     },
-//     { black: 0, red: 0, green: 0, gold: 0 },
-//   )
-
-//   return { colorData, colorDataLuas }
-// }
-
-// export function processScoreDataAllKebun(newScoresAll: ScoreItemAll[]): ScoreItemAllKebun[] {
-//   const kebunMap: { [key: string]: ScoreItemAllKebun } = {}
-
-//   newScoresAll.forEach((item) => {
-//     if (!kebunMap[item.kebun]) {
-//       kebunMap[item.kebun] = {
-//         id: item.kebun,
-//         regional: item.regional,
-//         kebun: item.kebun,
-//         ascoreLingkarBatang: 0,
-//         ascoreJumlahPelepah: 0,
-//         ascoreTinggiBatang: 0,
-//         ascoreKerapatanPokok: 0,
-//         totalSeleksian: 0,
-//         colorCategory: "",
-//         luas: 0,
-//         varietas: item.varietas,
-//         tahun_tanam: item.tahun_tanam,
-//         umur: item.umur,
-//         fase_tbm: item.fase_tbm,
-//         vw_fase_tbm: item.vw_fase_tbm,
-//         colorScoreJumlahPelepah: "",
-//         colorScoreLingkarBatang: "",
-//         colorScoreTinggiBatang: "",
-//       }
-//     }
-
-//     const current = kebunMap[item.kebun]
-//     const itemWeight = item.luas
-//     current.ascoreLingkarBatang += item.ascoreLingkarBatang * itemWeight
-//     current.ascoreJumlahPelepah += item.ascoreJumlahPelepah * itemWeight
-//     current.ascoreTinggiBatang += item.ascoreTinggiBatang * itemWeight
-//     current.ascoreKerapatanPokok += item.ascoreKerapatanPokok * itemWeight
-//     current.totalSeleksian += item.totalSeleksian * itemWeight
-//     current.luas += itemWeight
-//   })
-
-//   const kebunScores: ScoreItemAllKebun[] = Object.values(kebunMap).map((kebun) => {
-//     if (kebun.luas > 0) {
-//       kebun.ascoreLingkarBatang /= kebun.luas
-//       kebun.ascoreJumlahPelepah /= kebun.luas
-//       kebun.ascoreTinggiBatang /= kebun.luas
-//       kebun.ascoreKerapatanPokok /= kebun.luas
-//       kebun.totalSeleksian /= kebun.luas
-//     }
-
-//     if (kebun.totalSeleksian > 92) {
-//       kebun.colorCategory = "gold"
-//     } else if (kebun.totalSeleksian > 87) {
-//       kebun.colorCategory = "green"
-//     } else if (kebun.totalSeleksian > 82) {
-//       kebun.colorCategory = "red"
-//     } else {
-//       kebun.colorCategory = "black"
-//     }
-
-//     kebun.colorScoreLingkarBatang = getColorForValue(kebun.ascoreLingkarBatang)
-//     kebun.colorScoreJumlahPelepah = getColorForValue(kebun.ascoreJumlahPelepah)
-//     kebun.colorScoreTinggiBatang = getColorForValue(kebun.ascoreTinggiBatang)
-
-//     return kebun
-//   })
-
-//   return kebunScores
-// }
-
-// function getColorForValue(value: number): string {
-//   if (value > 92) return "green"
-//   if (value > 87) return "yellow"
-//   return "red"
-// }
-
-// export function processScoreDataAllRegional(newScoresAll: ScoreItemAll[]): ScoreItemAllRegional[] {
-//   const regionalMap: { [key: string]: ScoreItemAllRegional } = {}
-
-//   newScoresAll.forEach((item) => {
-//     if (!regionalMap[item.regional]) {
-//       regionalMap[item.regional] = {
-//         id: item.regional,
-//         regional: item.regional,
-//         ascoreLingkarBatang: 0,
-//         ascoreJumlahPelepah: 0,
-//         ascoreTinggiBatang: 0,
-//         ascoreKerapatanPokok: 0,
-//         totalSeleksian: 0,
-//         colorCategory: "",
-//         luas: 0,
-//         varietas: item.varietas,
-//         tahun_tanam: item.tahun_tanam,
-//         umur: item.umur,
-//         fase_tbm: item.fase_tbm,
-//         vw_fase_tbm: item.vw_fase_tbm,
-//         colorScoreJumlahPelepah: "",
-//         colorScoreLingkarBatang: "",
-//         colorScoreTinggiBatang: "",
-//       }
-//     }
-
-//     const current = regionalMap[item.regional]
-//     const itemWeight = item.luas
-//     current.ascoreLingkarBatang += item.ascoreLingkarBatang * itemWeight
-//     current.ascoreJumlahPelepah += item.ascoreJumlahPelepah * itemWeight
-//     current.ascoreTinggiBatang += item.ascoreTinggiBatang * itemWeight
-//     current.ascoreKerapatanPokok += item.ascoreKerapatanPokok * itemWeight
-//     current.totalSeleksian += item.totalSeleksian * itemWeight
-//     current.luas += itemWeight
-//   })
-
-//   const regionalScores: ScoreItemAllRegional[] = Object.values(regionalMap).map((regional) => {
-//     if (regional.luas > 0) {
-//       regional.ascoreLingkarBatang /= regional.luas
-//       regional.ascoreJumlahPelepah /= regional.luas
-//       regional.ascoreTinggiBatang /= regional.luas
-//       regional.ascoreKerapatanPokok /= regional.luas
-//       regional.totalSeleksian /= regional.luas
-//     }
-
-//     if (regional.totalSeleksian > 92) {
-//       regional.colorCategory = "gold"
-//     } else if (regional.totalSeleksian > 87) {
-//       regional.colorCategory = "green"
-//     } else if (regional.totalSeleksian > 82) {
-//       regional.colorCategory = "red"
-//     } else {
-//       regional.colorCategory = "black"
-//     }
-
-//     regional.colorScoreLingkarBatang = getColorForValue(regional.ascoreLingkarBatang)
-//     regional.colorScoreJumlahPelepah = getColorForValue(regional.ascoreJumlahPelepah)
-//     regional.colorScoreTinggiBatang = getColorForValue(regional.ascoreTinggiBatang)
-
-//     return regional
-//   })
-
-//   return regionalScores
-// }
-

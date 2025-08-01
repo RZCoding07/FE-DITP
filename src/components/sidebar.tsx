@@ -62,7 +62,9 @@ export default function Sidebar({
             <div
               className={`flex flex-col justify-end truncate ${isCollapsed ? 'invisible w-0' : 'visible w-auto'}`}
             >
-              <span className='ml-2 font-medium'>EV4PALMS</span>
+              <span className='ml-2 font-bold text-md
+                bg-clip-text text-transparent bg-gradient-to-r from-yellow-200 to-white
+              '>EV4PALMS</span>
               <span className='ml-2 text-xs'>Operasional PalmCo</span>
             </div>
           </div>

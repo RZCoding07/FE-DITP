@@ -26,8 +26,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import IntegratedSummaryStats from "./integrated-summary-stats"
 import cookie from "js-cookie"
 
-
-
 interface PlantationDashboardMasterpieceProps {
   title?: string
   description?: string
@@ -46,13 +44,12 @@ export default function PlantationDashboardMasterpiece({
 }: PlantationDashboardMasterpieceProps) {
   console.log("Initializing Plantation Dashboard with initial filters:", initialFilters)
 
-
   const user = cookie.get('user')
   const app_type = user ? JSON.parse(user).app_type : ''
   const account_type = user ? JSON.parse(user).account_type : ''
   const rpc = user ? JSON.parse(user).rpc : ''
 
-// Initialize state with proper fallbacks
+  // Initialize state with proper fallbacks
   const [filters, setFilters] = useState<DashboardFilters>(() => {
     // If RPC is available in cookies, use it as the default regional filter
     const defaultRegional = rpc !== '' ? rpc : initialFilters.regional ?? ""
@@ -108,7 +105,6 @@ export default function PlantationDashboardMasterpiece({
     setFilters: setDataFilters,
   } = useDashboardDataEnhanced(filters)
 
-
   console.log("Dashboard data loaded:", {
     plantationData,
     monitoringData,
@@ -145,8 +141,8 @@ export default function PlantationDashboardMasterpiece({
   }
 
   const [isLoading, setIsLoading] = useState(false)
-
   const [monevDetailData, setMonevDetailData] = useState<any[]>([])
+
   // Auto-refresh every 5 minutes
   useEffect(() => {
     const interval = setInterval(() => {
@@ -155,7 +151,6 @@ export default function PlantationDashboardMasterpiece({
 
     return () => clearInterval(interval)
   }, [])
-
 
   const fetchMonevDetailData = async () => {
     if (!dateRange) return
@@ -169,14 +164,10 @@ export default function PlantationDashboardMasterpiece({
       })
 
       console.log("Fetched Monev Detail Data:", data)
-
       setMonevDetailData(data)
-
-
     } catch (error) {
       console.error("Error fetching Monev Detail Data:", error)
       setMonevDetailData([])
-
     } finally {
       setIsLoading(false)
     }
@@ -186,9 +177,7 @@ export default function PlantationDashboardMasterpiece({
     fetchMonevDetailData()
   }, [dateRange])
 
-
   const [monevBlokTUData, setMonevBlokTUData] = useState<any[]>([])
-
 
   const fetchMonev = async () => {
     if (!dateRange) return
@@ -203,13 +192,9 @@ export default function PlantationDashboardMasterpiece({
 
       console.log("Fetched Monev Blok TU Data:", data)
       setMonevBlokTUData(data)
-
-
-
     } catch (error) {
       console.error("Error fetching Monev Detail Data:", error)
       setMonevBlokTUData([])
-
     } finally {
       setIsLoading(false)
     }
@@ -233,11 +218,9 @@ export default function PlantationDashboardMasterpiece({
 
       console.log("Fetched Monev Data Palmco:", data)
       setMonevDataPalmco(data)
-
     } catch (error) {
       console.error("Error fetching Monev Data Palmco:", error)
       setMonevDataPalmco([])
-
     } finally {
       setIsLoading(false)
     }
@@ -245,7 +228,6 @@ export default function PlantationDashboardMasterpiece({
   useEffect(() => {
     fetchMonevDataPalmco()
   }, [dateRange])
-
 
   const [monevPiData, setMonevPiData] = useState<any[]>([])
 
@@ -264,11 +246,9 @@ export default function PlantationDashboardMasterpiece({
 
       console.log("Fetched Monev PI Data:", data)
       setMonevPiData(data)
-
     } catch (error) {
       console.error("Error fetching Monev PI Data:", error)
       setMonevPiData([])
-
     } finally {
       setIsLoading(false)
     }
@@ -280,8 +260,8 @@ export default function PlantationDashboardMasterpiece({
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white p-6">
-        <Alert className="bg-red-950 border-red-800 text-red-200 max-w-2xl mx-auto">
+      <div className="min-h-screen bg-background text-foreground p-6">
+        <Alert className="bg-destructive/10 border-destructive text-destructive-foreground max-w-2xl mx-auto">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
             <div className="space-y-2">
@@ -291,7 +271,7 @@ export default function PlantationDashboardMasterpiece({
                 variant="outline"
                 size="sm"
                 onClick={handleRefresh}
-                className="mt-2 border-red-600 text-red-400 hover:bg-red-600 hover:text-white"
+                className="mt-2 border-destructive text-destructive-foreground hover:bg-destructive hover:text-white"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Coba Lagi
@@ -302,7 +282,6 @@ export default function PlantationDashboardMasterpiece({
       </div>
     )
   }
-
 
   const chartData = useMemo(() => {
     // Apply filters
@@ -421,27 +400,26 @@ export default function PlantationDashboardMasterpiece({
       })
   }, [monevBlokTUData, filters.regional, filters.kode_unit, filters.afdeling])
 
-
   return (
     <ErrorBoundary>
-      <div className={`bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white ${isFullscreen ? "fixed inset-0 z-50" : "min-h-screen"}`}>
+      <div className={`${isFullscreen ? "fixed inset-0 z-50" : "min-h-screen"}`}>
         <div className={`p-6 space-y-8 ${isFullscreen ? "h-full overflow-y-auto" : ""}`}>
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-gradient-to-r from-green-600 to-blue-600 rounded-xl shadow-lg">
+                            <div className="p-3 bg-gradient-to-r from-green-600 to-blue-600 rounded-xl shadow-lg">
                 <TreePine className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
                   {title}
                 </h1>
-                <p className="text-slate-400 text-lg">{description}</p>
+                <p className="text-muted-foreground text-lg">{description}</p>
                 <div className="flex items-center gap-4 mt-2">
-                  <Badge variant="outline" className="border-green-600 text-green-400">
+                  <Badge variant="outline" className="border-green-600 text-green-600 dark:text-green-400">
                     {loading ? "Updating..." : "Live Data"}
                   </Badge>
-                  <span className="text-xs text-slate-500">
+                  <span className="text-xs text-muted-foreground">
                     Last updated: {format(lastUpdated, "PPp", { locale: id })}
                   </span>
                 </div>
@@ -449,17 +427,16 @@ export default function PlantationDashboardMasterpiece({
             </div>
 
             <div className="flex items-center gap-3">
-
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setIsFullscreen(!isFullscreen)}
-                className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                className="border-border text-foreground hover:bg-accent"
               >
                 <Maximize2 className="h-4 w-4 mr-2" />
                 {isFullscreen ? "Exit" : "Fullscreen"}
               </Button>
-              <Button variant="outline" size="sm" className="border-slate-600 text-slate-300 hover:bg-slate-700">
+              <Button variant="outline" size="sm" className="border-border text-foreground hover:bg-accent">
                 <Settings className="h-4 w-4 mr-2" />
                 Settings
               </Button>
@@ -477,17 +454,14 @@ export default function PlantationDashboardMasterpiece({
             onRefresh={handleRefresh}
           />
 
-
-          {/* Date Range Picker for Monev Table */}
-
           {loading && (
-            <Card className="bg-gradient-to-r from-slate-900 to-slate-800 border-slate-700">
+            <Card className="bg-background border">
               <CardContent className="py-16">
                 <div className="flex flex-col items-center justify-center space-y-4">
                   <LoadingSpinner size="lg" />
                   <div className="text-center">
-                    <p className="text-xl font-semibold text-white mb-2">Loading Dashboard Data</p>
-                    <p className="text-slate-400">Mengambil data terbaru dari server...</p>
+                    <p className="text-xl font-semibold text-foreground mb-2">Loading Dashboard Data</p>
+                    <p className="text-muted-foreground">Mengambil data terbaru dari server...</p>
                   </div>
                 </div>
               </CardContent>
@@ -508,12 +482,12 @@ export default function PlantationDashboardMasterpiece({
               {/* Charts Grid */}
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
                 <div className="xl:col-span-2">
-
                   <div className="grid grid-cols-1 gap-6">
-                    <div className="w-full text-white h-full rounded-lg">
-                      <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg p-4 h-full border border-slate-700 shadow-lg">
+                    <div className="w-full h-full rounded-lg">
+                      <div className=" bg-white dark:bg-gradient-to-br from-slate-900 to-slate-800  rounded-lg p-4 h-full border shadow-lg">
                         <div className="flex justify-between items-center mb-4"></div>
-                        <IntegratedSummaryStats filteredData={chartData}
+                        <IntegratedSummaryStats 
+                          filteredData={chartData}
                           data={monevBlokTUData}
                           personnelData={monevDetailData}
                           regional={filters.regional}
@@ -543,34 +517,27 @@ export default function PlantationDashboardMasterpiece({
                       kode_unit={filters.kode_unit}
                       onDataPointClick={(data) => console.log("Monitoring clicked:", data)}
                     />
-
                   </div>
-
                 </div>
 
-
-      <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
-        <CardHeader>
-          <CardTitle className="text-slate-100 text-center font-bold text-lg">Top 10 Problem Identification per Parameter</CardTitle>
-                </CardHeader>
-        <CardContent className="p-4">
-      <ParameterAnalysisChart
-                  data= {monevPiData}
-                />
-          
-        </CardContent>  
-      </Card>
+                <Card className="bg-white dark:bg-gradient-to-br from-slate-900 to-slate-800  border">
+                  <CardHeader>
+                    <CardTitle className="text-center font-bold text-lg">Top 10 Problem Identification per Parameter</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4">
+                    <ParameterAnalysisChart
+                      data={monevPiData}
+                    />
+                  </CardContent>  
+                </Card>
 
                 {/* Corrective Action Chart */}
-
                 <CorrectiveActionChart
                   data={correctiveActionData}
                   start_date={dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : ""}
                   end_date={dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : ""}
                   region={filters.regional}
-
                 />
-
 
                 <div className="xl:col-span-2">
                   <JobPositionChartWithDialog
@@ -588,7 +555,6 @@ export default function PlantationDashboardMasterpiece({
                 </div>
               </div>
 
-
               {/* Monev Detail Table */}
               <MonevDetailTable
                 dateRange={dateRange}
@@ -597,80 +563,6 @@ export default function PlantationDashboardMasterpiece({
                 kode_unit={filters.kode_unit}
                 afdeling={filters.afdeling}
               />
-
-
-
-              {/* Additional Insights */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* <Card className="bg-gradient-to-br from-blue-900 to-blue-800 border-blue-700">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <BarChart3 className="h-6 w-6 text-blue-400" />
-                      <h3 className="text-lg font-semibold text-white">Monitoring Insights</h3>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex justify-between">
-                        <span className="text-blue-200">Total Kebun Aktif:</span>
-                        <span className="text-white font-semibold">{monitoringData.length}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-blue-200">Rata-rata Nilai:</span>
-                        <span className="text-white font-semibold">
-                          {monitoringData.length > 0
-                            ? (
-                              monitoringData.reduce((sum, item) => sum + item.rata_rata_nilai, 0) /
-                              monitoringData.length
-                            ).toFixed(2)
-                            : "0"}
-                        </span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card> */}
-                {/* 
-                <Card className="bg-gradient-to-br from-green-900 to-green-800 border-green-700">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <TreePine className="h-6 w-6 text-green-400" />
-                      <h3 className="text-lg font-semibold text-white">Plantation Stats</h3>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex justify-between">
-                        <span className="text-green-200">Total Plantation:</span>
-                        <span className="text-white font-semibold">{plantationData.length}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-green-200">Largest Area:</span>
-                        <span className="text-white font-semibold">
-                          {plantationData.length > 0
-                            ? Math.max(...plantationData.map((item) => item.luas_blok_tu)).toLocaleString("id-ID") +
-                            " Ha"
-                            : "0 Ha"}
-                        </span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-gradient-to-br from-purple-900 to-purple-800 border-purple-700">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <Settings className="h-6 w-6 text-purple-400" />
-                      <h3 className="text-lg font-semibold text-white">System Status</h3>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex justify-between">
-                        <span className="text-purple-200">Data Sources:</span>
-                        <span className="text-white font-semibold">4 Active</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-purple-200">Last Sync:</span>
-                        <span className="text-white font-semibold">{format(lastUpdated, "HH:mm", { locale: id })}</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card> */}
-              </div>
             </>
           )}
         </div>
