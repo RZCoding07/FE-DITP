@@ -21,7 +21,7 @@ import * as XLSX from "xlsx-js-style"
 import toast from "react-hot-toast"
 import { FaSync } from "react-icons/fa"
 import {
-  
+
   getScoreJumlahPelepah,
   getScoreKerapatanPokok,
   getScoreLingkarBatang,
@@ -33,11 +33,17 @@ import {
   getScoreJumlahAnakDaun,
   getScorePanjangAnakDaun,
   getScoreLebarAnakDaun,
-    
 
   getColorJumlahPelepah,
   getColorLingkarBatang,
   getColorTinggiTanaman,
+
+  getColorPanjangRachis,
+  getColorLebarPetiola,
+  getColorTebalPetiola,
+  getColorJumlahAnakDaun,
+  getColorPanjangAnakDaun,
+  getColorLebarAnakDaun,
 } from "@/components/custom/calculation-scores"
 
 import { ApexBarChart } from "@/components/progress-bar-chart-pica-tbm"
@@ -379,15 +385,28 @@ export default function Dashboard() {
             scoreLingkarBatangResultsUpdate,
           } = processScoreData({
             data: groupedData[tbmPhase],
-            
+
             getScoreLingkarBatang,
             getScoreJumlahPelepah,
             getScoreTinggiTanaman,
             getScoreKerapatanPokok,
+            getScorePanjangRachis,
+            getScoreLebarPetiola,
+            getScoreTebalPetiola,
+            getScoreJumlahAnakDaun,
+            getScorePanjangAnakDaun,
+            getScoreLebarAnakDaun,
 
             getColorJumlahPelepah,
             getColorLingkarBatang,
             getColorTinggiTanaman,
+
+            getColorPanjangRachis,
+            getColorLebarPetiola,
+            getColorTebalPetiola,
+            getColorJumlahAnakDaun,
+            getColorPanjangAnakDaun,
+            getColorLebarAnakDaun,
           });
 
           setScores((prev) => [...prev, ...newScores]);
@@ -803,6 +822,13 @@ export default function Dashboard() {
             ascoreJumlahPelepah: 0,
             ascoreTinggiBatang: 0,
             ascoreKerapatanPokok: 0,
+            ascorePanjangRachis: 0,
+            ascoreLebarPetiola: 0,
+            ascoreTebalPetiola: 0,
+            ascoreJumlahAnakDaun: 0,
+            ascorePanjangAnakDaun: 0,
+            ascoreLebarAnakDaun: 0,
+
             totalSeleksian: 0
           },
           colorCategories: {},
@@ -818,6 +844,13 @@ export default function Dashboard() {
       regional.weightedScores.ascoreJumlahPelepah += item.ascoreJumlahPelepah * luas;
       regional.weightedScores.ascoreTinggiBatang += item.ascoreTinggiBatang * luas;
       regional.weightedScores.ascoreKerapatanPokok += item.ascoreKerapatanPokok * luas;
+      regional.weightedScores.ascorePanjangRachis += item.ascorePanjangRachis * luas;
+      regional.weightedScores.ascoreLebarPetiola += item.ascoreLebarPetiola * luas;
+      regional.weightedScores.ascoreTebalPetiola += item.ascoreTebalPetiola * luas;
+      regional.weightedScores.ascoreJumlahAnakDaun += item.ascoreJumlahAnakDaun * luas;
+      regional.weightedScores.ascorePanjangAnakDaun += item.ascorePanjangAnakDaun * luas;
+      regional.weightedScores.ascoreLebarAnakDaun += item.ascoreLebarAnakDaun * luas;
+
       regional.weightedScores.totalSeleksian += item.totalSeleksian * luas;
 
       // Hitung total luas
@@ -844,6 +877,13 @@ export default function Dashboard() {
         ascoreJumlahPelepah: data.weightedScores.ascoreJumlahPelepah / luasTotal,
         ascoreTinggiBatang: data.weightedScores.ascoreTinggiBatang / luasTotal,
         ascoreKerapatanPokok: data.weightedScores.ascoreKerapatanPokok / luasTotal,
+        ascorePanjangRachis: data.weightedScores.ascorePanjangRachis / luasTotal,
+        ascoreLebarPetiola: data.weightedScores.ascoreLebarPetiola / luasTotal,
+        ascoreTebalPetiola: data.weightedScores.ascoreTebalPetiola / luasTotal,
+        ascoreJumlahAnakDaun: data.weightedScores.ascoreJumlahAnakDaun / luasTotal,
+        ascorePanjangAnakDaun: data.weightedScores.ascorePanjangAnakDaun / luasTotal,
+        ascoreLebarAnakDaun: data.weightedScores.ascoreLebarAnakDaun / luasTotal,
+
         totalSeleksian: data.weightedScores.totalSeleksian / luasTotal,
         colorCategory: Object.keys(data.colorCategories).reduce((a, b) =>
           data.colorCategories[a] > data.colorCategories[b] ? a : b
@@ -878,6 +918,13 @@ export default function Dashboard() {
             ascoreJumlahPelepah: 0,
             ascoreTinggiBatang: 0,
             ascoreKerapatanPokok: 0,
+            ascorePanjangRachis: 0,
+            ascoreLebarPetiola: 0,
+            ascoreTebalPetiola: 0,
+            ascoreJumlahAnakDaun: 0,
+            ascorePanjangAnakDaun: 0,
+            ascoreLebarAnakDaun: 0,
+
             totalSeleksian: 0
           },
           colorCategories: {},
@@ -894,6 +941,13 @@ export default function Dashboard() {
       kebun.weightedScores.ascoreJumlahPelepah += item.ascoreJumlahPelepah * luas;
       kebun.weightedScores.ascoreTinggiBatang += item.ascoreTinggiBatang * luas;
       kebun.weightedScores.ascoreKerapatanPokok += item.ascoreKerapatanPokok * luas;
+      kebun.weightedScores.ascorePanjangRachis += item.ascorePanjangRachis * luas;
+      kebun.weightedScores.ascoreLebarPetiola += item.ascoreLebarPetiola * luas;
+      kebun.weightedScores.ascoreTebalPetiola += item.ascoreTebalPetiola * luas;
+      kebun.weightedScores.ascoreJumlahAnakDaun += item.ascoreJumlahAnakDaun * luas;
+      kebun.weightedScores.ascorePanjangAnakDaun += item.ascorePanjangAnakDaun * luas;
+      kebun.weightedScores.ascoreLebarAnakDaun += item.ascoreLebarAnakDaun * luas;
+
       kebun.weightedScores.totalSeleksian += item.totalSeleksian * luas;
 
       // Calculate total area
@@ -921,6 +975,13 @@ export default function Dashboard() {
         ascoreJumlahPelepah: data.weightedScores.ascoreJumlahPelepah / luasTotal,
         ascoreTinggiBatang: data.weightedScores.ascoreTinggiBatang / luasTotal,
         ascoreKerapatanPokok: data.weightedScores.ascoreKerapatanPokok / luasTotal,
+        ascorePanjangRachis: data.weightedScores.ascorePanjangRachis / luasTotal,
+        ascoreLebarPetiola: data.weightedScores.ascoreLebarPetiola / luasTotal,
+        ascoreTebalPetiola: data.weightedScores.ascoreTebalPetiola / luasTotal,
+        ascoreJumlahAnakDaun: data.weightedScores.ascoreJumlahAnakDaun / luasTotal,
+        ascorePanjangAnakDaun: data.weightedScores.ascorePanjangAnakDaun / luasTotal,
+        ascoreLebarAnakDaun: data.weightedScores.ascoreLebarAnakDaun / luasTotal,
+        
         totalSeleksian: data.weightedScores.totalSeleksian / luasTotal,
         colorCategory: Object.keys(data.colorCategories).reduce((a, b) =>
           data.colorCategories[a] > data.colorCategories[b] ? a : b
@@ -1363,6 +1424,12 @@ export default function Dashboard() {
                                     <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Jumlah Pelepah</th>
                                     <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Lingkar Batang</th>
                                     <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Kerapatan Pokok</th>
+                                    <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Lebar Petiola</th>
+                                    <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Tebal Petiola</th>
+                                    <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Panjang Rachis</th>
+                                    <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Jumlah Anak Daun</th>
+                                    <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Panjang Anak Daun</th>
+                                    <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Lebar Anak Daun</th>
                                     <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Nilai PICA</th>
                                   </tr>
                                 </thead>
@@ -1386,28 +1453,65 @@ export default function Dashboard() {
                                             }
                                           </td>
                                           <td className={`border px-2 py-2 border-cyan-900 text-center`}>
-                                            <div className={getColorClass(item.ascoreTinggiBatang.toFixed(2) || 0) + " text-center rounded-lg py-2"}>
-                                              {item.ascoreTinggiBatang.toFixed(2)}
+                                            <div className={getColorClass(item.ascoreTinggiBatang || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascoreTinggiBatang}
                                             </div>
                                           </td>
                                           <td className={`border px-2 py-2 border-cyan-900 text-center`}>
-                                            <div className={getColorClass(item.ascoreJumlahPelepah.toFixed(2) || 0) + " text-center rounded-lg py-2"}>
-                                              {item.ascoreJumlahPelepah.toFixed(2)}
+                                            <div className={getColorClass(item.ascoreJumlahPelepah || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascoreJumlahPelepah}
                                             </div>
                                           </td>
                                           <td className={`border px-2 py-2 border-cyan-900 text-center`}>
-                                            <div className={getColorClass(item.ascoreLingkarBatang.toFixed(2) || 0) + " text-center rounded-lg py-2"}>
-                                              {item.ascoreLingkarBatang.toFixed(2)}
+                                            <div className={getColorClass(item.ascoreLingkarBatang || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascoreLingkarBatang}
                                             </div>
                                           </td>
                                           <td className={`border px-2 py-2 border-cyan-900 text-center`}>
-                                            <div className={getColorClass(item.ascoreKerapatanPokok.toFixed(2) || 0) + " text-center rounded-lg py-2"}>
-                                              {item.ascoreKerapatanPokok.toFixed(2)}
+                                            <div className={getColorClass(item.ascoreKerapatanPokok || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascoreKerapatanPokok}
                                             </div>
                                           </td>
+
                                           <td className={`border px-2 py-2 border-cyan-900 text-center`}>
-                                            <div className={getColorClass(item.totalSeleksian.toFixed(2) || 0) + " text-center rounded-lg py-2"}>
-                                              {item.totalSeleksian.toFixed(2)}
+                                            <div className={getColorClass(item.ascoreLebarPetiola || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascoreLebarPetiola}
+                                            </div>
+                                          </td>
+
+                                          <td className={`border px-2 py-2 border-cyan-900 text-center`}>
+                                            <div className={getColorClass(item.ascoreTebalPetiola || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascoreTebalPetiola}
+                                            </div>
+                                          </td>
+
+                                          <td className={`border px-2 py-2 border-cyan-900 text-center`}>
+                                            <div className={getColorClass(item.ascorePanjangRachis || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascorePanjangRachis}
+                                            </div>
+                                          </td>
+
+                                          <td className={`border px-2 py-2 border-cyan-900 text-center`}>
+                                            <div className={getColorClass(item.ascoreJumlahAnakDaun || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascoreJumlahAnakDaun}
+                                            </div>
+                                          </td>
+
+                                          <td className={`border px-2 py-2 border-cyan-900 text-center`}>
+                                            <div className={getColorClass(item.ascorePanjangAnakDaun || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascorePanjangAnakDaun}
+                                            </div>
+                                          </td>
+
+                                          <td className={`border px-2 py-2 border-cyan-900 text-center`}>
+                                            <div className={getColorClass(item.ascoreLebarAnakDaun || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascoreLebarAnakDaun}
+                                            </div>
+                                          </td>
+
+                                          <td className={`border px-2 py-2 border-cyan-900 text-center`}>
+                                            <div className={getColorClass(item.totalSeleksian || 0) + " text-center rounded-lg py-2"}>
+                                              {item.totalSeleksian}
                                             </div>
                                           </td>
                                         </tr>

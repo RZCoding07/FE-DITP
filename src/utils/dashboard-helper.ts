@@ -57,10 +57,20 @@ interface ScoreItem {
   tinggi_tanaman_cm: string
   jumlah_pokok_awal_tanam: string
   jumlah_pokok_sekarang: string
+
   scoreLingkarBatang: number
   scoreJumlahPelepah: number
   scoreTinggiBatang: number
   scoreKerapatanPokok: number
+  
+  scorePanjangRachis: number
+  scoreLebarPetiola: number
+  scoreTebalPetiola: number
+  scoreJumlahAnakDaun: number
+  scorePanjangAnakDaun: number
+  scoreLebarAnakDaun: number
+  
+  
   totalSeleksian: number
   colorCategory: string
   luas: number
@@ -80,10 +90,19 @@ interface ScoreItemAll {
   kebun: string
   afdeling: string
   blok: string
+
   ascoreLingkarBatang: number
   ascoreJumlahPelepah: number
   ascoreTinggiBatang: number
   ascoreKerapatanPokok: number
+
+  ascorePanjangRachis: number
+  ascoreLebarPetiola: number
+  ascoreTebalPetiola: number
+  ascoreJumlahAnakDaun: number
+  ascorePanjangAnakDaun: number
+  ascoreLebarAnakDaun: number
+
   jumlah_pokok_awal_tanam: string
   jumlah_pokok_sekarang: string
   tinggi_tanaman_cm: number
@@ -104,6 +123,13 @@ interface ScoreItemAll {
   colorScoreJumlahPelepah: string
   colorScoreLingkarBatang: string
   colorScoreTinggiBatang: string
+  colorScorePanjangRachis: string
+  colorScoreLebarPetiola: string
+  colorScoreTebalPetiola: string
+  colorScoreJumlahAnakDaun: string
+  colorScorePanjangAnakDaun: string
+  colorScoreLebarAnakDaun: string
+
   pica_id?: string // Optional property for PICA ID
 }
 
@@ -130,9 +156,23 @@ interface ProcessedKebunScore {
   ascoreJumlahPelepah: number
   ascoreTinggiBatang: number
   ascoreKerapatanPokok: number
+  ascorePanjangRachis: number
+  ascoreLebarPetiola: number
+  ascoreTebalPetiola: number
+  ascoreJumlahAnakDaun: number
+  ascorePanjangAnakDaun: number
+  ascoreLebarAnakDaun: number
+
   colorScoreJumlahPelepah: string
   colorScoreLingkarBatang: string
   colorScoreTinggiBatang: string
+  colorScorePanjangRachis: string
+  colorScoreLebarPetiola: string
+  colorScoreTebalPetiola: string
+  colorScoreJumlahAnakDaun: string
+  colorScorePanjangAnakDaun: string
+  colorScoreLebarAnakDaun: string
+
   calculatedTbm: string
 }
 
@@ -143,6 +183,15 @@ interface ScoreItemAllRegional {
   ascoreJumlahPelepah: number
   ascoreTinggiBatang: number
   ascoreKerapatanPokok: number
+
+
+  ascorePanjangRachis: number
+  ascoreLebarPetiola: number
+  ascoreTebalPetiola: number
+  ascoreJumlahAnakDaun: number
+  ascorePanjangAnakDaun: number
+  ascoreLebarAnakDaun: number
+
   totalSeleksian: number
   colorCategory: string
   luas: number
@@ -154,6 +203,14 @@ interface ScoreItemAllRegional {
   colorScoreJumlahPelepah: string
   colorScoreLingkarBatang: string
   colorScoreTinggiBatang: string
+
+  colorScorePanjangRachis: string
+  colorScoreLebarPetiola: string
+  colorScoreTebalPetiola: string
+  colorScoreJumlahAnakDaun: string
+  colorScorePanjangAnakDaun: string
+  colorScoreLebarAnakDaun: string
+
 }
 
 interface ProcessedRegionalScore {
@@ -176,6 +233,14 @@ interface ScoreItemAllKebun {
   ascoreJumlahPelepah: number
   ascoreTinggiBatang: number
   ascoreKerapatanPokok: number
+
+  ascorePanjangRachis: number
+  ascoreLebarPetiola: number  
+  ascoreTebalPetiola: number
+  ascoreJumlahAnakDaun: number
+  ascorePanjangAnakDaun: number
+  ascoreLebarAnakDaun: number
+
   totalSeleksian: number
   colorCategory: string
   luas: number
@@ -187,6 +252,12 @@ interface ScoreItemAllKebun {
   colorScoreJumlahPelepah: string
   colorScoreLingkarBatang: string
   colorScoreTinggiBatang: string
+  colorScorePanjangRachis: string
+  colorScoreLebarPetiola: string
+  colorScoreTebalPetiola: string
+  colorScoreJumlahAnakDaun: string
+  colorScorePanjangAnakDaun: string
+  colorScoreLebarAnakDaun: string
 }
 
 interface ProcessScoreDataResult {
@@ -201,21 +272,6 @@ interface ProcessScoreDataResult {
   scoreJumlahPelepahResultsUpdate: ScoreResults
   scoreLingkarBatangResultsUpdate: ScoreResults
 }
-
-// type ScoreRange = {
-//   skor100: string | number
-//   skor90: string | number
-//   skor80: string | number
-// }
-
-// type PlantData = {
-//   fase: string
-//   umur: number
-//   lingkarBatang: ScoreRange
-//   jumlahPelepah: ScoreRange
-//   tinggiTanaman: ScoreRange
-// }
-
 export function processScoreData({
   data,
   getScoreLingkarBatang,
@@ -397,7 +453,7 @@ export function processScoreData({
 
   // Process each item in the data
   Object.values(data).forEach((item: any) => {
-    let age = Number.parseInt(item.umur_saat_ini_bulan)
+    let age = Number(item.umur_saat_ini_bulan)
     if (age > 36) {
       age = 36
     }
@@ -413,10 +469,10 @@ export function processScoreData({
 
     let dataRules: any[] = []
 
-    let bulanInt = Number.parseInt(item.bulan)
-    let tahunInt = Number.parseInt(item.tahun)
+    let bulanInt = Number(item.bulan)
+    let tahunInt = Number(item.tahun)
 
-    if (bulanInt == 4 && tahunInt == 2025) {
+    if (bulanInt == 9990 && tahunInt == 2025) {
       if (
         compareCaseInsensitive(varietas, 'DP Yangambi') ||
         compareCaseInsensitive(varietas, 'DP PPKS 718') ||
@@ -523,15 +579,15 @@ export function processScoreData({
 
     let totalSeleksian = 0
 
-    if (bulanInt == 4 && tahunInt == 2025) {
+    if (bulanInt == 9990 && tahunInt == 2025) {
       // Calculate the scores
       scoreLingkarBatang =
         getScoreLingkarBatang(
           dataRules,
           age,
           Number.parseFloat(item.lingkar_batang_cm),
-          Number.parseInt(item.bulan),
-          Number.parseInt(item.tahun)
+          Number(item.bulan),
+          Number(item.tahun)
         ) * 0.4
 
       scoreJumlahPelepah =
@@ -539,8 +595,8 @@ export function processScoreData({
           dataRules,
           age,
           Number.parseFloat(item.jumlah_pelepah_bh),
-          Number.parseInt(item.bulan),
-          Number.parseInt(item.tahun)
+          Number(item.bulan),
+          Number(item.tahun)
         ) * 0.2
 
       scoreTinggiBatang =
@@ -548,8 +604,8 @@ export function processScoreData({
           dataRules,
           age,
           Number.parseFloat(item.tinggi_tanaman_cm),
-          Number.parseInt(item.bulan),
-          Number.parseInt(item.tahun)
+          Number(item.bulan),
+          Number(item.tahun)
         ) * 0.1
 
       scoreKerapatanPokok =
@@ -557,64 +613,64 @@ export function processScoreData({
           age,
           Number.parseFloat(item.jumlah_pokok_awal_tanam),
           Number.parseFloat(item.jumlah_pokok_sekarang),
-          Number.parseInt(item.bulan),
-          Number.parseInt(item.tahun)
+          Number(item.bulan),
+          Number(item.tahun)
         ) * 0.3
 
       ascoreLingkarBatang = getScoreLingkarBatang(
         dataRules,
         age,
         Number.parseFloat(item.lingkar_batang_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       ascoreJumlahPelepah = getScoreJumlahPelepah(
         dataRules,
         age,
         Number.parseFloat(item.jumlah_pelepah_bh),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       ascoreTinggiBatang = getScoreTinggiTanaman(
         dataRules,
         age,
         Number.parseFloat(item.tinggi_tanaman_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       ascoreKerapatanPokok = getScoreKerapatanPokok(
         age,
         Number.parseFloat(item.jumlah_pokok_awal_tanam),
         Number.parseFloat(item.jumlah_pokok_sekarang),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       colorScoreLingkarBatang = getColorLingkarBatang(
         dataRules,
         age,
         Number.parseFloat(item.lingkar_batang_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       colorScoreJumlahPelepah = getColorJumlahPelepah(
         dataRules,
         age,
         Number.parseFloat(item.jumlah_pelepah_bh),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       colorScoreTinggiBatang = getColorTinggiTanaman(
         dataRules,
         age,
         Number.parseFloat(item.tinggi_tanaman_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       totalSeleksian =
@@ -628,8 +684,8 @@ export function processScoreData({
           age,
           Number.parseFloat(item.jumlah_pokok_awal_tanam),
           Number.parseFloat(item.jumlah_pokok_sekarang),
-          Number.parseInt(item.bulan),
-          Number.parseInt(item.tahun)
+          Number(item.bulan),
+          Number(item.tahun)
         ) * 0.15
 
       scoreLingkarBatang =
@@ -637,8 +693,8 @@ export function processScoreData({
           dataRules,
           age,
           Number.parseFloat(item.lingkar_batang_cm),
-          Number.parseInt(item.bulan),
-          Number.parseInt(item.tahun)
+          Number(item.bulan),
+          Number(item.tahun)
         ) * 0.25
 
       scoreJumlahPelepah =
@@ -646,8 +702,8 @@ export function processScoreData({
           dataRules,
           age,
           Number.parseFloat(item.jumlah_pelepah_bh),
-          Number.parseInt(item.bulan),
-          Number.parseInt(item.tahun)
+          Number(item.bulan),
+          Number(item.tahun)
         ) * 0.15
 
       scoreTinggiBatang =
@@ -655,8 +711,8 @@ export function processScoreData({
           dataRules,
           age,
           Number.parseFloat(item.tinggi_tanaman_cm),
-          Number.parseInt(item.bulan),
-          Number.parseInt(item.tahun)
+          Number(item.bulan),
+          Number(item.tahun)
         ) * 0.1
 
       scorePanjangRachis =
@@ -664,8 +720,8 @@ export function processScoreData({
           dataRules,
           age,
           Number.parseFloat(item.pangjang_rachis_cm),
-          Number.parseInt(item.bulan),
-          Number.parseInt(item.tahun)
+          Number(item.bulan),
+          Number(item.tahun)
         ) * 0.05
 
       scoreLebarPetiola =
@@ -673,8 +729,8 @@ export function processScoreData({
           dataRules,
           age,
           Number.parseFloat(item.lebar_petiola_cm),
-          Number.parseInt(item.bulan),
-          Number.parseInt(item.tahun)
+          Number(item.bulan),
+          Number(item.tahun)
         ) * 0.05
 
       scoreTebalPetiola =
@@ -682,8 +738,8 @@ export function processScoreData({
           dataRules,
           age,
           Number.parseFloat(item.tebal_petiola_cm),
-          Number.parseInt(item.bulan),
-          Number.parseInt(item.tahun)
+          Number(item.bulan),
+          Number(item.tahun)
         ) * 0.05
 
       scoreJumlahAnakDaun =
@@ -691,8 +747,8 @@ export function processScoreData({
           dataRules,
           age,
           Number.parseFloat(item.jumlah_anak_daun),
-          Number.parseInt(item.bulan),
-          Number.parseInt(item.tahun)
+          Number(item.bulan),
+          Number(item.tahun)
         ) * 0.1
 
       scorePanjangAnakDaun =
@@ -700,8 +756,8 @@ export function processScoreData({
           dataRules,
           age,
           Number.parseFloat(item.rerata_panjang_anak_daun),
-          Number.parseInt(item.bulan),
-          Number.parseInt(item.tahun)
+          Number(item.bulan),
+          Number(item.tahun)
         ) * 0.05
 
       scoreLebarAnakDaun =
@@ -709,8 +765,8 @@ export function processScoreData({
           dataRules,
           age,
           Number.parseFloat(item.rerata_lebar_anak_daun),
-          Number.parseInt(item.bulan),
-          Number.parseInt(item.tahun)
+          Number(item.bulan),
+          Number(item.tahun)
         ) * 0.05
 
       // color
@@ -719,158 +775,158 @@ export function processScoreData({
         dataRules,
         age,
         Number.parseFloat(item.lingkar_batang_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       ascoreJumlahPelepah = getScoreJumlahPelepah(
         dataRules,
         age,
         Number.parseFloat(item.jumlah_pelepah_bh),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       ascoreTinggiBatang = getScoreTinggiTanaman(
         dataRules,
         age,
         Number.parseFloat(item.tinggi_tanaman_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       ascoreKerapatanPokok = getScoreKerapatanPokok(
         age,
         Number.parseFloat(item.jumlah_pokok_awal_tanam),
         Number.parseFloat(item.jumlah_pokok_sekarang),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       ascorePanjangRachis = getScorePanjangRachis(
         dataRules,
         age,
         Number.parseFloat(item.pangjang_rachis_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       ascoreLebarPetiola = getScoreLebarPetiola(
         dataRules,
         age,
         Number.parseFloat(item.lebar_petiola_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       ascoreTebalPetiola = getScoreTebalPetiola(
         dataRules,
         age,
         Number.parseFloat(item.tebal_petiola_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       ascoreJumlahAnakDaun = getScoreJumlahAnakDaun(
         dataRules,
         age,
         Number.parseFloat(item.jumlah_anak_daun),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       ascorePanjangAnakDaun = getScorePanjangAnakDaun(
         dataRules,
         age,
         Number.parseFloat(item.panjang_anak_daun_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       ascoreLebarAnakDaun = getScoreLebarAnakDaun(
         dataRules,
         age,
         Number.parseFloat(item.lebar_anak_daun_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       colorScoreLingkarBatang = getColorLingkarBatang(
         dataRules,
         age,
         Number.parseFloat(item.lingkar_batang_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       colorScoreJumlahPelepah = getColorJumlahPelepah(
         dataRules,
         age,
         Number.parseFloat(item.jumlah_pelepah_bh),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       colorScoreTinggiBatang = getColorTinggiTanaman(
         dataRules,
         age,
         Number.parseFloat(item.tinggi_tanaman_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       colorScorePanjangRachis = getColorPanjangRachis(
         dataRules,
         age,
         Number.parseFloat(item.panjang_rachis_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       colorScoreLebarPetiola = getColorLebarPetiola(
         dataRules,
         age,
         Number.parseFloat(item.lebar_petiola_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
       colorScoreTebalPetiola = getColorTebalPetiola(
         dataRules,
         age,
         Number.parseFloat(item.tebal_petiola_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
       colorScoreTebalPetiola = getColorTinggiTanaman(
         dataRules,
         age,
         Number.parseFloat(item.tinggi_tanaman_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       colorScoreJumlahAnakDaun = getColorJumlahAnakDaun(
         dataRules,
         age,
         Number.parseFloat(item.jumlah_anak_daun),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       colorScorePanjangAnakDaun = getColorPanjangAnakDaun(
         dataRules,
         age,
         Number.parseFloat(item.panjang_anak_daun_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       colorScoreLebarAnakDaun = getColorLebarAnakDaun(
         dataRules,
         age,
         Number.parseFloat(item.lebar_anak_daun_cm),
-        Number.parseInt(item.bulan),
-        Number.parseInt(item.tahun)
+        Number(item.bulan),
+        Number(item.tahun)
       )
 
       totalSeleksian =
@@ -932,6 +988,15 @@ export function processScoreData({
         scoreTinggiBatang,
         scoreKerapatanPokok,
 
+        scorePanjangRachis,
+        scoreLebarPetiola,
+        scoreTebalPetiola,
+        scoreJumlahAnakDaun,
+        scorePanjangAnakDaun,
+        scoreLebarAnakDaun,
+        
+
+
         totalSeleksian,
         colorCategory,
         luas,
@@ -957,10 +1022,19 @@ export function processScoreData({
       tinggi_tanaman_cm: tinggi,
       afdeling: item.afdeling,
       blok: item.blok,
+
       ascoreLingkarBatang,
       ascoreJumlahPelepah,
       ascoreTinggiBatang,
       ascoreKerapatanPokok,
+      
+      ascorePanjangRachis,
+      ascoreLebarPetiola,
+      ascoreTebalPetiola,
+      ascoreJumlahAnakDaun,
+      ascorePanjangAnakDaun,
+      ascoreLebarAnakDaun,  
+
       totalSeleksian,
       colorCategory,
       luas,
@@ -969,13 +1043,21 @@ export function processScoreData({
       tbm: faseTbm,
       jumlah_pokok_awal_tanam: item.jumlah_pokok_awal_tanam,
       jumlah_pokok_sekarang: item.jumlah_pokok_sekarang,
-      bulan: Number.parseInt(item.bulan),
-      tahun: Number.parseInt(item.tahun),
+      bulan: Number(item.bulan),
+      tahun: Number(item.tahun),
       fase_tbm: item.fase_tbm,
       vw_fase_tbm: item.vw_fase_tbm,
+
       colorScoreJumlahPelepah,
       colorScoreLingkarBatang,
       colorScoreTinggiBatang,
+      colorScorePanjangRachis,
+      colorScoreLebarPetiola,
+      colorScoreTebalPetiola,
+      colorScoreJumlahAnakDaun,
+      colorScorePanjangAnakDaun,
+      colorScoreLebarAnakDaun
+
     })
 
     // Process kebun data
@@ -1012,6 +1094,13 @@ export function processScoreData({
     let totalAscoreJumlahPelepah = 0
     let totalAscoreTinggiBatang = 0
     let totalAscoreKerapatanPokok = 0
+    let totalAscorePanjangRachis = 0
+    let totalAscoreLebarPetiola = 0
+    let totalAscoreTebalPetiola = 0
+    let totalAscoreJumlahAnakDaun = 0
+    let totalAscorePanjangAnakDaun = 0
+    let totalAscoreLebarAnakDaun = 0
+    
     const totalLuas = newScoresKebun[kebun].totalLuas
 
     // Find all items for this kebun to calculate weighted average scores
@@ -1023,6 +1112,13 @@ export function processScoreData({
       totalAscoreJumlahPelepah += item.ascoreJumlahPelepah * itemLuas
       totalAscoreTinggiBatang += item.ascoreTinggiBatang * itemLuas
       totalAscoreKerapatanPokok += item.ascoreKerapatanPokok * itemLuas
+      totalAscorePanjangRachis += item.ascorePanjangRachis * itemLuas
+      totalAscoreLebarPetiola += item.ascoreLebarPetiola * itemLuas
+      totalAscoreTebalPetiola += item.ascoreTebalPetiola * itemLuas
+      totalAscoreJumlahAnakDaun += item.ascoreJumlahAnakDaun * itemLuas 
+      totalAscorePanjangAnakDaun += item.ascorePanjangAnakDaun * itemLuas
+      totalAscoreLebarAnakDaun += item.ascoreLebarAnakDaun * itemLuas
+
     })
 
     // Calculate weighted averages
@@ -1034,12 +1130,31 @@ export function processScoreData({
       totalLuas > 0 ? totalAscoreTinggiBatang / totalLuas : 0
     const avgAscoreKerapatanPokok =
       totalLuas > 0 ? totalAscoreKerapatanPokok / totalLuas : 0
+    const avgAscorePanjangRachis =
+      totalLuas > 0 ? totalAscorePanjangRachis / totalLuas : 0
+    const avgAscoreLebarPetiola =
+      totalLuas > 0 ? totalAscoreLebarPetiola / totalLuas : 0
+    const avgAscoreTebalPetiola = 
+      totalLuas > 0 ? totalAscoreTebalPetiola / totalLuas : 0
+    const avgAscoreJumlahAnakDaun =
+      totalLuas > 0 ? totalAscoreJumlahAnakDaun / totalLuas : 0
+    const avgAscorePanjangAnakDaun =
+      totalLuas > 0 ? totalAscorePanjangAnakDaun / totalLuas : 0
+    const avgAscoreLebarAnakDaun =
+      totalLuas > 0 ? totalAscoreLebarAnakDaun / totalLuas : 0
+
 
     // Determine color scores for kebun (using the first item's data rules as reference)
     const firstKebunItem = kebunItems[0]
     let colorScoreLingkarBatang = 'default'
     let colorScoreJumlahPelepah = 'default'
     let colorScoreTinggiBatang = 'default'
+    let colorScorePanjangRachis = 'default'
+    let colorScoreLebarPetiola = 'default'
+    let colorScoreTebalPetiola = 'default'
+    let colorScoreJumlahAnakDaun = 'default'
+    let colorScorePanjangAnakDaun = 'default'
+    let colorScoreLebarAnakDaun = 'default'
 
     if (firstKebunItem) {
       // Use the most common color for each metric in the kebun
@@ -1051,6 +1166,26 @@ export function processScoreData({
       )
       const tinggiBatangColors = kebunItems.map(
         (item) => item.colorScoreTinggiBatang
+      )
+
+      const panjangRachisColors = kebunItems.map(
+        (item) => item.colorScorePanjangRachis
+      )
+
+      const lebarPetiolaColors = kebunItems.map(
+        (item) => item.colorScoreLebarPetiola
+      )
+      const tebalPetiolaColors = kebunItems.map(
+        (item) => item.colorScoreTebalPetiola
+      )
+      const jumlahAnakDaunColors = kebunItems.map(
+        (item) => item.colorScoreJumlahAnakDaun
+      )
+      const panjangAnakDaunColors = kebunItems.map(
+        (item) => item.colorScorePanjangAnakDaun
+      )
+      const lebarAnakDaunColors = kebunItems.map(
+        (item) => item.colorScoreLebarAnakDaun
       )
 
       // Helper function to get most common color
@@ -1065,6 +1200,13 @@ export function processScoreData({
       colorScoreLingkarBatang = getMostCommonColor(lingkarBatangColors)
       colorScoreJumlahPelepah = getMostCommonColor(jumlahPelepahColors)
       colorScoreTinggiBatang = getMostCommonColor(tinggiBatangColors)
+      colorScorePanjangRachis = getMostCommonColor(panjangRachisColors)
+      colorScoreLebarPetiola = getMostCommonColor(lebarPetiolaColors)
+      colorScoreTebalPetiola = getMostCommonColor(tebalPetiolaColors)
+      colorScoreJumlahAnakDaun = getMostCommonColor(jumlahAnakDaunColors)
+      colorScorePanjangAnakDaun = getMostCommonColor(panjangAnakDaunColors)
+      colorScoreLebarAnakDaun = getMostCommonColor(lebarAnakDaunColors)
+
     }
 
     if (newScoresKebun[kebun].totalLuas > 0) {
@@ -1098,9 +1240,21 @@ export function processScoreData({
         ascoreJumlahPelepah: avgAscoreJumlahPelepah,
         ascoreTinggiBatang: avgAscoreTinggiBatang,
         ascoreKerapatanPokok: avgAscoreKerapatanPokok,
+        ascorePanjangRachis: avgAscorePanjangRachis,
+        ascoreLebarPetiola: avgAscoreLebarPetiola,
+        ascoreTebalPetiola: avgAscoreTebalPetiola,
+        ascoreJumlahAnakDaun: avgAscoreJumlahAnakDaun,  
+        ascorePanjangAnakDaun: avgAscorePanjangAnakDaun,
+        ascoreLebarAnakDaun: avgAscoreLebarAnakDaun,
         colorScoreLingkarBatang,
         colorScoreJumlahPelepah,
         colorScoreTinggiBatang,
+        colorScorePanjangRachis,
+        colorScoreLebarPetiola,
+        colorScoreTebalPetiola,
+        colorScoreJumlahAnakDaun,
+        colorScorePanjangAnakDaun,
+        colorScoreLebarAnakDaun
       },
     })
   })
@@ -1384,7 +1538,7 @@ export function processScoreDataByTbmLevel(data: any, scoreFunctions: any) {
     }
 
     // Calculate scores
-    const age = Number.parseInt(item.umur_saat_ini_bulan)
+    const age = Number(item.umur_saat_ini_bulan)
     const scoreLingkarBatang = getScoreLingkarBatang(/* params */)
     const scoreJumlahPelepah = getScoreJumlahPelepah(/* params */)
 
@@ -1447,6 +1601,13 @@ export function processScoreDataAllKebun(
         ascoreJumlahPelepah: 0,
         ascoreTinggiBatang: 0,
         ascoreKerapatanPokok: 0,
+        ascorePanjangRachis: 0,
+        ascoreLebarPetiola: 0,
+        ascoreTebalPetiola: 0,
+        ascoreJumlahAnakDaun: 0,
+        ascorePanjangAnakDaun: 0,
+        ascoreLebarAnakDaun: 0,
+
         totalSeleksian: 0,
         colorCategory: '',
         luas: 0,
@@ -1458,6 +1619,12 @@ export function processScoreDataAllKebun(
         colorScoreJumlahPelepah: '',
         colorScoreLingkarBatang: '',
         colorScoreTinggiBatang: '',
+        colorScorePanjangRachis: '',
+        colorScoreLebarPetiola: '',
+        colorScoreTebalPetiola: '',
+        colorScoreJumlahAnakDaun: '',
+        colorScorePanjangAnakDaun: '',
+        colorScoreLebarAnakDaun: ''
       }
     }
 
@@ -1469,6 +1636,14 @@ export function processScoreDataAllKebun(
     current.ascoreJumlahPelepah += item.ascoreJumlahPelepah * itemWeight
     current.ascoreTinggiBatang += item.ascoreTinggiBatang * itemWeight
     current.ascoreKerapatanPokok += item.ascoreKerapatanPokok * itemWeight
+
+    current.ascorePanjangRachis += item.ascorePanjangRachis * itemWeight
+    current.ascoreLebarPetiola += item.ascoreLebarPetiola * itemWeight
+    current.ascoreTebalPetiola += item.ascoreTebalPetiola * itemWeight
+    current.ascoreJumlahAnakDaun += item.ascoreJumlahAnakDaun * itemWeight
+    current.ascorePanjangAnakDaun += item.ascorePanjangAnakDaun * itemWeight
+    current.ascoreLebarAnakDaun += item.ascoreLebarAnakDaun * itemWeight
+
     current.totalSeleksian += item.totalSeleksian * itemWeight
     current.luas += itemWeight
   })
@@ -1534,6 +1709,12 @@ export function processScoreDataAllRegional(
         ascoreJumlahPelepah: 0,
         ascoreTinggiBatang: 0,
         ascoreKerapatanPokok: 0,
+        ascorePanjangRachis: 0,
+        ascoreLebarPetiola: 0,
+        ascoreTebalPetiola: 0,
+        ascoreJumlahAnakDaun: 0,
+        ascorePanjangAnakDaun: 0,
+        ascoreLebarAnakDaun: 0,
         totalSeleksian: 0,
         colorCategory: '',
         luas: 0,
@@ -1545,6 +1726,12 @@ export function processScoreDataAllRegional(
         colorScoreJumlahPelepah: '',
         colorScoreLingkarBatang: '',
         colorScoreTinggiBatang: '',
+        colorScorePanjangRachis: '',
+        colorScoreLebarPetiola: '',
+        colorScoreTebalPetiola: '',
+        colorScoreJumlahAnakDaun: '',
+        colorScorePanjangAnakDaun: '',
+        colorScoreLebarAnakDaun: ''
       }
     }
 
@@ -1556,6 +1743,13 @@ export function processScoreDataAllRegional(
     current.ascoreJumlahPelepah += item.ascoreJumlahPelepah * itemWeight
     current.ascoreTinggiBatang += item.ascoreTinggiBatang * itemWeight
     current.ascoreKerapatanPokok += item.ascoreKerapatanPokok * itemWeight
+    current.ascorePanjangRachis += item.ascorePanjangRachis * itemWeight
+    current.ascoreLebarPetiola += item.ascoreLebarPetiola * itemWeight
+    current.ascoreTebalPetiola += item.ascoreTebalPetiola * itemWeight
+    current.ascoreJumlahAnakDaun += item.ascoreJumlahAnakDaun * itemWeight
+    current.ascorePanjangAnakDaun += item.ascorePanjangAnakDaun * itemWeight
+    current.ascoreLebarAnakDaun += item.ascoreLebarAnakDaun * itemWeight
+  
     current.totalSeleksian += item.totalSeleksian * itemWeight
     current.luas += itemWeight
   })
@@ -1568,6 +1762,13 @@ export function processScoreDataAllRegional(
         regional.ascoreJumlahPelepah /= regional.luas
         regional.ascoreTinggiBatang /= regional.luas
         regional.ascoreKerapatanPokok /= regional.luas
+        regional.ascorePanjangRachis /= regional.luas
+        regional.ascoreLebarPetiola /= regional.luas
+        regional.ascoreTebalPetiola /= regional.luas
+        regional.ascoreJumlahAnakDaun /= regional.luas
+        regional.ascorePanjangAnakDaun /= regional.luas
+        regional.ascoreLebarAnakDaun /= regional.luas
+
         regional.totalSeleksian /= regional.luas
       }
 
