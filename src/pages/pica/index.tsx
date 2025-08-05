@@ -29,12 +29,29 @@ import { MONTH_NAMES } from '@/utils/constants'
 import { fetchDistinctYears } from '@/utils/api_immature'
 import { fetchVegetativeProc } from '@/utils/api_immature'
 import {
+
   getScoreJumlahPelepah,
   getScoreKerapatanPokok,
   getScoreLingkarBatang,
-  getScoreTinggiTanaman, getColorJumlahPelepah,
+  getScoreTinggiTanaman,
+
+  getScorePanjangRachis,
+  getScoreLebarPetiola,
+  getScoreTebalPetiola,
+  getScoreJumlahAnakDaun,
+  getScorePanjangAnakDaun,
+  getScoreLebarAnakDaun,
+
+  getColorJumlahPelepah,
   getColorLingkarBatang,
   getColorTinggiTanaman,
+
+  getColorPanjangRachis,
+  getColorLebarPetiola,
+  getColorTebalPetiola,
+  getColorJumlahAnakDaun,
+  getColorPanjangAnakDaun,
+  getColorLebarAnakDaun,
 } from "@/components/custom/calculation-scores"
 import {
   processScoreData,
@@ -417,26 +434,43 @@ export default function PicaTbm() {
 
         // Process each TBM phase
         Object.keys(groupedData).forEach((tbmPhase) => {
-          const {
+  const {
             newScores,
             newScoresKebun,
             newScoresRegional,
             newScoresAll,
+            newScoresAllKebun,
+            newScoresAllRegional,
             newRegionalBlackBlockCount,
             tbmResultsUpdate,
             scoreJumlahPelepahResultsUpdate,
             scoreLingkarBatangResultsUpdate,
           } = processScoreData({
             data: groupedData[tbmPhase],
+
             getScoreLingkarBatang,
             getScoreJumlahPelepah,
             getScoreTinggiTanaman,
             getScoreKerapatanPokok,
+            getScorePanjangRachis,
+            getScoreLebarPetiola,
+            getScoreTebalPetiola,
+            getScoreJumlahAnakDaun,
+            getScorePanjangAnakDaun,
+            getScoreLebarAnakDaun,
+
             getColorJumlahPelepah,
             getColorLingkarBatang,
             getColorTinggiTanaman,
-          });
 
+            getColorPanjangRachis,
+            getColorLebarPetiola,
+            getColorTebalPetiola,
+            getColorJumlahAnakDaun,
+            getColorPanjangAnakDaun,
+            getColorLebarAnakDaun,
+          });
+          
           setScores((prev) => [...prev, ...newScores]);
           setScoresAll((prev) => [...prev, ...newScoresAll]);
           setScoresKebun((prev) => [...prev, ...newScoresKebun]);

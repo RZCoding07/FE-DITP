@@ -29,7 +29,7 @@ interface ScoreItem {
   kebun: string
   afdeling: string
   blok: string
-  lingkar_batang_cm: string 
+  lingkar_batang_cm: string
   tinggi_tanaman_cm: string
   jumlah_pokok_awal_tanam: string
   jumlah_pokok_sekarang: string
@@ -42,7 +42,6 @@ interface ScoreItem {
   luas: number
   jumPelepah: number
   varietas: string
-  bulan_tanam: string
   tahun_tanam: string
   umur: string
   fase_tbm: string // Added fase_tbm property
@@ -206,13 +205,13 @@ export function processScoreData({
   getColorTinggiTanaman,
 }: {
   data: { [key: string]: ScoreDataItem }
-  getScoreLingkarBatang: (dataset: PlantData[], age: number, value: number) => number
-  getScoreJumlahPelepah: (dataset: PlantData[], age: number, value: number) => number
-  getScoreTinggiTanaman: (dataset: PlantData[], age: number, value: number) => number
+  getScoreLingkarBatang: (dataset: any[], age: number, value: number) => number
+  getScoreJumlahPelepah: (dataset: any[], age: number, value: number) => number
+  getScoreTinggiTanaman: (dataset: any[], age: number, value: number) => number
   getScoreKerapatanPokok: (age: number, initial: number, current: number) => number
-  getColorLingkarBatang: (dataset: PlantData[], age: number, value: number) => string
-  getColorJumlahPelepah: (dataset: PlantData[], age: number, value: number) => string
-  getColorTinggiTanaman: (dataset: PlantData[], age: number, value: number) => string
+  getColorLingkarBatang: (dataset: any[], age: number, value: number) => string
+  getColorJumlahPelepah: (dataset: any[], age: number, value: number) => string
+  getColorTinggiTanaman: (dataset: any[], age: number, value: number) => string
 }): ProcessScoreDataResult {
   const newScores: Array<{ [key: string]: ScoreItem }> = []
   const newScoresKebun: { [key: string]: KebunScore } = {}
@@ -221,7 +220,7 @@ export function processScoreData({
   const newRegionalBlackBlockCount: { [key: string]: number } = {}
 
   // Process each item in the data
-  Object.values(data).forEach((item:any) => {
+  Object.values(data).forEach((item: any) => {
     let age = Number.parseInt(item.umur_saat_ini_bulan)
     if (age > 36) {
       age = 36
@@ -234,42 +233,42 @@ export function processScoreData({
 
 
     function compareCaseInsensitive(str1: string, str2: string): boolean {
-  return str1.toLowerCase() === str2.toLowerCase();
-}
+      return str1.toLowerCase() === str2.toLowerCase();
+    }
 
-    let dataRules: PlantData[] = []
+    let dataRules: any[] = []
 
 
-if (compareCaseInsensitive(varietas, "DP Yangambi") || 
-    compareCaseInsensitive(varietas, "DP PPKS 718") || 
-    compareCaseInsensitive(varietas, "DP 239")) {
-  dataRules = dataOne;
-} else if (compareCaseInsensitive(varietas, "DP Langkat")) {
-  dataRules = dataTwo;
-} else if (
-  compareCaseInsensitive(varietas, "DP Simalungun") ||
-  compareCaseInsensitive(varietas, "DP Avros") ||
-  compareCaseInsensitive(varietas, "DP 540") ||
-  compareCaseInsensitive(varietas, "Lonsum") ||
-  compareCaseInsensitive(varietas, "Dami Mas") ||
-  compareCaseInsensitive(varietas, "Bina Sawit Makmur") ||
-  compareCaseInsensitive(varietas, "Sarana Inti Pratama") ||
-  compareCaseInsensitive(varietas, "Panca Surya Garden")
-) {
-  dataRules = dataThree;
-} else if (
-  compareCaseInsensitive(varietas, "SF Lame") ||
-  compareCaseInsensitive(varietas, "SF MTG") ||
-  compareCaseInsensitive(varietas, "SF Yangambi") ||
-  compareCaseInsensitive(varietas, "Bakrie") ||
-  compareCaseInsensitive(varietas, "Topaz") ||
-  compareCaseInsensitive(varietas, "Sriwijaya Sampoerna") ||
-  compareCaseInsensitive(varietas, "Verdant")
-) {
-  dataRules = dataFour;
-} else if (compareCaseInsensitive(varietas, "DP 239")) {
-  dataRules = dataFive;
-}
+    if (compareCaseInsensitive(varietas, "DP Yangambi") ||
+      compareCaseInsensitive(varietas, "DP PPKS 718") ||
+      compareCaseInsensitive(varietas, "DP 239")) {
+      dataRules = dataOne;
+    } else if (compareCaseInsensitive(varietas, "DP Langkat")) {
+      dataRules = dataTwo;
+    } else if (
+      compareCaseInsensitive(varietas, "DP Simalungun") ||
+      compareCaseInsensitive(varietas, "DP Avros") ||
+      compareCaseInsensitive(varietas, "DP 540") ||
+      compareCaseInsensitive(varietas, "Lonsum") ||
+      compareCaseInsensitive(varietas, "Dami Mas") ||
+      compareCaseInsensitive(varietas, "Bina Sawit Makmur") ||
+      compareCaseInsensitive(varietas, "Sarana Inti Pratama") ||
+      compareCaseInsensitive(varietas, "Panca Surya Garden")
+    ) {
+      dataRules = dataThree;
+    } else if (
+      compareCaseInsensitive(varietas, "SF Lame") ||
+      compareCaseInsensitive(varietas, "SF MTG") ||
+      compareCaseInsensitive(varietas, "SF Yangambi") ||
+      compareCaseInsensitive(varietas, "Bakrie") ||
+      compareCaseInsensitive(varietas, "Topaz") ||
+      compareCaseInsensitive(varietas, "Sriwijaya Sampoerna") ||
+      compareCaseInsensitive(varietas, "Verdant")
+    ) {
+      dataRules = dataFour;
+    } else if (compareCaseInsensitive(varietas, "DP 239")) {
+      dataRules = dataFive;
+    }
 
     // Calculate scores
     const scoreLingkarBatang = getScoreLingkarBatang(dataRules, age, Number.parseFloat(item.lingkar_batang_cm)) * 0.4
@@ -344,7 +343,6 @@ if (compareCaseInsensitive(varietas, "DP Yangambi") ||
         totalSeleksian,
         colorCategory,
         luas,
-        bulan_tanam: item.bulan,
         varietas,
         jumPelepah,
         fase_tbm: item.fase_tbm,
@@ -587,6 +585,8 @@ if (compareCaseInsensitive(varietas, "DP Yangambi") ||
     scoreLingkarBatangResultsUpdate,
   }
 }
+
+// ... (rest of the code remains the same)
 
 interface ColorCount {
   [key: string]: number

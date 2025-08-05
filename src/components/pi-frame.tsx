@@ -76,12 +76,6 @@ const ProblemIdentificationChart: React.FC<ProblemIdentificationChartProps> = ({
     let filteredData = [...picaResults]
     const originalLength = filteredData.length
 
-    console.log("📊 Original data length:", originalLength)
-
-    // Add this right after the console.log for original data length
-    console.log("📊 Sample data structure:", filteredData[0])
-
-    // Apply filters step by step with logging
     const filterSteps: string[] = []
 
     // CTG filter (special handling for TBM)
@@ -159,8 +153,6 @@ const ProblemIdentificationChart: React.FC<ProblemIdentificationChartProps> = ({
       filterSteps.push(`Color ${colorFilter}: skipped (show all)`)
     }
 
-    console.log("🔍 Filter steps:", filterSteps)
-    console.log("📊 Final filtered data length:", filteredData.length)
 
     if (filteredData.length === 0) {
       console.log("❌ No data after filtering")
@@ -187,17 +179,11 @@ const ProblemIdentificationChart: React.FC<ProblemIdentificationChartProps> = ({
       }
     })
 
-    console.log("🔍 Problem aggregation:")
-    problemMap.forEach((count, problem) => {
-      console.log(`  - ${problem}: ${count}`)
-    })
-
     // Convert to array and sort by count descending
     const aggregatedData = Array.from(problemMap.entries())
       .map(([name, value]) => ({ name, value }))
       .sort((a, b) => b.value - a.value)
 
-    console.log("📊 Final aggregated data:", aggregatedData)
 
     setChartData(aggregatedData)
     setDebugInfo({

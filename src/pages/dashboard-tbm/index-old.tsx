@@ -1,6 +1,6 @@
 "use client"
-import domtoimage from 'dom-to-image';
-import { useEffect, useState, useMemo, useRef } from "react"
+
+import { useEffect, useState, useMemo } from "react"
 import { Controller } from "react-hook-form"
 import { Layout } from "@/components/custom/layout"
 import { Button } from "@/components/custom/button"
@@ -16,43 +16,29 @@ import { useDashboardForm } from "@/hooks/use-dashboard-form"
 import { fetchVegetativeFinal, fetchVegetativeProc } from "@/utils/api_immature"
 import { customStyles } from "@/styles/select-styles"
 import { StockAnalysisChart } from "@/components/custom/horizontal-bar-chart"
+import StockAnalysisChartBar from "@/components/custom/bar-chart"
 import * as XLSX from "xlsx-js-style"
 import toast from "react-hot-toast"
 import { FaSync } from "react-icons/fa"
 import {
-
   getScoreJumlahPelepah,
   getScoreKerapatanPokok,
   getScoreLingkarBatang,
   getScoreTinggiTanaman,
-
-  getScorePanjangRachis,
-  getScoreLebarPetiola,
-  getScoreTebalPetiola,
-  getScoreJumlahAnakDaun,
-  getScorePanjangAnakDaun,
-  getScoreLebarAnakDaun,
-
   getColorJumlahPelepah,
   getColorLingkarBatang,
   getColorTinggiTanaman,
-
-  getColorPanjangRachis,
-  getColorLebarPetiola,
-  getColorTebalPetiola,
-  getColorJumlahAnakDaun,
-  getColorPanjangAnakDaun,
-  getColorLebarAnakDaun,
-} from "@/components/custom/calculation-scores"
+} from "@/components/custom/calscores-old"
 
 import { ApexBarChart } from "@/components/progress-bar-chart-pica-tbm"
 
 import {
+  countColorCategories,
+  sumLuasByColorCategory,
   processRegionalData,
   processScoreData,
   processColorData,
-} from "@/utils/dashboard-helper"
-
+} from "@/components/custom/dash-helper-old"
 import axios from "axios"
 import DonutChart from "@/components/custom/donut-chart"
 import { SummaryTBM } from "@/components/summarytbm"
@@ -60,7 +46,6 @@ import { X } from "lucide-react"
 import PlanByTimeframe from "@/components/plan-time-frame"
 import ProgressByTimeframe from "@/components/progress-time-frame"
 import ProblemIdentificationChart from "@/components/pi-frame"
-import { TbmCorporateRecap } from "@/components/custom/tbm-recap-summary"
 
 export default function Dashboard() {
   // Di bagian awal component, setelah mendapatkan user data
@@ -229,6 +214,8 @@ export default function Dashboard() {
     }
   }, [bulan, tahun]) // Depend on bulan and tahun values
 
+
+
   const [tbm1DataRegional, setTbm1DataRegional] = useState<any>({})
   const [tbm2DataRegional, setTbm2DataRegional] = useState<any>({})
   const [tbm3DataRegional, setTbm3DataRegional] = useState<any>({})
@@ -257,6 +244,7 @@ export default function Dashboard() {
     const tbm2Data = groupedScores["tbm2"] ?? []
     const tbm3Data = groupedScores["tbm3"] ?? []
     const tbm4Data = groupedScores["tbm4"] ?? []
+
 
     // Process regional data
     const rpcOpt = ["RPC1", "RPC2", "RPC3", "RPC4", "RPC5", "RPC6", "RPC7", "RPC2N2", "RPC2N14"]
@@ -321,14 +309,13 @@ export default function Dashboard() {
 
         // Group data by TBM phase
         const groupedData = response.data.reduce((acc: Record<string, any[]>, item: any) => {
-          const tbmPhase = `${item.vw_fase_tbm}`;
+          const tbmPhase = `tbm${item.vw_fase_tbm}`;
           if (!acc[tbmPhase]) {
             acc[tbmPhase] = [];
           }
           acc[tbmPhase].push(item);
           return acc;
         }, {});
-
 
         // Process data for each TBM phase
         const tbmResults = { tbm1: 0, tbm2: 0, tbm3: 0, tbm4: 0 };
@@ -359,7 +346,6 @@ export default function Dashboard() {
             scoreLingkarBatangResultsUpdate,
           } = processScoreData({
             data: groupedData[tbmPhase],
-            //bulan 4
             getScoreLingkarBatang,
             getScoreJumlahPelepah,
             getScoreTinggiTanaman,
@@ -367,20 +353,6 @@ export default function Dashboard() {
             getColorJumlahPelepah,
             getColorLingkarBatang,
             getColorTinggiTanaman,
-
-            // bulan 8 - 12
-            getScorePanjangRachis,
-            getScoreLebarPetiola,
-            getScoreTebalPetiola,
-            getScoreJumlahAnakDaun,
-            getScorePanjangAnakDaun,
-            getScoreLebarAnakDaun,
-            getColorPanjangRachis,
-            getColorLebarPetiola,
-            getColorTebalPetiola,
-            getColorJumlahAnakDaun,
-            getColorPanjangAnakDaun,
-            getColorLebarAnakDaun,
           });
 
           setScores((prev) => [...prev, ...newScores]);
@@ -530,6 +502,7 @@ export default function Dashboard() {
     })
 
     console.log("scores", scoresKebun)
+
     try {
       // Create workbook
       const wb = XLSX.utils.book_new()
@@ -543,8 +516,6 @@ export default function Dashboard() {
         "Blok",
         "Varietas",
         "Luasan",
-        "Bulan Tanam",
-        "Tahun Tanam",
         "Umur",
         "Jumlah Pokok Awal Tanam",
         "Jumlah Pokok Sekarang",
@@ -575,8 +546,6 @@ export default function Dashboard() {
           data.blok,
           data.varietas,
           data.luas,
-          data.bulan_tanam,
-          data.tahun_tanam,
           data.umur,
           data.jumlah_pokok_awal_tanam,
           data.jumlah_pokok_sekarang,
@@ -701,9 +670,9 @@ export default function Dashboard() {
     }
   }
 
-  // Navigation linksDO
+  // Navigation links
   let topNav: { title: string; href: string; isActive: boolean }[] = []
-  if (account_type === "Superadmin") {
+  if (account_type === "superadmin") {
     topNav = [
       {
         title: "Nursery",
@@ -725,14 +694,8 @@ export default function Dashboard() {
         href: "/dashboard-monica",
         isActive: false,
       },
-
       {
-        title: 'Monev TU by KKMV',
-        href: '/dashboard-monev',
-        isActive: false,
-      },
-      {
-        title: 'Replanting Area',
+        title: 'Monev TU (Inspire-KKMV)',
         href: '/dashboard-inspire',
         isActive: false,
       },
@@ -796,13 +759,6 @@ export default function Dashboard() {
             ascoreJumlahPelepah: 0,
             ascoreTinggiBatang: 0,
             ascoreKerapatanPokok: 0,
-            ascorePanjangRachis: 0,
-            ascoreLebarPetiola: 0,
-            ascoreTebalPetiola: 0,
-            ascoreJumlahAnakDaun: 0,
-            ascorePanjangAnakDaun: 0,
-            ascoreLebarAnakDaun: 0,
-
             totalSeleksian: 0
           },
           colorCategories: {},
@@ -818,13 +774,6 @@ export default function Dashboard() {
       regional.weightedScores.ascoreJumlahPelepah += item.ascoreJumlahPelepah * luas;
       regional.weightedScores.ascoreTinggiBatang += item.ascoreTinggiBatang * luas;
       regional.weightedScores.ascoreKerapatanPokok += item.ascoreKerapatanPokok * luas;
-      regional.weightedScores.ascorePanjangRachis += item.ascorePanjangRachis * luas;
-      regional.weightedScores.ascoreLebarPetiola += item.ascoreLebarPetiola * luas;
-      regional.weightedScores.ascoreTebalPetiola += item.ascoreTebalPetiola * luas;
-      regional.weightedScores.ascoreJumlahAnakDaun += item.ascoreJumlahAnakDaun * luas;
-      regional.weightedScores.ascorePanjangAnakDaun += item.ascorePanjangAnakDaun * luas;
-      regional.weightedScores.ascoreLebarAnakDaun += item.ascoreLebarAnakDaun * luas;
-
       regional.weightedScores.totalSeleksian += item.totalSeleksian * luas;
 
       // Hitung total luas
@@ -851,13 +800,6 @@ export default function Dashboard() {
         ascoreJumlahPelepah: data.weightedScores.ascoreJumlahPelepah / luasTotal,
         ascoreTinggiBatang: data.weightedScores.ascoreTinggiBatang / luasTotal,
         ascoreKerapatanPokok: data.weightedScores.ascoreKerapatanPokok / luasTotal,
-        ascorePanjangRachis: data.weightedScores.ascorePanjangRachis / luasTotal,
-        ascoreLebarPetiola: data.weightedScores.ascoreLebarPetiola / luasTotal,
-        ascoreTebalPetiola: data.weightedScores.ascoreTebalPetiola / luasTotal,
-        ascoreJumlahAnakDaun: data.weightedScores.ascoreJumlahAnakDaun / luasTotal,
-        ascorePanjangAnakDaun: data.weightedScores.ascorePanjangAnakDaun / luasTotal,
-        ascoreLebarAnakDaun: data.weightedScores.ascoreLebarAnakDaun / luasTotal,
-
         totalSeleksian: data.weightedScores.totalSeleksian / luasTotal,
         colorCategory: Object.keys(data.colorCategories).reduce((a, b) =>
           data.colorCategories[a] > data.colorCategories[b] ? a : b
@@ -892,13 +834,6 @@ export default function Dashboard() {
             ascoreJumlahPelepah: 0,
             ascoreTinggiBatang: 0,
             ascoreKerapatanPokok: 0,
-            ascorePanjangRachis: 0,
-            ascoreLebarPetiola: 0,
-            ascoreTebalPetiola: 0,
-            ascoreJumlahAnakDaun: 0,
-            ascorePanjangAnakDaun: 0,
-            ascoreLebarAnakDaun: 0,
-
             totalSeleksian: 0
           },
           colorCategories: {},
@@ -915,13 +850,6 @@ export default function Dashboard() {
       kebun.weightedScores.ascoreJumlahPelepah += item.ascoreJumlahPelepah * luas;
       kebun.weightedScores.ascoreTinggiBatang += item.ascoreTinggiBatang * luas;
       kebun.weightedScores.ascoreKerapatanPokok += item.ascoreKerapatanPokok * luas;
-      kebun.weightedScores.ascorePanjangRachis += item.ascorePanjangRachis * luas;
-      kebun.weightedScores.ascoreLebarPetiola += item.ascoreLebarPetiola * luas;
-      kebun.weightedScores.ascoreTebalPetiola += item.ascoreTebalPetiola * luas;
-      kebun.weightedScores.ascoreJumlahAnakDaun += item.ascoreJumlahAnakDaun * luas;
-      kebun.weightedScores.ascorePanjangAnakDaun += item.ascorePanjangAnakDaun * luas;
-      kebun.weightedScores.ascoreLebarAnakDaun += item.ascoreLebarAnakDaun * luas;
-
       kebun.weightedScores.totalSeleksian += item.totalSeleksian * luas;
 
       // Calculate total area
@@ -949,13 +877,6 @@ export default function Dashboard() {
         ascoreJumlahPelepah: data.weightedScores.ascoreJumlahPelepah / luasTotal,
         ascoreTinggiBatang: data.weightedScores.ascoreTinggiBatang / luasTotal,
         ascoreKerapatanPokok: data.weightedScores.ascoreKerapatanPokok / luasTotal,
-        ascorePanjangRachis: data.weightedScores.ascorePanjangRachis / luasTotal,
-        ascoreLebarPetiola: data.weightedScores.ascoreLebarPetiola / luasTotal,
-        ascoreTebalPetiola: data.weightedScores.ascoreTebalPetiola / luasTotal,
-        ascoreJumlahAnakDaun: data.weightedScores.ascoreJumlahAnakDaun / luasTotal,
-        ascorePanjangAnakDaun: data.weightedScores.ascorePanjangAnakDaun / luasTotal,
-        ascoreLebarAnakDaun: data.weightedScores.ascoreLebarAnakDaun / luasTotal,
-
         totalSeleksian: data.weightedScores.totalSeleksian / luasTotal,
         colorCategory: Object.keys(data.colorCategories).reduce((a, b) =>
           data.colorCategories[a] > data.colorCategories[b] ? a : b
@@ -993,8 +914,6 @@ export default function Dashboard() {
     }
 
     setWeightedAverages(calculatedAverages);
-
-    console.log(calculatedAverages);
   }, [scoresAllRegional, scoresAllKebun, watch("rpc")?.value, selectedCard.ctg]);
 
 
@@ -1077,25 +996,6 @@ export default function Dashboard() {
     }
   }, [getRegionalKebun, rpc.value, selectedCard.ctg, account_type, userKebun, userRpc, scoresAll]);
 
-  const captureRef = useRef<HTMLDivElement | null>(null);
-  const handleDownloadCard = async () => {
-    if (captureRef.current) {
-      domtoimage.toPng(captureRef.current)
-        .then((dataUrl: any) => {
-          const link = document.createElement('a');
-          link.download = 'tbm-recap.png';
-          link.href = dataUrl;
-          link.click();
-        })
-        .catch((error: any) => {
-          console.error('Snapshot failed:', error);
-        });
-    } else {
-      console.error('Snapshot failed: captureRef.current is null');
-    }
-  };
-
-
   return (
     <Layout>
       <Layout.Header>
@@ -1120,22 +1020,6 @@ export default function Dashboard() {
 
         <br />
 
-        <div className='grid gap-4 grid-cols-4 -mt-5'>
-
-          <SummaryTBM
-            dataprops={{
-              untuk: watch("blok")?.value,
-              scoreAll: scoresAll,
-              rpc: rpc,
-              kebun: kebun,
-              afd: afd,
-              kebunOptions: kebunOptions.map((kebun) => kebun.value),
-              ctg: selectedCard.ctg,
-              title: selectedCard.name,
-            }}
-            onCardTbmClick={handleCard2ClickTBM}
-          />
-        </div>
         <Summary
           dataProps={{
             tbm1DataRegional,
@@ -1158,14 +1042,12 @@ export default function Dashboard() {
         />
 
         <>
-          <div className="w-full items-center align-middle -mt-5">
+          <div className="w-full items-center align-middle">
 
             {/* {selectedCard.type !== "color" && ( */}
             <>
               <div className="grid sm:grid-cols-1 lg:grid-cols-[50%_50%] mt-5">
-                <h2 className="text-2xl font-bold mt-3
-                  bg-clip-text text-transparent bg-gradient-to-r from-yellow-50 to-white
-                ">
+                <h2 className="text-2xl font-bold mt-3">
                   PICA Cluster {selectedCard.name} <br />
                   {rpc ? "" + rpc.label : ""} {kebun ? " - " + kebun.label : ""} {afd ? " - " + afd.label : ""}
                   <strong>
@@ -1311,23 +1193,20 @@ export default function Dashboard() {
                           title: selectedCard.name,
                         }}
                       />
-                      <div className='grid gap-4 grid-cols-2 mt-5'>
-                        <SummaryTBM
-                          dataprops={{
-                            untuk: watch("blok")?.value,
-                            scoreAll: scoresAll,
-                            rpc: rpc,
-                            kebun: kebun,
-                            afd: afd,
-                            kebunOptions: kebunOptions.map((kebun) => kebun.value),
-                            ctg: selectedCard.ctg,
-                            title: selectedCard.name,
-                          }}
-                          onCardTbmClick={handleCard2ClickTBM}
-                        />
-                      </div>
+                      <SummaryTBM
+                        dataprops={{
+                          untuk: watch("blok")?.value,
+                          scoreAll: scoresAll,
+                          rpc: rpc,
+                          kebun: kebun,
+                          afd: afd,
+                          kebunOptions: kebunOptions.map((kebun) => kebun.value),
+                          ctg: selectedCard.ctg,
+                          title: selectedCard.name,
+                        }}
+                        onCardTbmClick={handleCard2ClickTBM}
+                      />
                     </div>
-
                   </div>
                 </div>
 
@@ -1395,7 +1274,7 @@ export default function Dashboard() {
                               <table className="mt-5 min-w-full border-collapse w-full border border-cyan-900 bg-white dark:bg-[#0a192f] dark:text-white">
                                 <thead className="bg-[#1ea297]">
                                   <tr className=" text-white">
-                                    <th className="border px-2 py-2 border-cyan-900 text-center">
+                                    <th className="border px-2 py-2 border-cyan-900 text-center w-1/6">
                                       {rpcValue !== "all" ? (
                                         kebun?.value !== "all" ? (
                                           <div className="flex items-center justify-between">
@@ -1415,26 +1294,16 @@ export default function Dashboard() {
                                         </div>
                                       )}
                                     </th>
-                                    <th className="border border-cyan-900 px-2 py-2 text-center ">Tinggi Tanaman</th>
-                                    <th className="border border-cyan-900 px-2 py-2 text-center ">Jumlah Pelepah</th>
-                                    <th className="border border-cyan-900 px-2 py-2 text-center ">Lingkar Batang</th>
-                                    <th className="border border-cyan-900 px-2 py-2 text-center ">Kerapatan Pokok</th>
-                                    {(bulan?.value !== "4") && (
-                                      <>
-                                        <th className="border border-cyan-900 px-2 py-2 text-center ">Lebar Petiola</th>
-                                        <th className="border border-cyan-900 px-2 py-2 text-center ">Tebal Petiola</th>
-                                        <th className="border border-cyan-900 px-2 py-2 text-center ">Panjang Rachis</th>
-                                        <th className="border border-cyan-900 px-2 py-2 text-center ">Jumlah Anak Daun</th>
-                                        <th className="border border-cyan-900 px-2 py-2 text-center ">Panjang Anak Daun</th>
-                                        <th className="border border-cyan-900 px-2 py-2 text-center ">Lebar Anak Daun</th>
-                                      </>
-                                    )}
-                                    <th className="border border-cyan-900 px-2 py-2 text-center ">Nilai PICA</th>
+                                    <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Tinggi Tanaman</th>
+                                    <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Jumlah Pelepah</th>
+                                    <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Lingkar Batang</th>
+                                    <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Kerapatan Pokok</th>
+                                    <th className="border border-cyan-900 px-2 py-2 text-center w-1/6 ">Nilai PICA</th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                   {weightedAverages
-
+                                    
                                     .map((item: any, index: number) => {
                                       const getColorClass = (score: number) => {
                                         if (score > 92) return 'bg-gradient-to-br to-yellow-700 from-yellow-500';
@@ -1442,129 +1311,42 @@ export default function Dashboard() {
                                         if (score > 82) return 'bg-gradient-to-br to-red-800 from-red-500';
                                         return 'bg-gradient-to-br to-black from-gray-500';
                                       };
-                                      const format2 = (val: any) => {
-                                        const n = parseFloat(val);
-                                        return Number.isFinite(n) ? n.toFixed(2) : "";
-                                      };
 
-                                      if (bulan?.value !== "4") {
-                                        return (
-                                          <tr key={index} className="border-b hover:bg-slate-100 dark:hover:bg-slate-800">
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              {watch("rpc")?.value === "all" ? item.regional : item.kebun}
-                                            </td>
-
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              <div className={`${getColorClass(item.ascoreTinggiBatang || 0)} text-center rounded-lg py-2`}>
-                                                {format2(item.ascoreTinggiBatang)}
-                                              </div>
-                                            </td>
-
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              <div className={`${getColorClass(item.ascoreJumlahPelepah || 0)} text-center rounded-lg py-2`}>
-                                                {format2(item.ascoreJumlahPelepah)}
-                                              </div>
-                                            </td>
-
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              <div className={`${getColorClass(item.ascoreLingkarBatang || 0)} text-center rounded-lg py-2`}>
-                                                {format2(item.ascoreLingkarBatang)}
-                                              </div>
-                                            </td>
-
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              <div className={`${getColorClass(item.ascoreKerapatanPokok || 0)} text-center rounded-lg py-2`}>
-                                                {format2(item.ascoreKerapatanPokok)}
-                                              </div>
-                                            </td>
-
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              <div className={`${getColorClass(item.ascoreLebarPetiola || 0)} text-center rounded-lg py-2`}>
-                                                {format2(item.ascoreLebarPetiola)}
-                                              </div>
-                                            </td>
-
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              <div className={`${getColorClass(item.ascoreTebalPetiola || 0)} text-center rounded-lg py-2`}>
-                                                {format2(item.ascoreTebalPetiola)}
-                                              </div>
-                                            </td>
-
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              <div className={`${getColorClass(item.ascorePanjangRachis || 0)} text-center rounded-lg py-2`}>
-                                                {format2(item.ascorePanjangRachis)}
-                                              </div>
-
-                                            </td>
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              <div className={`${getColorClass(item.ascoreJumlahAnakDaun || 0)} text-center rounded-lg py-2`}>
-                                                {format2(item.ascoreJumlahAnakDaun)}
-                                              </div>
-
-
-                                            </td>
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              <div className={`${getColorClass(item.ascorePanjangAnakDaun || 0)} text-center rounded-lg py-2`}>
-                                                {format2(item.ascorePanjangAnakDaun)}
-                                              </div>
-
-
-                                            </td>
-
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              <div className={`${getColorClass(item.ascoreLebarAnakDaun || 0)} text-center rounded-lg py-2`}>
-                                                {format2(item.ascoreLebarAnakDaun)}
-                                              </div>  
-
-                                            </td>
-
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              <div className={`${getColorClass(item.totalSeleksian || 0)} text-center rounded-lg py-2`}>
-                                                {format2(item.totalSeleksian)}
-                                              </div>
-                                            </td>
-                                          </tr>
-                                        );
-                                      } else {
-                                        return (
-                                          <tr key={index} className="border-b hover:bg-slate-100 dark:hover:bg-slate-800">
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              {watch("rpc")?.value === "all" ? item.regional : item.kebun}
-                                            </td>
-
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              <div className={`${getColorClass(item.ascoreTinggiBatang || 0)} text-center rounded-lg py-2`}>
-                                                {format2(item.ascoreTinggiBatang)}
-                                              </div>
-                                            </td>
-
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              <div className={`${getColorClass(item.ascoreJumlahPelepah || 0)} text-center rounded-lg py-2`}>
-                                                {format2(item.ascoreJumlahPelepah)}
-                                              </div>
-                                            </td>
-
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              <div className={`${getColorClass(item.ascoreLingkarBatang || 0)} text-center rounded-lg py-2`}>
-                                                {format2(item.ascoreLingkarBatang)}
-                                              </div>
-                                            </td>
-
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              <div className={`${getColorClass(item.ascoreKerapatanPokok || 0)} text-center rounded-lg py-2`}>
-                                                {format2(item.ascoreKerapatanPokok)}
-                                              </div>
-                                            </td>
-
-                                            <td className="border px-2 py-2 border-cyan-900 text-center">
-                                              <div className={`${getColorClass(item.totalSeleksian || 0)} text-center rounded-lg py-2`}>
-                                                {format2(item.totalSeleksian)}
-                                              </div>
-                                            </td>
-                                          </tr>
-                                        );
-                                      }
-
+                                      return (
+                                        <tr key={index} className={`border-b hover:bg-slate-100 dark:hover:bg-slate-800`}>
+                                          <td className="border px-2 py-2 border-cyan-900 text-center">
+                                            {watch("rpc")?.value === "all"
+                                              ? item.regional
+                                              : (watch("kebun")?.value === "all" ? item.kebun : item.kebun)
+                                            }
+                                          </td>
+                                          <td className={`border px-2 py-2 border-cyan-900 text-center`}>
+                                            <div className={getColorClass(item.ascoreTinggiBatang.toFixed(2) || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascoreTinggiBatang.toFixed(2)}
+                                            </div>
+                                          </td>
+                                          <td className={`border px-2 py-2 border-cyan-900 text-center`}>
+                                            <div className={getColorClass(item.ascoreJumlahPelepah.toFixed(2) || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascoreJumlahPelepah.toFixed(2)}
+                                            </div>
+                                          </td>
+                                          <td className={`border px-2 py-2 border-cyan-900 text-center`}>
+                                            <div className={getColorClass(item.ascoreLingkarBatang.toFixed(2) || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascoreLingkarBatang.toFixed(2)}
+                                            </div>
+                                          </td>
+                                          <td className={`border px-2 py-2 border-cyan-900 text-center`}>
+                                            <div className={getColorClass(item.ascoreKerapatanPokok.toFixed(2) || 0) + " text-center rounded-lg py-2"}>
+                                              {item.ascoreKerapatanPokok.toFixed(2)}
+                                            </div>
+                                          </td>
+                                          <td className={`border px-2 py-2 border-cyan-900 text-center`}>
+                                            <div className={getColorClass(item.totalSeleksian.toFixed(2) || 0) + " text-center rounded-lg py-2"}>
+                                              {item.totalSeleksian.toFixed(2)}
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      );
                                     })
                                   }
                                 </tbody>
@@ -1572,29 +1354,6 @@ export default function Dashboard() {
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div>
-
-                <br />
-
-                <div className="grid sm:grid-cols-1 lg:grid-cols-1">
-                  <div className="grid sm:grid-cols-1 lg:grid-cols-1">
-                    <div className="items-center justify-center align-middle">
-                      <div className="" ref={captureRef}>
-                        <TbmCorporateRecap
-                          scoresAll={scoresAll}
-                          rpc={rpc}
-                          kebun={kebun}
-                          afd={afd}
-                          selectedCard={selectedCard}
-                          bulan={bulan}
-                          tahun={tahun}
-                          handleDownload={handleDownloadCard}
-                        />
                       </div>
                     </div>
                   </div>
@@ -1652,17 +1411,17 @@ export default function Dashboard() {
                       <div className="mt-5 rounded-lg border border-cyan-500 bg-white p-5 shadow-md shadow-cyan-500 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950">
                         <h2 className="text-xl font-semibold">
                           Progress Corrective Action Berjangka
+
                         </h2>
                         <hr className="my-2 border-cyan-400" />
+
                         <ProgressByTimeframe isDarkMode={isDarkMode} />
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <br />
-              <br />
-              <br />
+
             </>
           </div>
         </>
@@ -1684,20 +1443,19 @@ function DashboardHeader({
 }: {
   control: any
   fullname: string
-  tahunOptions: any
+  tahunOptions: any[]
   bulanOptions: any[]
   defaultTahun: any
   defaultBulan: any
   onDownload: () => void
 }) {
   return (
-    <div className="mb-2 flex items-center justify-between space-y-1">
+    <div className="mb-2 flex items-center justify-between space-y-2">
       <div className="flex items-center space-x-2">
         <FcDoughnutChart size={40} style={{ animation: "spin 4s linear infinite" }} />
-        <h1 className="text-xl font-bold tracking-tight   bg-clip-text text-transparent bg-gradient-to-r from-yellow-100 to-white">Dashboard PICA Immature</h1>
+        <h1 className="text-xl font-bold tracking-tight">Dashboard PICA Immature</h1>
       </div>
-      <h1 className="text-xl
-      ">Hi, Welcome back {fullname}👋</h1>
+      <h1 className="text-xl">Hi, Welcome back {fullname}👋</h1>
       <div className="lg:flex sm:grid sm:grid-cols-1 items-center space-x-2">
         <Controller
           name="tahun"

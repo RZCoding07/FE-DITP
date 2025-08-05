@@ -64,7 +64,6 @@ export function useDashboardDataEnhanced(
       return
     }
 
-    // console.log("Fetching data with filters:", filters)
     setLoading(true)
     setError(null)
 
@@ -104,7 +103,7 @@ export function useDashboardDataEnhanced(
         // If response has 'data' property, use that
         if (response && 'data' in response && Array.isArray(response.data)) {
           return response.data
-        }
+         }
         // If response is already an array, use it directly (for APIs that return array directly)
         if (Array.isArray(response)) {
           return response
@@ -112,21 +111,15 @@ export function useDashboardDataEnhanced(
         // Fallback to empty array
         return []
       }
-
-      // Process responses
       // Process responses using the extractData helper
       if (plantationResponse.status === 'fulfilled') {
-        console.log('Plantation data fetched successfully:', plantationResponse)
         setPlantationData(extractData(plantationResponse.value))
       } else {
         console.error('Plantation data error:', plantationResponse.reason)
       }
 
       if (monitoringResponse.status === 'fulfilled') {
-        console.log(
-          'Monitoring data fetched successfully:',
-          monitoringResponse.value
-        )
+ 
         setMonitoringData(extractData(monitoringResponse.value))
       } else {
         console.error('Monitoring data error:', monitoringResponse.reason)

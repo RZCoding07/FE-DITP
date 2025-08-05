@@ -25,56 +25,56 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const [selectedTbm, setSelectedTbm] = useState<number | null>(null); // Untuk TBM terpisah
 
-  const data = [
-    {
-      show: true,
-      name: 'Emas',
-      type: 'color',
-      val: 0,
-      progress: dataProps.data.gold == null ? 0 : dataProps.data.gold,
-      progressLuas: dataProps.dataLuas.gold == null ? 0 : dataProps.dataLuas.gold,
-      circular: 'gold',
-      image: '/2.png',
-      color: '#FFA500',
-      textColor: '#ffffff',
-    },
-    {
-      show: true,
-      name: 'Hijau',
-      type: 'color',
-      val: 1,
-      progress: dataProps.data.green == null ? 0 : dataProps.data.green,
-      progressLuas: dataProps.dataLuas.green == null ? 0 : dataProps.dataLuas.green,
-      circular: 'green',
-      image: '/2.png',
-      color: '#00a300',
-      textColor: '#ffffff',
-    },
-    {
-      show: true,
-      name: 'Merah',
-      type: 'color',
-      progress: dataProps.data.red == null ? 0 : dataProps.data.red,
-      progressLuas: dataProps.dataLuas.red == null ? 0 : dataProps.dataLuas.red,
-      val: 2,
-      circular: 'red',
-      image: '/2.png',
-      color: '#FF0000',
-      textColor: '#ffffff',
-    },
-    {
-      show: true,
-      name: 'Hitam',
-      type: 'color',
-      val: 3,
-      progress: dataProps.data.black == null ? 0 : dataProps.data.black,
-      progressLuas: dataProps.dataLuas.black == null ? 0 : dataProps.dataLuas.black,
-      circular: 'black',
-      image: '/2.png',
-      color: '#000000',
-      textColor: '#ffffff',
-    },
-  ];
+  // const data = [
+  //   {
+  //     show: true,
+  //     name: 'Emas',
+  //     type: 'color',
+  //     val: 0,
+  //     progress: dataProps.data.gold == null ? 0 : dataProps.data.gold,
+  //     progressLuas: dataProps.dataLuas.gold == null ? 0 : dataProps.dataLuas.gold,
+  //     circular: 'gold',
+  //     image: '/2.png',
+  //     color: '#FFA500',
+  //     textColor: '#ffffff',
+  //   },
+  //   {
+  //     show: true,
+  //     name: 'Hijau',
+  //     type: 'color',
+  //     val: 1,
+  //     progress: dataProps.data.green == null ? 0 : dataProps.data.green,
+  //     progressLuas: dataProps.dataLuas.green == null ? 0 : dataProps.dataLuas.green,
+  //     circular: 'green',
+  //     image: '/2.png',
+  //     color: '#00a300',
+  //     textColor: '#ffffff',
+  //   },
+  //   {
+  //     show: true,
+  //     name: 'Merah',
+  //     type: 'color',
+  //     progress: dataProps.data.red == null ? 0 : dataProps.data.red,
+  //     progressLuas: dataProps.dataLuas.red == null ? 0 : dataProps.dataLuas.red,
+  //     val: 2,
+  //     circular: 'red',
+  //     image: '/2.png',
+  //     color: '#FF0000',
+  //     textColor: '#ffffff',
+  //   },
+  //   {
+  //     show: true,
+  //     name: 'Hitam',
+  //     type: 'color',
+  //     val: 3,
+  //     progress: dataProps.data.black == null ? 0 : dataProps.data.black,
+  //     progressLuas: dataProps.dataLuas.black == null ? 0 : dataProps.dataLuas.black,
+  //     circular: 'black',
+  //     image: '/2.png',
+  //     color: '#000000',
+  //     textColor: '#ffffff',
+  //   },
+  // ];
 
   const dataRules = [
     {
@@ -200,56 +200,8 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
       bottom: initial !important; /* Reset posisi bawah */
   }
       `}</style>
-      <div className='flex justify-start items-center space-x-4 pb-2 -mt-7'>
-        <Drawer open={isDrawerOpenB} onOpenChange={setIsDrawerOpenB}>
-          <DrawerTrigger asChild>
-            <h2 className='font-semibold underline underline-offset-4 underline-thickness-2'>
-              Luas TBM Total : {totalLuasFormat} HA / {Number(totalLuasTbm).toLocaleString('id-ID')} HA ({((parseFloat(totalLuas) / parseFloat(totalLuasTbm)) * 100).toFixed(2)}%)
-            </h2>
-          </DrawerTrigger>
-          <DrawerContent className='overflow-y-auto h-[92vh]'>
-            <DrawerHeader>
-              <DrawerTitle>Rekapitulasi Blok TBM Per Regional</DrawerTitle>
-              <DrawerDescription>Informasi Grafik Rekapitulasi Blok TBM Per Regional.</DrawerDescription>
-            </DrawerHeader>
-            <div className="p-4">
-              {/* Add your content for the Standard Vegetatif drawer here */}
-              <StackedBarChart 
-                dataProps={dataProps}
-              />
-            </div>
-            <DrawerFooter>
-              <DrawerClose asChild>
-                <Button variant="outline">Close</Button>
-              </DrawerClose>
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
-        <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-          <DrawerTrigger asChild>
-            <Button variant={"secondary"} className="flex items-center rounded-full">
-              <img width="20" height="20" src="https://img.icons8.com/stickers/50/visible.png" alt="visible" />
-              <span className="ml-2"> Standard Vegetatif</span>
-            </Button>
-          </DrawerTrigger>
-          <DrawerContent className='overflow-y-auto h-[92vh]'>
-            <DrawerHeader>
-              <DrawerTitle>Standard Vegetatif</DrawerTitle>
-              <DrawerDescription>Informasi tentang standard vegetatif.</DrawerDescription>
-            </DrawerHeader>
-            <div className="p-4">
-              {/* Add your content for the Standard Vegetatif drawer here */}
-              <PalmOilTable />
-            </div>
-            <DrawerFooter>
-              <DrawerClose asChild>
-                <Button variant="outline">Close</Button>
-              </DrawerClose>
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
-      </div>
-      <div className='grid gap-4 lg:grid-cols-4 2lg:grid-cols-4'>
+    
+      {/* <div className='grid gap-4 lg:grid-cols-4 2lg:grid-cols-4'>
         {data.map((item, i) =>
           item.show ? (
             <Card
@@ -289,7 +241,7 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
             </Card>
           ) : null
         )}
-      </div>
+      </div> */}
       <div className='flex -mt-2'>
         {dataRules.map((item, i) =>
           item.show ? (
@@ -347,6 +299,56 @@ export const Summary = ({ dataProps, onCardClick }: { dataProps: any; onCardClic
             </Card>
           ) : null
         )}
+      </div>
+
+        <div className='flex justify-start items-center space-x-4 mt-5'>
+        <Drawer open={isDrawerOpenB} onOpenChange={setIsDrawerOpenB}>
+          <DrawerTrigger asChild>
+            <h2 className='font-semibold underline underline-offset-4 underline-thickness-2'>
+              Luas TBM Total : {totalLuasFormat} HA / {Number(totalLuasTbm).toLocaleString('id-ID')} HA ({((parseFloat(totalLuas) / parseFloat(totalLuasTbm)) * 100).toFixed(2)}%)
+            </h2>
+          </DrawerTrigger>
+          <DrawerContent className='overflow-y-auto h-[92vh]'>
+            <DrawerHeader>
+              <DrawerTitle>Rekapitulasi Blok TBM Per Regional</DrawerTitle>
+              <DrawerDescription>Informasi Grafik Rekapitulasi Blok TBM Per Regional.</DrawerDescription>
+            </DrawerHeader>
+            <div className="p-4">
+              {/* Add your content for the Standard Vegetatif drawer here */}
+              <StackedBarChart 
+                dataProps={dataProps}
+              />
+            </div>
+            <DrawerFooter>
+              <DrawerClose asChild>
+                <Button variant="outline">Close</Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+        <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+          <DrawerTrigger asChild>
+            <Button variant={"secondary"} className="flex items-center rounded-full">
+              <img width="20" height="20" src="https://img.icons8.com/stickers/50/visible.png" alt="visible" />
+              <span className="ml-2"> Standard Vegetatif</span>
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent className='overflow-y-auto h-[92vh]'>
+            <DrawerHeader>
+              <DrawerTitle>Standard Vegetatif</DrawerTitle>
+              <DrawerDescription>Informasi tentang standard vegetatif.</DrawerDescription>
+            </DrawerHeader>
+            <div className="p-4">
+              {/* Add your content for the Standard Vegetatif drawer here */}
+              <PalmOilTable />
+            </div>
+            <DrawerFooter>
+              <DrawerClose asChild>
+                <Button variant="outline">Close</Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
       </div>
     </>
   );

@@ -58,7 +58,7 @@ export const SummaryTBM = ({ dataprops, onCardTbmClick }: { dataprops: any; onCa
       image: '/2.png',
       color: '#FFA500',
       textColor: '#ffffff',
-      rules: 'Kelas A : 91 - 100'
+      rules: 'Kelas A : > 92 - 100'
     },
     {
       show: true,
@@ -71,7 +71,7 @@ export const SummaryTBM = ({ dataprops, onCardTbmClick }: { dataprops: any; onCa
       image: '/2.png',
       color: '#00a300',
       textColor: '#ffffff',
-      rules: 'Kelas B : 85 - 90'
+      rules: 'Kelas B : > 87 - 92'
     },
     {
       show: true,
@@ -84,7 +84,7 @@ export const SummaryTBM = ({ dataprops, onCardTbmClick }: { dataprops: any; onCa
       image: '/2.png',
       color: '#FF0000',
       textColor: '#ffffff',
-      rules: 'Kelas C : 81 - 84'
+      rules: 'Kelas C : > 82 - 87'
     },
     {
       show: true,
@@ -97,12 +97,12 @@ export const SummaryTBM = ({ dataprops, onCardTbmClick }: { dataprops: any; onCa
       image: '/2.png',
       color: '#000000',
       textColor: '#ffffff',
-      rules: 'Kelas D : < 81'
+      rules: 'Kelas D : <= 82'
     }
   ];
 
   return (
-    <div className='grid gap-4 grid-cols-2 mt-5'>
+   <>
       {data.map((item, i) => (
         <Card
           key={i}
@@ -140,6 +140,6 @@ export const SummaryTBM = ({ dataprops, onCardTbmClick }: { dataprops: any; onCa
           </CardContent>
         </Card>
       ))}
-    </div>
+   </>
   )
 }

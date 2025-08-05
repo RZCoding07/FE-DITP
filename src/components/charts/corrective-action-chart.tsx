@@ -65,7 +65,8 @@ interface CorrectiveActionDetail {
 }
 
 interface CorrectiveActionChartProps {
-  data:any[]
+  dataMonev: any[]
+  data: any[]
   showTop10?: boolean
   region?: string
   start_date?: string
@@ -91,12 +92,15 @@ type SortField =
 type SortDirection = "asc" | "desc"
 
 export function CorrectiveActionChart({
+  dataMonev,
   data,
   showTop10 = true,
   region,
   start_date,
   end_date,
 }: CorrectiveActionChartProps) {
+  // data ca
+  console.log("Corrective Action Data:", data)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [detailCa, setDetailCa] = useState<CorrectiveActionDetail[]>([])
@@ -149,9 +153,9 @@ export function CorrectiveActionChart({
   const allData = processDataByUnit(data)
   const chartData = showTop10 ? allData.slice(0, 10) : allData
 
-  // Flatten corrective actions for table display
+  // Flatten problem Identification for table display
   const flattenedActions = useMemo(() => {
-    return detailCa.flatMap(item => 
+    return detailCa.flatMap(item =>
       item.corrective_actions.map(action => ({
         ...action,
         tanggal: item.tanggal,
@@ -175,7 +179,7 @@ export function CorrectiveActionChart({
     return [...flattenedActions].sort((a, b) => {
       const aValue = a[sortField] ?? ""
       const bValue = b[sortField] ?? ""
-      
+
       if (sortDirection === "asc") {
         return String(aValue).localeCompare(String(bValue))
       } else {
@@ -358,7 +362,7 @@ export function CorrectiveActionChart({
               <div className="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center">
                 <AlertCircle className="w-6 h-6 text-slate-500" />
               </div>
-              <p className="text-slate-400 text-center max-w-xs">No corrective actions data available</p>
+              <p className="text-slate-400 text-center max-w-xs">No problem Identification data available</p>
             </div>
           )}
         </CardContent>
@@ -369,7 +373,7 @@ export function CorrectiveActionChart({
           <DialogHeader>
             <DialogTitle className="text-slate-100 flex items-center gap-2">
               <FileText className="w-5 h-5" />
-              Corrective Actions Detail - {selectedUnit?.name}
+              Problem Identification Detail - {selectedUnit?.name}
             </DialogTitle>
           </DialogHeader>
 
@@ -557,13 +561,13 @@ export function CorrectiveActionChart({
                               </div>
                               <div className="text-xs text-slate-500">{action.jabatan}</div>
                             </TableCell>
-          
+
                           </TableRow>
                         ))
                       ) : (
                         <TableRow>
                           <TableCell colSpan={8} className="text-center py-8 text-slate-400">
-                            No corrective actions found
+                            No problem Identification found
                           </TableCell>
                         </TableRow>
                       )}

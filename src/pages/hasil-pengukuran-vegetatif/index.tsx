@@ -27,20 +27,39 @@ import { fetchDistinctYearsMonth, fetchKebun } from '@/utils/api_immature'
 import { fetchDistinctYears } from '@/utils/api_immature'
 
 import {
+
   getScoreJumlahPelepah,
   getScoreKerapatanPokok,
   getScoreLingkarBatang,
   getScoreTinggiTanaman,
+
+  getScorePanjangRachis,
+  getScoreLebarPetiola,
+  getScoreTebalPetiola,
+  getScoreJumlahAnakDaun,
+  getScorePanjangAnakDaun,
+  getScoreLebarAnakDaun,
+
   getColorJumlahPelepah,
   getColorLingkarBatang,
   getColorTinggiTanaman,
+
+  getColorPanjangRachis,
+  getColorLebarPetiola,
+  getColorTebalPetiola,
+  getColorJumlahAnakDaun,
+  getColorPanjangAnakDaun,
+  getColorLebarAnakDaun,
 } from "@/components/custom/calculation-scores"
+
 import {
-  processScoreData,
   countColorCategories,
   sumLuasByColorCategory,
   processRegionalData,
+  processScoreData,
+  processColorData,
 } from "@/utils/dashboard-helper"
+
 import { ColorTable } from '@/components/custom/color-table'
 import MonthlyStatusTable from '@/components/custom/history-kuadran'
 
@@ -329,21 +348,37 @@ export default function Awal() {
             newScoresKebun,
             newScoresRegional,
             newScoresAll,
+            newScoresAllKebun,
+            newScoresAllRegional,
             newRegionalBlackBlockCount,
             tbmResultsUpdate,
             scoreJumlahPelepahResultsUpdate,
             scoreLingkarBatangResultsUpdate,
           } = processScoreData({
             data: groupedData[tbmPhase],
+
             getScoreLingkarBatang,
             getScoreJumlahPelepah,
             getScoreTinggiTanaman,
             getScoreKerapatanPokok,
+            getScorePanjangRachis,
+            getScoreLebarPetiola,
+            getScoreTebalPetiola,
+            getScoreJumlahAnakDaun,
+            getScorePanjangAnakDaun,
+            getScoreLebarAnakDaun,
+
             getColorJumlahPelepah,
             getColorLingkarBatang,
             getColorTinggiTanaman,
-          });
 
+            getColorPanjangRachis,
+            getColorLebarPetiola,
+            getColorTebalPetiola,
+            getColorJumlahAnakDaun,
+            getColorPanjangAnakDaun,
+            getColorLebarAnakDaun,
+          });
           setScores((prev) => [...prev, ...newScores]);
           setScoresAll((prev) => [...prev, ...newScoresAll]);
           setScoresKebun((prev) => [...prev, ...newScoresKebun]);

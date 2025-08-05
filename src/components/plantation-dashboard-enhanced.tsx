@@ -533,6 +533,7 @@ export default function PlantationDashboardMasterpiece({
 
                 {/* Corrective Action Chart */}
                 <CorrectiveActionChart
+                  dataMonev={monevBlokTUData}
                   data={correctiveActionData}
                   start_date={dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : ""}
                   end_date={dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : ""}
