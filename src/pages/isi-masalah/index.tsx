@@ -86,6 +86,8 @@ export default function PiVegetatif() {
   })
 
   const [PiVegetatif, setDataVegetatif] = useState<PiVegetatifType[]>([])
+  const [dataDetailPICA, setDataDetailPICA] = useState<any[]>([])
+
   const [why, setWhy] = useState([])
   const [why1, setWhy1] = useState<string[]>([])
   const [why2, setWhy2] = useState<string[]>([])
@@ -138,6 +140,86 @@ export default function PiVegetatif() {
     }
   }
 
+
+  // ... [keep all your existing interfaces and state declarations]
+
+  // Add these state variables for edit mode
+  const [editMode, setEditMode] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
+
+  // Modify your fetchDetailPICA function to handle both initial load and edit mode
+  const fetchDetailPICA = async (idToFetch?: string) => {
+    setLoading(true)
+    try {
+      const response = await axios.post(`${apiUrl}/get-final-detail-pica`, {
+        vegetatif_id: idToFetch || id,
+      })
+      setDataDetailPICA(response.data.data)
+      if (editMode && idToFetch) {
+        // Pre-fill form when editing
+        const data = response.data.data
+        setValue("why1", { value: data.why1, label: data.why1 })
+        setValue("why2", { value: data.why2, label: data.why2 })
+        setValue("why3", { value: data.why3, label: data.why3 })
+        setValue("value_pi", data.value_pi)
+        setValue("keterangan", data.keterangan)
+        setMeasurementPi(data.measurement_pi || "")
+        
+        // Handle CA items for editing
+        if (data.correctiveActions && data.correctiveActions.length > 0) {
+          const formattedCaItems = data.correctiveActions.map((ca: any) => ({
+            caName: ca.ca,
+            value: ca.value,
+            startDate: ca.startDate ? new Date(ca.startDate) : undefined,
+            endDate: ca.endDate ? new Date(ca.endDate) : undefined,
+            budgetAvailable: ca.budgetAvailable || "",
+            images: ca.images.map((img: any) => ({
+              file: new File([], img.name, { type: 'image/jpeg' }),
+              preview: img.file,
+              compressing: false
+            }))
+          }))
+          setCaItems(formattedCaItems)
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching Detail PICA:", error)
+    } finally {
+      setTimeout(() => {
+        setLoading(false)
+      }, 2200)
+    }
+  }
+
+  // Add delete function
+  const handleDelete = async (idToDelete: string) => {
+    if (window.confirm("Are you sure you want to delete this record?")) {
+      try {
+        const response = await axios.post(`${apiUrl}/delete-pica`, {
+          id: idToDelete
+        })
+        if (response.data.success) {
+          toast.success("Record deleted successfully")
+          fetchDetailPICA() // Refresh data
+        } else {
+          toast.error(response.data.error || "Failed to delete record")
+        }
+      } catch (error) {
+        console.error("Error deleting record:", error)
+        toast.error("Error deleting record")
+      }
+    }
+  }
+
+  // Add edit function
+  const handleEdit = (idToEdit: string) => {
+    setEditMode(true)
+    setEditingId(idToEdit)
+    fetchDetailPICA(idToEdit)
+    window.scrollTo(0, 0) // Scroll to top of form
+  }
+
+
   const getVwVegetatifById = async () => {
     setLoading(true)
     try {
@@ -158,6 +240,7 @@ export default function PiVegetatif() {
     getVwVegetatifById()
     fetchInvesPiVegetatif()
     fetchInvesCaVegetatif()
+    fetchDetailPICA()
   }, [])
 
   const handleW1Change = (selectedOption: any) => {
@@ -347,8 +430,6 @@ export default function PiVegetatif() {
     toast.success(`Uploaded ${filesToProcess.length} file(s) for ${caName}`);
   };
 
-
-
   const removeCaImage = (caName: string, imageIndex: number) => {
     setCaItems(prev => {
       const updated = [...prev]
@@ -360,7 +441,7 @@ export default function PiVegetatif() {
       return updated
     })
   }
-  
+
   const onSubmit = async (data: any) => {
     try {
       const formData = new FormData();
@@ -388,7 +469,7 @@ export default function PiVegetatif() {
         formData.append(`caItems[${index}][endDate]`, caItem.endDate?.toISOString() || "");
         formData.append(`caItems[${index}][budgetAvailable]`, caItem.budgetAvailable);
 
-         // bulan
+        // bulan
 
         // Add CA images
         caItem.images.forEach((image, imgIndex) => {
@@ -398,15 +479,29 @@ export default function PiVegetatif() {
 
       //corrective actions json in BE 
       const correctiveActions = await Promise.all(caItems.map(async (item) => {
-        const images = await Promise.all(item.images.map(async (image) => {
-          // Konversi file ke base64
-          const base64String = await getBase64(image.file);
-          
+        const images = await Promise.all(item.images.map(async (image) => { 
+          if (image.compressing) {
+            // Tunggu hingga kompresi selesai
+            await new Promise(resolve => {
+              const interval = setInterval(() => {
+                if (!image.compressing) {
+                  clearInterval(interval);
+                  resolve(true);
+                }
+              }, 100);
+            });
+          }
+          if (!image.file) {
+            return { name: "", file: "", compressing: false };
+          }
+          const base64File = await getBase64(image.file)  ;
+
           return {
-            name: image.file.name,  
-            file: base64String, // Sekarang berisi string base64
-            compressing: image.compressing,
+            name: image.file.name,
+            file: base64File,
+            compressing: false,
           };
+
         }));
 
         return {
@@ -421,9 +516,9 @@ export default function PiVegetatif() {
 
 
       formData.append("created_by", iduser || "");
-      
+
       // Fungsi untuk mengkonversi File/Blob ke base64
-      function getBase64(file:any) {
+      function getBase64(file: any) {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.readAsDataURL(file);
@@ -451,15 +546,6 @@ export default function PiVegetatif() {
       toast.error(error.response?.data?.error || error.message || "Terjadi kesalahan");
     }
   };
-  
-//   ASISTEN AFD
-// ASKEB
-// MANAJER
-// GM
-// KABAG TANAMAN
-// SEVP
-// REGION HEAD
-// DIVISI TEKNIS HO
 
   const picOpt = [
     { value: "ASKEB", label: "Asisten Kebun" },
@@ -640,7 +726,7 @@ export default function PiVegetatif() {
                     <CardTitle className="text-lg font-semibold">Corrective Action</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                                  <div className="space-y-2">
+                    <div className="space-y-2">
                       <label htmlFor="correctiveAction" className="text-sm font-medium">
                         Pilih PIC :
                       </label>
@@ -651,7 +737,7 @@ export default function PiVegetatif() {
                           <Select
                             styles={customStyles}
                             options={picOpt}
-                            
+
                             placeholder="Pilih PIC"
                             isClearable
                             isSearchable
@@ -871,6 +957,91 @@ export default function PiVegetatif() {
                 </div>
               </form>
             </div>
+            
+    {/* Detail Data Section as Table */}
+                {dataDetailPICA.length > 0 && (
+                  <Card className="w-full dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-950 mt-6">
+                    <CardHeader>
+                      <CardTitle className="text-lg font-semibold">
+                        Detail Data Problem Identification & Corrective Action Blok {PiVegetatif[0]?.blok}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="overflow-auto">
+                        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                          <thead className="bg-gray-50 dark:bg-gray-800">
+                            <tr>
+                              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Why 1</th>
+                              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Why 2</th>
+                              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Why 3</th>
+                              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Nilai PI</th>
+                              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">CA</th>
+                              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Nilai CA</th>
+                              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Periode</th>
+                              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Anggaran</th>
+                              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Evidence CA</th>
+                              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Aksi</th>
+                            </tr>
+                          </thead>
+                          <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
+                            {dataDetailPICA.map((item, idx) => (
+                              <tr key={`${item.id}-${idx}`} className="hover:bg-gray-100 dark:hover:bg-gray-800">
+                                <td className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">{item.why1}</td>
+                                <td className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">{item.why2}</td>
+                                <td className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">{item.why3}</td>
+                                <td className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">{item.value_pi} {measurementPi}</td>
+                                <td className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">{item.corrective_ca}</td>
+                                <td className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">{item.corrective_value} {measurementPi}</td>
+                                <td className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">
+                                  {format(new Date(item.corrective_start_date), 'PPP')} - {format(new Date(item.corrective_end_date), 'PPP')}
+                                </td>
+                                <td className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">
+                                  {item.corrective_budget_available === 'tersedia' ? 'Tersedia' : 'Tidak Tersedia'}
+                                </td>
+
+                                {/* item json images { file: data image } make to <img */}
+
+                                <td className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">
+                                  {item.images && item.images.length > 0 ? (
+                                    <div className="grid grid-cols-3 gap-2">
+                                      {item.images.map((img: any, imgIdx: number) => (
+                                        <img
+                                          key={imgIdx}
+                                          src={img.file}
+                                          alt={`Evidence ${imgIdx + 1}`}
+                                          className="w-100 object-cover rounded"
+                                        />
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <span className="text-gray-500">Tidak ada evidence</span>
+                                  )}
+                                </td>
+                                <td className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">
+                                  <Button variant="secondary" onClick={() => handleEdit(item.id)}>
+                                    Edit
+                                  </Button>
+                                  <Button variant="destructive" onClick={() => handleDelete(item.id)}>
+                                    Hapus
+                                  </Button>
+                                </td>
+
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      {/* Actions */}
+                      <div className="flex justify-end mt-4">
+                        <Button variant="destructive" onClick={() => handleDelete(editingId || '')}>
+                          Hapus Semua
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+            
+
           </div>
         </div>
       </Layout.Body>

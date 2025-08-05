@@ -242,4 +242,3 @@ export const getColorPanjangAnakDaun = (dataset: Dataset, age: number, value: nu
 
 export const getColorLebarAnakDaun = (dataset: Dataset, age: number, value: number, bV: number, tV: number) =>
   getColor(dataset, age, value, "lebarAnakDaun", bV, tV)
-

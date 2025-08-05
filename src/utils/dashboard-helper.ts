@@ -275,7 +275,7 @@ export function processScoreData({
       const scoreTinggiBatang =
         getScoreTinggiTanaman(
           dataRules,
-          age,
+          age,  
           Number.parseFloat(item.tinggi_tanaman_cm),
           bulanInt,
           tahunInt
