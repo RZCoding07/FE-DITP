@@ -13,7 +13,7 @@ import cookie from "js-cookie"
 import { Summary } from "@/components/summary"
 import Select from "react-select"
 import { useDashboardForm } from "@/hooks/use-dashboard-form"
-import { fetchVegetativeFinal, fetchVegetativeProc } from "@/utils/api_immature"
+import { fetchVegetativeFinal, fetchVegetativeProc, fetchGraphCa } from "@/utils/api_immature"
 import { customStyles } from "@/styles/select-styles"
 import { StockAnalysisChart } from "@/components/custom/horizontal-bar-chart"
 import * as XLSX from "xlsx-js-style"
@@ -237,6 +237,7 @@ export default function Dashboard() {
 
   const [picaResults, setPicaResults] = useState<any[]>([])
   const [picaResults2, setPicaResults2] = useState<any[]>([])
+  const [graphCaResults, setGraphCaResults] = useState<any[]>([])
 
   // Process TBM data by color
   useEffect(() => {
@@ -316,8 +317,14 @@ export default function Dashboard() {
           tahun: Number.parseInt(tahun.value),
         });
 
-        setPicaResults(response2);
+        const response3 = await fetchGraphCa({
+          bulan: Number.parseInt(bulan.value),
+          tahun: Number.parseInt(tahun.value),
+        });
 
+
+        setPicaResults(response2);
+        setGraphCaResults(response3);
 
         // Group data by TBM phase
         const groupedData = response.data.reduce((acc: Record<string, any[]>, item: any) => {
@@ -1395,7 +1402,7 @@ export default function Dashboard() {
                               <table className="mt-5 min-w-full border-collapse w-full border border-cyan-900 bg-white dark:bg-[#0a192f] dark:text-white">
                                 <thead className="bg-[#1ea297]">
                                   <tr className=" text-white">
-                                    <th className="border px-2 py-2 border-cyan-900 text-center">
+                                    <th className="border px-2 py-2 border-cyan-900 text-center w-1/12">
                                       {rpcValue !== "all" ? (
                                         kebun?.value !== "all" ? (
                                           <div className="flex items-center justify-between">
@@ -1429,7 +1436,7 @@ export default function Dashboard() {
                                         <th className="border border-cyan-900 px-2 py-2 text-center ">Lebar Anak Daun</th>
                                       </>
                                     )}
-                                    <th className="border border-cyan-900 px-2 py-2 text-center ">Nilai PICA</th>
+                                    <th className="border border-cyan-900 px-2 py-2 text-center w-1/6">Nilai PICA</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -1514,7 +1521,7 @@ export default function Dashboard() {
                                             <td className="border px-2 py-2 border-cyan-900 text-center">
                                               <div className={`${getColorClass(item.ascoreLebarAnakDaun || 0)} text-center rounded-lg py-2`}>
                                                 {format2(item.ascoreLebarAnakDaun)}
-                                              </div>  
+                                              </div>
 
                                             </td>
 

@@ -244,6 +244,7 @@ export default function PiVegetatif() {
   }, [])
 
   const handleW1Change = (selectedOption: any) => {
+    console.log("Selected W1:", selectedOption)
     const selectedW1 = selectedOption?.value
     const filteredWhy2 = why.filter((item: any) => item.w1 === selectedW1)
     const w2 = filteredWhy2.map((item: any) => item.w2)
@@ -257,6 +258,8 @@ export default function PiVegetatif() {
   }
 
   const handleW2Change = (selectedOption: any) => {
+    console.log("Selected W2:", selectedOption)
+    
     const selectedW2 = selectedOption?.value
     const filteredWhy3 = why.filter((item: any) => item.w2 === selectedW2)
     const w3 = filteredWhy3.map((item: any) => item.w3)
@@ -269,6 +272,8 @@ export default function PiVegetatif() {
   }
 
   const handleW3Change = (selectedOption: any) => {
+    console.log("Selected W3:", selectedOption)
+
     const selectedW3 = selectedOption?.value
     const filteredCa = caMaster.filter((item: any) => item.w3 === selectedW3)
 
@@ -442,82 +447,10 @@ export default function PiVegetatif() {
     })
   }
 
-  const onSubmit = async (data: any) => {
-    try {
-      const formData = new FormData();
+  // Modify your onSubmit function to include validation
+const onSubmit = async (data: any) => {
 
-      // Add basic PI data
-      formData.append("id", id || "");
-      formData.append("why1", data.why1?.value || "");
-      formData.append("why2", data.why2?.value || "");
-      formData.append("why3", data.why3?.value || "");
-      formData.append("value_pi", data.value_pi || "");
-      formData.append("blok", PiVegetatif[0]?.blok || "");
-      formData.append("keterangan", data.keterangan || "");
-      formData.append("regional", PiVegetatif[0]?.regional || "");
-      formData.append("kebun", PiVegetatif[0]?.kebun || "");
-      formData.append("afdeling", PiVegetatif[0]?.afdeling || "");
-      formData.append("tahun_tanam", PiVegetatif[0]?.tahun_tanam || "");
-      formData.append("vegetatif_id", vegId || "");
-      formData.append(`bulan`, PiVegetatif[0]?.bulan || "");
-      formData.append(`tahun`, PiVegetatif[0]?.tahun || "");
-      // Add CA data
-      caItems.forEach((caItem, index) => {
-        formData.append(`caItems[${index}][caName]`, caItem.caName);
-        formData.append(`caItems[${index}][value]`, caItem.value);
-        formData.append(`caItems[${index}][startDate]`, caItem.startDate?.toISOString() || "");
-        formData.append(`caItems[${index}][endDate]`, caItem.endDate?.toISOString() || "");
-        formData.append(`caItems[${index}][budgetAvailable]`, caItem.budgetAvailable);
-
-        // bulan
-
-        // Add CA images
-        caItem.images.forEach((image, imgIndex) => {
-          formData.append(`caItems[${index}][images]`, image.file);
-        });
-      });
-
-      //corrective actions json in BE 
-      const correctiveActions = await Promise.all(caItems.map(async (item) => {
-        const images = await Promise.all(item.images.map(async (image) => { 
-          if (image.compressing) {
-            // Tunggu hingga kompresi selesai
-            await new Promise(resolve => {
-              const interval = setInterval(() => {
-                if (!image.compressing) {
-                  clearInterval(interval);
-                  resolve(true);
-                }
-              }, 100);
-            });
-          }
-          if (!image.file) {
-            return { name: "", file: "", compressing: false };
-          }
-          const base64File = await getBase64(image.file)  ;
-
-          return {
-            name: image.file.name,
-            file: base64File,
-            compressing: false,
-          };
-
-        }));
-
-        return {
-          ca: item.caName,
-          value: item.value,
-          startDate: item.startDate ? format(item.startDate, "yyyy-MM-dd") : "",
-          endDate: item.endDate ? format(item.endDate, "yyyy-MM-dd") : "",
-          budgetAvailable: item.budgetAvailable,
-          images: images,
-        };
-      }));
-
-
-      formData.append("created_by", iduser || "");
-
-      // Fungsi untuk mengkonversi File/Blob ke base64
+        // Fungsi untuk mengkonversi File/Blob ke base64
       function getBase64(file: any) {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
@@ -527,25 +460,172 @@ export default function PiVegetatif() {
         });
       }
 
-      formData.append("correctiveActions", JSON.stringify(correctiveActions));
 
-      const response = await axios.post(`${apiUrl}/submit-pi-ca`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+  // Validate required fields
+  if (!data.why1?.value || !data.why2?.value || !data.why3?.value || !data.value_pi) {
+    toast.error("Harap lengkapi semua field Problem Identification (Why 1, Why 2, Why 3, dan Nilai PI)");
+    return;
+  }
 
-      if (response.data.success) {
-        toast.success(response.data.message);
-        // Optionally redirect or reset form
-      } else {
-        toast.error(response.data.error || "Failed to save data");
-      }
-    } catch (error: any) {
-      console.error("Error submitting form:", error);
-      toast.error(error.response?.data?.error || error.message || "Terjadi kesalahan");
+  // Validate CA items
+  if (caItems.length === 0) {
+    toast.error("Harap pilih setidaknya satu Corrective Action");
+    return;
+  }
+
+  // Validate each CA item
+  for (const caItem of caItems) {
+    if (!caItem.value) {
+      toast.error(`Harap isi nilai untuk Corrective Action: ${caItem.caName}`);
+      return;
     }
-  };
+
+    if (!caItem.startDate || !caItem.endDate) {
+      toast.error(`Harap isi tanggal mulai dan selesai untuk Corrective Action: ${caItem.caName}`);
+      return;
+    }
+
+    if (!caItem.budgetAvailable) {
+      toast.error(`Harap pilih ketersediaan anggaran untuk Corrective Action: ${caItem.caName}`);
+      return;
+    }
+
+    // Check if any image is still compressing
+    const compressingImages = caItem.images.filter(img => img.compressing);
+    if (compressingImages.length > 0) {
+      toast.error(`Tunggu hingga semua gambar selesai dikompres untuk Corrective Action: ${caItem.caName}`);
+      return;
+    }
+  }
+
+  try {
+    const formData = new FormData();
+
+    // Add basic PI data
+    formData.append("id", id || "");
+    formData.append("why1", data.why1?.value || "");
+    formData.append("why2", data.why2?.value || "");
+    formData.append("why3", data.why3?.value || "");
+    formData.append("value_pi", data.value_pi || "");
+    formData.append("blok", PiVegetatif[0]?.blok || "");
+    formData.append("keterangan", data.keterangan || "");
+    formData.append("regional", PiVegetatif[0]?.regional || "");
+    formData.append("kebun", PiVegetatif[0]?.kebun || "");
+    formData.append("afdeling", PiVegetatif[0]?.afdeling || "");
+    formData.append("tahun_tanam", PiVegetatif[0]?.tahun_tanam || "");
+    formData.append("vegetatif_id", vegId || "");
+    formData.append(`bulan`, PiVegetatif[0]?.bulan || "");
+    formData.append(`tahun`, PiVegetatif[0]?.tahun || "");
+    
+    // Add CA data
+    caItems.forEach((caItem, index) => {
+      formData.append(`caItems[${index}][caName]`, caItem.caName);
+      formData.append(`caItems[${index}][value]`, caItem.value);
+      formData.append(`caItems[${index}][startDate]`, caItem.startDate?.toISOString() || "");
+      formData.append(`caItems[${index}][endDate]`, caItem.endDate?.toISOString() || "");
+      formData.append(`caItems[${index}][budgetAvailable]`, caItem.budgetAvailable);
+
+      // Add CA images
+      caItem.images.forEach((image, imgIndex) => {
+        formData.append(`caItems[${index}][images]`, image.file);
+      });
+    });
+
+    // Corrective actions json in BE 
+    const correctiveActions = await Promise.all(caItems.map(async (item) => {
+      const images = await Promise.all(item.images.map(async (image) => { 
+        if (image.compressing) {
+          // Wait for compression to finish
+          await new Promise(resolve => {
+            const interval = setInterval(() => {
+              if (!image.compressing) {
+                clearInterval(interval);
+                resolve(true);
+              }
+            }, 100);
+          });
+        }
+        if (!image.file) {
+          return { name: "", file: "", compressing: false };
+
+
+        }
+        const base64File = await getBase64(image.file);
+
+        return {
+          name: image.file.name,
+          file: base64File,
+          compressing: false,
+        };
+      }));
+
+      return {
+        ca: item.caName,
+        value: item.value,
+        startDate: item.startDate ? format(item.startDate, "yyyy-MM-dd") : "",
+        endDate: item.endDate ? format(item.endDate, "yyyy-MM-dd") : "",
+        budgetAvailable: item.budgetAvailable,
+        images: images,
+      };
+    }
+    ));
+
+    formData.append("created_by", iduser || "");
+    formData.append("correctiveActions", JSON.stringify(correctiveActions));
+
+    const response = await axios.post(`${apiUrl}/submit-pi-ca`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    if (response.data.success) {
+      toast.success(response.data.message);
+      fetchDetailPICA(vegId); // Refresh data after submission
+      // Reset form after successful submission if not in edit mode
+      if (!editMode) {
+        setValue("why1", { value: "", label: "" });
+        setValue("why2", { value: "", label: "" });
+        setValue("why3", { value: "", label: "" });
+        setValue("value_pi", "");
+        setValue("keterangan", "");
+        setCaItems([]);
+        setMeasurementPi("");
+      }
+    } else {
+      toast.error(response.data.error || "Failed to save data");
+    }
+  } catch (error: any) {
+    console.error("Error submitting form:", error);
+    toast.error(error.response?.data?.error || error.message || "Terjadi kesalahan");
+  }
+};
+
+// Add this function to check if form is ready to submit
+const isFormReady = () => {
+  const values = watch();
+  
+  // Check PI fields
+  if (!values.why1?.value || !values.why2?.value || !values.why3?.value || !values.value_pi) {
+    return false;
+  }
+  
+  // Check CA items
+  if (caItems.length === 0) return false;
+  
+  for (const caItem of caItems) {
+    if (!caItem.value || !caItem.startDate || !caItem.endDate || !caItem.budgetAvailable) {
+      return false;
+    }
+    
+    // Check if any image is still compressing
+    if (caItem.images.some(img => img.compressing)) {
+      return false;
+    }
+  }
+  
+  return true;
+};
 
   const picOpt = [
     { value: "ASKEB", label: "Asisten Kebun" },
@@ -1018,9 +1098,7 @@ export default function PiVegetatif() {
                                   )}
                                 </td>
                                 <td className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">
-                                  <Button variant="secondary" onClick={() => handleEdit(item.id)}>
-                                    Edit
-                                  </Button>
+                     
                                   <Button variant="destructive" onClick={() => handleDelete(item.id)}>
                                     Hapus
                                   </Button>
@@ -1033,9 +1111,7 @@ export default function PiVegetatif() {
                       </div>
                       {/* Actions */}
                       <div className="flex justify-end mt-4">
-                        <Button variant="destructive" onClick={() => handleDelete(editingId || '')}>
-                          Hapus Semua
-                        </Button>
+                    
                       </div>
                     </CardContent>
                   </Card>

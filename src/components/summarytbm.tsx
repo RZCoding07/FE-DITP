@@ -128,11 +128,11 @@ export const SummaryTBM = ({ dataprops, onCardTbmClick }: { dataprops: any; onCa
                 {item.name}
               </p>
               <div className='py-0 my-0 items-end'>
-                <p className='font-semibold float-right' style={{ color: item.textColor }}>
+                <p className='font-semibold text-md float-right' style={{ color: item.textColor }}>
                   {item.progress} Blok
                 </p>
                 <br />
-                <p className='font-semibold float-end' style={{ color: item.textColor }}>
+                <p className='font-semibold text-md float-end' style={{ color: item.textColor }}>
                   {item.progressLuas} HA
                 </p>
               </div>

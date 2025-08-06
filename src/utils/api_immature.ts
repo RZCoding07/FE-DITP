@@ -69,6 +69,17 @@ export const fetchVegetativeFinal = async (params: any) => {
   return response.data;
 };
 
+export const fetchGraphCa = async (params: any) => {
+  // If the data is not cached, make the API request
+  const url = `${API_BASE_URL}/graph-ca`;
+  const response = await axios.post(url, params, {
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  // Return the data from the API
+  return response.data;
+};
+
 export const fetchSerapanBiaya = async (params: any) => {
   // Generate a cache key based on the params (can use a JSON string or a custom key generator)
 
