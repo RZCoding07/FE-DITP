@@ -20,7 +20,6 @@ import * as XLSX from "xlsx-js-style"
 import toast from "react-hot-toast"
 import { FaSync } from "react-icons/fa"
 import {
-
   getScoreJumlahPelepah,
   getScoreKerapatanPokok,
   getScoreLingkarBatang,
@@ -97,6 +96,9 @@ export default function Dashboard() {
   const [scoresAllColor, setScoresAllColor] = useState<any[]>([])
   const [scoresRegional, setScoresRegional] = useState<any[]>([])
   const [scoresKebun, setScoresKebun] = useState<any[]>([])
+
+  const [graphData, setGraphData] = useState<any[]>([])
+
   const [isColor, setIsColor] = useState(false)
   const [color, setColor] = useState("default")
 
@@ -237,7 +239,6 @@ export default function Dashboard() {
 
   const [picaResults, setPicaResults] = useState<any[]>([])
   const [picaResults2, setPicaResults2] = useState<any[]>([])
-  const [graphCaResults, setGraphCaResults] = useState<any[]>([])
 
   // Process TBM data by color
   useEffect(() => {
@@ -322,9 +323,10 @@ export default function Dashboard() {
           tahun: Number.parseInt(tahun.value),
         });
 
+        setGraphData(response3.data);
 
         setPicaResults(response2);
-        setGraphCaResults(response3);
+
 
         // Group data by TBM phase
         const groupedData = response.data.reduce((acc: Record<string, any[]>, item: any) => {
@@ -1005,24 +1007,25 @@ export default function Dashboard() {
   }, [scoresAllRegional, scoresAllKebun, watch("rpc")?.value, selectedCard.ctg]);
 
 
-  useEffect(() => {
-    // Ekstrak semua pica_vegetatif_id ke dalam array
-    const idsToFilter = picaResults.map(item => item.pica_vegetatif_id);
+useEffect(() => {
+  // ensure it's an array before mapping
+  const arr = Array.isArray(picaResults) ? picaResults : [];
 
-    // Filter scoresAll berdasarkan id yang ada dalam idsToFilter
-    const filteredScoresAll = scoresAll.filter(item => idsToFilter.includes(item.id));
+  const idsToFilter = arr.map(item => item.pica_vegetatif_id);
 
-    // merge filteredScoresAll with picaResults
-    const mergedResults = filteredScoresAll.map(score => {
-      const picaResult = picaResults.find(pica => pica.pica_vegetatif_id === score.id);
-      return {
-        ...score,
-        ...picaResult,
-      };
-    });
+  const filteredScoresAll = scoresAll.filter(item =>
+    idsToFilter.includes(item.id)
+  );
 
-    setPicaResults2(mergedResults);
-  }, [picaResults, scoresAll]);
+  const mergedResults = filteredScoresAll.map(score => {
+    const picaResult = arr.find(
+      pica => pica.pica_vegetatif_id === score.id
+    );
+    return { ...score, ...picaResult };
+  });
+
+  setPicaResults2(mergedResults);
+}, [picaResults, scoresAll]);
 
 
   useEffect(() => {
@@ -1647,7 +1650,7 @@ export default function Dashboard() {
                     </h2>
                     <hr className="my-2 border-cyan-400" />
 
-                    <PlanByTimeframe isDarkMode={isDarkMode} />
+                    <PlanByTimeframe isDarkMode={isDarkMode} data={graphData} />
 
 
                   </div>
@@ -1661,7 +1664,7 @@ export default function Dashboard() {
                           Progress Corrective Action Berjangka
                         </h2>
                         <hr className="my-2 border-cyan-400" />
-                        <ProgressByTimeframe isDarkMode={isDarkMode} />
+                        <ProgressByTimeframe isDarkMode={isDarkMode} data={graphData} />
                       </div>
                     </div>
                   </div>

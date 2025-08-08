@@ -6,15 +6,44 @@ import HighchartsReact from "highcharts-react-official"
 
 interface PlanByTimeframeProps {
     isDarkMode: boolean
+    data: any[] // Add this prop to receive the API data
 }
 
-const PlanByTimeframe = ({ isDarkMode }: PlanByTimeframeProps) => {
+const PlanByTimeframe = ({ isDarkMode, data }: PlanByTimeframeProps) => {
     const chartRef = useRef<HighchartsReact.RefObject>(null)
 
     // Colors for dark and light mode
-    const colors = isDarkMode ? ["#66b3ff", "#3399ff", "#0066cc"] : ["#66b3ff", "#3399ff", "#0066cc"]
-
+    const colors = isDarkMode ? ["#66b3ff", "#3399ff", "#0066cc", "#003366"] : ["#66b3ff", "#3399ff", "#0066cc", "#003366"]
     const textColor = isDarkMode ? "#e0e0e0" : "#333333"
+
+    // Process data to count each duration category
+    const countDurations = () => {
+        const counts = {
+            shortTerm: 0,
+            mediumTerm: 0,
+            longTerm: 0,
+            veryLongTerm: 0
+        }
+
+        data.forEach(item => {
+            switch (item.durasi_ca) {
+                case 'Jangka Pendek':
+                    counts.shortTerm++
+                    break
+                case 'Jangka Menengah':
+                    counts.mediumTerm++
+                    break
+                case 'Jangka Panjang':
+                    counts.longTerm++
+                    break
+            }
+        })
+
+        return counts
+    }
+
+    const durationCounts = countDurations()
+    const total = data.length
 
     const options: Highcharts.Options = {
         chart: {
@@ -29,7 +58,7 @@ const PlanByTimeframe = ({ isDarkMode }: PlanByTimeframeProps) => {
             text: "",
         },
         tooltip: {
-            pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b>",
+            pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b> ({point.y})",
         },
         accessibility: {
             point: {
@@ -44,6 +73,7 @@ const PlanByTimeframe = ({ isDarkMode }: PlanByTimeframeProps) => {
                 colors: colors,
                 dataLabels: {
                     enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
                     style: {
                         color: textColor,
                     },
@@ -53,24 +83,24 @@ const PlanByTimeframe = ({ isDarkMode }: PlanByTimeframeProps) => {
         credits: {
             enabled: false,
         },
- 
         series: [
             {
-                name: "Percentage",
+                name: "Jumlah CA",
                 type: "pie",
                 data: [
                     {
-                        name: "Jangka Pendek (Sampai dengan 4 Bulan)",
-                        y: 72.1,
+                        name: "Jangka Pendek (≤4 Bulan)",
+                        y: durationCounts.shortTerm,
                     },
                     {
-                        name: "Jangka Menengah (Sampai dengan 8 Bulan)",
-                        y: 21.4,
+                        name: "Jangka Menengah (5-8 Bulan)",
+                        y: durationCounts.mediumTerm,
                     },
                     {
-                        name: "Jangka Panjang (Lebih dari 8 Bulan)",
-                        y: 6.6,
-                    },
+                        name: "Jangka Panjang (9-12 Bulan)",
+                        y: durationCounts.longTerm,
+                    }
+            
                 ],
             },
         ],
@@ -79,7 +109,7 @@ const PlanByTimeframe = ({ isDarkMode }: PlanByTimeframeProps) => {
                 color: textColor,
             },
             itemHoverStyle: {
-                color: "#FF0000",
+                color: isDarkMode ? "#66b3ff" : "#0066cc",
             },
         },
         responsive: {
@@ -103,7 +133,6 @@ const PlanByTimeframe = ({ isDarkMode }: PlanByTimeframeProps) => {
     useEffect(() => {
         if (chartRef.current && chartRef.current.chart) {
             chartRef.current.chart.update({
-
                 plotOptions: {
                     pie: {
                         dataLabels: {
@@ -113,20 +142,26 @@ const PlanByTimeframe = ({ isDarkMode }: PlanByTimeframeProps) => {
                         },
                     },
                 },
+                legend: {
+                    itemStyle: {
+                        color: textColor,
+                    },
+                }
             })
         }
     }, [isDarkMode, textColor])
 
     return (
         <div className="w-full flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-900 rounded-lg shadow-md">
-            <h2 className="chart-title text-lg font-semibold py-2 pb-1">Rencana CA Berdasarkan Jangka Waktu</h2>
+            <h2 className="chart-title text-lg font-semibold py-2 pb-1 text-gray-800 dark:text-gray-200">
+                Rencana CA Berdasarkan Jangka Waktu
+            </h2>
+            <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                Total CA: {total}
+            </div>
             <HighchartsReact highcharts={Highcharts} options={options} ref={chartRef} />
         </div>
     )
 }
 
 export default PlanByTimeframe
-
-
-
-
